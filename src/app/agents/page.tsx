@@ -29,7 +29,7 @@ export default function AgentsPage() {
     <div className="pt-16">
       <section className="gradient-hero px-6 py-24 max-w-6xl mx-auto text-center">
         <h1 className="text-3xl md:text-5xl font-bold mb-4">Agents</h1>
-        <p className="text-muted text-lg mb-16">The mentors who charge $300-500/hour. Their thinking, available 24/7.</p>
+        <p className="text-muted text-lg mb-16">Real operators. Real thinking. Available now.</p>
         <div className="max-w-sm mx-auto mb-20">
           <AgentCard
             name="Apex"
@@ -43,8 +43,8 @@ export default function AgentsPage() {
 
         {/* Waitlist */}
         <div className="glass-card p-8 md:p-12 max-w-xl mx-auto">
-          <h2 className="text-xl md:text-2xl font-bold mb-2">More mentors being extracted.</h2>
-          <p className="text-muted mb-6">Each agent takes weeks to build. Be first to know when one goes live.</p>
+          <h2 className="text-xl md:text-2xl font-bold mb-2">More mentors coming.</h2>
+          <p className="text-muted mb-6">We&apos;re selective. Get notified.</p>
           {submitted ? (
             <div className="border border-[#3B82F6]/20 bg-[#3B82F6]/5 p-6 rounded-xl text-center">
               <p className="font-semibold">You&apos;re on the list.</p>

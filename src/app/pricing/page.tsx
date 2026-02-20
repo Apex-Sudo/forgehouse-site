@@ -127,7 +127,7 @@ export default function PricingPage() {
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">You&apos;re not paying for information. You&apos;re paying for time.</h2>
-          <p className="text-muted text-lg mb-8">What you&apos;d learn in two hours would take you five years to figure out alone.</p>
+          <p className="text-muted text-lg mb-8">Two hours of clarity vs five years of guessing.</p>
           <Link href="/chat/apex" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
             Talk to Apex
           </Link>

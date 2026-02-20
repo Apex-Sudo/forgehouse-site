@@ -6,35 +6,35 @@ const phases = [
     title: "Selection",
     duration: "1 week",
     desc: "Not everyone gets in. We look for people who've made real decisions under real pressure. Credentials don't matter. Track record does.",
-    detail: "Every applicant is vetted for one thing: have they actually done the thing they'd advise on? If the answer is no, they don't make it past this stage.",
+    detail: "If they haven't done the thing, they don't get in.",
   },
   {
     num: "02",
     title: "Extraction",
     duration: "2-4 weeks",
     desc: "Hours of structured conversation designed to surface how a mentor actually thinks. Not what they'd say on a podcast. How they decide when the stakes are real.",
-    detail: "Our extraction process is adversarial by design. We push on edge cases, ask for failures, probe the 'it depends' answers until we find the branching logic underneath. Documents, frameworks, past work all feed in.",
+    detail: "We push on edge cases, ask for failures, and probe every 'it depends' until we find the branching logic underneath.",
   },
   {
     num: "03",
     title: "Assembly",
     duration: "1-2 weeks",
     desc: "Raw extraction becomes a reasoning engine. Decision patterns, heuristics, blind spot detection, domain-specific judgment. All wired together.",
-    detail: "This isn't a bio turned into a prompt. It's a structured model of how someone thinks, built from dozens of real decision points, failure modes, and situational reads.",
+    detail: "Not a bio turned into a prompt. A structured model of how someone actually decides.",
   },
   {
     num: "04",
     title: "Calibration",
     duration: "1 week",
     desc: "The mentor tests their own agent. Throws real scenarios at it. Tells us where it's wrong. We adjust until it passes their standard, not ours.",
-    detail: "If the mentor wouldn't trust the agent to advise someone they care about, it doesn't go live. Their name is on it. They decide when it's ready.",
+    detail: "Their name is on it. They decide when it's ready.",
   },
   {
     num: "05",
     title: "Live",
     duration: "Ongoing",
     desc: "The agent goes live and starts compounding. Every conversation makes it sharper. The mentor reviews, refines, and the agent grows with their thinking.",
-    detail: "This is where ForgeHouse diverges from courses, books, and MasterClass. A course is static the moment it ships. A forged agent gets better every month.",
+    detail: "A course is static the day it ships. A forged agent gets sharper every month.",
   },
 ];
 
@@ -58,10 +58,8 @@ export default function TheForgePage() {
         <div className="max-w-3xl mx-auto section-module gradient-blue text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-6">Why this can&apos;t be rushed</h2>
           <p className="text-muted text-[15px] leading-relaxed max-w-2xl mx-auto">
-            Anyone can paste a bio into ChatGPT and call it a mentor. That&apos;s not what we do.
-            The difference between a chatbot and a ForgeHouse agent is the same difference between
-            reading someone&apos;s LinkedIn and sitting across from them for 20 hours.
-            There are no shortcuts to capturing how someone actually thinks.
+            Anyone can paste a bio into ChatGPT. The difference between that and a ForgeHouse agent
+            is 20 hours of structured extraction.
           </p>
         </div>
       </section>
@@ -96,15 +94,9 @@ export default function TheForgePage() {
       <section className="px-6 py-24">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-6">The result</h2>
-          <p className="text-muted text-lg leading-relaxed max-w-2xl mx-auto mb-4">
+          <p className="text-muted text-lg leading-relaxed max-w-2xl mx-auto">
             An agent that doesn&apos;t just know what a mentor would say.
             It knows how they&apos;d think through your specific situation.
-            The difference is everything.
-          </p>
-          <p className="text-muted text-[15px] leading-relaxed max-w-2xl mx-auto">
-            A course gives you their best thinking once. A forged agent gives you
-            their thinking applied to your problem, every time you need it, and it
-            gets sharper with every conversation.
           </p>
         </div>
       </section>

@@ -13,7 +13,7 @@ const wontDo = [
   "Write your pitch deck for you",
   "Give you a 10-step plan without knowing your situation",
   "Tell you what you want to hear",
-  "Replace your judgment. Only make it more expensive to be wrong",
+  "Replace your judgment. Only sharpen it",
 ];
 
 export default function ApexPage() {
@@ -23,8 +23,7 @@ export default function ApexPage() {
         <div className="text-6xl mb-6">🔺</div>
         <h1 className="text-4xl md:text-5xl font-bold mb-6">Apex</h1>
         <p className="text-lg md:text-xl text-muted leading-relaxed mb-12 max-w-2xl mx-auto">
-          Built from a founder who&apos;s been through three continents of hard lessons.
-          Apex won&apos;t tell you what to do. It&apos;ll find the blind spot you didn&apos;t know you had.
+          Won&apos;t tell you what to do. Will find the blind spot you&apos;re missing.
         </p>
 
         <div className="grid md:grid-cols-2 gap-8 mb-16 text-left">
@@ -83,7 +82,7 @@ export default function ApexPage() {
         <div className="glass-card p-8 mb-12 text-center">
           <h3 className="text-sm font-mono text-amber uppercase tracking-wider mb-2">Pricing</h3>
           <p className="text-2xl font-bold mb-1">Free forever</p>
-          <p className="text-muted text-sm">Apex is the house agent. No card, no catch. Mentor agents are priced at what their live time costs.</p>
+          <p className="text-muted text-sm">The house agent. Always free.</p>
         </div>
 
         <div className="text-center">
