@@ -1,19 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { CALIBRATION_SYSTEM_PROMPT } from "@/lib/calibration-system-prompt";
-
-const rateMap = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateMap.get(ip);
-  if (!entry || now > entry.resetAt) {
-    rateMap.set(ip, { count: 1, resetAt: now + 3600_000 });
-    return true;
-  }
-  if (entry.count >= 30) return false;
-  entry.count++;
-  return true;
-}
+import { extractLimiter } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   const ip =
@@ -21,7 +8,8 @@ export async function POST(req: Request) {
     req.headers.get("x-real-ip") ||
     "unknown";
 
-  if (!checkRateLimit(ip)) {
+  const { success } = await extractLimiter.limit(ip);
+  if (!success) {
     return new Response(JSON.stringify({ error: "Rate limit exceeded. Take a break and come back." }), {
       status: 429,
       headers: { "Content-Type": "application/json" },
