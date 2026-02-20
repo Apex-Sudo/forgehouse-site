@@ -30,7 +30,7 @@ export default function AgentsPage() {
       <section className="gradient-hero px-6 py-24 max-w-6xl mx-auto text-center">
         <h1 className="text-3xl md:text-5xl font-bold mb-4">Agents</h1>
         <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto mb-16 leading-relaxed">
-          The world&apos;s best domain experts, their brilliance captured and made globally accessible. 24/7, in any language.
+          The world&apos;s sharpest minds, globally accessible. 24/7.
         </p>
         <div className="max-w-sm mx-auto mb-20">
           <AgentCard
