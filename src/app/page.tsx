@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import AgentCard from "@/components/AgentCard";
 import InlineChat from "@/components/InlineChat";
+import { ChatCircleDots, Lightning, ChartLineUp, Globe } from "@phosphor-icons/react";
 
 const steps = [
   { num: "01", title: "Pick a mentor", desc: "Browse founders and operators who've solved what you're facing. Each one is vetted." },
@@ -11,10 +12,10 @@ const steps = [
 ];
 
 const trustPoints = [
-  { icon: "💬", title: "Built from real conversations", desc: "Every agent is trained through hours of structured interviews. Not scraped content. Not a bio turned into a prompt. Their actual decision-making patterns." },
-  { icon: "⚡", title: "Available between sessions", desc: "The best mentors are fully booked. Their agents aren't. Get the frameworks and thinking you need, whenever momentum demands it." },
-  { icon: "📈", title: "Quality that scales", desc: "A great mentor can only take so many calls. Their agent carries the same instincts to everyone who needs them, without the bottleneck." },
-  { icon: "🌍", title: "World-class, in your language", desc: "The best person in your industry probably doesn't speak your language. Their agent does. Get top-of-field thinking in your native tongue, not a second-choice mentor because of a language barrier." },
+  { icon: ChatCircleDots, title: "Built from real conversations", desc: "Every agent is trained through hours of structured interviews. Not scraped content. Not a bio turned into a prompt. Their actual decision-making patterns." },
+  { icon: Lightning, title: "Available between sessions", desc: "The best mentors are fully booked. Their agents aren't. Get the frameworks and thinking you need, whenever momentum demands it." },
+  { icon: ChartLineUp, title: "Quality that scales", desc: "A great mentor can only take so many calls. Their agent carries the same instincts to everyone who needs them, without the bottleneck." },
+  { icon: Globe, title: "World-class, in your language", desc: "The best person in your industry probably doesn't speak your language. Their agent does. Get top-of-field thinking in your native tongue, not a second-choice mentor because of a language barrier." },
 ];
 
 export default function Home() {
@@ -99,7 +100,7 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-10">
             {trustPoints.map((t) => (
               <div key={t.title} className="text-center">
-                <div className="text-3xl mb-4">{t.icon}</div>
+                <t.icon size={32} weight="light" className="mx-auto mb-4 text-[#3B82F6]" />
                 <h3 className="text-lg font-bold mb-3">{t.title}</h3>
                 <p className="text-muted leading-relaxed text-[15px]">{t.desc}</p>
               </div>
