@@ -45,9 +45,8 @@ export default function Home() {
       {/* Hero */}
       <section className="gradient-hero px-6 py-32 md:py-44 max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-6">
-          All the information in the world.
-          <br />
-          <span className="text-amber">No one to tell you it&apos;s the wrong direction.</span>
+          Tap into{" "}
+          <span className="text-amber">brilliance.</span>
         </h1>
         <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
           The best mentors are fully booked. ForgeHouse captures how they actually think
