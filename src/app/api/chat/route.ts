@@ -10,8 +10,16 @@ export async function POST(req: Request) {
       req.headers.get("x-real-ip") ||
       "unknown";
 
-    const { success } = await chatLimiter().limit(ip);
-    if (!success) {
+    let rateLimited = false;
+    try {
+      const { success } = await chatLimiter().limit(ip);
+      rateLimited = !success;
+    } catch (err) {
+      console.error("Rate limit error:", err);
+      // Continue without rate limiting if Redis fails
+    }
+
+    if (rateLimited) {
       return Response.json({ error: "Rate limit exceeded. Try again later." }, { status: 429 });
     }
 
@@ -21,17 +29,24 @@ export async function POST(req: Request) {
       email?: string;
     };
 
-    // Server-side access check
-    const access = await canAccess(ip, email);
-    if (!access.allowed) {
-      return Response.json(
-        { error: "subscription_required", message: "Subscribe to continue chatting." },
-        { status: 403 }
-      );
-    }
-
     if (!messages?.length) {
       return Response.json({ error: "No messages provided" }, { status: 400 });
+    }
+
+    // Server-side access check
+    let accessReason: "free" | "subscribed" | "paywall" = "free";
+    try {
+      const access = await canAccess(ip, email);
+      if (!access.allowed) {
+        return Response.json(
+          { error: "subscription_required", message: "Subscribe to continue chatting." },
+          { status: 403 }
+        );
+      }
+      accessReason = access.reason;
+    } catch (err) {
+      console.error("Access check error:", err);
+      // Allow through if Redis fails (graceful degradation)
     }
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -55,8 +70,13 @@ export async function POST(req: Request) {
               controller.enqueue(encoder.encode(event.delta.text));
             }
           }
-          if (access.reason === "free") {
-            await incrementFreeMessages(ip);
+          // Increment free message count after successful response
+          if (accessReason === "free") {
+            try {
+              await incrementFreeMessages(ip);
+            } catch (err) {
+              console.error("Increment error:", err);
+            }
           }
         } catch (err) {
           const msg = err instanceof Error ? err.message : "Unknown error";
@@ -71,6 +91,7 @@ export async function POST(req: Request) {
       headers: { "Content-Type": "text/plain; charset=utf-8" },
     });
   } catch (err) {
+    console.error("Chat route top-level error:", err);
     return Response.json(
       { error: "Internal error", detail: err instanceof Error ? err.message : String(err) },
       { status: 500 }
