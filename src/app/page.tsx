@@ -193,7 +193,8 @@ export default function Home() {
               />
               <input
                 type="url"
-                placeholder="Blog post, talk, podcast, or thread that shows how you think (optional)"
+                placeholder="Blog post, talk, podcast, or thread that shows how you think"
+                required
                 value={mentorForm.contentLink}
                 onChange={(e) => setMentorForm({ ...mentorForm, contentLink: e.target.value })}
                 className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
