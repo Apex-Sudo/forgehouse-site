@@ -61,8 +61,9 @@ export async function POST(req: Request) {
             controller.enqueue(encoder.encode(event.delta.text));
           }
         }
-      } catch {
-        // stream interrupted
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Unknown error";
+        controller.enqueue(encoder.encode(`\n[Error: ${msg}]`));
       } finally {
         controller.close();
       }
