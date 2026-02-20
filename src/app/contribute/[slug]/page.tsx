@@ -26,7 +26,7 @@ export default function ExtractionPage() {
 
   // Load saved conversation from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem(`fh-extract-${slug}`);
+    const saved = localStorage.getItem(`fh-contribute-${slug}`);
     if (saved) {
       const parsed = JSON.parse(saved) as Message[];
       setMessages(parsed);
@@ -37,7 +37,7 @@ export default function ExtractionPage() {
   // Save conversation to localStorage on every update
   useEffect(() => {
     if (messages.length > 0) {
-      localStorage.setItem(`fh-extract-${slug}`, JSON.stringify(messages));
+      localStorage.setItem(`fh-contribute-${slug}`, JSON.stringify(messages));
     }
   }, [messages, slug]);
 
@@ -53,7 +53,7 @@ export default function ExtractionPage() {
     setStarted(true);
 
     try {
-      const res = await fetch("/api/extract", {
+      const res = await fetch("/api/contribute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: updated, mentorSlug: slug }),
@@ -113,7 +113,7 @@ export default function ExtractionPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `extraction-${slug}-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.download = `contribute-${slug}-${new Date().toISOString().slice(0, 10)}.txt`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -129,7 +129,7 @@ export default function ExtractionPage() {
             <div className="flex items-center gap-3">
               <span className="text-2xl">🔧</span>
               <div>
-                <h1 className="font-bold text-sm">Extraction Session</h1>
+                <h1 className="font-bold text-sm">Mentor Session</h1>
                 <p className="text-xs text-muted">{slug} &middot; {messageCount} exchanges</p>
               </div>
             </div>
