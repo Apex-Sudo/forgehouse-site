@@ -75,28 +75,57 @@ export default function InlineChat() {
   };
 
   return (
-    <div className="border border-border bg-surface/50 max-w-2xl mx-auto">
+    <div className="bg-white rounded-3xl shadow-[0_8px_60px_rgba(59,130,246,0.15)] max-w-3xl mx-auto min-h-[400px] flex flex-col overflow-hidden">
+      {/* macOS window chrome */}
+      <div className="flex items-center gap-2 px-5 py-3 border-b border-gray-100">
+        <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
+        <span className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
+        <span className="w-3 h-3 rounded-full bg-[#28C840]" />
+      </div>
+
       {!started && (
-        <div className="p-6 pb-3">
-          <div className="flex flex-wrap gap-2">
-            {STARTERS.map((s) => (
+        <div className="flex-1 flex flex-col">
+          <div className="p-6 pb-3">
+            <div className="flex flex-wrap gap-2">
+              {STARTERS.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => send(s)}
+                  className="text-sm bg-[#F3F4F6] text-[#1F2937] border border-[#E5E7EB] px-4 py-2 rounded-full hover:bg-[#E5E7EB] transition"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-auto px-6 pb-6 pt-3">
+            <div className="flex gap-3">
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Or ask your own question..."
+                rows={1}
+                className="flex-1 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl px-4 py-3 text-sm text-[#111827] placeholder:text-gray-400 focus:outline-none focus:border-blue-400 transition resize-none"
+              />
               <button
-                key={s}
-                onClick={() => send(s)}
-                className="text-sm border border-border px-4 py-2 text-muted hover:text-foreground hover:border-amber/40 transition"
+                onClick={() => send(input)}
+                disabled={!input.trim()}
+                className="bg-blue-500 text-white px-6 py-3 font-semibold text-sm rounded-xl hover:bg-blue-600 transition disabled:opacity-50"
               >
-                {s}
+                Send
               </button>
-            ))}
+            </div>
           </div>
         </div>
       )}
 
       {started && (
-        <div className="p-6 space-y-4 max-h-[400px] overflow-y-auto">
+        <div className="flex-1 p-6 space-y-4 max-h-[450px] overflow-y-auto">
           {/* User bubble */}
           <div className="flex justify-end">
-            <div className="bg-blue-500 text-white px-4 py-2.5 text-sm leading-relaxed rounded-lg max-w-[85%]">
+            <div className="bg-[#3B82F6] text-white px-4 py-2.5 text-sm leading-relaxed rounded-2xl max-w-[85%]">
               {userMessage}
             </div>
           </div>
@@ -106,9 +135,9 @@ export default function InlineChat() {
             <div className="flex justify-start">
               <div
                 ref={responseRef}
-                className="bg-gray-800 text-white px-4 py-2.5 text-sm leading-relaxed rounded-lg max-w-[85%] whitespace-pre-wrap"
+                className="bg-[#F3F4F6] text-[#111827] px-4 py-2.5 text-sm leading-relaxed rounded-2xl max-w-[85%] whitespace-pre-wrap"
               >
-                {assistantMessage || <span className="animate-pulse">●●●</span>}
+                {assistantMessage || <span className="animate-pulse text-gray-400">●●●</span>}
               </div>
             </div>
           )}
@@ -117,34 +146,12 @@ export default function InlineChat() {
             <div className="pt-2 text-center">
               <Link
                 href="/chat/apex"
-                className="text-amber hover:text-amber-dark text-sm font-semibold transition"
+                className="text-blue-500 hover:text-blue-600 text-sm font-semibold transition"
               >
                 Continue this conversation &rarr;
               </Link>
             </div>
           )}
-        </div>
-      )}
-
-      {!started && (
-        <div className="px-6 pb-6 pt-3">
-          <div className="flex gap-3">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Or ask your own question..."
-              rows={1}
-              className="flex-1 bg-transparent border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition resize-none"
-            />
-            <button
-              onClick={() => send(input)}
-              disabled={!input.trim()}
-              className="bg-amber text-background px-6 py-3 font-semibold text-sm hover:bg-amber-dark transition disabled:opacity-50"
-            >
-              Send
-            </button>
-          </div>
         </div>
       )}
     </div>

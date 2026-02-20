@@ -62,9 +62,9 @@ export default function Home() {
       </section>
 
       {/* Inline Chat */}
-      <section className="px-6 py-16 border-t border-border">
+      <section className="px-6 py-32 border-t border-border">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl md:text-2xl font-bold mb-8 text-center">Try Apex now</h2>
+          <p className="text-sm text-muted text-center mb-6">Ask Apex anything</p>
           <InlineChat />
         </div>
       </section>
