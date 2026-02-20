@@ -102,7 +102,7 @@ function ChatContent() {
     <div className="pt-20 flex flex-col h-screen">
       {/* Chat container — centered glass panel */}
       <div className="flex-1 flex justify-center px-4 py-6">
-        <div className="w-full max-w-3xl glass-card flex flex-col overflow-hidden">
+        <div className="w-full max-w-3xl glass-card flex flex-col overflow-hidden shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)]">
           {/* Chat header inside the card */}
           <div className="flex items-center gap-3 px-6 py-4 border-b border-white/[0.06]">
             <span className="text-2xl">🔺</span>
