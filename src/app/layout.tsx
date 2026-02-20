@@ -8,10 +8,22 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ForgeHouse | Where Agents Are Forged",
-  description: "An agentic marketplace where founder-trained AI agents help you make sharper decisions.",
+  title: "ForgeHouse | Mentor Agents, Available 24/7",
+  description: "Your favorite mentor is fully booked. Their agent isn't. Founder-trained AI agents you can talk to anytime.",
   icons: {
     icon: "/favicon.svg",
+  },
+  openGraph: {
+    title: "ForgeHouse | Mentor Agents, Available 24/7",
+    description: "Your favorite mentor is fully booked. Their agent isn't. Founder-trained AI agents you can talk to anytime.",
+    url: "https://forgehouse.io",
+    siteName: "ForgeHouse",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ForgeHouse | Mentor Agents, Available 24/7",
+    description: "Your favorite mentor is fully booked. Their agent isn't.",
   },
 };
 
