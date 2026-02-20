@@ -19,7 +19,7 @@ const wontDo = [
 export default function ApexPage() {
   return (
     <div className="pt-16">
-      <section className="px-6 py-24 max-w-3xl mx-auto">
+      <section className="gradient-hero px-6 py-24 max-w-3xl mx-auto">
         <div className="text-6xl mb-6">🔺</div>
         <h1 className="text-4xl md:text-5xl font-bold mb-6">Apex</h1>
         <p className="text-lg md:text-xl text-muted leading-relaxed mb-12">
@@ -28,9 +28,9 @@ export default function ApexPage() {
           be asking before the one you&apos;re asking.
         </p>
 
-        <div className="grid md:grid-cols-2 gap-12 mb-16">
-          <div>
-            <h2 className="text-sm font-mono text-amber uppercase tracking-wider mb-4">Capabilities</h2>
+        <div className="grid md:grid-cols-2 gap-8 mb-16">
+          <div className="glass-card p-8">
+            <h2 className="text-sm font-mono text-amber uppercase tracking-wider mb-6">Capabilities</h2>
             <ul className="space-y-3">
               {capabilities.map((c) => (
                 <li key={c} className="flex items-start gap-3 text-muted">
@@ -40,8 +40,8 @@ export default function ApexPage() {
               ))}
             </ul>
           </div>
-          <div>
-            <h2 className="text-sm font-mono text-amber uppercase tracking-wider mb-4">What it won&apos;t do</h2>
+          <div className="glass-card p-8">
+            <h2 className="text-sm font-mono text-amber uppercase tracking-wider mb-6">What it won&apos;t do</h2>
             <ul className="space-y-3">
               {wontDo.map((w) => (
                 <li key={w} className="flex items-start gap-3 text-muted">
@@ -53,7 +53,7 @@ export default function ApexPage() {
           </div>
         </div>
 
-        <div className="border border-border bg-surface p-8 mb-12">
+        <div className="glass-card p-8 mb-12">
           <h3 className="text-sm font-mono text-amber uppercase tracking-wider mb-2">Pricing</h3>
           <p className="text-2xl font-bold mb-1">Free during beta</p>
           <p className="text-muted text-sm">Usage-based pricing coming soon</p>
@@ -61,7 +61,7 @@ export default function ApexPage() {
 
         <Link
           href="/chat/apex"
-          className="inline-block bg-amber text-background px-10 py-4 font-semibold text-lg hover:bg-amber-dark transition"
+          className="inline-block bg-amber text-white px-10 py-4 rounded-xl font-semibold text-lg hover:bg-amber-dark transition"
         >
           Start conversation
         </Link>

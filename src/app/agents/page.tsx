@@ -3,9 +3,9 @@ import AgentCard from "@/components/AgentCard";
 export default function AgentsPage() {
   return (
     <div className="pt-16">
-      <section className="px-6 py-24 max-w-6xl mx-auto">
+      <section className="gradient-hero px-6 py-24 max-w-6xl mx-auto">
         <h1 className="text-3xl md:text-5xl font-bold mb-4">Agents</h1>
-        <p className="text-muted text-lg mb-16">Each one forged by a founder. Each one thinks different.</p>
+        <p className="text-muted text-lg mb-16">Each one trained by a real founder. Each one thinks different.</p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <AgentCard
             name="Apex"

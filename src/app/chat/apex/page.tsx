@@ -31,7 +31,6 @@ function ChatContent() {
     const q = searchParams.get("q");
     if (q) {
       setSeeded(true);
-      // Small delay to let component mount
       setTimeout(() => send(q), 100);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,7 +69,6 @@ function ChatContent() {
       const decoder = new TextDecoder();
       let assistantContent = "";
 
-      // Add empty assistant message
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
       while (true) {
@@ -104,7 +102,7 @@ function ChatContent() {
   return (
     <div className="pt-16 flex flex-col h-screen">
       {/* Header */}
-      <div className="border-b border-border px-6 py-4 flex items-center gap-3">
+      <div className="border-b border-white/[0.06] px-6 py-4 flex items-center gap-3">
         <span className="text-2xl">🔺</span>
         <div>
           <h1 className="font-bold">Apex</h1>
@@ -114,9 +112,9 @@ function ChatContent() {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-6 py-8 space-y-6">
-        {/* Welcome message (always shown) */}
+        {/* Welcome message */}
         <div className="flex justify-start">
-          <div className="max-w-[80%] md:max-w-[60%] px-5 py-3 text-sm leading-relaxed bg-gray-800 text-white rounded-lg">
+          <div className="max-w-[80%] md:max-w-[60%] px-5 py-3 text-sm leading-relaxed glass-card">
             What&apos;s the decision you&apos;re trying to make?
           </div>
         </div>
@@ -127,7 +125,7 @@ function ChatContent() {
               <button
                 key={s}
                 onClick={() => send(s)}
-                className="text-sm border border-border px-4 py-2 text-muted hover:text-foreground hover:border-amber/40 transition"
+                className="text-sm bg-white/[0.04] border border-white/[0.08] px-4 py-2 rounded-full text-muted hover:text-foreground hover:border-white/[0.12] transition"
               >
                 {s}
               </button>
@@ -141,10 +139,10 @@ function ChatContent() {
             className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[80%] md:max-w-[60%] px-5 py-3 text-sm leading-relaxed rounded-lg whitespace-pre-wrap ${
+              className={`max-w-[80%] md:max-w-[60%] px-5 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
                 m.role === "user"
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-800 text-white"
+                  ? "bg-[#3B82F6] text-white rounded-2xl"
+                  : "glass-card text-foreground"
               }`}
             >
               {m.content}
@@ -157,8 +155,8 @@ function ChatContent() {
           messages.length > 0 &&
           messages[messages.length - 1].content === "" && (
             <div className="flex justify-start">
-              <div className="bg-gray-800 text-white px-5 py-3 text-sm rounded-lg">
-                <span className="animate-pulse">●●●</span>
+              <div className="glass-card px-5 py-3 text-sm">
+                <span className="animate-pulse text-muted">●●●</span>
               </div>
             </div>
           )}
@@ -167,7 +165,7 @@ function ChatContent() {
       </div>
 
       {/* Input */}
-      <div className="border-t border-border px-6 py-4">
+      <div className="border-t border-white/[0.06] px-6 py-4">
         <div className="max-w-3xl mx-auto flex gap-3">
           <textarea
             value={input}
@@ -175,12 +173,12 @@ function ChatContent() {
             onKeyDown={handleKeyDown}
             placeholder="Type your message..."
             rows={1}
-            className="flex-1 bg-surface border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-amber/60 transition resize-none"
+            className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#3B82F6]/40 transition resize-none"
           />
           <button
             onClick={() => send()}
             disabled={streaming}
-            className="bg-amber text-background px-6 py-3 font-semibold text-sm hover:bg-amber-dark transition disabled:opacity-50"
+            className="bg-[#3B82F6] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#2563EB] transition disabled:opacity-50"
           >
             Send
           </button>

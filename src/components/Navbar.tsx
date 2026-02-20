@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-xl border-b border-white/[0.06]">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold tracking-tight">
           <span className="text-amber">Forge</span>House
@@ -25,7 +25,7 @@ export default function Navbar() {
         </button>
       </div>
       {open && (
-        <div className="md:hidden border-t border-border bg-background px-6 py-4 flex flex-col gap-4 text-sm">
+        <div className="md:hidden border-t border-white/[0.06] bg-background/90 backdrop-blur-xl px-6 py-4 flex flex-col gap-4 text-sm">
           <Link href="/agents" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Agents</Link>
           <Link href="/agents/apex" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Apex</Link>
           <Link href="/#for-mentors" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Apply</Link>
