@@ -51,13 +51,8 @@ export default function Home() {
           Not a prompt template. A real person&apos;s decision-making patterns,
           available whenever you need them.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Link href="/agents" className="bg-amber text-background px-8 py-3 font-semibold hover:bg-amber-dark transition text-center">
-            Meet the Agents
-          </Link>
-          <Link href="/chat/apex" className="border border-border px-8 py-3 font-semibold hover:border-amber/40 transition text-center">
-            Try Apex Now
-          </Link>
+        <div className="mt-10">
+          <InlineChat />
         </div>
       </section>
 
@@ -117,7 +112,7 @@ export default function Home() {
       </section>
 
       {/* Become a Mentor */}
-      <section id="for-mentors" className="px-6 py-24 border-t border-border">
+      <section id="for-mentors" className="px-6 py-24 pb-32 border-t border-border">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">Built something real? Your agent should exist.</h2>
           <p className="text-muted text-lg mb-12 leading-relaxed">
@@ -168,13 +163,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA / Inline Chat */}
+      {/* CTA */}
       <section className="px-6 py-24 border-t border-border">
-        <div className="max-w-4xl mx-auto text-center mb-12">
+        <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Stop asking for answers.<br />Start asking better questions.</h2>
-          <p className="text-muted text-lg">Try Apex right here. One question, one real answer.</p>
+          <p className="text-muted text-lg mb-8">Apex is ready when you are.</p>
+          <Link href="/chat/apex" className="bg-amber text-background px-8 py-3 font-semibold hover:bg-amber-dark transition inline-block">
+            Talk to Apex
+          </Link>
         </div>
-        <InlineChat />
       </section>
     </div>
   );
