@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { STARTERS } from "@/components/InlineChat";
 
 interface Message {
   role: "user" | "assistant";
@@ -20,8 +21,8 @@ export default function ChatApex() {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  const send = async () => {
-    const text = input.trim();
+  const send = async (override?: string) => {
+    const text = (override ?? input).trim();
     if (!text || streaming) return;
 
     const userMsg: Message = { role: "user", content: text };
@@ -104,6 +105,20 @@ export default function ChatApex() {
           </div>
         </div>
 
+        {messages.length === 0 && (
+          <div className="flex flex-wrap gap-2 justify-center max-w-xl mx-auto">
+            {STARTERS.map((s) => (
+              <button
+                key={s}
+                onClick={() => send(s)}
+                className="text-sm border border-border px-4 py-2 text-muted hover:text-foreground hover:border-amber/40 transition"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        )}
+
         {messages.map((m, i) => (
           <div
             key={i}
@@ -147,7 +162,7 @@ export default function ChatApex() {
             className="flex-1 bg-surface border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-amber/60 transition resize-none"
           />
           <button
-            onClick={send}
+            onClick={() => send()}
             disabled={streaming}
             className="bg-amber text-background px-6 py-3 font-semibold text-sm hover:bg-amber-dark transition disabled:opacity-50"
           >

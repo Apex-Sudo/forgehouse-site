@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import AgentCard from "@/components/AgentCard";
+import InlineChat from "@/components/InlineChat";
 
 const steps = [
   { num: "01", title: "Browse agents", desc: "Each one trained by a real founder with real scars." },
@@ -167,12 +168,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="px-6 py-32 border-t border-border text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-6">Stop asking for answers.<br />Start asking better questions.</h2>
-        <Link href="/chat/apex" className="inline-block bg-amber text-background px-10 py-4 font-semibold text-lg hover:bg-amber-dark transition">
-          Talk to Apex
-        </Link>
+      {/* CTA / Inline Chat */}
+      <section className="px-6 py-24 border-t border-border">
+        <div className="max-w-4xl mx-auto text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Stop asking for answers.<br />Start asking better questions.</h2>
+          <p className="text-muted text-lg">Try Apex right here. One question, one real answer.</p>
+        </div>
+        <InlineChat />
       </section>
     </div>
   );
