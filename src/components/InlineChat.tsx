@@ -145,7 +145,7 @@ export default function InlineChat() {
           {done && (
             <div className="pt-2 text-center">
               <Link
-                href="/chat/apex"
+                href={`/chat/apex?q=${encodeURIComponent(userMessage)}&a=${encodeURIComponent(assistantMessage)}`}
                 className="text-[#3B82F6] hover:text-[#2563EB] text-sm font-semibold transition"
               >
                 Continue this conversation &rarr;

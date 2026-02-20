@@ -1,5 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { STARTERS } from "@/components/InlineChat";
 
 interface Message {
@@ -7,10 +9,12 @@ interface Message {
   content: string;
 }
 
-export default function ChatApex() {
+function ChatContent() {
+  const searchParams = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
+  const [seeded, setSeeded] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = useCallback(() => {
@@ -20,6 +24,20 @@ export default function ChatApex() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
+
+  // Seed conversation from inline chat handoff
+  useEffect(() => {
+    if (seeded) return;
+    const userMsg = searchParams.get("q");
+    const assistantMsg = searchParams.get("a");
+    if (userMsg && assistantMsg) {
+      setMessages([
+        { role: "user", content: userMsg },
+        { role: "assistant", content: assistantMsg },
+      ]);
+      setSeeded(true);
+    }
+  }, [searchParams, seeded]);
 
   const send = async (override?: string) => {
     const text = (override ?? input).trim();
@@ -171,5 +189,13 @@ export default function ChatApex() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ChatApex() {
+  return (
+    <Suspense>
+      <ChatContent />
+    </Suspense>
   );
 }
