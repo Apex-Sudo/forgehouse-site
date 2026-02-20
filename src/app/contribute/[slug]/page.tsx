@@ -149,7 +149,7 @@ export default function ExtractionPage() {
             {!started && (
               <div className="flex justify-start">
                 <div className="max-w-[80%] bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm leading-relaxed rounded-2xl">
-                  Hey! I&apos;m your extraction agent. Over the next few conversations, I&apos;m going to learn how you think so we can build an AI agent that carries your frameworks to the people who need them. No prep needed. Just talk to me like you&apos;d talk to a new client. Ready to start?
+                  Hey! Thanks for being here. What you know took years to build, and most of it lives in your head where only a few people at a time can access it. We&apos;re going to change that. Over our conversations, I&apos;ll learn how you think, how you diagnose problems, and what makes your approach yours. No prep needed, no right answers. Just talk to me the way you&apos;d talk to someone you&apos;re helping. Ready when you are.
                 </div>
               </div>
             )}
