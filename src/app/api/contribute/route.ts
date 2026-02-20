@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     req.headers.get("x-real-ip") ||
     "unknown";
 
-  const { success } = await extractLimiter.limit(ip);
+  const { success } = await extractLimiter().limit(ip);
   if (!success) {
     return new Response(JSON.stringify({ error: "Rate limit exceeded. Take a break and come back." }), {
       status: 429,

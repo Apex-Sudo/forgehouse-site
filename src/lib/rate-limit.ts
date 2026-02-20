@@ -1,21 +1,34 @@
 import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
 
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
+function createRedis() {
+  return new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL!,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+  });
+}
 
-// Public chat: 20 messages per hour per IP
-export const chatLimiter = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(20, "1 h"),
-  prefix: "fh:chat",
-});
+let _chatLimiter: Ratelimit | null = null;
+let _extractLimiter: Ratelimit | null = null;
 
-// Extraction/calibration: 30 messages per hour per IP
-export const extractLimiter = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(30, "1 h"),
-  prefix: "fh:extract",
-});
+export function chatLimiter() {
+  if (!_chatLimiter) {
+    _chatLimiter = new Ratelimit({
+      redis: createRedis(),
+      limiter: Ratelimit.slidingWindow(20, "1 h"),
+      prefix: "fh:chat",
+    });
+  }
+  return _chatLimiter;
+}
+
+export function extractLimiter() {
+  if (!_extractLimiter) {
+    _extractLimiter = new Ratelimit({
+      redis: createRedis(),
+      limiter: Ratelimit.slidingWindow(30, "1 h"),
+      prefix: "fh:extract",
+    });
+  }
+  return _extractLimiter;
+}

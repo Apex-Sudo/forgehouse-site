@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     req.headers.get("x-real-ip") ||
     "unknown";
 
-  const { success } = await chatLimiter.limit(ip);
+  const { success } = await chatLimiter().limit(ip);
   if (!success) {
     return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again later." }), {
       status: 429,
