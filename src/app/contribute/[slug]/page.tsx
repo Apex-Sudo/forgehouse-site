@@ -41,6 +41,20 @@ export default function ExtractionPage() {
     }
   }, [messages, slug]);
 
+  // Auto-save to Telegram every 5 exchanges and track last saved count
+  const lastSavedRef = useRef(0);
+  useEffect(() => {
+    const userCount = messages.filter((m) => m.role === "user").length;
+    if (userCount > 0 && userCount % 5 === 0 && userCount !== lastSavedRef.current) {
+      lastSavedRef.current = userCount;
+      fetch("/api/contribute-save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug, messages }),
+      }).catch(() => {});
+    }
+  }, [messages, slug]);
+
   const send = async (override?: string) => {
     const text = (override ?? input).trim();
     if (!text || streaming) return;
@@ -109,6 +123,13 @@ export default function ExtractionPage() {
   };
 
   const exportConversation = () => {
+    // Also save to Telegram on export
+    fetch("/api/contribute-save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug, messages }),
+    }).catch(() => {});
+
     const text = messages
       .map((m) => `[${m.role.toUpperCase()}]\n${m.content}`)
       .join("\n\n---\n\n");
@@ -242,13 +263,13 @@ export default function ExtractionPage() {
                   style={{ width: `${Math.min((messageCount / 40) * 100, 100)}%` }}
                 />
               </div>
-              <span className="text-xs text-muted">{messageCount}/~40</span>
+              <span className="text-xs text-muted">{messageCount} of ~40 exchanges</span>
             </div>
           </div>
 
           {/* Input */}
           <div className="border-t border-white/[0.06] px-6 py-4">
-            <div className="flex gap-3 items-end">
+            <div className="flex gap-2 sm:gap-3 items-end">
               <input
                 ref={fileInputRef}
                 type="file"

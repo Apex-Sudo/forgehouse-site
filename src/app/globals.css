@@ -54,3 +54,21 @@ body {
     padding: 4rem;
   }
 }
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .section-module {
+    padding: 1.5rem;
+  }
+
+  h1 {
+    word-break: break-word;
+  }
+}
+
+/* Ensure chat pages don't overflow on mobile */
+@media (max-width: 640px) {
+  .glass-card {
+    border-radius: 12px;
+  }
+}

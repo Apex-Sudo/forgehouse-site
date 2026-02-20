@@ -53,6 +53,33 @@ export default function ApexPage() {
           </div>
         </div>
 
+        {/* Sample Conversation */}
+        <div className="glass-card p-8 mb-16 overflow-hidden">
+          <h2 className="text-sm font-mono text-amber uppercase tracking-wider mb-8">Sample conversation</h2>
+          <div className="space-y-4">
+            <div className="flex justify-end">
+              <div className="max-w-[80%] bg-[#3B82F6] text-white px-4 py-3 text-sm leading-relaxed rounded-2xl">
+                I&apos;m stuck between two GTM strategies. Should I go PLG or sales-led?
+              </div>
+            </div>
+            <div className="flex justify-start">
+              <div className="max-w-[80%] bg-white/[0.04] border border-white/[0.06] text-[#EDEDED] px-4 py-3 text-sm leading-relaxed rounded-2xl">
+                Wrong question. What does your buyer actually do when they hit your site? Do they self-serve or do they ask for a demo?
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <div className="max-w-[80%] bg-[#3B82F6] text-white px-4 py-3 text-sm leading-relaxed rounded-2xl">
+                Most ask for a demo.
+              </div>
+            </div>
+            <div className="flex justify-start">
+              <div className="max-w-[80%] bg-white/[0.04] border border-white/[0.06] text-[#EDEDED] px-4 py-3 text-sm leading-relaxed rounded-2xl">
+                Then you don&apos;t have a GTM strategy question. You have a sales capacity question. PLG won&apos;t fix that.
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="glass-card p-8 mb-12">
           <h3 className="text-sm font-mono text-amber uppercase tracking-wider mb-2">Pricing</h3>
           <p className="text-2xl font-bold mb-1">Free during beta</p>
