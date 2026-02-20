@@ -28,7 +28,7 @@ export default function ApexPage() {
           be asking before the one you&apos;re asking.
         </p>
 
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
+        <div className="grid md:grid-cols-2 gap-8 mb-16 text-left">
           <div className="glass-card p-8">
             <h2 className="text-sm font-mono text-amber uppercase tracking-wider mb-6">Capabilities</h2>
             <ul className="space-y-3">
@@ -54,8 +54,8 @@ export default function ApexPage() {
         </div>
 
         {/* Sample Conversation */}
-        <div className="glass-card p-8 mb-16 overflow-hidden">
-          <h2 className="text-sm font-mono text-amber uppercase tracking-wider mb-8">Sample conversation</h2>
+        <div className="glass-card p-8 mb-16 overflow-hidden text-left">
+          <h2 className="text-sm font-mono text-amber uppercase tracking-wider mb-8 text-center">Sample conversation</h2>
           <div className="space-y-4">
             <div className="flex justify-end">
               <div className="max-w-[80%] bg-[#3B82F6] text-white px-4 py-3 text-sm leading-relaxed rounded-2xl">
