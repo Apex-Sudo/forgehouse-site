@@ -17,13 +17,26 @@ export async function POST(req: Request) {
     });
   }
 
-  const { messages, email } = (await req.json()) as {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return Response.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  const { messages, email } = body as {
     messages: { role: "user" | "assistant"; content: string }[];
     email?: string;
   };
 
   // Server-side access check: free conversation (by IP) or active subscription (by email)
-  const access = await canAccess(ip, email);
+  let access;
+  try {
+    access = await canAccess(ip, email);
+  } catch (err) {
+    return Response.json({ error: "Access check failed", detail: String(err) }, { status: 500 });
+  }
+
   if (!access.allowed) {
     return Response.json(
       { error: "subscription_required", message: "Subscribe to continue chatting." },
@@ -32,10 +45,7 @@ export async function POST(req: Request) {
   }
 
   if (!messages?.length) {
-    return new Response(JSON.stringify({ error: "No messages provided" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+    return Response.json({ error: "No messages provided" }, { status: 400 });
   }
 
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
