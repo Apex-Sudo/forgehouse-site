@@ -1,3 +1,5 @@
+import { extractText } from "unpdf";
+
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
@@ -29,33 +31,16 @@ export async function POST(req: Request) {
     let content: string;
 
     if (ext === ".pdf") {
-      // PDF: extract raw text bytes (basic extraction, no library needed)
-      const buf = await file.arrayBuffer();
-      const bytes = new Uint8Array(buf);
-      const raw = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
-      // Pull text between BT/ET blocks or stream content
-      const textChunks: string[] = [];
-      const regex = /\(([^)]*)\)/g;
-      let match;
-      while ((match = regex.exec(raw)) !== null) {
-        const chunk = match[1].trim();
-        if (chunk.length > 1 && /[a-zA-Z]/.test(chunk)) {
-          textChunks.push(chunk);
-        }
-      }
-      content = textChunks.join(" ");
-      if (content.length < 20) {
+      const buf = new Uint8Array(await file.arrayBuffer());
+      const { text } = await extractText(buf);
+      content = Array.isArray(text) ? text.join("\n") : text;
+      if (!content || content.trim().length < 20) {
         return Response.json(
-          {
-            error:
-              "Could not extract text from this PDF. Try copying the content and pasting it directly.",
-          },
+          { error: "Could not extract text from this PDF. It may be image-based. Try copying the content and pasting it directly." },
           { status: 400 }
         );
       }
     } else if (ext === ".docx") {
-      // DOCX: extract from xml inside zip
-      // Minimal approach: find <w:t> tags in word/document.xml
       const buf = await file.arrayBuffer();
       const bytes = new Uint8Array(buf);
       const raw = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
@@ -68,15 +53,11 @@ export async function POST(req: Request) {
       content = textChunks.join(" ");
       if (content.length < 20) {
         return Response.json(
-          {
-            error:
-              "Could not extract text from this .docx. Try copying the content and pasting it directly.",
-          },
+          { error: "Could not extract text from this .docx. Try copying the content and pasting it directly." },
           { status: 400 }
         );
       }
     } else {
-      // Plain text files: .txt, .md, .csv
       content = await file.text();
     }
 
