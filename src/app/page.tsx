@@ -109,21 +109,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured agent */}
+      {/* CTA to agents */}
       <section className="px-6 py-24">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Try it yourself</h2>
-          <p className="text-muted mb-12 text-center">Our first agent. More are on the way.</p>
-          <div className="max-w-sm mx-auto">
-            <AgentCard
-              name="Apex"
-              emoji="🔺"
-              tagline="Built from a founder who's been through it. Won't tell you what to do. Will ask the question you're avoiding."
-              tags={["Strategy", "Decision-Making", "Founder Ops"]}
-              price="Free during beta"
-              href="/agents/apex"
-            />
-          </div>
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">Try it yourself</h2>
+          <p className="text-muted mb-8">Our first agent. More are on the way.</p>
+          <Link href="/agents/apex" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
+            Meet Apex
+          </Link>
         </div>
       </section>
 
