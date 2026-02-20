@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import AgentCard from "@/components/AgentCard";
 import InlineChat from "@/components/InlineChat";
-import { ChatCircleDots, Lightning, ChartLineUp, Globe } from "@phosphor-icons/react";
+import { ChatCircleDots, Lightning, ChartLineUp, ShieldCheck } from "@phosphor-icons/react";
 
 const steps = [
   { num: "01", title: "Pick a mentor", desc: "Founders and operators who've actually built what you're trying to build. Vetted for real decisions, not credentials." },
@@ -15,7 +15,7 @@ const trustPoints = [
   { icon: ChatCircleDots, title: "Not a chatbot. Their actual thinking.", desc: "Every agent is built from hours of structured extraction. Real decision-making patterns from someone who's made the calls you're about to make." },
   { icon: Lightning, title: "No calendar. No waiting.", desc: "At 2 AM when the decision won't let you sleep, their agent is ready. No booking link, no two-week wait, no $500 minimum." },
   { icon: ChartLineUp, title: "What one session costs, unlimited.", desc: "A good mentor charges $300-500/hour. One conversation here costs less than one live session. Except it never runs out." },
-  { icon: Globe, title: "World-class, in your language", desc: "The right mentor for your problem probably doesn't speak your language. Their agent does. Geography and timezone stop being barriers." },
+  { icon: ShieldCheck, title: "Built it, not taught it.", desc: "No influencers. No theorists. Every mentor on ForgeHouse has made the hard calls themselves. If they haven't done the thing, they're not on the platform." },
 ];
 
 export default function Home() {
