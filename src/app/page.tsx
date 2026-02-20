@@ -98,7 +98,7 @@ export default function Home() {
           </p>
           <div className="grid md:grid-cols-2 gap-10">
             {trustPoints.map((t) => (
-              <div key={t.title}>
+              <div key={t.title} className="text-center">
                 <div className="text-3xl mb-4">{t.icon}</div>
                 <h3 className="text-lg font-bold mb-3">{t.title}</h3>
                 <p className="text-muted leading-relaxed text-[15px]">{t.desc}</p>
