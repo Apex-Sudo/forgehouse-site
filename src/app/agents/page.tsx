@@ -29,22 +29,22 @@ export default function AgentsPage() {
     <div className="pt-16">
       <section className="gradient-hero px-6 py-24 max-w-6xl mx-auto text-center">
         <h1 className="text-3xl md:text-5xl font-bold mb-4">Agents</h1>
-        <p className="text-muted text-lg mb-16">People who&apos;ve solved what you&apos;re stuck on. Available when you need them.</p>
+        <p className="text-muted text-lg mb-16">The mentors who charge $300-500/hour. Their thinking, available 24/7.</p>
         <div className="max-w-sm mx-auto mb-20">
           <AgentCard
             name="Apex"
             emoji="🔺"
-            tagline="Built from a founder who's been through it. Won't tell you what to do. Will ask the question you're avoiding."
+            tagline="Built from a founder who's been through three continents of hard lessons. Won't tell you what to do. Will ask the question you're avoiding."
             tags={["Strategy", "Decision-Making", "Founder Ops"]}
-            price="Free during beta"
+            price="Free forever"
             href="/agents/apex"
           />
         </div>
 
         {/* Waitlist */}
         <div className="glass-card p-8 md:p-12 max-w-xl mx-auto">
-          <h2 className="text-xl md:text-2xl font-bold mb-2">More sounding boards coming.</h2>
-          <p className="text-muted mb-6">Be first to know when new agents go live.</p>
+          <h2 className="text-xl md:text-2xl font-bold mb-2">More mentors being extracted.</h2>
+          <p className="text-muted mb-6">Each agent takes weeks to build. Be first to know when one goes live.</p>
           {submitted ? (
             <div className="border border-[#3B82F6]/20 bg-[#3B82F6]/5 p-6 rounded-xl text-center">
               <p className="font-semibold">You&apos;re on the list.</p>

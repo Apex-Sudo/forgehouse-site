@@ -1,19 +1,19 @@
 import Link from "next/link";
 
 const capabilities = [
-  "Help you frame the decision you're actually making",
-  "Break down complex problems to what matters first",
+  "Reframe the decision so you're solving the right problem",
+  "Find the blind spot that's costing you months",
   "Pattern-match from real founder experience",
-  "Pressure-test your reasoning before you commit",
-  "Figure out what to focus on when everything feels urgent",
-  "Find the blind spot you're not seeing",
+  "Pressure-test your reasoning before you bet on it",
+  "Cut through urgency to find what actually matters first",
+  "Say the thing your team won't tell you",
 ];
 
 const wontDo = [
   "Write your pitch deck for you",
-  "Hand you a 10-step plan without knowing your situation",
+  "Give you a 10-step plan without knowing your situation",
   "Tell you what you want to hear",
-  "Replace your judgment. Only sharpen it",
+  "Replace your judgment. Only make it more expensive to be wrong",
 ];
 
 export default function ApexPage() {
@@ -24,7 +24,7 @@ export default function ApexPage() {
         <h1 className="text-4xl md:text-5xl font-bold mb-6">Apex</h1>
         <p className="text-lg md:text-xl text-muted leading-relaxed mb-12 max-w-2xl mx-auto">
           Built from a founder who&apos;s been through three continents of hard lessons.
-          Apex won&apos;t tell you what to do. It&apos;ll ask the question you&apos;re avoiding.
+          Apex won&apos;t tell you what to do. It&apos;ll find the blind spot you didn&apos;t know you had.
         </p>
 
         <div className="grid md:grid-cols-2 gap-8 mb-16 text-left">
@@ -82,8 +82,8 @@ export default function ApexPage() {
 
         <div className="glass-card p-8 mb-12 text-center">
           <h3 className="text-sm font-mono text-amber uppercase tracking-wider mb-2">Pricing</h3>
-          <p className="text-2xl font-bold mb-1">Free during beta</p>
-          <p className="text-muted text-sm">No credit card. No catch. We&apos;re still building.</p>
+          <p className="text-2xl font-bold mb-1">Free forever</p>
+          <p className="text-muted text-sm">Apex is the house agent. No card, no catch. Mentor agents are priced at what their live time costs.</p>
         </div>
 
         <div className="text-center">
