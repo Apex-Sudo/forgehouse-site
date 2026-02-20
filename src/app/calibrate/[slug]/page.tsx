@@ -69,7 +69,10 @@ export default function CalibrationPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: updated,
+          messages: [
+            { role: "assistant", content: "Welcome back! Your agent is built and ready for you to put it through its paces. I'm going to show you how it handles different situations, and you tell me where it nails it and where it's off. Think of it like training a new team member who's read all your playbooks but hasn't sat in the room with you yet. Let's start with something simple." },
+            ...updated
+          ],
           mentorSlug: slug,
           extractionContext: getExtractionContext(),
         }),
