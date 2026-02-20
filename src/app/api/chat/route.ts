@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { APEX_SYSTEM_PROMPT } from "@/lib/apex-system-prompt";
 import { chatLimiter } from "@/lib/rate-limit";
-import { isSubscribed } from "@/lib/subscription";
+import { canAccess, markFreeConversationUsed } from "@/lib/subscription";
 
 export async function POST(req: Request) {
   const ip =
@@ -17,21 +17,18 @@ export async function POST(req: Request) {
     });
   }
 
-  const { messages, email, isFirstConversation } = (await req.json()) as {
+  const { messages, email } = (await req.json()) as {
     messages: { role: "user" | "assistant"; content: string }[];
     email?: string;
-    isFirstConversation?: boolean;
   };
 
-  // Gate: after first free conversation, require subscription
-  if (!isFirstConversation) {
-    if (!email) {
-      return Response.json({ error: "subscription_required", message: "Subscribe to continue chatting." }, { status: 403 });
-    }
-    const active = await isSubscribed(email);
-    if (!active) {
-      return Response.json({ error: "subscription_required", message: "Subscribe to continue chatting." }, { status: 403 });
-    }
+  // Server-side access check: free conversation (by IP) or active subscription (by email)
+  const access = await canAccess(ip, email);
+  if (!access.allowed) {
+    return Response.json(
+      { error: "subscription_required", message: "Subscribe to continue chatting." },
+      { status: 403 }
+    );
   }
 
   if (!messages?.length) {
@@ -61,6 +58,10 @@ export async function POST(req: Request) {
           ) {
             controller.enqueue(encoder.encode(event.delta.text));
           }
+        }
+        // Mark free conversation as used after successful response
+        if (access.reason === "free") {
+          await markFreeConversationUsed(ip);
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Unknown error";

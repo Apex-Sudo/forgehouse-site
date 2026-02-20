@@ -14,17 +14,6 @@ function getStoredEmail(): string | null {
   return localStorage.getItem("fh_email");
 }
 
-function hasUsedFreeConversation(): boolean {
-  if (typeof window === "undefined") return false;
-  return localStorage.getItem("fh_free_used") === "1";
-}
-
-function markFreeConversationUsed() {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("fh_free_used", "1");
-  }
-}
-
 function ChatContent() {
   const searchParams = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -99,9 +88,6 @@ function ChatContent() {
     const text = (override ?? input).trim();
     if (!text || streaming) return;
 
-    // Determine if this is the first conversation
-    const isFirst = !hasUsedFreeConversation();
-
     const userMsg: Message = { role: "user", content: text };
     const updated = [...messages, userMsg];
     setMessages(updated);
@@ -115,7 +101,6 @@ function ChatContent() {
         body: JSON.stringify({
           messages: updated,
           email: subscriberEmail,
-          isFirstConversation: isFirst,
         }),
       });
 
@@ -135,11 +120,6 @@ function ChatContent() {
         ]);
         setStreaming(false);
         return;
-      }
-
-      // Mark free conversation as used after first successful exchange
-      if (isFirst) {
-        markFreeConversationUsed();
       }
 
       const reader = res.body?.getReader();
