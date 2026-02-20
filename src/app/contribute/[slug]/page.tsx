@@ -71,7 +71,7 @@ export default function ExtractionPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: [
-          { role: "assistant", content: "Hey! Thanks for being here. What you know took years to build, and most of it lives in your head where only a few people at a time can access it. We're going to change that. Over our conversations, I'll learn how you think, how you diagnose problems, and what makes your approach yours. No prep needed, no right answers. Just talk to me the way you'd talk to someone you're helping. Ready when you are." },
+          { role: "assistant", content: "Hey! Thanks for being here. What you know took years to build, and most of it lives in your head where only a few people at a time can access it. We're going to change that. Over our conversations, I'll learn how you think, how you diagnose problems, and what makes your approach yours. No prep needed, no right answers. Just talk to me the way you'd talk to someone you're helping. One thing: I might ask questions that seem obvious. That's by design. I'm learning how YOU think, not showing you what I already know. The simpler my questions, the richer your answers. Ready when you are." },
           ...updated
         ], mentorSlug: slug }),
       });
@@ -219,7 +219,7 @@ export default function ExtractionPage() {
             {!started && (
               <div className="flex justify-start">
                 <div className="max-w-[80%] bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm leading-relaxed rounded-2xl">
-                  Hey! Thanks for being here. What you know took years to build, and most of it lives in your head where only a few people at a time can access it. We&apos;re going to change that. Over our conversations, I&apos;ll learn how you think, how you diagnose problems, and what makes your approach yours. No prep needed, no right answers. Just talk to me the way you&apos;d talk to someone you&apos;re helping. Ready when you are.
+                  Hey! Thanks for being here. What you know took years to build, and most of it lives in your head where only a few people at a time can access it. We&apos;re going to change that. Over our conversations, I&apos;ll learn how you think, how you diagnose problems, and what makes your approach yours. No prep needed, no right answers. Just talk to me the way you&apos;d talk to someone you&apos;re helping. One thing: I might ask questions that seem obvious. That&apos;s by design. I&apos;m learning how YOU think, not showing you what I already know. The simpler my questions, the richer your answers. Ready when you are.
                 </div>
               </div>
             )}
