@@ -13,7 +13,7 @@ const wontDo = [
   "Write your pitch deck for you",
   "Give you a 10-step plan with no context",
   "Tell you what you want to hear",
-  "Replace your judgment — only sharpen it",
+  "Replace your judgment. Only sharpen it",
 ];
 
 export default function ApexPage() {

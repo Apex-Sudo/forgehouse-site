@@ -54,7 +54,7 @@ export default function Home() {
             <AgentCard
               name="Apex"
               emoji="🔺"
-              tagline="Trained by a founder who built across three continents. Doesn't give advice — gives you the right question."
+              tagline="Trained by a founder who built across three continents. Doesn't give advice. Gives you the right question."
               tags={["Strategy", "Decision-Making", "Founder Ops"]}
               price="Free during beta"
               href="/agents/apex"

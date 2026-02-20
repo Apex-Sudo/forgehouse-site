@@ -1,25 +1,87 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 interface Message {
-  role: "agent" | "user";
-  text: string;
+  role: "user" | "assistant";
+  content: string;
 }
 
 export default function ChatApex() {
-  const [messages, setMessages] = useState<Message[]>([
-    { role: "agent", text: "What's the decision you're trying to make?" },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [streaming, setStreaming] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  const send = () => {
-    if (!input.trim()) return;
-    setMessages((prev) => [
-      ...prev,
-      { role: "user", text: input.trim() },
-      { role: "agent", text: "This is a preview. Apex isn't connected yet — but when it is, this is where the real conversation starts." },
-    ]);
+  const scrollToBottom = useCallback(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
+
+  const send = async () => {
+    const text = input.trim();
+    if (!text || streaming) return;
+
+    const userMsg: Message = { role: "user", content: text };
+    const updated = [...messages, userMsg];
+    setMessages(updated);
     setInput("");
+    setStreaming(true);
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: updated }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Request failed" }));
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: err.error || "Something went wrong." },
+        ]);
+        setStreaming(false);
+        return;
+      }
+
+      const reader = res.body?.getReader();
+      if (!reader) return;
+
+      const decoder = new TextDecoder();
+      let assistantContent = "";
+
+      // Add empty assistant message
+      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        assistantContent += decoder.decode(value, { stream: true });
+        const snapshot = assistantContent;
+        setMessages((prev) => {
+          const copy = [...prev];
+          copy[copy.length - 1] = { role: "assistant", content: snapshot };
+          return copy;
+        });
+      }
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Connection error. Please try again." },
+      ]);
+    } finally {
+      setStreaming(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      send();
+    }
   };
 
   return (
@@ -35,34 +97,59 @@ export default function ChatApex() {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-6 py-8 space-y-6">
+        {/* Welcome message (always shown) */}
+        <div className="flex justify-start">
+          <div className="max-w-[80%] md:max-w-[60%] px-5 py-3 text-sm leading-relaxed bg-gray-800 text-white rounded-lg">
+            What&apos;s the decision you&apos;re trying to make?
+          </div>
+        </div>
+
         {messages.map((m, i) => (
-          <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+          <div
+            key={i}
+            className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+          >
             <div
-              className={`max-w-[80%] md:max-w-[60%] px-5 py-3 text-sm leading-relaxed ${
+              className={`max-w-[80%] md:max-w-[60%] px-5 py-3 text-sm leading-relaxed rounded-lg whitespace-pre-wrap ${
                 m.role === "user"
-                  ? "bg-amber text-background"
-                  : "bg-surface border border-border text-foreground"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-800 text-white"
               }`}
             >
-              {m.text}
+              {m.content}
             </div>
           </div>
         ))}
+
+        {/* Typing indicator */}
+        {streaming &&
+          messages.length > 0 &&
+          messages[messages.length - 1].content === "" && (
+            <div className="flex justify-start">
+              <div className="bg-gray-800 text-white px-5 py-3 text-sm rounded-lg">
+                <span className="animate-pulse">●●●</span>
+              </div>
+            </div>
+          )}
+
+        <div ref={bottomRef} />
       </div>
 
       {/* Input */}
       <div className="border-t border-border px-6 py-4">
         <div className="max-w-3xl mx-auto flex gap-3">
-          <input
+          <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && send()}
+            onKeyDown={handleKeyDown}
             placeholder="Type your message..."
-            className="flex-1 bg-surface border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-amber/60 transition"
+            rows={1}
+            className="flex-1 bg-surface border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-amber/60 transition resize-none"
           />
           <button
             onClick={send}
-            className="bg-amber text-background px-6 py-3 font-semibold text-sm hover:bg-amber-dark transition"
+            disabled={streaming}
+            className="bg-amber text-background px-6 py-3 font-semibold text-sm hover:bg-amber-dark transition disabled:opacity-50"
           >
             Send
           </button>
