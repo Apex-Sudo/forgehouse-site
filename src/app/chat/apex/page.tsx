@@ -25,18 +25,16 @@ function ChatContent() {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Seed conversation from inline chat handoff
+  // Auto-send from homepage starter buttons
   useEffect(() => {
     if (seeded) return;
-    const userMsg = searchParams.get("q");
-    const assistantMsg = searchParams.get("a");
-    if (userMsg && assistantMsg) {
-      setMessages([
-        { role: "user", content: userMsg },
-        { role: "assistant", content: assistantMsg },
-      ]);
+    const q = searchParams.get("q");
+    if (q) {
       setSeeded(true);
+      // Small delay to let component mount
+      setTimeout(() => send(q), 100);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, seeded]);
 
   const send = async (override?: string) => {
