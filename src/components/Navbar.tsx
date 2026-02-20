@@ -13,6 +13,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-8 text-sm text-muted">
           <Link href="/agents" className="hover:text-foreground transition">Agents</Link>
           <Link href="/agents/apex" className="hover:text-foreground transition">Apex</Link>
+          <Link href="/#for-mentors" className="hover:text-foreground transition">For Mentors</Link>
           <Link href="/chat/apex" className="bg-amber text-background px-4 py-2 font-semibold hover:bg-amber-dark transition">
             Start Chat
           </Link>
@@ -27,6 +28,7 @@ export default function Navbar() {
         <div className="md:hidden border-t border-border bg-background px-6 py-4 flex flex-col gap-4 text-sm">
           <Link href="/agents" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Agents</Link>
           <Link href="/agents/apex" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Apex</Link>
+          <Link href="/#for-mentors" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">For Mentors</Link>
           <Link href="/chat/apex" onClick={() => setOpen(false)} className="bg-amber text-background px-4 py-2 font-semibold text-center">Start Chat</Link>
         </div>
       )}
