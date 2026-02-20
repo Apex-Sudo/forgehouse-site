@@ -293,11 +293,16 @@ export default function ExtractionPage() {
               </button>
               <textarea
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  e.target.style.height = "auto";
+                  e.target.style.height = Math.min(e.target.scrollHeight, 200) + "px";
+                }}
                 onKeyDown={handleKeyDown}
                 placeholder={started ? "Continue where you left off..." : "Start by telling me about yourself..."}
                 rows={1}
-                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#3B82F6]/40 transition resize-none"
+                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#3B82F6]/40 transition resize-none overflow-y-auto"
+                style={{ maxHeight: 200 }}
               />
               <button
                 onClick={() => send()}
