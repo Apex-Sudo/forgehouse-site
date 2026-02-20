@@ -45,14 +45,13 @@ export default function Home() {
       {/* Hero */}
       <section className="gradient-hero px-6 py-32 md:py-44 max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-6">
-          What took you 5 years to figure out,
+          All the information in the world.
           <br />
-          they learned in{" "}
-          <span className="text-amber">one conversation</span>.
+          <span className="text-amber">No one to tell you it&apos;s the wrong direction.</span>
         </h1>
         <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
           The best mentors are fully booked. ForgeHouse captures how they actually think
-          and makes it available the moment you need it. Same frameworks. No calendar. No $500 minimums.
+          and makes it available the moment you need it. No calendar. No $500 minimums.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/agents" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center">
