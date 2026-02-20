@@ -27,10 +27,10 @@ export default function AgentsPage() {
 
   return (
     <div className="pt-16">
-      <section className="gradient-hero px-6 py-24 max-w-6xl mx-auto">
+      <section className="gradient-hero px-6 py-24 max-w-6xl mx-auto text-center">
         <h1 className="text-3xl md:text-5xl font-bold mb-4">Agents</h1>
         <p className="text-muted text-lg mb-16">Each one trained by a real founder. Each one thinks different.</p>
-        <div className="max-w-sm mb-20">
+        <div className="max-w-sm mx-auto mb-20">
           <AgentCard
             name="Apex"
             emoji="🔺"
@@ -42,7 +42,7 @@ export default function AgentsPage() {
         </div>
 
         {/* Waitlist */}
-        <div className="glass-card p-8 md:p-12 max-w-xl">
+        <div className="glass-card p-8 md:p-12 max-w-xl mx-auto">
           <h2 className="text-xl md:text-2xl font-bold mb-2">Next agents are being forged.</h2>
           <p className="text-muted mb-6">Get early access when new agents launch.</p>
           {submitted ? (

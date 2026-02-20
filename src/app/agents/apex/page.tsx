@@ -19,10 +19,10 @@ const wontDo = [
 export default function ApexPage() {
   return (
     <div className="pt-16">
-      <section className="gradient-hero px-6 py-24 max-w-3xl mx-auto">
+      <section className="gradient-hero px-6 py-24 max-w-3xl mx-auto text-center">
         <div className="text-6xl mb-6">🔺</div>
         <h1 className="text-4xl md:text-5xl font-bold mb-6">Apex</h1>
-        <p className="text-lg md:text-xl text-muted leading-relaxed mb-12">
+        <p className="text-lg md:text-xl text-muted leading-relaxed mb-12 max-w-2xl mx-auto">
           Trained by a founder who built companies across three continents.
           Apex doesn&apos;t give you advice. It gives you the question you should
           be asking before the one you&apos;re asking.
@@ -80,18 +80,20 @@ export default function ApexPage() {
           </div>
         </div>
 
-        <div className="glass-card p-8 mb-12">
+        <div className="glass-card p-8 mb-12 text-center">
           <h3 className="text-sm font-mono text-amber uppercase tracking-wider mb-2">Pricing</h3>
           <p className="text-2xl font-bold mb-1">Free during beta</p>
           <p className="text-muted text-sm">Usage-based pricing coming soon</p>
         </div>
 
-        <Link
-          href="/chat/apex"
-          className="inline-block bg-amber text-white px-10 py-4 rounded-xl font-semibold text-lg hover:bg-amber-dark transition"
-        >
-          Start conversation
-        </Link>
+        <div className="text-center">
+          <Link
+            href="/chat/apex"
+            className="inline-block bg-amber text-white px-10 py-4 rounded-xl font-semibold text-lg hover:bg-amber-dark transition"
+          >
+            Start conversation
+          </Link>
+        </div>
       </section>
     </div>
   );

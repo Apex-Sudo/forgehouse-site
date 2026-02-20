@@ -42,18 +42,18 @@ export default function Home() {
   return (
     <div className="pt-16">
       {/* Hero */}
-      <section className="gradient-hero px-6 py-32 md:py-44 max-w-4xl mx-auto">
+      <section className="gradient-hero px-6 py-32 md:py-44 max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-6">
           Your favorite mentor is{" "}
           <span className="text-amber">fully booked</span>.
           <br />
           Their agent isn&apos;t.
         </h1>
-        <p className="text-muted text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">
+        <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
           ForgeHouse turns the world&apos;s best mentors into AI agents you can talk to anytime.
           Same frameworks. Same instincts. No calendar required.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/agents" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center">
             Meet the Agents
           </Link>
@@ -74,7 +74,7 @@ export default function Home() {
       {/* How it works */}
       <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-16">How it works</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-16 text-center">How it works</h2>
           <div className="grid md:grid-cols-3 gap-6">
             {steps.map((s) => (
               <div key={s.num} className="glass-card p-8">
@@ -90,8 +90,8 @@ export default function Home() {
       {/* Trust Section */}
       <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto section-module gradient-blue">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Mentorship that doesn&apos;t depend on availability</h2>
-          <p className="text-muted text-lg max-w-3xl mb-16 leading-relaxed">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Mentorship that doesn&apos;t depend on availability</h2>
+          <p className="text-muted text-lg max-w-3xl mx-auto mb-16 leading-relaxed text-center">
             The gap between needing help and getting it kills momentum.
             ForgeHouse closes that gap by turning proven mentors into agents
             that carry their thinking, available the moment you need it.
@@ -110,9 +110,9 @@ export default function Home() {
       {/* Featured agent */}
       <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Featured agent</h2>
-          <p className="text-muted mb-12">The first. More are being forged.</p>
-          <div className="max-w-sm">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Featured agent</h2>
+          <p className="text-muted mb-12 text-center">The first. More are being forged.</p>
+          <div className="max-w-sm mx-auto">
             <AgentCard
               name="Apex"
               emoji="🔺"
@@ -128,9 +128,9 @@ export default function Home() {
       {/* Mentor Application */}
       <section id="for-mentors" className="px-6 py-24 pb-32">
         <div className="max-w-3xl mx-auto section-module">
-          <p className="text-muted/60 text-sm mb-8 tracking-wide uppercase">Applications are reviewed weekly</p>
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Your expertise, available at scale</h2>
-          <p className="text-muted text-lg mb-12 leading-relaxed">
+          <p className="text-muted/60 text-sm mb-8 tracking-wide uppercase text-center">Applications are reviewed weekly</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Your expertise, available at scale</h2>
+          <p className="text-muted text-lg mb-12 leading-relaxed text-center">
             You already have the frameworks. You already have clients who want more of your time
             than you can give. We turn your thinking into an agent that extends your reach
             without diluting your quality. Not everyone gets in.
@@ -141,7 +141,7 @@ export default function Home() {
               <p className="text-muted">We review every submission personally. If there&apos;s a fit, we&apos;ll be in touch within 5 business days.</p>
             </div>
           ) : (
-            <form onSubmit={handleMentorSubmit} className="space-y-4 max-w-lg">
+            <form onSubmit={handleMentorSubmit} className="space-y-4 max-w-lg mx-auto">
               <input
                 type="text"
                 placeholder="Full name"
@@ -197,13 +197,15 @@ export default function Home() {
                 onChange={(e) => setMentorForm({ ...mentorForm, contentLink: e.target.value })}
                 className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
               />
-              <button
-                type="submit"
-                disabled={mentorSubmitting}
-                className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition disabled:opacity-50"
-              >
-                {mentorSubmitting ? "Submitting..." : "Submit Application"}
-              </button>
+              <div className="text-center pt-2">
+                <button
+                  type="submit"
+                  disabled={mentorSubmitting}
+                  className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition disabled:opacity-50"
+                >
+                  {mentorSubmitting ? "Submitting..." : "Submit Application"}
+                </button>
+              </div>
             </form>
           )}
         </div>
