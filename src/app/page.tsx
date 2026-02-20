@@ -49,8 +49,7 @@ export default function Home() {
           <span className="text-amber">brilliance.</span>
         </h1>
         <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-          The best mentors are fully booked. ForgeHouse captures how they actually think
-          and makes it available the moment you need it. No calendar. No $500 minimums.
+          World-class mentors, captured. Available the moment you need them.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/agents" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center">
