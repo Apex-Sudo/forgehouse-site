@@ -17,7 +17,7 @@ const trustPoints = [
 ];
 
 export default function Home() {
-  const [mentorForm, setMentorForm] = useState({ name: "", email: "", expertise: "" });
+  const [mentorForm, setMentorForm] = useState({ name: "", email: "", linkedin: "", role: "", expertise: "", whyForgeHouse: "", contentLink: "" });
   const [mentorSubmitted, setMentorSubmitted] = useState(false);
   const [mentorSubmitting, setMentorSubmitting] = useState(false);
 
@@ -124,25 +124,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Become a Mentor */}
+      {/* Mentor Application */}
       <section id="for-mentors" className="px-6 py-24 pb-32 border-t border-border">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Built something real? Your agent should exist.</h2>
+          <p className="text-muted/60 text-sm mb-8 tracking-wide uppercase">Applications are reviewed weekly</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">Apply to become a ForgeHouse mentor</h2>
           <p className="text-muted text-lg mb-12 leading-relaxed">
-            If you&apos;re a founder, operator, or domain expert, we&apos;ll build an agent
-            trained on your frameworks and make it available to thousands of founders
-            who need what you know.
+            We work with a small number of vetted founders and operators. If you&apos;ve
+            built something real, led teams through hard problems, or developed frameworks
+            others pay for, we want to hear from you. Not everyone gets in.
           </p>
           {mentorSubmitted ? (
             <div className="border border-amber/30 bg-amber/5 p-8 text-center">
-              <p className="text-lg font-semibold mb-2">Thanks for your interest.</p>
-              <p className="text-muted">We&apos;ll be in touch soon.</p>
+              <p className="text-lg font-semibold mb-2">Application received.</p>
+              <p className="text-muted">We review every submission personally. If there&apos;s a fit, we&apos;ll be in touch within 5 business days.</p>
             </div>
           ) : (
             <form onSubmit={handleMentorSubmit} className="space-y-4 max-w-lg">
               <input
                 type="text"
-                placeholder="Name"
+                placeholder="Full name"
                 required
                 value={mentorForm.name}
                 onChange={(e) => setMentorForm({ ...mentorForm, name: e.target.value })}
@@ -156,20 +157,51 @@ export default function Home() {
                 onChange={(e) => setMentorForm({ ...mentorForm, email: e.target.value })}
                 className="w-full bg-transparent border border-border px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition"
               />
+              <input
+                type="url"
+                placeholder="LinkedIn profile URL"
+                required
+                value={mentorForm.linkedin}
+                onChange={(e) => setMentorForm({ ...mentorForm, linkedin: e.target.value })}
+                className="w-full bg-transparent border border-border px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition"
+              />
+              <input
+                type="text"
+                placeholder="Current role and company"
+                required
+                value={mentorForm.role}
+                onChange={(e) => setMentorForm({ ...mentorForm, role: e.target.value })}
+                className="w-full bg-transparent border border-border px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition"
+              />
               <textarea
-                placeholder="One line about your expertise"
+                placeholder="What do you know better than most people? (e.g., B2B SaaS pricing, marketplace growth, founder psychology)"
                 required
                 value={mentorForm.expertise}
                 onChange={(e) => setMentorForm({ ...mentorForm, expertise: e.target.value })}
                 rows={3}
                 className="w-full bg-transparent border border-border px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition resize-none"
               />
+              <textarea
+                placeholder="Why do you want your frameworks available as an AI agent?"
+                required
+                value={mentorForm.whyForgeHouse}
+                onChange={(e) => setMentorForm({ ...mentorForm, whyForgeHouse: e.target.value })}
+                rows={3}
+                className="w-full bg-transparent border border-border px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition resize-none"
+              />
+              <input
+                type="url"
+                placeholder="Blog post, talk, podcast, or thread that shows how you think (optional)"
+                value={mentorForm.contentLink}
+                onChange={(e) => setMentorForm({ ...mentorForm, contentLink: e.target.value })}
+                className="w-full bg-transparent border border-border px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition"
+              />
               <button
                 type="submit"
                 disabled={mentorSubmitting}
                 className="bg-amber text-background px-8 py-3 font-semibold hover:bg-amber-dark transition disabled:opacity-50"
               >
-                {mentorSubmitting ? "Submitting..." : "Submit"}
+                {mentorSubmitting ? "Submitting..." : "Submit Application"}
               </button>
             </form>
           )}
