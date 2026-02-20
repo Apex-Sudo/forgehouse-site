@@ -9,12 +9,31 @@ interface Message {
   content: string;
 }
 
+function getStoredEmail(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("fh_email");
+}
+
+function hasUsedFreeConversation(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem("fh_free_used") === "1";
+}
+
+function markFreeConversationUsed() {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("fh_free_used", "1");
+  }
+}
+
 function ChatContent() {
   const searchParams = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [seeded, setSeeded] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [subscriberEmail, setSubscriberEmail] = useState<string | null>(null);
+  const [checkingOut, setCheckingOut] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = useCallback(() => {
@@ -24,6 +43,30 @@ function ChatContent() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
+
+  // Check subscription on mount + after successful checkout redirect
+  useEffect(() => {
+    const email = getStoredEmail();
+    if (email) setSubscriberEmail(email);
+
+    const subscribed = searchParams.get("subscribed");
+    if (subscribed === "1" && email) {
+      // Just returned from checkout, verify
+      fetch("/api/subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.subscribed) {
+            setShowPaywall(false);
+            setSubscriberEmail(email);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (seeded) return;
@@ -35,9 +78,29 @@ function ChatContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, seeded]);
 
+  const startCheckout = async () => {
+    setCheckingOut(true);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: subscriberEmail }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      setCheckingOut(false);
+    }
+  };
+
   const send = async (override?: string) => {
     const text = (override ?? input).trim();
     if (!text || streaming) return;
+
+    // Determine if this is the first conversation
+    const isFirst = !hasUsedFreeConversation();
 
     const userMsg: Message = { role: "user", content: text };
     const updated = [...messages, userMsg];
@@ -49,8 +112,20 @@ function ChatContent() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: updated }),
+        body: JSON.stringify({
+          messages: updated,
+          email: subscriberEmail,
+          isFirstConversation: isFirst,
+        }),
       });
+
+      if (res.status === 403) {
+        // Subscription required
+        setShowPaywall(true);
+        setMessages((prev) => prev.slice(0, -1)); // Remove the user message
+        setStreaming(false);
+        return;
+      }
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Request failed" }));
@@ -60,6 +135,11 @@ function ChatContent() {
         ]);
         setStreaming(false);
         return;
+      }
+
+      // Mark free conversation as used after first successful exchange
+      if (isFirst) {
+        markFreeConversationUsed();
       }
 
       const reader = res.body?.getReader();
@@ -165,7 +245,56 @@ function ChatContent() {
             <div ref={bottomRef} />
           </div>
 
+          {/* Paywall overlay */}
+          {showPaywall && (
+            <div className="px-6 py-6 border-t border-white/[0.06] bg-white/[0.02]">
+              <div className="max-w-md mx-auto text-center space-y-4">
+                <p className="text-sm font-medium text-foreground">
+                  Your free conversation is over.
+                </p>
+                <p className="text-sm text-muted">
+                  Keep access to every agent, anytime, for $9/month. Cancel whenever.
+                </p>
+                {!subscriberEmail ? (
+                  <div className="space-y-3">
+                    <input
+                      type="email"
+                      placeholder="Your email"
+                      className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#3B82F6]/40 transition"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          const val = (e.target as HTMLInputElement).value.trim();
+                          if (val) {
+                            localStorage.setItem("fh_email", val);
+                            setSubscriberEmail(val);
+                          }
+                        }
+                      }}
+                      onBlur={(e) => {
+                        const val = e.target.value.trim();
+                        if (val) {
+                          localStorage.setItem("fh_email", val);
+                          setSubscriberEmail(val);
+                        }
+                      }}
+                    />
+                    <p className="text-xs text-muted">Enter email, then subscribe</p>
+                  </div>
+                ) : (
+                  <button
+                    onClick={startCheckout}
+                    disabled={checkingOut}
+                    className="bg-[#3B82F6] text-white px-8 py-3 rounded-xl font-semibold text-sm hover:bg-[#2563EB] transition disabled:opacity-50"
+                  >
+                    {checkingOut ? "Redirecting..." : "Subscribe — $9/month"}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Input area inside the card */}
+          {!showPaywall && (
           <div className="border-t border-white/[0.06] px-6 py-4">
             <div className="flex gap-3">
               <textarea
@@ -185,6 +314,7 @@ function ChatContent() {
               </button>
             </div>
           </div>
+          )}
         </div>
       </div>
     </div>
