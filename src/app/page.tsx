@@ -97,9 +97,9 @@ export default function Home() {
             ForgeHouse closes that gap by turning proven mentors into agents
             that carry their thinking, available the moment you need it.
           </p>
-          <div className="grid md:grid-cols-2 gap-10">
+          <div className="grid md:grid-cols-2 gap-6">
             {trustPoints.map((t) => (
-              <div key={t.title} className="text-center">
+              <div key={t.title} className="glass-card p-8 text-center">
                 <t.icon size={32} weight="light" className="mx-auto mb-4 text-[#3B82F6]" />
                 <h3 className="text-lg font-bold mb-3">{t.title}</h3>
                 <p className="text-muted leading-relaxed text-[15px]">{t.desc}</p>
