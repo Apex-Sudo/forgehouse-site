@@ -51,7 +51,20 @@ export default function Home() {
           Not a prompt template. A real person&apos;s decision-making patterns,
           available whenever you need them.
         </p>
-        <div className="mt-10">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link href="/agents" className="bg-amber text-background px-8 py-3 font-semibold hover:bg-amber-dark transition text-center">
+            Meet the Agents
+          </Link>
+          <Link href="/chat/apex" className="border border-border px-8 py-3 font-semibold hover:border-amber/40 transition text-center">
+            Try Apex Now
+          </Link>
+        </div>
+      </section>
+
+      {/* Inline Chat */}
+      <section className="px-6 py-16 border-t border-border">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-xl md:text-2xl font-bold mb-8 text-center">Try Apex now</h2>
           <InlineChat />
         </div>
       </section>
