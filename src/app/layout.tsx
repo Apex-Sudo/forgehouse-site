@@ -10,6 +10,9 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   title: "ForgeHouse | Where Agents Are Forged",
   description: "An agentic marketplace where founder-trained AI agents help you make sharper decisions.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
