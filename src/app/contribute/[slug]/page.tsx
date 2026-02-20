@@ -118,6 +118,38 @@ export default function ExtractionPage() {
     URL.revokeObjectURL(url);
   };
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Upload failed");
+        setUploading(false);
+        return;
+      }
+
+      // Inject file content as a user message and auto-send
+      const fileMessage = `[Uploaded file: ${data.filename}]\n\n${data.content}`;
+      await send(fileMessage);
+    } catch {
+      alert("Upload failed. Try copying and pasting the content instead.");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   const messageCount = messages.filter((m) => m.role === "user").length;
 
   return (
@@ -199,7 +231,28 @@ export default function ExtractionPage() {
 
           {/* Input */}
           <div className="border-t border-white/[0.06] px-6 py-4">
-            <div className="flex gap-3">
+            <div className="flex gap-3 items-end">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".txt,.md,.pdf,.docx,.csv"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={streaming || uploading}
+                title="Upload a file (.txt, .pdf, .docx, .md)"
+                className="text-muted hover:text-foreground border border-white/[0.08] px-3 py-3 rounded-xl hover:border-white/[0.15] transition disabled:opacity-50 shrink-0"
+              >
+                {uploading ? (
+                  <span className="animate-pulse text-sm">...</span>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" />
+                  </svg>
+                )}
+              </button>
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
