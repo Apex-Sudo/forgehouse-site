@@ -3,6 +3,11 @@ import { getStripe, PRICE_ID } from "@/lib/stripe";
 export async function POST(req: Request) {
   try {
     const { email } = (await req.json()) as { email?: string };
+
+    // Debug: check if key is loaded
+    const keyPrefix = process.env.STRIPE_SECRET_KEY?.substring(0, 12) || "MISSING";
+    console.log("Stripe key prefix:", keyPrefix, "Price:", PRICE_ID);
+
     const stripe = getStripe();
 
     const session = await stripe.checkout.sessions.create({
