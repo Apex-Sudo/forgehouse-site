@@ -62,7 +62,7 @@ export default function Home() {
       </section>
 
       {/* Inline Chat */}
-      <section className="px-6 py-32 border-t border-border">
+      <section className="px-6 py-32 bg-surface">
         <div className="max-w-4xl mx-auto">
           <p className="text-sm text-muted text-center mb-6">Ask Apex anything</p>
           <InlineChat />
@@ -70,7 +70,7 @@ export default function Home() {
       </section>
 
       {/* How it works */}
-      <section className="px-6 py-24 border-t border-border">
+      <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold mb-16">How it works</h2>
           <div className="grid md:grid-cols-3 gap-12">
@@ -86,7 +86,7 @@ export default function Home() {
       </section>
 
       {/* Human-Vetted Trust Section */}
-      <section className="px-6 py-24 border-t border-border">
+      <section className="px-6 py-24 bg-surface-blue">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">Real founders. Real pattern recognition.</h2>
           <p className="text-muted text-lg max-w-3xl mb-16 leading-relaxed">
@@ -107,7 +107,7 @@ export default function Home() {
       </section>
 
       {/* Featured agent */}
-      <section className="px-6 py-24 border-t border-border">
+      <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">Featured agent</h2>
           <p className="text-muted mb-12">The first. More are being forged.</p>
@@ -125,7 +125,7 @@ export default function Home() {
       </section>
 
       {/* Mentor Application */}
-      <section id="for-mentors" className="px-6 py-24 pb-32 border-t border-border">
+      <section id="for-mentors" className="px-6 py-24 pb-32 bg-surface">
         <div className="max-w-3xl mx-auto">
           <p className="text-muted/60 text-sm mb-8 tracking-wide uppercase">Applications are reviewed weekly</p>
           <h2 className="text-2xl md:text-3xl font-bold mb-4">Apply to become a ForgeHouse mentor</h2>
@@ -209,7 +209,7 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="px-6 py-24 border-t border-border">
+      <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Stop asking for answers.<br />Start asking better questions.</h2>
           <p className="text-muted text-lg mb-8">Apex is ready when you are.</p>

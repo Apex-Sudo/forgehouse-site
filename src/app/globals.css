@@ -5,8 +5,9 @@
   --color-foreground: #EDEDED;
   --color-amber: #3B82F6;
   --color-amber-dark: #D97706;
-  --color-surface: #141414;
-  --color-surface-light: #1A1A1A;
+  --color-surface: #111111;
+  --color-surface-light: #161616;
+  --color-surface-blue: #0C1425;
   --color-muted: #737373;
   --color-border: #262626;
   --font-sans: var(--font-geist-sans);
