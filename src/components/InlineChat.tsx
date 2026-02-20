@@ -26,7 +26,7 @@ export default function InlineChat() {
   };
 
   return (
-    <div className="glass-card max-w-3xl mx-auto min-h-[280px] flex flex-col overflow-hidden shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)]">
+    <div className="glass-card max-w-3xl mx-auto min-h-[440px] flex flex-col overflow-hidden shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)]">
       {/* macOS window chrome */}
       <div className="flex items-center gap-2 px-5 py-3 border-b border-white/[0.06]">
         <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
@@ -35,15 +35,15 @@ export default function InlineChat() {
       </div>
 
       <div className="flex-1 flex flex-col">
-        <div className="p-6 pb-3">
-          <div className="flex items-center gap-2 mb-4">
+        <div className="p-8 pb-4">
+          <div className="flex items-center gap-2 mb-6">
             <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#28C840] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#28C840]"></span>
             </span>
             <span className="text-xs text-muted">Live -- try it now</span>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {STARTERS.map((s) => (
               <button
                 key={s}
@@ -56,7 +56,7 @@ export default function InlineChat() {
           </div>
         </div>
 
-        <div className="mt-auto px-6 pb-6 pt-3">
+        <div className="mt-auto px-8 pb-8 pt-4">
           <div className="flex gap-3">
             <textarea
               value={input}
