@@ -37,16 +37,23 @@ export async function isSubscribed(email: string): Promise<boolean> {
   return data?.active === true;
 }
 
-// --- Free conversation tracking (server-side, by IP) ---
+// --- Free message tracking (server-side, by IP) ---
 
-export async function hasFreeConversation(ip: string): Promise<boolean> {
-  const used = await redis().get<number>(`${FREE_PREFIX}${ip}`);
-  return !used;
+const FREE_MESSAGES = 5;
+
+export async function hasFreeMessages(ip: string): Promise<boolean> {
+  const count = await redis().get<number>(`${FREE_PREFIX}${ip}`);
+  return (count ?? 0) < FREE_MESSAGES;
 }
 
-export async function markFreeConversationUsed(ip: string): Promise<void> {
-  // Set with 30-day expiry so IPs eventually recycle
-  await redis().set(`${FREE_PREFIX}${ip}`, 1, { ex: 30 * 24 * 60 * 60 });
+export async function incrementFreeMessages(ip: string): Promise<void> {
+  const key = `${FREE_PREFIX}${ip}`;
+  const exists = await redis().exists(key);
+  await redis().incr(key);
+  if (!exists) {
+    // Set 30-day expiry on first message so IPs eventually recycle
+    await redis().expire(key, 30 * 24 * 60 * 60);
+  }
 }
 
 // --- Access check: combines free + subscription ---
@@ -58,8 +65,8 @@ export async function canAccess(ip: string, email?: string): Promise<{ allowed: 
     if (active) return { allowed: true, reason: "subscribed" };
   }
 
-  // If free conversation not yet used, allow
-  const hasFree = await hasFreeConversation(ip);
+  // If free messages remaining, allow
+  const hasFree = await hasFreeMessages(ip);
   if (hasFree) return { allowed: true, reason: "free" };
 
   // Otherwise, paywall

@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { APEX_SYSTEM_PROMPT } from "@/lib/apex-system-prompt";
 import { chatLimiter } from "@/lib/rate-limit";
-import { canAccess, markFreeConversationUsed } from "@/lib/subscription";
+import { canAccess, incrementFreeMessages } from "@/lib/subscription";
 
 export async function POST(req: Request) {
   const ip =
@@ -59,9 +59,9 @@ export async function POST(req: Request) {
             controller.enqueue(encoder.encode(event.delta.text));
           }
         }
-        // Mark free conversation as used after successful response
+        // Increment free message count after successful response
         if (access.reason === "free") {
-          await markFreeConversationUsed(ip);
+          await incrementFreeMessages(ip);
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Unknown error";
