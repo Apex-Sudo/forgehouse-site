@@ -75,9 +75,9 @@ export default function InlineChat() {
   };
 
   return (
-    <div className="bg-white rounded-3xl shadow-[0_8px_60px_rgba(59,130,246,0.15)] max-w-3xl mx-auto min-h-[400px] flex flex-col overflow-hidden">
+    <div className="glass-card max-w-3xl mx-auto min-h-[400px] flex flex-col overflow-hidden">
       {/* macOS window chrome */}
-      <div className="flex items-center gap-2 px-5 py-3 border-b border-gray-100">
+      <div className="flex items-center gap-2 px-5 py-3 border-b border-white/[0.06]">
         <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
         <span className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
         <span className="w-3 h-3 rounded-full bg-[#28C840]" />
@@ -91,7 +91,7 @@ export default function InlineChat() {
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="text-sm bg-[#F3F4F6] text-[#1F2937] border border-[#E5E7EB] px-4 py-2 rounded-full hover:bg-[#E5E7EB] transition"
+                  className="text-sm bg-white/[0.04] text-[#EDEDED] border border-white/[0.08] px-4 py-2 rounded-full hover:bg-white/[0.08] hover:border-white/[0.12] transition"
                 >
                   {s}
                 </button>
@@ -107,12 +107,12 @@ export default function InlineChat() {
                 onKeyDown={handleKeyDown}
                 placeholder="Or ask your own question..."
                 rows={1}
-                className="flex-1 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl px-4 py-3 text-sm text-[#111827] placeholder:text-gray-400 focus:outline-none focus:border-blue-400 transition resize-none"
+                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-[#EDEDED] placeholder:text-[#737373] focus:outline-none focus:border-[#3B82F6]/40 transition resize-none"
               />
               <button
                 onClick={() => send(input)}
                 disabled={!input.trim()}
-                className="bg-blue-500 text-white px-6 py-3 font-semibold text-sm rounded-xl hover:bg-blue-600 transition disabled:opacity-50"
+                className="bg-[#3B82F6] text-white px-6 py-3 font-semibold text-sm rounded-xl hover:bg-[#2563EB] transition disabled:opacity-50"
               >
                 Send
               </button>
@@ -135,9 +135,9 @@ export default function InlineChat() {
             <div className="flex justify-start">
               <div
                 ref={responseRef}
-                className="bg-[#F3F4F6] text-[#111827] px-4 py-2.5 text-sm leading-relaxed rounded-2xl max-w-[85%] whitespace-pre-wrap"
+                className="bg-white/[0.06] text-[#EDEDED] px-4 py-2.5 text-sm leading-relaxed rounded-2xl max-w-[85%] whitespace-pre-wrap"
               >
-                {assistantMessage || <span className="animate-pulse text-gray-400">●●●</span>}
+                {assistantMessage || <span className="animate-pulse text-[#737373]">●●●</span>}
               </div>
             </div>
           )}
@@ -146,7 +146,7 @@ export default function InlineChat() {
             <div className="pt-2 text-center">
               <Link
                 href="/chat/apex"
-                className="text-blue-500 hover:text-blue-600 text-sm font-semibold transition"
+                className="text-[#3B82F6] hover:text-[#2563EB] text-sm font-semibold transition"
               >
                 Continue this conversation &rarr;
               </Link>
