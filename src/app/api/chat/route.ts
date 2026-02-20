@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { APEX_SYSTEM_PROMPT } from "@/lib/apex-system-prompt";
 import { chatLimiter } from "@/lib/rate-limit";
-import { canAccess, incrementFreeMessages } from "@/lib/subscription";
+// Paywall removed — rate limiting stays for abuse prevention
 
 export async function POST(req: Request) {
   try {
@@ -24,29 +24,12 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { messages, email } = body as {
+    const { messages } = body as {
       messages: { role: "user" | "assistant"; content: string }[];
-      email?: string;
     };
 
     if (!messages?.length) {
       return Response.json({ error: "No messages provided" }, { status: 400 });
-    }
-
-    // Server-side access check
-    let accessReason: "free" | "subscribed" | "paywall" = "free";
-    try {
-      const access = await canAccess(ip, email);
-      if (!access.allowed) {
-        return Response.json(
-          { error: "subscription_required", message: "Subscribe to continue chatting." },
-          { status: 403 }
-        );
-      }
-      accessReason = access.reason;
-    } catch (err) {
-      console.error("Access check error:", err);
-      // Allow through if Redis fails (graceful degradation)
     }
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -68,14 +51,6 @@ export async function POST(req: Request) {
               event.delta.type === "text_delta"
             ) {
               controller.enqueue(encoder.encode(event.delta.text));
-            }
-          }
-          // Increment free message count after successful response
-          if (accessReason === "free") {
-            try {
-              await incrementFreeMessages(ip);
-            } catch (err) {
-              console.error("Increment error:", err);
             }
           }
         } catch (err) {
