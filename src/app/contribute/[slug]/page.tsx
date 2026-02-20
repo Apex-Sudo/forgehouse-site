@@ -156,7 +156,7 @@ export default function ExtractionPage() {
   const messageCount = messages.filter((m) => m.role === "user").length;
 
   return (
-    <div className="pt-16 flex flex-col h-screen">
+    <div className="pt-20 flex flex-col h-screen">
       <div className="flex-1 flex justify-center px-4 py-6">
         <div className="w-full max-w-3xl glass-card flex flex-col overflow-hidden">
           {/* Header */}
@@ -169,12 +169,26 @@ export default function ExtractionPage() {
               </div>
             </div>
             {messages.length > 0 && (
-              <button
-                onClick={exportConversation}
-                className="text-xs text-muted hover:text-foreground border border-white/[0.08] px-3 py-1.5 rounded-lg hover:border-white/[0.15] transition"
-              >
-                Export
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    if (confirm("Start over? This will clear the conversation.")) {
+                      localStorage.removeItem(`fh-contribute-${slug}`);
+                      setMessages([]);
+                      setStarted(false);
+                    }
+                  }}
+                  className="text-xs text-muted hover:text-red-400 border border-white/[0.08] px-3 py-1.5 rounded-lg hover:border-red-400/30 transition"
+                >
+                  Reset
+                </button>
+                <button
+                  onClick={exportConversation}
+                  className="text-xs text-muted hover:text-foreground border border-white/[0.08] px-3 py-1.5 rounded-lg hover:border-white/[0.15] transition"
+                >
+                  Export
+                </button>
+              </div>
             )}
           </div>
 

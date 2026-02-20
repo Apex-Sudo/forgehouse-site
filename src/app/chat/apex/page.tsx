@@ -99,7 +99,7 @@ function ChatContent() {
   };
 
   return (
-    <div className="pt-16 flex flex-col h-screen">
+    <div className="pt-20 flex flex-col h-screen">
       {/* Chat container — centered glass panel */}
       <div className="flex-1 flex justify-center px-4 py-6">
         <div className="w-full max-w-3xl glass-card flex flex-col overflow-hidden">
