@@ -6,16 +6,16 @@ import InlineChat from "@/components/InlineChat";
 import { ChatCircleDots, Lightning, ChartLineUp, Globe } from "@phosphor-icons/react";
 
 const steps = [
-  { num: "01", title: "Pick a mentor", desc: "Browse founders and operators who've solved what you're facing. Each one is vetted." },
-  { num: "02", title: "Talk to their agent", desc: "No scheduling. No waiting. Just tell it what you're working on and get their thinking instantly." },
-  { num: "03", title: "Get unstuck faster", desc: "The right question at 2 AM is worth more than a booked call next Thursday." },
+  { num: "01", title: "Pick a mentor", desc: "Browse founders and operators who've been where you are. Each one is vetted for real experience." },
+  { num: "02", title: "Talk to their agent", desc: "No scheduling. No re-explaining your situation. Just say what you're stuck on and get their thinking." },
+  { num: "03", title: "Get unstuck now", desc: "Not next Thursday. Not after a $500 call. Right now, when the decision is in front of you." },
 ];
 
 const trustPoints = [
-  { icon: ChatCircleDots, title: "Built from real conversations", desc: "Every agent is trained through hours of structured interviews. Not scraped content. Not a bio turned into a prompt. Their actual decision-making patterns." },
-  { icon: Lightning, title: "Available between sessions", desc: "The best mentors are fully booked. Their agents aren't. Get the frameworks and thinking you need, whenever momentum demands it." },
-  { icon: ChartLineUp, title: "Quality that scales", desc: "A great mentor can only take so many calls. Their agent carries the same instincts to everyone who needs them, without the bottleneck." },
-  { icon: Globe, title: "World-class, in your language", desc: "The best person in your industry probably doesn't speak your language. Their agent does. Get top-of-field thinking in your native tongue, not a second-choice mentor because of a language barrier." },
+  { icon: ChatCircleDots, title: "Not a chatbot. Their actual thinking.", desc: "Every agent is built from hours of structured interviews. Real decision-making patterns, not a bio turned into a prompt." },
+  { icon: Lightning, title: "No calendar. No waiting.", desc: "You need a sounding board at 2 AM, not a booking link for next week. Their agent is ready when you are." },
+  { icon: ChartLineUp, title: "Mentorship you can actually afford", desc: "Good mentors cost $200+/hour. Most bootstrapped founders can't justify that. Their agents carry the same frameworks at a fraction of the cost." },
+  { icon: Globe, title: "World-class, in your language", desc: "The right mentor for your problem probably doesn't speak your language. Their agent does. No more settling for second-choice because of a language barrier." },
 ];
 
 export default function Home() {
@@ -45,14 +45,14 @@ export default function Home() {
       {/* Hero */}
       <section className="gradient-hero px-6 py-32 md:py-44 max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-6">
-          Your favorite mentor is{" "}
-          <span className="text-amber">fully booked</span>.
+          You need a sounding board.
           <br />
-          Their agent isn&apos;t.
+          Not a{" "}
+          <span className="text-amber">booking link</span>.
         </h1>
         <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-          ForgeHouse turns the world&apos;s best mentors into AI agents you can talk to anytime.
-          Same frameworks. Same instincts. No calendar required.
+          The best mentors are fully booked. ForgeHouse turns their thinking into AI agents
+          you can talk to right now. Same frameworks. No calendar.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/agents" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center">
@@ -67,7 +67,7 @@ export default function Home() {
       {/* Inline Chat */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto">
-          <p className="text-sm text-muted text-center mb-6">No scheduling. No waiting. Just ask.</p>
+          <p className="text-sm text-muted text-center mb-6">Bounce ideas off a real founder's thinking. Right now.</p>
           <InlineChat />
         </div>
       </section>
@@ -91,11 +91,11 @@ export default function Home() {
       {/* Trust Section */}
       <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto section-module gradient-blue">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Mentorship that doesn&apos;t depend on availability</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Building alone is hard enough</h2>
           <p className="text-muted text-lg max-w-3xl mx-auto mb-16 leading-relaxed text-center">
-            The gap between needing help and getting it kills momentum.
-            ForgeHouse closes that gap by turning proven mentors into agents
-            that carry their thinking, available the moment you need it.
+            You know the feeling. Stuck on a decision at midnight, no one to bounce it off.
+            Mentors cost more than you can justify. Communities are too generic.
+            ForgeHouse gives you the thinking of proven operators, the moment you need it.
           </p>
           <div className="grid md:grid-cols-2 gap-6">
             {trustPoints.map((t) => (
@@ -217,8 +217,8 @@ export default function Home() {
       {/* CTA */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Momentum doesn&apos;t wait<br />for office hours.</h2>
-          <p className="text-muted text-lg mb-8">Talk to Apex now. No signup required.</p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Stop overthinking alone.</h2>
+          <p className="text-muted text-lg mb-8">Talk to Apex now. No signup, no scheduling.</p>
           <Link href="/chat/apex" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
             Talk to Apex
           </Link>
