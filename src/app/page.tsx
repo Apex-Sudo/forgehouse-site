@@ -40,9 +40,9 @@ export default function Home() {
 
   return (
     <div className="pt-16">
-      {/* Hero */}
-      <section className="px-6 py-32 md:py-44 max-w-4xl mx-auto">
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6">
+      {/* Hero — gradient glow from top */}
+      <section className="gradient-hero px-6 py-32 md:py-44 max-w-4xl mx-auto">
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-6">
           The only thing better than a mentor is access to their brain{" "}
           <span className="text-amber">24/7</span>
         </h1>
@@ -52,32 +52,32 @@ export default function Home() {
           available whenever you need them.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
-          <Link href="/agents" className="bg-amber text-background px-8 py-3 font-semibold hover:bg-amber-dark transition text-center">
+          <Link href="/agents" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center">
             Meet the Agents
           </Link>
-          <Link href="/chat/apex" className="border border-border px-8 py-3 font-semibold hover:border-amber/40 transition text-center">
+          <Link href="/chat/apex" className="border border-border-light px-8 py-3.5 rounded-xl font-semibold hover:border-amber/30 hover:bg-white/[0.02] transition text-center">
             Try Apex Now
           </Link>
         </div>
       </section>
 
-      {/* Inline Chat */}
-      <section className="px-6 py-32 bg-surface">
+      {/* Inline Chat — contained module */}
+      <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto">
           <p className="text-sm text-muted text-center mb-6">Ask Apex anything</p>
           <InlineChat />
         </div>
       </section>
 
-      {/* How it works */}
+      {/* How it works — glass cards */}
       <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold mb-16">How it works</h2>
-          <div className="grid md:grid-cols-3 gap-12">
+          <div className="grid md:grid-cols-3 gap-6">
             {steps.map((s) => (
-              <div key={s.num}>
+              <div key={s.num} className="glass-card p-8">
                 <span className="text-amber font-mono text-sm">{s.num}</span>
-                <h3 className="text-xl font-bold mt-2 mb-3">{s.title}</h3>
+                <h3 className="text-xl font-bold mt-3 mb-3">{s.title}</h3>
                 <p className="text-muted leading-relaxed">{s.desc}</p>
               </div>
             ))}
@@ -85,9 +85,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Human-Vetted Trust Section */}
-      <section className="px-6 py-24 bg-surface-blue">
-        <div className="max-w-6xl mx-auto">
+      {/* Human-Vetted Trust Section — blue gradient bg, contained */}
+      <section className="px-6 py-24">
+        <div className="max-w-6xl mx-auto section-module gradient-blue">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">Real founders. Real pattern recognition.</h2>
           <p className="text-muted text-lg max-w-3xl mb-16 leading-relaxed">
             We don&apos;t scrape the internet and call it intelligence. Every ForgeHouse agent
@@ -95,11 +95,11 @@ export default function Home() {
             Their frameworks, their blind spots, their hard-won instincts. Compressed into
             an agent you can talk to anytime.
           </p>
-          <div className="grid md:grid-cols-3 gap-12">
+          <div className="grid md:grid-cols-3 gap-10">
             {trustPoints.map((t) => (
               <div key={t.title}>
-                <h3 className="text-xl font-bold mb-3">{t.title}</h3>
-                <p className="text-muted leading-relaxed">{t.desc}</p>
+                <h3 className="text-lg font-bold mb-3">{t.title}</h3>
+                <p className="text-muted leading-relaxed text-[15px]">{t.desc}</p>
               </div>
             ))}
           </div>
@@ -124,9 +124,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Mentor Application */}
-      <section id="for-mentors" className="px-6 py-24 pb-32 bg-surface">
-        <div className="max-w-3xl mx-auto">
+      {/* Mentor Application — glass module */}
+      <section id="for-mentors" className="px-6 py-24 pb-32">
+        <div className="max-w-3xl mx-auto section-module">
           <p className="text-muted/60 text-sm mb-8 tracking-wide uppercase">Applications are reviewed weekly</p>
           <h2 className="text-2xl md:text-3xl font-bold mb-4">Apply to become a ForgeHouse mentor</h2>
           <p className="text-muted text-lg mb-12 leading-relaxed">
@@ -135,7 +135,7 @@ export default function Home() {
             others pay for, we want to hear from you. Not everyone gets in.
           </p>
           {mentorSubmitted ? (
-            <div className="border border-amber/30 bg-amber/5 p-8 text-center">
+            <div className="border border-amber/20 bg-amber/5 p-8 text-center rounded-xl">
               <p className="text-lg font-semibold mb-2">Application received.</p>
               <p className="text-muted">We review every submission personally. If there&apos;s a fit, we&apos;ll be in touch within 5 business days.</p>
             </div>
@@ -147,7 +147,7 @@ export default function Home() {
                 required
                 value={mentorForm.name}
                 onChange={(e) => setMentorForm({ ...mentorForm, name: e.target.value })}
-                className="w-full bg-transparent border border-border px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition"
+                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
               />
               <input
                 type="email"
@@ -155,7 +155,7 @@ export default function Home() {
                 required
                 value={mentorForm.email}
                 onChange={(e) => setMentorForm({ ...mentorForm, email: e.target.value })}
-                className="w-full bg-transparent border border-border px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition"
+                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
               />
               <input
                 type="url"
@@ -163,7 +163,7 @@ export default function Home() {
                 required
                 value={mentorForm.linkedin}
                 onChange={(e) => setMentorForm({ ...mentorForm, linkedin: e.target.value })}
-                className="w-full bg-transparent border border-border px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition"
+                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
               />
               <input
                 type="text"
@@ -171,7 +171,7 @@ export default function Home() {
                 required
                 value={mentorForm.role}
                 onChange={(e) => setMentorForm({ ...mentorForm, role: e.target.value })}
-                className="w-full bg-transparent border border-border px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition"
+                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
               />
               <textarea
                 placeholder="What do you know better than most people? (e.g., B2B SaaS pricing, marketplace growth, founder psychology)"
@@ -179,7 +179,7 @@ export default function Home() {
                 value={mentorForm.expertise}
                 onChange={(e) => setMentorForm({ ...mentorForm, expertise: e.target.value })}
                 rows={3}
-                className="w-full bg-transparent border border-border px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition resize-none"
+                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition resize-none"
               />
               <textarea
                 placeholder="Why do you want your frameworks available as an AI agent?"
@@ -187,19 +187,19 @@ export default function Home() {
                 value={mentorForm.whyForgeHouse}
                 onChange={(e) => setMentorForm({ ...mentorForm, whyForgeHouse: e.target.value })}
                 rows={3}
-                className="w-full bg-transparent border border-border px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition resize-none"
+                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
               />
               <input
                 type="url"
                 placeholder="Blog post, talk, podcast, or thread that shows how you think (optional)"
                 value={mentorForm.contentLink}
                 onChange={(e) => setMentorForm({ ...mentorForm, contentLink: e.target.value })}
-                className="w-full bg-transparent border border-border px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition"
+                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
               />
               <button
                 type="submit"
                 disabled={mentorSubmitting}
-                className="bg-amber text-background px-8 py-3 font-semibold hover:bg-amber-dark transition disabled:opacity-50"
+                className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition disabled:opacity-50"
               >
                 {mentorSubmitting ? "Submitting..." : "Submit Application"}
               </button>
@@ -213,7 +213,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Stop asking for answers.<br />Start asking better questions.</h2>
           <p className="text-muted text-lg mb-8">Apex is ready when you are.</p>
-          <Link href="/chat/apex" className="bg-amber text-background px-8 py-3 font-semibold hover:bg-amber-dark transition inline-block">
+          <Link href="/chat/apex" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
             Talk to Apex
           </Link>
         </div>

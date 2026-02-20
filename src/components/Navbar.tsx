@@ -14,7 +14,7 @@ export default function Navbar() {
           <Link href="/agents" className="hover:text-foreground transition">Agents</Link>
           <Link href="/agents/apex" className="hover:text-foreground transition">Apex</Link>
           <Link href="/#for-mentors" className="hover:text-foreground transition">Apply</Link>
-          <Link href="/chat/apex" className="bg-amber text-background px-4 py-2 font-semibold hover:bg-amber-dark transition">
+          <Link href="/chat/apex" className="bg-amber text-white px-5 py-2 rounded-lg font-semibold hover:bg-amber-dark transition">
             Start Chat
           </Link>
         </div>
@@ -29,7 +29,7 @@ export default function Navbar() {
           <Link href="/agents" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Agents</Link>
           <Link href="/agents/apex" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Apex</Link>
           <Link href="/#for-mentors" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Apply</Link>
-          <Link href="/chat/apex" onClick={() => setOpen(false)} className="bg-amber text-background px-4 py-2 font-semibold text-center">Start Chat</Link>
+          <Link href="/chat/apex" onClick={() => setOpen(false)} className="bg-amber text-white px-4 py-2 rounded-lg font-semibold text-center">Start Chat</Link>
         </div>
       )}
     </nav>

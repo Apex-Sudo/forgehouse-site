@@ -4,12 +4,15 @@
   --color-background: #0A0A0A;
   --color-foreground: #EDEDED;
   --color-amber: #3B82F6;
-  --color-amber-dark: #D97706;
-  --color-surface: #1A1A1A;
-  --color-surface-light: #202020;
-  --color-surface-blue: #101C30;
+  --color-amber-dark: #2563EB;
+  --color-surface: #141414;
+  --color-surface-light: #1A1A1A;
+  --color-surface-blue: #0D1520;
   --color-muted: #737373;
-  --color-border: #262626;
+  --color-border: #1E1E1E;
+  --color-border-light: #2A2A2A;
+  --color-glass: rgba(255, 255, 255, 0.03);
+  --color-glass-border: rgba(255, 255, 255, 0.06);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -18,4 +21,36 @@ body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Glass card */
+.glass-card {
+  background: var(--color-glass);
+  border: 1px solid var(--color-glass-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+}
+
+/* Subtle gradient backgrounds */
+.gradient-hero {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
+}
+
+.gradient-blue {
+  background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(59, 130, 246, 0.04) 0%, transparent 70%);
+}
+
+/* Section container module */
+.section-module {
+  background: var(--color-glass);
+  border: 1px solid var(--color-glass-border);
+  border-radius: 20px;
+  padding: 3rem;
+}
+
+@media (min-width: 768px) {
+  .section-module {
+    padding: 4rem;
+  }
 }
