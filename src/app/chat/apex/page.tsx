@@ -253,7 +253,7 @@ function ChatContent() {
                   Your free conversation is over.
                 </p>
                 <p className="text-sm text-muted">
-                  Keep access to every agent, anytime, for $9/month. Cancel whenever.
+                  Keep access to every agent, anytime, for $19/month. Cancel whenever.
                 </p>
                 {!subscriberEmail ? (
                   <div className="space-y-3">
@@ -286,7 +286,7 @@ function ChatContent() {
                     disabled={checkingOut}
                     className="bg-[#3B82F6] text-white px-8 py-3 rounded-xl font-semibold text-sm hover:bg-[#2563EB] transition disabled:opacity-50"
                   >
-                    {checkingOut ? "Redirecting..." : "Subscribe — $9/month"}
+                    {checkingOut ? "Redirecting..." : "Subscribe — $19/month"}
                   </button>
                 )}
               </div>
