@@ -3,10 +3,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const STARTERS = [
-  "I'm stuck between two GTM strategies",
-  "My cofounder and I disagree on pricing",
-  "I have traction but no repeatable channel",
-  "Should I raise or bootstrap?",
+  "I can't decide between two go-to-market approaches",
+  "My cofounder and I can't agree on pricing",
+  "We have traction but no idea what's actually driving it",
+  "Should I raise or keep bootstrapping?",
 ];
 
 export default function InlineChat() {

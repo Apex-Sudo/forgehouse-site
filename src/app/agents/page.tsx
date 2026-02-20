@@ -29,12 +29,12 @@ export default function AgentsPage() {
     <div className="pt-16">
       <section className="gradient-hero px-6 py-24 max-w-6xl mx-auto text-center">
         <h1 className="text-3xl md:text-5xl font-bold mb-4">Agents</h1>
-        <p className="text-muted text-lg mb-16">Each one trained by a real founder. Each one thinks different.</p>
+        <p className="text-muted text-lg mb-16">People who&apos;ve solved what you&apos;re stuck on. Available when you need them.</p>
         <div className="max-w-sm mx-auto mb-20">
           <AgentCard
             name="Apex"
             emoji="🔺"
-            tagline="Trained by a founder who built across three continents. Gives you the question before the question."
+            tagline="Built from a founder who's been through it. Won't tell you what to do. Will ask the question you're avoiding."
             tags={["Strategy", "Decision-Making", "Founder Ops"]}
             price="Free during beta"
             href="/agents/apex"
@@ -43,12 +43,12 @@ export default function AgentsPage() {
 
         {/* Waitlist */}
         <div className="glass-card p-8 md:p-12 max-w-xl mx-auto">
-          <h2 className="text-xl md:text-2xl font-bold mb-2">Next agents are being forged.</h2>
-          <p className="text-muted mb-6">Get early access when new agents launch.</p>
+          <h2 className="text-xl md:text-2xl font-bold mb-2">More sounding boards coming.</h2>
+          <p className="text-muted mb-6">Be first to know when new agents go live.</p>
           {submitted ? (
             <div className="border border-[#3B82F6]/20 bg-[#3B82F6]/5 p-6 rounded-xl text-center">
               <p className="font-semibold">You&apos;re on the list.</p>
-              <p className="text-muted text-sm mt-1">We&apos;ll notify you when new agents drop.</p>
+              <p className="text-muted text-sm mt-1">We&apos;ll ping you when someone new goes live.</p>
             </div>
           ) : (
             <form onSubmit={handleWaitlist} className="flex flex-col sm:flex-row gap-3">

@@ -1,17 +1,17 @@
 import Link from "next/link";
 
 const capabilities = [
-  "Strategic decision framing",
-  "First-principles breakdown of complex problems",
-  "Founder-to-founder pattern matching",
-  "Go/no-go analysis on opportunities",
-  "Prioritization under resource constraints",
-  "Blind spot identification",
+  "Help you frame the decision you're actually making",
+  "Break down complex problems to what matters first",
+  "Pattern-match from real founder experience",
+  "Pressure-test your reasoning before you commit",
+  "Figure out what to focus on when everything feels urgent",
+  "Find the blind spot you're not seeing",
 ];
 
 const wontDo = [
   "Write your pitch deck for you",
-  "Give you a 10-step plan with no context",
+  "Hand you a 10-step plan without knowing your situation",
   "Tell you what you want to hear",
   "Replace your judgment. Only sharpen it",
 ];
@@ -23,9 +23,8 @@ export default function ApexPage() {
         <div className="text-6xl mb-6">🔺</div>
         <h1 className="text-4xl md:text-5xl font-bold mb-6">Apex</h1>
         <p className="text-lg md:text-xl text-muted leading-relaxed mb-12 max-w-2xl mx-auto">
-          Trained by a founder who built companies across three continents.
-          Apex doesn&apos;t give you advice. It gives you the question you should
-          be asking before the one you&apos;re asking.
+          Built from a founder who&apos;s been through three continents of hard lessons.
+          Apex won&apos;t tell you what to do. It&apos;ll ask the question you&apos;re avoiding.
         </p>
 
         <div className="grid md:grid-cols-2 gap-8 mb-16 text-left">
@@ -84,7 +83,7 @@ export default function ApexPage() {
         <div className="glass-card p-8 mb-12 text-center">
           <h3 className="text-sm font-mono text-amber uppercase tracking-wider mb-2">Pricing</h3>
           <p className="text-2xl font-bold mb-1">Free during beta</p>
-          <p className="text-muted text-sm">Usage-based pricing coming soon</p>
+          <p className="text-muted text-sm">No credit card. No catch. We&apos;re still building.</p>
         </div>
 
         <div className="text-center">
@@ -92,7 +91,7 @@ export default function ApexPage() {
             href="/chat/apex"
             className="inline-block bg-amber text-white px-10 py-4 rounded-xl font-semibold text-lg hover:bg-amber-dark transition"
           >
-            Start conversation
+            Talk to Apex
           </Link>
         </div>
       </section>

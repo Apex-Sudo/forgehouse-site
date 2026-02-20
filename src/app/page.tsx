@@ -112,13 +112,13 @@ export default function Home() {
       {/* Featured agent */}
       <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Featured agent</h2>
-          <p className="text-muted mb-12 text-center">The first. More are being forged.</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Try it yourself</h2>
+          <p className="text-muted mb-12 text-center">Our first agent. More are on the way.</p>
           <div className="max-w-sm mx-auto">
             <AgentCard
               name="Apex"
               emoji="🔺"
-              tagline="Trained by a founder who built across three continents. Doesn't give advice. Gives you the right question."
+              tagline="Built from a founder who's been through it. Won't tell you what to do. Will ask the question you're avoiding."
               tags={["Strategy", "Decision-Making", "Founder Ops"]}
               price="Free during beta"
               href="/agents/apex"
@@ -131,11 +131,11 @@ export default function Home() {
       <section id="for-mentors" className="px-6 py-24 pb-32">
         <div className="max-w-3xl mx-auto section-module">
           <p className="text-muted/60 text-sm mb-8 tracking-wide uppercase text-center">Applications are reviewed weekly</p>
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Your expertise, available at scale</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">You&apos;re already turning people away</h2>
           <p className="text-muted text-lg mb-12 leading-relaxed text-center">
-            You already have the frameworks. You already have clients who want more of your time
-            than you can give. We turn your thinking into an agent that extends your reach
-            without diluting your quality. Not everyone gets in.
+            You have more demand for your time than hours in the day.
+            We turn how you think into an agent that helps people when you can&apos;t.
+            Same quality. No extra hours. Not everyone gets in.
           </p>
           {mentorSubmitted ? (
             <div className="border border-amber/20 bg-amber/5 p-8 text-center rounded-xl">
@@ -177,7 +177,7 @@ export default function Home() {
                 className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
               />
               <textarea
-                placeholder="What do you know better than most people? (e.g., B2B SaaS pricing, marketplace growth, founder psychology)"
+                placeholder="What do people come to you for? (e.g., outbound strategy, pricing, founder psychology)"
                 required
                 value={mentorForm.expertise}
                 onChange={(e) => setMentorForm({ ...mentorForm, expertise: e.target.value })}
@@ -185,7 +185,7 @@ export default function Home() {
                 className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition resize-none"
               />
               <textarea
-                placeholder="Why do you want your frameworks available as an AI agent?"
+                placeholder="Why does this interest you?"
                 required
                 value={mentorForm.whyForgeHouse}
                 onChange={(e) => setMentorForm({ ...mentorForm, whyForgeHouse: e.target.value })}
@@ -194,7 +194,7 @@ export default function Home() {
               />
               <input
                 type="url"
-                placeholder="Blog post, talk, podcast, or thread that shows how you think"
+                placeholder="Link to something that shows how you think (blog, talk, thread)"
                 required
                 value={mentorForm.contentLink}
                 onChange={(e) => setMentorForm({ ...mentorForm, contentLink: e.target.value })}
