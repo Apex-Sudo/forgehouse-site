@@ -1,0 +1,35 @@
+"use client";
+import Link from "next/link";
+import { useState } from "react";
+
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <Link href="/" className="text-xl font-bold tracking-tight">
+          <span className="text-amber">Forge</span>House
+        </Link>
+        <div className="hidden md:flex items-center gap-8 text-sm text-muted">
+          <Link href="/agents" className="hover:text-foreground transition">Agents</Link>
+          <Link href="/agents/apex" className="hover:text-foreground transition">Apex</Link>
+          <Link href="/chat/apex" className="bg-amber text-background px-4 py-2 font-semibold hover:bg-amber-dark transition">
+            Start Chat
+          </Link>
+        </div>
+        <button className="md:hidden text-muted" onClick={() => setOpen(!open)}>
+          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            {open ? <path d="M6 6l12 12M6 18L18 6" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
+          </svg>
+        </button>
+      </div>
+      {open && (
+        <div className="md:hidden border-t border-border bg-background px-6 py-4 flex flex-col gap-4 text-sm">
+          <Link href="/agents" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Agents</Link>
+          <Link href="/agents/apex" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Apex</Link>
+          <Link href="/chat/apex" onClick={() => setOpen(false)} className="bg-amber text-background px-4 py-2 font-semibold text-center">Start Chat</Link>
+        </div>
+      )}
+    </nav>
+  );
+}
