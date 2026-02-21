@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "ForgeHouse - Your favorite mentor is fully booked. Their agent isn't.";
+export const alt = "ForgeHouse - Mentor Agents, Available 24/7";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -53,15 +53,15 @@ export default async function Image() {
             marginBottom: "24px",
           }}
         >
-          Your favorite mentor is{" "}
-          <span style={{ color: "#3B82F6" }}>fully booked</span>.
+          AI agents trained by{" "}
+          <span style={{ color: "#3B82F6" }}>real mentors</span>.
           <br />
-          Their agent isn&apos;t.
+          Available anytime.
         </div>
 
         {/* Subtitle */}
         <div style={{ fontSize: "24px", color: "#737373", lineHeight: 1.5 }}>
-          Founder-trained AI agents you can talk to anytime.
+          Get clarity on your next move, whenever you need it.
         </div>
       </div>
     ),
