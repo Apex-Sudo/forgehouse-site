@@ -82,19 +82,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* For Mentors */}
-      <section id="for-mentors" className="px-6 py-24 pb-32">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">More people need what you know than you&apos;ll ever have time to help.</h2>
-          <p className="text-muted text-lg mb-8 leading-relaxed">
-            Your agent thinks like you 24/7 and compounds with every conversation.
-          </p>
-          <Link href="/apply" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
-            Apply as a Mentor
-          </Link>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto text-center">
