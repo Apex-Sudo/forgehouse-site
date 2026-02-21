@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import AgentCard from "@/components/AgentCard";
 import InlineChat from "@/components/InlineChat";
