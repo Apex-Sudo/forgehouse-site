@@ -15,7 +15,7 @@ export default function Footer() {
           <span className="text-amber font-bold">Forge</span>
           <span className="font-bold text-foreground">House</span>
         </div>
-        <p>Built for founders who think in systems</p>
+        <p>Built for people who think in systems</p>
         <p className="text-xs text-muted/50">&copy; {new Date().getFullYear()}</p>
       </div>
     </footer>
