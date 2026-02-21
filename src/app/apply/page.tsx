@@ -27,7 +27,7 @@ export default function ApplyPage() {
     <div className="pt-16">
       <section className="px-6 py-28 md:py-36 max-w-3xl mx-auto">
         <h1 className="text-3xl md:text-5xl font-bold mb-4 text-center">
-          The people who need your thinking outnumber your hours.
+          More people need what you know than you&apos;ll ever have time to help.
         </h1>
         <p className="text-muted text-lg mb-12 leading-relaxed text-center">
           Your agent thinks like you 24/7 and compounds with every conversation.

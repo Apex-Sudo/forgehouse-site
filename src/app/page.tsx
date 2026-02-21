@@ -95,7 +95,7 @@ export default function Home() {
       {/* For Mentors */}
       <section id="for-mentors" className="px-6 py-24 pb-32">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">The people who need your thinking outnumber your hours.</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">More people need what you know than you&apos;ll ever have time to help.</h2>
           <p className="text-muted text-lg mb-8 leading-relaxed">
             Your agent thinks like you 24/7 and compounds with every conversation.
           </p>
