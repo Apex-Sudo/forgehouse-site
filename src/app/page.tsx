@@ -64,7 +64,7 @@ export default function Home() {
       {/* Inline Chat */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto">
-          <p className="text-sm text-muted text-center mb-6">The kind of conversation that used to require a $300 booking. Try it now.</p>
+          <p className="text-sm text-muted text-center mb-6">Real frameworks from real operators. Ask anything.</p>
           <InlineChat />
         </div>
       </section>
