@@ -8,14 +8,14 @@ import { ChatCircleDots, Lightning, ChartLineUp, ShieldCheck } from "@phosphor-i
 const steps = [
   { num: "01", title: "Pick a mentor", desc: "Founders and operators who've actually built what you're trying to build. Vetted for real decisions, not credentials." },
   { num: "02", title: "Talk to their agent", desc: "Their thinking, available right now. No scheduling, no small talk, no re-explaining your situation every session." },
-  { num: "03", title: "Get clarity in minutes", desc: "The kind of clarity that used to cost $300/hour and a two-week wait. Available the moment the decision is in front of you." },
+  { num: "03", title: "Get clarity in minutes", desc: "Clarity the moment the decision is in front of you." },
 ];
 
 const trustPoints = [
-  { icon: ChatCircleDots, title: "Not a chatbot. Their actual thinking.", desc: "Every agent is built from hours of structured extraction. Real decision-making patterns from someone who's made the calls you're about to make." },
-  { icon: Lightning, title: "No calendar. No waiting.", desc: "At 2 AM when the decision won't let you sleep, their agent is ready. No booking link, no two-week wait, no $500 minimum." },
-  { icon: ChartLineUp, title: "What one session costs, unlimited.", desc: "A good mentor charges $300-500/hour. One conversation here costs less than one live session. Except it never runs out." },
-  { icon: ShieldCheck, title: "Built it, not taught it.", desc: "No influencers. No theorists. Every mentor on ForgeHouse has made the hard calls themselves. If they haven't done the thing, they're not on the platform." },
+  { icon: ChatCircleDots, title: "Not a chatbot. Their actual thinking.", desc: "Every agent is built from hours of structured conversation. Real decision-making patterns from someone who's made the calls you're about to make." },
+  { icon: Lightning, title: "No calendar. No waiting.", desc: "2 AM, can't sleep, big decision ahead. They're ready." },
+  { icon: ChartLineUp, title: "Saved me months of wrong turns.", desc: "Their hindsight, your shortcut." },
+  { icon: ShieldCheck, title: "Built it, not taught it.", desc: "Every mentor on ForgeHouse has made the hard calls themselves. No influencers. No theorists." },
 ];
 
 export default function Home() {
@@ -64,7 +64,7 @@ export default function Home() {
       {/* Inline Chat */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto">
-          <p className="text-sm text-muted text-center mb-6">Real frameworks from real operators. Ask anything.</p>
+          <p className="text-sm text-muted text-center mb-6">The kind of clarity that takes years to earn. Yours in one conversation.</p>
           <InlineChat />
         </div>
       </section>
@@ -107,8 +107,8 @@ export default function Home() {
       {/* CTA to agents */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">One conversation changed everything for them</h2>
-          <p className="text-muted mb-8">Apex is free. No card, no signup. See what a real sounding board feels like.</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">Talk to a real operator&apos;s thinking.</h2>
+          <p className="text-muted mb-8">No card, no signup.</p>
           <Link href="/chat/apex" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
             Talk to Apex
           </Link>
@@ -118,12 +118,10 @@ export default function Home() {
       {/* Mentor Application */}
       <section id="for-mentors" className="px-6 py-24 pb-32">
         <div className="max-w-3xl mx-auto section-module">
-          <p className="text-muted/60 text-sm mb-8 tracking-wide uppercase text-center">Applications are reviewed weekly</p>
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Your MasterClass is 4 hours, then it&apos;s over</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">MasterClass ends. Your agent compounds.</h2>
           <p className="text-muted text-lg mb-12 leading-relaxed text-center">
             Your agent thinks like you 24/7 and compounds with every conversation.
-            Same decision-making, same frameworks, available when you can&apos;t be.
-            You keep earning from expertise you&apos;ve already built.
+            Your legacy, always available.
           </p>
           {mentorSubmitted ? (
             <div className="border border-amber/20 bg-amber/5 p-8 text-center rounded-xl">
@@ -205,8 +203,8 @@ export default function Home() {
       {/* CTA */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">The $0 option is what kills most startups.</h2>
-          <p className="text-muted text-lg mb-8">Not bad ideas. Not bad execution. Just no one to say &quot;that&apos;s the wrong direction&quot; before you spend 6 months on it.</p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Your first 5 messages are on us.</h2>
+          <p className="text-muted text-lg mb-8"></p>
           <Link href="/chat/apex" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
             Talk to Apex
           </Link>
