@@ -3,10 +3,9 @@ import Link from "next/link";
 import { IconCheck } from "@tabler/icons-react";
 
 const included = [
-  "Unlimited conversations",
-  "Their decision-making, not a script",
-  "Compounds over time",
-  "24/7, any timezone, any language",
+  "Their real decision-making patterns",
+  "Available 24/7, any language",
+  "Gets sharper over time",
   "Cancel anytime",
 ];
 
@@ -57,11 +56,8 @@ export default function PricingPage() {
         <div className="max-w-lg mx-auto">
           <div className="glass-card p-10 text-center shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)]">
             <p className="text-sm text-muted uppercase tracking-wide mb-4">Per Mentor Agent</p>
-            <p className="text-muted text-sm mb-2">Priced at what their live time costs</p>
-            <div className="flex items-baseline justify-center gap-1 mb-2">
-              <span className="text-5xl font-bold">1 session</span>
-            </div>
-            <p className="text-muted text-sm mb-8">Same mentor. Same frameworks. Unlimited.</p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2">Unlimited conversations</h2>
+            <p className="text-muted text-sm mb-8">for the price of one live session.</p>
 
             <ul className="text-left space-y-4 mb-10">
               {included.map((item) => (
