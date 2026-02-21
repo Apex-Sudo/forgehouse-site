@@ -79,13 +79,6 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* The math */}
-      <section className="px-6 py-24">
-        <div className="max-w-3xl mx-auto section-module gradient-blue text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-6">Your first 5 messages are on us.</h2>
-        </div>
-      </section>
-
       {/* FAQ */}
       <section className="px-6 py-24">
         <div className="max-w-3xl mx-auto">
