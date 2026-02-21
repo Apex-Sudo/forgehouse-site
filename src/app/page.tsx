@@ -2,7 +2,7 @@
 import Link from "next/link";
 import AgentCard from "@/components/AgentCard";
 import InlineChat from "@/components/InlineChat";
-import { MessageCircle, Zap, TrendingUp, ShieldCheck } from "lucide-react";
+import { IconMessageCircle, IconBolt, IconTrendingUp, IconShieldCheck } from "@tabler/icons-react";
 
 const steps = [
   { num: "01", title: "Pick a mentor", desc: "Founders and operators who've actually built what you're trying to build. Vetted for real decisions, not credentials." },
@@ -11,10 +11,10 @@ const steps = [
 ];
 
 const trustPoints = [
-  { icon: MessageCircle, title: "Not a chatbot. Their actual thinking.", desc: "Every agent is built from hours of structured conversation. Real decision-making patterns from someone who's made the calls you're about to make." },
-  { icon: Zap, title: "No calendar. No waiting.", desc: "2 AM, can't sleep, big decision ahead. They're ready." },
-  { icon: TrendingUp, title: "Saved me months of wrong turns.", desc: "Their hindsight, your shortcut." },
-  { icon: ShieldCheck, title: "Built it, not taught it.", desc: "Every mentor on ForgeHouse has made the hard calls themselves. No influencers. No theorists." },
+  { icon: IconMessageCircle, title: "Not a chatbot. Their actual thinking.", desc: "Every agent is built from hours of structured conversation. Real decision-making patterns from someone who's made the calls you're about to make." },
+  { icon: IconBolt, title: "No calendar. No waiting.", desc: "2 AM, can't sleep, big decision ahead. They're ready." },
+  { icon: IconTrendingUp, title: "Saved me months of wrong turns.", desc: "Their hindsight, your shortcut." },
+  { icon: IconShieldCheck, title: "Built it, not taught it.", desc: "Every mentor on ForgeHouse has made the hard calls themselves. No influencers. No theorists." },
 ];
 
 export default function Home() {
@@ -73,7 +73,7 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-6">
             {trustPoints.map((t) => (
               <div key={t.title} className="glass-card p-8 text-center">
-                <t.icon size={32} strokeWidth={1.5} className="mx-auto mb-4 text-[#3B82F6]" />
+                <t.icon size={32} stroke={1.5} className="mx-auto mb-4 text-[#3B82F6]" />
                 <h3 className="text-lg font-bold mb-3">{t.title}</h3>
                 <p className="text-muted leading-relaxed text-[15px]">{t.desc}</p>
               </div>
