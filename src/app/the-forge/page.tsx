@@ -10,7 +10,7 @@ const phases = [
   },
   {
     num: "02",
-    title: "Extraction",
+    title: "Contribution",
     duration: "2-4 weeks",
     desc: "How they decide when stakes are real. Not podcast talk. We push on edge cases and probe every 'it depends' until we find the logic underneath.",
     detail: "",
