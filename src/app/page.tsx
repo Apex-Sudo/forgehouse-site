@@ -88,10 +88,9 @@ export default function Home() {
       {/* Trust Section */}
       <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto section-module gradient-blue">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">You&apos;re not paying for information. You&apos;re paying for time.</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">20 years of pattern recognition. On demand.</h2>
           <p className="text-muted text-lg max-w-3xl mx-auto mb-16 leading-relaxed text-center">
-            Free content teaches tactics. A mentor shows you the blind spots you didn&apos;t know you had.
-            That&apos;s the difference between googling &quot;how to negotiate&quot; and asking someone who&apos;s closed 500 deals.
+            Every mentor on ForgeHouse earned their frameworks the hard way. Now those frameworks work for you, whenever you need them.
           </p>
           <div className="grid md:grid-cols-2 gap-6">
             {trustPoints.map((t) => (
