@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Check } from "@phosphor-icons/react";
+import { Check } from "lucide-react";
 
 const included = [
   "Unlimited conversations",
@@ -66,7 +66,7 @@ export default function PricingPage() {
             <ul className="text-left space-y-4 mb-10">
               {included.map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm">
-                  <Check size={18} weight="bold" className="text-amber mt-0.5 shrink-0" />
+                  <Check size={18} strokeWidth={3} className="text-amber mt-0.5 shrink-0" />
                   <span className="text-foreground/90">{item}</span>
                 </li>
               ))}
