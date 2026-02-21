@@ -9,13 +9,13 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata: Metadata = {
   title: "ForgeHouse | Mentor Agents, Available 24/7",
-  description: "Your favorite mentor is fully booked. Their agent isn't. Founder-trained AI agents you can talk to anytime.",
+  description: "Talk to AI agents trained by real founders and mentors. Get clarity on your next move, anytime.",
   icons: {
     icon: "/favicon.svg",
   },
   openGraph: {
     title: "ForgeHouse | Mentor Agents, Available 24/7",
-    description: "Your favorite mentor is fully booked. Their agent isn't. Founder-trained AI agents you can talk to anytime.",
+    description: "Talk to AI agents trained by real founders and mentors. Get clarity on your next move, anytime.",
     url: "https://forgehouse.io",
     siteName: "ForgeHouse",
     type: "website",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "ForgeHouse | Mentor Agents, Available 24/7",
-    description: "Your favorite mentor is fully booked. Their agent isn't.",
+    description: "Talk to AI agents trained by real founders and mentors. Get clarity on your next move, anytime.",
   },
 };
 
