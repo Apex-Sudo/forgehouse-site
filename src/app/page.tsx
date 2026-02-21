@@ -82,17 +82,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA to agents */}
-      <section className="px-6 py-24">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Talk to a real operator&apos;s thinking.</h2>
-          <p className="text-muted mb-8">No card, no signup.</p>
-          <Link href="/chat/apex" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
-            Talk to Apex
-          </Link>
-        </div>
-      </section>
-
       {/* For Mentors */}
       <section id="for-mentors" className="px-6 py-24 pb-32">
         <div className="max-w-3xl mx-auto text-center">
