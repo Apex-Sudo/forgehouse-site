@@ -95,10 +95,9 @@ export default function Home() {
       {/* For Mentors */}
       <section id="for-mentors" className="px-6 py-24 pb-32">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">MasterClass ends. Your agent compounds.</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">The people who need your thinking outnumber your hours.</h2>
           <p className="text-muted text-lg mb-8 leading-relaxed">
             Your agent thinks like you 24/7 and compounds with every conversation.
-            Your legacy, always available.
           </p>
           <Link href="/apply" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
             Apply as a Mentor
