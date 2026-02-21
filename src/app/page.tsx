@@ -1,6 +1,4 @@
-"use client";
 import Link from "next/link";
-import { useState } from "react";
 import AgentCard from "@/components/AgentCard";
 import InlineChat from "@/components/InlineChat";
 import { ChatCircleDots, Lightning, ChartLineUp, ShieldCheck } from "@phosphor-icons/react";
@@ -19,27 +17,6 @@ const trustPoints = [
 ];
 
 export default function Home() {
-  const [mentorForm, setMentorForm] = useState({ name: "", email: "", linkedin: "", role: "", expertise: "", whyForgeHouse: "", contentLink: "" });
-  const [mentorSubmitted, setMentorSubmitted] = useState(false);
-  const [mentorSubmitting, setMentorSubmitting] = useState(false);
-
-  const handleMentorSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMentorSubmitting(true);
-    try {
-      await fetch("/api/mentor-signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(mentorForm),
-      });
-      setMentorSubmitted(true);
-    } catch {
-      setMentorSubmitted(true);
-    } finally {
-      setMentorSubmitting(false);
-    }
-  };
-
   return (
     <div className="pt-16">
       {/* Hero */}
@@ -115,88 +92,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Mentor Application */}
+      {/* For Mentors */}
       <section id="for-mentors" className="px-6 py-24 pb-32">
-        <div className="max-w-3xl mx-auto section-module">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">MasterClass ends. Your agent compounds.</h2>
-          <p className="text-muted text-lg mb-12 leading-relaxed text-center">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">MasterClass ends. Your agent compounds.</h2>
+          <p className="text-muted text-lg mb-8 leading-relaxed">
             Your agent thinks like you 24/7 and compounds with every conversation.
             Your legacy, always available.
           </p>
-          {mentorSubmitted ? (
-            <div className="border border-amber/20 bg-amber/5 p-8 text-center rounded-xl">
-              <p className="text-lg font-semibold mb-2">Application received.</p>
-              <p className="text-muted">We review every submission personally. If there&apos;s a fit, we&apos;ll be in touch within 5 business days.</p>
-            </div>
-          ) : (
-            <form onSubmit={handleMentorSubmit} className="space-y-4 max-w-lg mx-auto">
-              <input
-                type="text"
-                placeholder="Full name"
-                required
-                value={mentorForm.name}
-                onChange={(e) => setMentorForm({ ...mentorForm, name: e.target.value })}
-                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                required
-                value={mentorForm.email}
-                onChange={(e) => setMentorForm({ ...mentorForm, email: e.target.value })}
-                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
-              />
-              <input
-                type="url"
-                placeholder="LinkedIn profile URL"
-                required
-                value={mentorForm.linkedin}
-                onChange={(e) => setMentorForm({ ...mentorForm, linkedin: e.target.value })}
-                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
-              />
-              <input
-                type="text"
-                placeholder="Current role and company"
-                required
-                value={mentorForm.role}
-                onChange={(e) => setMentorForm({ ...mentorForm, role: e.target.value })}
-                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
-              />
-              <textarea
-                placeholder="What do people come to you for? (e.g., outbound strategy, pricing, founder psychology)"
-                required
-                value={mentorForm.expertise}
-                onChange={(e) => setMentorForm({ ...mentorForm, expertise: e.target.value })}
-                rows={3}
-                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition resize-none"
-              />
-              <textarea
-                placeholder="Why does this interest you?"
-                required
-                value={mentorForm.whyForgeHouse}
-                onChange={(e) => setMentorForm({ ...mentorForm, whyForgeHouse: e.target.value })}
-                rows={3}
-                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
-              />
-              <input
-                type="url"
-                placeholder="Link to something that shows how you think (blog, talk, thread)"
-                required
-                value={mentorForm.contentLink}
-                onChange={(e) => setMentorForm({ ...mentorForm, contentLink: e.target.value })}
-                className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
-              />
-              <div className="text-center pt-2">
-                <button
-                  type="submit"
-                  disabled={mentorSubmitting}
-                  className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition disabled:opacity-50"
-                >
-                  {mentorSubmitting ? "Submitting..." : "Submit Application"}
-                </button>
-              </div>
-            </form>
-          )}
+          <Link href="/apply" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
+            Apply as a Mentor
+          </Link>
         </div>
       </section>
 
