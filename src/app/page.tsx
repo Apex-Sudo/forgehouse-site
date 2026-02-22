@@ -13,7 +13,7 @@ const steps = [
 const trustPoints = [
   { icon: IconMessageCircle, title: "Not a chatbot. Their actual thinking.", desc: "Every agent is built from hours of structured conversation. Real decision-making patterns from someone who's made the calls you're about to make." },
   { icon: IconBolt, title: "No calendar. No waiting.", desc: "2 AM, can't sleep, big decision ahead. They're ready." },
-  { icon: IconTrendingUp, title: "Saved me months of wrong turns.", desc: "Their hindsight, your shortcut." },
+  { icon: IconTrendingUp, title: "Saved me months of wrong turns.", desc: "Their hindsight, your edge." },
   { icon: IconShieldCheck, title: "Built it, not taught it.", desc: "Every mentor on ForgeHouse has made the hard calls themselves. No influencers. No theorists." },
 ];
 
@@ -23,7 +23,7 @@ export default function Home() {
       {/* Hero */}
       <section className="gradient-hero px-6 py-32 md:py-44 max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-6">
-          Tap into{" "}
+          Access{" "}
           <span className="text-amber">brilliance.</span>
         </h1>
         <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -68,7 +68,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto section-module gradient-blue">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">20 years of pattern recognition. On demand.</h2>
           <p className="text-muted text-lg max-w-3xl mx-auto mb-16 leading-relaxed text-center">
-            Every mentor on ForgeHouse earned their frameworks the hard way. Now those frameworks work for you, whenever you need them.
+            Every mentor on ForgeHouse earned their frameworks the hard way. Now those frameworks are in your corner, whenever you need them.
           </p>
           <div className="grid md:grid-cols-2 gap-6">
             {trustPoints.map((t) => (
