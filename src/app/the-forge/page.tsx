@@ -44,7 +44,7 @@ export default function TheForgePage() {
       {/* Hero */}
       <section className="gradient-hero px-6 py-28 md:py-36 max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
-          The Forge
+          The <span className="text-amber">Forge</span>
         </h1>
         <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
           How we turn a mentor&apos;s thinking into an agent. Multi-week process. Not a prompt wrapper.

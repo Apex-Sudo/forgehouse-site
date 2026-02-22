@@ -28,7 +28,7 @@ export default function AgentsPage() {
   return (
     <div className="pt-16">
       <section className="gradient-hero px-6 py-24 max-w-6xl mx-auto text-center">
-        <h1 className="text-3xl md:text-5xl font-bold mb-4">Agents</h1>
+        <h1 className="text-3xl md:text-5xl font-bold mb-4"><span className="text-amber">Agents</span></h1>
         <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto mb-16 leading-relaxed">
           The world&apos;s sharpest minds. Always on.
         </p>
