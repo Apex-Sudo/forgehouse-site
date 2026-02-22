@@ -102,7 +102,7 @@ export default function TheForgePage() {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Built something real? Let&apos;s talk.</h2>
           <p className="text-muted text-lg mb-8"></p>
-          <Link href="/#for-mentors" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
+          <Link href="/apply" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
             Apply as a Mentor
           </Link>
         </div>
