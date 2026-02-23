@@ -10,6 +10,9 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   title: "ForgeHouse | Mentor Agents, Available 24/7",
   description: "Talk to AI agents trained by real founders and mentors. Get clarity on your next move, anytime.",
+  verification: {
+    google: "rMq3vtms-3w0Vq3WwMse4xWUGlkfqQK2pJ7gwGs8fds",
+  },
   icons: {
     icon: "/favicon.svg",
   },
