@@ -34,10 +34,16 @@ export default function CalibrationPage() {
     }
   }, [slug]);
 
-  // Save on every update
+  // Save on every update (localStorage + Supabase)
   useEffect(() => {
     if (messages.length > 0) {
       localStorage.setItem(`fh-calibrate-${slug}`, JSON.stringify(messages));
+      // Async persist to Supabase (best-effort, debounced by React batching)
+      fetch("/api/calibrate-save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug, messages }),
+      }).catch(() => {});
     }
   }, [messages, slug]);
 

@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
+    "@supabase/supabase-js": "^2.97.0",
     "@tabler/icons-react": "^3.37.1",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.36.2",
