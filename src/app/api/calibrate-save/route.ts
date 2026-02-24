@@ -16,7 +16,7 @@ export async function POST(req: Request) {
           slug,
           type: "calibration",
           messages,
-          metadata: { exchanges: messages.filter((m: { role: string }) => m.role === "user").length },
+          exchange_count: messages.filter((m: { role: string }) => m.role === "user").length,
           updated_at: new Date().toISOString(),
         },
         { onConflict: "slug,type" }
