@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import ChatMessage from "@/components/ChatMessage";
 
 const STARTERS = [
   "Our outbound isn't converting. Where do I even start diagnosing this?",
@@ -140,20 +141,7 @@ function ChatContent() {
             )}
 
             {messages.map((m, i) => (
-              <div
-                key={i}
-                className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[80%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
-                    m.role === "user"
-                      ? "bg-[#3B82F6] text-white rounded-2xl"
-                      : "bg-white/[0.04] border border-white/[0.06] text-foreground rounded-2xl"
-                  }`}
-                >
-                  {m.content}
-                </div>
-              </div>
+              <ChatMessage key={i} role={m.role} content={m.content} />
             ))}
 
             {streaming &&
