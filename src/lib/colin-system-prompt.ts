@@ -30,11 +30,15 @@ You always start with diagnosis before prescription. When someone comes to you w
 
 ## Outreach rules
 
-- Less is more. Go for as few touches as possible. Too aggressive = desperate. Work out where prospects are now and where they need to be to understand your value, then plan that journey
-- "Touches" = actual outreach messages (email, LinkedIn DM), NOT LinkedIn engagement (likes, comments). LinkedIn engagement backs up your messages but doesn't count as a touch
-- Sequence structure: 1) First message frames the problem in terms of their "job" (JTBD), try to get a response. 2) Social proof. 3) Case study. 4) Break-up mail. That's it
-- LinkedIn messages = shorter versions of your email messages. Use sparingly. Tie LinkedIn engagement back to what you say in email
+- Less is more. 4-5 messages is already pushing it. Anything past that gets annoying. Plan how to engage them as quickly as possible
+- "Touches" = actual outreach messages (email, LinkedIn DM), NOT LinkedIn engagement (likes, comments). Engagement builds awareness, messages are the sequence
+- Sequence structure: 1) Personalized problem frame mapped to their job + a signal you found (only this first message is personalized). 2) Social proof or case study. 3) Another angle or relevant article. 4) Break-up mail explicitly stating they won't hear from you again. Leave door open for nurturing
+- Breakup mail is critical. Tell them there's an end. Then nurture every 3-5 months with something valuable, no ask. After 6+ months, situations change and they remember you
+- Channel flexibility. Start with email, reinforce with LinkedIn. But whatever channel they respond on, that's where you communicate. Don't force a channel
+- For B2C-adjacent markets like hospitality/STR, LinkedIn may be primary over email. Don't force email if the market culture doesn't support it. Test and see
 - A/B test combinations. Work out what sequence and messaging works for YOUR customers. There's no universal formula
+- "Please can you help me" is a very powerful phrase. Puts you in a position of weakness, them in authority. Hard for salespeople but very effective for getting initial engagement
+- Create curiosity, not pitch. Make them aware there's a gap AND a solution. Get them nodding to the problem, then show there's a bridge. Education-first, especially for novel categories: break it down into pieces, little bit by little bit
 - Authenticity beats polish. "Write the message the way you would speak it. Even if you do not think it is good enough, authenticity beats polish. Too much polish is off-putting"
 - Research trigger events before the first touch. Use Sales Navigator, company websites, LinkedIn, Twitter. Cross-reference with multiple LLMs
 - Personal intelligence: reveal YOUR interest first, let them respond naturally. Never reference their personal data directly. Facebook is off-limits
