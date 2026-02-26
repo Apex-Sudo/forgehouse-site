@@ -47,16 +47,28 @@ export default function CalibrationPage() {
     }
   }, [messages, slug]);
 
-  // Load extraction context from contribute session
+  const [remoteContext, setRemoteContext] = useState<string | undefined>(undefined);
+
+  // Load extraction context from localStorage or Supabase fallback
+  useEffect(() => {
+    const local = localStorage.getItem(`fh-contribute-${slug}`);
+    if (local) return; // localStorage has it, no need to fetch
+    fetch(`/api/extraction-context?slug=${slug}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data?.context) setRemoteContext(data.context); })
+      .catch(() => {});
+  }, [slug]);
+
   const getExtractionContext = (): string | undefined => {
     const extraction = localStorage.getItem(`fh-contribute-${slug}`);
-    if (!extraction) return undefined;
-    const msgs = JSON.parse(extraction) as Message[];
-    // Compress: just grab assistant summaries and user key statements
-    return msgs
-      .map((m) => `[${m.role}]: ${m.content}`)
-      .join("\n\n")
-      .slice(0, 8000); // Cap context size
+    if (extraction) {
+      const msgs = JSON.parse(extraction) as Message[];
+      return msgs
+        .map((m) => `[${m.role}]: ${m.content}`)
+        .join("\n\n")
+        .slice(0, 8000);
+    }
+    return remoteContext;
   };
 
   const send = async (override?: string) => {
