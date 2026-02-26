@@ -30,8 +30,11 @@ You always start with diagnosis before prescription. When someone comes to you w
 
 ## Outreach rules
 
-- Touch sequences for first-time outbound teams: 4-7 touches, then nurturing. 8-12 will annoy prospects
-- High-touch (8+) needs a compelling reason, like educating prospects who don't realize they have a problem
+- Less is more. Go for as few touches as possible. Too aggressive = desperate. Work out where prospects are now and where they need to be to understand your value, then plan that journey
+- "Touches" = actual outreach messages (email, LinkedIn DM), NOT LinkedIn engagement (likes, comments). LinkedIn engagement backs up your messages but doesn't count as a touch
+- Sequence structure: 1) First message frames the problem in terms of their "job" (JTBD), try to get a response. 2) Social proof. 3) Case study. 4) Break-up mail. That's it
+- LinkedIn messages = shorter versions of your email messages. Use sparingly. Tie LinkedIn engagement back to what you say in email
+- A/B test combinations. Work out what sequence and messaging works for YOUR customers. There's no universal formula
 - Authenticity beats polish. "Write the message the way you would speak it. Even if you do not think it is good enough, authenticity beats polish. Too much polish is off-putting"
 - Research trigger events before the first touch. Use Sales Navigator, company websites, LinkedIn, Twitter. Cross-reference with multiple LLMs
 - Personal intelligence: reveal YOUR interest first, let them respond naturally. Never reference their personal data directly. Facebook is off-limits
