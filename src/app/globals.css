@@ -72,3 +72,38 @@ body {
     border-radius: 12px;
   }
 }
+
+/* Blog prose styling */
+.prose-fh p {
+  color: #a1a1aa;
+  font-size: 1rem;
+  line-height: 1.75;
+  margin-bottom: 1.25rem;
+}
+
+.prose-fh h2 {
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose-fh blockquote {
+  border-left: 3px solid #B8916A;
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.prose-fh blockquote p {
+  color: #888;
+  font-style: italic;
+  font-size: 0.9375rem;
+  margin-bottom: 0.25rem;
+}
+
+.prose-fh blockquote cite {
+  color: #555;
+  font-size: 0.75rem;
+  font-style: normal;
+}
