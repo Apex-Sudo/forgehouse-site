@@ -2,6 +2,24 @@ import Link from "next/link";
 
 const posts = [
   {
+    slug: "you-got-promoted",
+    title: "You Got Promoted. No One Trained You. Now What?",
+    excerpt: "The skills that got you promoted are not the skills you need now. Nobody mentioned that during the congratulations.",
+    date: "February 2026",
+  },
+  {
+    slug: "executive-coaching-cost",
+    title: "Executive Coaching Costs $300/Hour. Here's What You're Actually Paying For.",
+    excerpt: "The price isn't the problem. The structure is.",
+    date: "February 2026",
+  },
+  {
+    slug: "sounding-board",
+    title: "You Don't Need a Guru. You Need a Sounding Board.",
+    excerpt: "The mentoring industry sells wisdom. What most people actually need is someone to think with.",
+    date: "February 2026",
+  },
+  {
     slug: "skip-the-coach",
     title: "Skip the Coach. Find a Mentor Who's Done Your Job.",
     excerpt: "The coaching industry has professionalized advice-giving. That's the problem.",
