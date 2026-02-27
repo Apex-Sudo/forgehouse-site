@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { CALIBRATION_SYSTEM_PROMPT } from "@/lib/calibration-system-prompt";
 import { extractLimiter } from "@/lib/rate-limit";
+import { supabase } from "@/lib/supabase";
 
 export async function POST(req: Request) {
   const ip =
@@ -47,6 +48,8 @@ export async function POST(req: Request) {
   });
 
   const encoder = new TextEncoder();
+  let fullAssistantResponse = "";
+
   const readable = new ReadableStream({
     async start(controller) {
       try {
@@ -55,8 +58,34 @@ export async function POST(req: Request) {
             event.type === "content_block_delta" &&
             event.delta.type === "text_delta"
           ) {
+            fullAssistantResponse += event.delta.text;
             controller.enqueue(encoder.encode(event.delta.text));
           }
+        }
+
+        // After streaming completes, upsert to Supabase
+        if (mentorSlug && fullAssistantResponse) {
+          const allMessages = [
+            ...messages,
+            { role: "assistant" as const, content: fullAssistantResponse },
+          ];
+          const exchangeCount = allMessages.filter((m) => m.role === "user").length;
+
+          supabase
+            .from("fh_sessions")
+            .upsert(
+              {
+                slug: mentorSlug,
+                type: "calibration",
+                messages: allMessages,
+                exchange_count: exchangeCount,
+                updated_at: new Date().toISOString(),
+              },
+              { onConflict: "slug,type" }
+            )
+            .then(({ error }) => {
+              if (error) console.error("Supabase upsert error:", error);
+            });
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Unknown error";
