@@ -82,9 +82,13 @@ export async function listConversations(
 ) {
   const table = await getTable(email);
 
+  const selectFields = table === "conversations"
+    ? "id, mentor_slug, created_at, updated_at"
+    : "id, mentor_slug, created_at";
+
   let query = supabase
     .from(table)
-    .select("id, mentor_slug, created_at, updated_at")
+    .select(selectFields)
     .eq("user_id", userId)
     .eq("mentor_slug", mentorSlug)
     .order("created_at", { ascending: false });
