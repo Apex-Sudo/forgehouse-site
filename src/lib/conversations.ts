@@ -55,6 +55,30 @@ export async function isFreeTrialActive(userId: string): Promise<boolean> {
   return daysSinceStart <= 7;
 }
 
+// Get messages for a conversation from the normalized messages table
+async function getMessages(conversationId: string, limit?: number): Promise<Message[]> {
+  let query = supabase
+    .from("messages")
+    .select("role, content")
+    .eq("conversation_id", conversationId)
+    .order("created_at", { ascending: true });
+
+  if (limit) {
+    // Get last N messages: order desc, limit, then reverse
+    const { data } = await supabase
+      .from("messages")
+      .select("role, content")
+      .eq("conversation_id", conversationId)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    return ((data as Message[]) || []).reverse();
+  }
+
+  const { data } = await query;
+  return (data as Message[]) || [];
+}
+
 // Get recent context messages from the most recent conversation with a mentor
 export async function getContextMessages(
   userId: string,
@@ -66,10 +90,10 @@ export async function getContextMessages(
 
   let query = supabase
     .from(table)
-    .select("messages")
+    .select("id")
     .eq("user_id", userId)
     .eq("mentor_slug", mentorSlug)
-    .order("updated_at" in {} ? "updated_at" : "created_at", { ascending: false })
+    .order("created_at", { ascending: false })
     .limit(1);
 
   // For free tier, only return non-expired conversations
@@ -79,10 +103,9 @@ export async function getContextMessages(
 
   const { data } = await query;
 
-  if (!data?.[0]?.messages) return [];
+  if (!data?.[0]?.id) return [];
 
-  const messages = data[0].messages as Message[];
-  return messages.slice(-limit);
+  return getMessages(data[0].id, limit);
 }
 
 // List conversations for a user + mentor
@@ -113,7 +136,7 @@ export async function listConversations(
   return data;
 }
 
-// Get a single conversation
+// Get a single conversation (with messages from normalized table)
 export async function getConversation(conversationId: string, userId: string, email: string) {
   const table = await getTable(email);
 
@@ -129,7 +152,10 @@ export async function getConversation(conversationId: string, userId: string, em
 
   const { data, error } = await baseQuery.single();
   if (error) throw error;
-  return data;
+
+  // Replace JSONB messages with normalized messages
+  const messages = await getMessages(conversationId);
+  return { ...data, messages };
 }
 
 // Create a new conversation
@@ -154,7 +180,7 @@ export async function createConversation(
   const record: Record<string, unknown> = {
     user_id: userId,
     mentor_slug: mentorSlug,
-    messages: [],
+    messages: [], // Keep JSONB column as empty for backwards compat
     ...(scenarioType ? { scenario_type: scenarioType } : {}),
   };
 
@@ -180,7 +206,7 @@ export async function createConversation(
   return data;
 }
 
-// Append messages to a conversation
+// Append messages to a conversation (writes to normalized messages table)
 export async function appendMessages(
   conversationId: string,
   userId: string,
@@ -189,29 +215,32 @@ export async function appendMessages(
 ) {
   const table = await getTable(email);
 
-  // Get current messages
+  // Verify conversation exists and belongs to user
   const { data: current } = await supabase
     .from(table)
-    .select("messages")
+    .select("id")
     .eq("id", conversationId)
     .eq("user_id", userId)
     .single();
 
   if (!current) throw new Error("Conversation not found");
 
-  const existingMessages = (current.messages as Message[]) || [];
-  const updatedMessages = [...existingMessages, ...newMessages];
+  // Insert into normalized messages table
+  const inserts = newMessages.map((m) => ({
+    conversation_id: conversationId,
+    role: m.role,
+    content: m.content,
+  }));
 
-  const update: Record<string, unknown> = { messages: updatedMessages };
+  const { error: insertError } = await supabase.from("messages").insert(inserts);
+  if (insertError) throw insertError;
+
+  // Update conversation timestamp
   if (table === "conversations") {
-    update.updated_at = new Date().toISOString();
+    await supabase
+      .from(table)
+      .update({ updated_at: new Date().toISOString() })
+      .eq("id", conversationId)
+      .eq("user_id", userId);
   }
-
-  const { error } = await supabase
-    .from(table)
-    .update(update)
-    .eq("id", conversationId)
-    .eq("user_id", userId);
-
-  if (error) throw error;
 }
