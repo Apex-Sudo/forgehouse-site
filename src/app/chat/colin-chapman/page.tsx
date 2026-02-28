@@ -9,6 +9,7 @@ import SavedInsightsPanel from "@/components/SavedInsightsPanel";
 import MemoryBanner from "@/components/MemoryBanner";
 // SignInNudge no longer needed — Colin requires auth
 import UpgradePrompt from "@/components/UpgradePrompt";
+import { SCENARIOS } from "@/lib/scenarios";
 
 const STARTERS = [
   "Our outbound isn't converting. Where do I even start diagnosing this?",
@@ -37,6 +38,7 @@ function ChatContent() {
   const [hitPaywall, setHitPaywall] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
+  const [activeScenario, setActiveScenario] = useState<string | null>(null);
   const summaryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -96,12 +98,12 @@ function ChatContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, seeded]);
 
-  const createConversation = async (): Promise<string | null> => {
+  const createConversation = async (scenarioType?: string): Promise<string | null> => {
     try {
       const res = await fetch("/api/conversations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mentor_slug: "colin-chapman" }),
+        body: JSON.stringify({ mentor_slug: "colin-chapman", ...(scenarioType ? { scenario_type: scenarioType } : {}) }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -124,7 +126,7 @@ function ChatContent() {
 
     let convId = conversationId;
     if (session?.user && !convId) {
-      convId = await createConversation();
+      convId = await createConversation(activeScenario ?? undefined);
     }
 
     try {
@@ -135,6 +137,7 @@ function ChatContent() {
           messages: updated,
           mentor: "colin-chapman",
           ...(convId ? { conversation_id: convId } : {}),
+          ...(activeScenario ? { scenario_id: activeScenario } : {}),
         }),
       });
 
@@ -221,6 +224,7 @@ function ChatContent() {
     setConversationId(null);
     setMessages([]);
     setSummary(null);
+    setActiveScenario(null);
     if (summaryTimerRef.current) clearTimeout(summaryTimerRef.current);
   };
 
@@ -285,17 +289,40 @@ function ChatContent() {
             </div>
 
             {messages.length === 0 && (
-              <div className="flex flex-wrap gap-2 justify-center max-w-xl mx-auto pt-4">
-                {STARTERS.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => send(s)}
-                    className="text-sm bg-white/[0.04] border border-white/[0.08] px-4 py-2 rounded-full text-muted hover:text-foreground hover:bg-white/[0.08] hover:border-white/[0.12] transition"
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
+              <>
+                <div className="flex flex-wrap gap-2 justify-center max-w-xl mx-auto pt-4">
+                  {STARTERS.map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => send(s)}
+                      className="text-sm bg-white/[0.04] border border-white/[0.08] px-4 py-2 rounded-full text-muted hover:text-foreground hover:bg-white/[0.08] hover:border-white/[0.12] transition"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="max-w-xl mx-auto pt-4">
+                  <p className="text-xs text-muted/60 uppercase tracking-wider font-medium text-center mb-3">Or try a guided scenario</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {SCENARIOS.map((sc) => (
+                      <button
+                        key={sc.id}
+                        onClick={() => {
+                          setActiveScenario(sc.id);
+                          // Colin asks the first question
+                          setMessages([{ role: "assistant", content: sc.questions[0] }]);
+                        }}
+                        className="text-left bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 hover:bg-white/[0.06] hover:border-amber/20 transition group/sc cursor-pointer"
+                      >
+                        <div className="text-lg mb-1">{sc.icon}</div>
+                        <div className="text-sm font-medium text-foreground/90 group-hover/sc:text-amber transition">{sc.title}</div>
+                        <div className="text-xs text-muted mt-1">{sc.description}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
             )}
 
             {messages.map((m, i) => {

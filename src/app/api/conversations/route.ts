@@ -31,12 +31,12 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { mentor_slug } = await req.json();
+    const { mentor_slug, scenario_type } = await req.json();
     if (!mentor_slug) {
       return Response.json({ error: "mentor_slug required" }, { status: 400 });
     }
 
-    const data = await createConversation(user.id, mentor_slug, user.email);
+    const data = await createConversation(user.id, mentor_slug, user.email, scenario_type);
     return Response.json(data);
   } catch (err) {
     console.error("Create conversation error:", err);

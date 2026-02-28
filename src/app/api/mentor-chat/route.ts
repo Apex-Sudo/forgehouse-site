@@ -3,6 +3,7 @@ import { COLIN_SYSTEM_PROMPT } from "@/lib/colin-system-prompt";
 import { chatLimiter } from "@/lib/rate-limit";
 import { auth } from "@/lib/auth";
 import { getContextMessages, appendMessages } from "@/lib/conversations";
+import { getScenario } from "@/lib/scenarios";
 
 const MENTOR_PROMPTS: Record<string, string> = {
   "colin-chapman": COLIN_SYSTEM_PROMPT,
@@ -28,10 +29,11 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { messages, mentor, conversation_id } = body as {
+    const { messages, mentor, conversation_id, scenario_id } = body as {
       messages: { role: "user" | "assistant"; content: string }[];
       mentor: string;
       conversation_id?: string;
+      scenario_id?: string;
     };
 
     if (!messages?.length) {
@@ -89,6 +91,25 @@ export async function POST(req: Request) {
         .map((m) => `${m.role}: ${m.content}`)
         .join("\n");
       enrichedSystemPrompt = `${systemPrompt}\n\n--- Previous conversation context ---\n${contextSummary}\n--- End of context ---`;
+    }
+
+    // Add scenario-specific system prompt if in scenario mode
+    if (scenario_id) {
+      const scenario = getScenario(scenario_id);
+      if (scenario) {
+        const userAnswerCount = messages.filter((m) => m.role === "user").length;
+        const totalQuestions = scenario.questions.length;
+        const isLastQuestion = userAnswerCount >= totalQuestions;
+
+        enrichedSystemPrompt += `\n\n--- SCENARIO MODE ---\n${scenario.systemPromptAddition}\n\nThe user is on answer ${userAnswerCount} of ${totalQuestions} questions.`;
+
+        if (isLastQuestion) {
+          enrichedSystemPrompt += `\nAll questions have been answered. Deliver the structured output NOW. Do not ask more questions.`;
+        } else {
+          const nextQuestion = scenario.questions[userAnswerCount];
+          enrichedSystemPrompt += `\nAcknowledge their answer briefly, then ask this next question:\n"${nextQuestion}"\nDo NOT deliver the final structured output yet.`;
+        }
+      }
     }
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });

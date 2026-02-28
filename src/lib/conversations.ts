@@ -136,7 +136,8 @@ export async function getConversation(conversationId: string, userId: string, em
 export async function createConversation(
   userId: string,
   mentorSlug: string,
-  email: string
+  email: string,
+  scenarioType?: string
 ) {
   const table = await getTable(email);
 
@@ -154,6 +155,7 @@ export async function createConversation(
     user_id: userId,
     mentor_slug: mentorSlug,
     messages: [],
+    ...(scenarioType ? { scenario_type: scenarioType } : {}),
   };
 
   if (table === "free_tier_conversations") {
