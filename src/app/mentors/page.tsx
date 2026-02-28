@@ -6,7 +6,7 @@ const mentors = [
   {
     slug: "colin-chapman",
     name: "Colin Chapman",
-    title: "GTM & Outbound Sales — 25+ Years B2B",
+    title: "GTM & Outbound Sales · 25+ Years B2B",
     tagline: "Cuts through noise to the one thing that moves the needle.",
   },
 ];
@@ -47,7 +47,7 @@ export default function MentorsPage() {
         {/* Become a mentor CTA */}
         <div className="mt-16 text-center">
           <p className="text-muted mb-4">Have frameworks worth preserving?</p>
-          <Link href="/contribute" className="text-amber hover:underline font-medium">
+          <Link href="/apply" className="text-amber hover:underline font-medium">
             Contribute to ForgeHouse →
           </Link>
         </div>
