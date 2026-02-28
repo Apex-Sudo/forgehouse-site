@@ -7,6 +7,7 @@ import { STARTERS } from "@/components/InlineChat";
 import ChatMessage from "@/components/ChatMessage";
 import ConversationHistory from "@/components/ConversationHistory";
 import MemoryBanner from "@/components/MemoryBanner";
+import SignInNudge from "@/components/SignInNudge";
 
 interface Message {
   role: "user" | "assistant";
@@ -178,6 +179,11 @@ function ChatContent() {
               <p className="text-xs text-muted">Decision-making partner</p>
             </div>
           </div>
+
+          {/* Sign-in nudge for anonymous users after 2 messages */}
+          {!session && status !== "loading" && messages.filter(m => m.role === "user").length >= 2 && (
+            <SignInNudge />
+          )}
 
           {/* Memory banner for free tier */}
           {showBanner && <MemoryBanner />}

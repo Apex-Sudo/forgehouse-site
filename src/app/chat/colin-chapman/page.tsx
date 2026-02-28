@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import ChatMessage from "@/components/ChatMessage";
 import ConversationHistory from "@/components/ConversationHistory";
 import MemoryBanner from "@/components/MemoryBanner";
+import SignInNudge from "@/components/SignInNudge";
 
 const STARTERS = [
   "Our outbound isn't converting. Where do I even start diagnosing this?",
@@ -181,6 +182,11 @@ function ChatContent() {
               <p className="text-xs text-muted">GTM & Outbound Sales Mentor</p>
             </div>
           </div>
+
+          {/* Sign-in nudge for anonymous users after 2 messages */}
+          {!session && status !== "loading" && messages.filter(m => m.role === "user").length >= 2 && (
+            <SignInNudge />
+          )}
 
           {showBanner && <MemoryBanner />}
 
