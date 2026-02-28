@@ -5,11 +5,12 @@ interface Conversation {
   id: string;
   created_at: string;
   messages?: { role: string; content: string }[];
+  summary?: string | null;
 }
 
 interface Props {
   mentorSlug: string;
-  onSelect: (id: string, messages: { role: "user" | "assistant"; content: string }[]) => void;
+  onSelect: (id: string, messages: { role: "user" | "assistant"; content: string }[], summary?: string | null) => void;
   onNew: () => void;
 }
 
@@ -42,7 +43,7 @@ export default function ConversationHistory({ mentorSlug, onSelect, onNew }: Pro
               const r = await fetch(`/api/conversations/${c.id}`);
               if (r.ok) {
                 const full = await r.json();
-                return { ...c, messages: full.messages };
+                return { ...c, messages: full.messages, summary: full.summary ?? null };
               }
             } catch { /* ignore */ }
             return c;
@@ -65,6 +66,11 @@ export default function ConversationHistory({ mentorSlug, onSelect, onNew }: Pro
   };
 
   const getPreview = (c: Conversation) => {
+    if (c.summary) {
+      // Show first line of summary
+      const firstLine = c.summary.split("\n").find((l) => l.trim()) ?? "";
+      return firstLine.length > 60 ? firstLine.slice(0, 60) + "..." : firstLine;
+    }
     const first = c.messages?.find((m) => m.role === "user");
     if (!first) return "Empty conversation";
     return first.content.length > 60 ? first.content.slice(0, 60) + "..." : first.content;
@@ -104,7 +110,7 @@ export default function ConversationHistory({ mentorSlug, onSelect, onNew }: Pro
                 onClick={() => {
                   setOpen(false);
                   const msgs = (c.messages || []) as { role: "user" | "assistant"; content: string }[];
-                  onSelect(c.id, msgs);
+                  onSelect(c.id, msgs, c.summary);
                 }}
                 className="w-full text-left px-3 py-2.5 hover:bg-white/[0.04] transition border-b border-white/[0.04] last:border-0"
               >

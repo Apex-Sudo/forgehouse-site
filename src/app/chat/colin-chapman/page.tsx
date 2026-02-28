@@ -36,6 +36,8 @@ function ChatContent() {
   const [showBanner, setShowBanner] = useState(false);
   const [hitPaywall, setHitPaywall] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [summary, setSummary] = useState<string | null>(null);
+  const summaryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const userMessageCount = messages.filter((m) => m.role === "user").length;
@@ -179,7 +181,27 @@ function ChatContent() {
       ]);
     } finally {
       setStreaming(false);
+      // Schedule auto-summary after 30s idle if 3+ user messages
+      scheduleSummary(convId);
     }
+  };
+
+  const scheduleSummary = (convId: string | null) => {
+    if (summaryTimerRef.current) clearTimeout(summaryTimerRef.current);
+    if (!convId) return;
+    summaryTimerRef.current = setTimeout(async () => {
+      // Check current message count at trigger time
+      const currentUserMsgCount = messages.filter((m) => m.role === "user").length + 1; // +1 for the one we just sent
+      if (currentUserMsgCount >= 3) {
+        try {
+          const res = await fetch(`/api/conversations/${convId}/summarize`, { method: "POST" });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.summary) setSummary(data.summary);
+          }
+        } catch { /* silent */ }
+      }
+    }, 30000);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -189,14 +211,17 @@ function ChatContent() {
     }
   };
 
-  const loadConversation = (id: string, msgs: Message[]) => {
+  const loadConversation = (id: string, msgs: Message[], convSummary?: string | null) => {
     setConversationId(id);
     setMessages(msgs);
+    setSummary(convSummary ?? null);
   };
 
   const startNew = () => {
     setConversationId(null);
     setMessages([]);
+    setSummary(null);
+    if (summaryTimerRef.current) clearTimeout(summaryTimerRef.current);
   };
 
   // Show loading while checking auth or redirecting
@@ -247,6 +272,12 @@ function ChatContent() {
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
+            {summary && messages.length > 0 && (
+              <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-3 mb-2">
+                <p className="text-xs font-semibold text-muted uppercase tracking-wider mb-2">Session Summary</p>
+                <div className="text-sm text-foreground/70 whitespace-pre-line">{summary}</div>
+              </div>
+            )}
             <div className="flex justify-start">
               <div className="max-w-[80%] bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm leading-relaxed rounded-2xl">
                 Before I can help, I need to understand your situation. What are you selling, who are you selling it to, and what does your current outbound look like?
