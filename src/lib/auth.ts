@@ -22,32 +22,59 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async signIn({ user, account }) {
       if (!user.email) return false;
 
-      const provider = account?.provider ?? null;
-      const providerAccountId = account?.providerAccountId ?? null;
+      try {
+        const provider = account?.provider ?? null;
+        const providerAccountId = account?.providerAccountId ?? null;
 
-      // Always upsert on email (the stable key across providers)
-      // If LinkedIn, also store linkedin_id
-      const upsertData: Record<string, unknown> = {
-        email: user.email,
-        name: user.name ?? null,
-        image: user.image ?? null,
-        provider,
-      };
+        // Check if user exists
+        const { data: existing } = await supabase
+          .from("users")
+          .select("id")
+          .eq("email", user.email)
+          .single();
 
-      if (provider === "linkedin") {
-        upsertData.linkedin_id = providerAccountId;
-      }
+        if (existing) {
+          // Update existing user
+          const updateData: Record<string, unknown> = {
+            name: user.name ?? null,
+            image: user.image ?? null,
+            provider,
+          };
+          if (provider === "linkedin" && providerAccountId) {
+            updateData.linkedin_id = providerAccountId;
+          }
 
-      const { error } = await supabase
-        .from("users")
-        .upsert(upsertData, { onConflict: "email" });
+          await supabase
+            .from("users")
+            .update(updateData)
+            .eq("id", existing.id);
+        } else {
+          // Insert new user
+          const insertData: Record<string, unknown> = {
+            email: user.email,
+            name: user.name ?? null,
+            image: user.image ?? null,
+            provider,
+          };
+          if (provider === "linkedin" && providerAccountId) {
+            insertData.linkedin_id = providerAccountId;
+          }
 
-      if (error) {
-        console.error("Failed to upsert user:", error);
+          const { error } = await supabase
+            .from("users")
+            .insert(insertData);
+
+          if (error) {
+            console.error("Failed to insert user:", error);
+            return false;
+          }
+        }
+
+        return true;
+      } catch (err) {
+        console.error("Auth signIn error:", err);
         return false;
       }
-
-      return true;
     },
     async session({ session }) {
       // Attach Supabase user ID to session
