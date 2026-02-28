@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { useSession } from "next-auth/react";
 import ChatMessage from "@/components/ChatMessage";
 import ConversationHistory from "@/components/ConversationHistory";
+import SavedInsightsPanel from "@/components/SavedInsightsPanel";
 import MemoryBanner from "@/components/MemoryBanner";
 // SignInNudge no longer needed — Colin requires auth
 import UpgradePrompt from "@/components/UpgradePrompt";
@@ -70,13 +71,14 @@ function ChatContent() {
   useEffect(() => {
     if (!session?.user) return;
     fetch("/api/insights?mentor=colin-chapman")
-      .then((r) => {
-        if (r.status === 403) {
+      .then(async (r) => {
+        if (r.ok) {
+          const data = await r.json();
+          setIsSubscribed(data.isSubscribed);
+          setShowBanner(!data.isSubscribed);
+        } else {
           setIsSubscribed(false);
           setShowBanner(true);
-        } else if (r.ok) {
-          setIsSubscribed(true);
-          setShowBanner(false);
         }
       })
       .catch(() => {});
@@ -220,10 +222,13 @@ function ChatContent() {
               />
             )}
             <span className="text-2xl">🎯</span>
-            <div>
+            <div className="flex-1">
               <h1 className="font-bold text-sm">Colin Chapman</h1>
               <p className="text-xs text-muted">GTM & Outbound Sales Mentor</p>
             </div>
+            {session && status === "authenticated" && (
+              <SavedInsightsPanel mentorSlug="colin-chapman" />
+            )}
           </div>
 
           {showWelcome && (
@@ -262,15 +267,22 @@ function ChatContent() {
               </div>
             )}
 
-            {messages.map((m, i) => (
-              <ChatMessage
-                key={i}
-                role={m.role}
-                content={m.content}
-                mentorSlug="colin-chapman"
-                isSubscribed={isSubscribed}
-              />
-            ))}
+            {messages.map((m, i) => {
+              // For assistant messages, find the preceding user message as context
+              const context = m.role === "assistant" && i > 0
+                ? messages.slice(0, i).reverse().find((prev) => prev.role === "user")?.content
+                : undefined;
+              return (
+                <ChatMessage
+                  key={i}
+                  role={m.role}
+                  content={m.content}
+                  mentorSlug="colin-chapman"
+                  isSubscribed={isSubscribed}
+                  context={context}
+                />
+              );
+            })}
 
             {streaming &&
               messages.length > 0 &&

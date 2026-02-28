@@ -1,6 +1,16 @@
 import { auth } from "@/lib/auth";
-import { isSubscribed } from "@/lib/subscription";
 import { supabase } from "@/lib/supabase";
+
+const FREE_INSIGHT_LIMIT = 3;
+
+async function getUserSubscription(userId: string) {
+  const { data } = await supabase
+    .from("users")
+    .select("subscribed, subscribed_mentor_slugs")
+    .eq("id", userId)
+    .single();
+  return data;
+}
 
 export async function GET(req: Request) {
   const session = await auth();
@@ -9,13 +19,13 @@ export async function GET(req: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const active = await isSubscribed(user.email);
-  if (!active) {
-    return Response.json({ error: "Subscription required" }, { status: 403 });
-  }
-
   const { searchParams } = new URL(req.url);
   const mentor = searchParams.get("mentor");
+
+  // Check subscription status
+  const userData = await getUserSubscription(user.id);
+  const isSub = userData?.subscribed &&
+    userData?.subscribed_mentor_slugs?.includes(mentor ?? "");
 
   let query = supabase
     .from("saved_insights")
@@ -33,7 +43,7 @@ export async function GET(req: Request) {
     return Response.json({ error: "Internal error" }, { status: 500 });
   }
 
-  return Response.json(data);
+  return Response.json({ insights: data, isSubscribed: !!isSub, limit: isSub ? null : FREE_INSIGHT_LIMIT });
 }
 
 export async function POST(req: Request) {
@@ -43,15 +53,26 @@ export async function POST(req: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const active = await isSubscribed(user.email);
-  if (!active) {
-    return Response.json({ error: "Subscription required" }, { status: 403 });
-  }
-
   try {
-    const { mentor_slug, content, source_message_id, tags } = await req.json();
+    const { mentor_slug, content, context } = await req.json();
     if (!mentor_slug || !content) {
       return Response.json({ error: "mentor_slug and content required" }, { status: 400 });
+    }
+
+    // Check subscription; free users limited to 3
+    const userData = await getUserSubscription(user.id);
+    const isSub = userData?.subscribed &&
+      userData?.subscribed_mentor_slugs?.includes(mentor_slug);
+
+    if (!isSub) {
+      const { count } = await supabase
+        .from("saved_insights")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id);
+
+      if ((count ?? 0) >= FREE_INSIGHT_LIMIT) {
+        return Response.json({ error: "Free users can save up to 3 insights. Subscribe for unlimited.", code: "INSIGHT_LIMIT" }, { status: 403 });
+      }
     }
 
     const { data, error } = await supabase
@@ -60,8 +81,7 @@ export async function POST(req: Request) {
         user_id: user.id,
         mentor_slug,
         content,
-        source_message_id: source_message_id ?? null,
-        tags: tags ?? [],
+        context: context ?? null,
       })
       .select()
       .single();

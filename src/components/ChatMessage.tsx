@@ -8,23 +8,40 @@ interface ChatMessageProps {
   content: string;
   mentorSlug?: string;
   isSubscribed?: boolean;
+  context?: string; // the user message that prompted this response
 }
 
-function BookmarkButton({ content, mentorSlug, isSubscribed }: { content: string; mentorSlug: string; isSubscribed: boolean }) {
+function BookmarkButton({
+  content,
+  mentorSlug,
+  isSubscribed,
+  context,
+}: {
+  content: string;
+  mentorSlug: string;
+  isSubscribed: boolean;
+  context?: string;
+}) {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const save = async () => {
     if (saved || saving) return;
-    if (!isSubscribed) return;
     setSaving(true);
     try {
       const res = await fetch("/api/insights", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mentor_slug: mentorSlug, content }),
+        body: JSON.stringify({ mentor_slug: mentorSlug, content, context }),
       });
-      if (res.ok) setSaved(true);
+      if (res.ok) {
+        setSaved(true);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        if (err.code === "INSIGHT_LIMIT") {
+          alert("Free users can save up to 3 insights. Subscribe for unlimited.");
+        }
+      }
     } catch {
       // silent fail
     } finally {
@@ -35,10 +52,8 @@ function BookmarkButton({ content, mentorSlug, isSubscribed }: { content: string
   return (
     <button
       onClick={save}
-      title={isSubscribed ? (saved ? "Saved" : "Save insight") : "Subscribe to save insights"}
-      className={`opacity-0 group-hover:opacity-100 transition-opacity ml-2 mt-1 shrink-0 ${
-        !isSubscribed ? "cursor-not-allowed" : "cursor-pointer"
-      }`}
+      title={saved ? "Saved" : "Save insight"}
+      className="opacity-0 group-hover:opacity-100 transition-opacity ml-2 mt-1 shrink-0 cursor-pointer"
     >
       <svg
         width="14"
@@ -47,7 +62,7 @@ function BookmarkButton({ content, mentorSlug, isSubscribed }: { content: string
         fill={saved ? "currentColor" : "none"}
         stroke="currentColor"
         strokeWidth="2"
-        className={saved ? "text-amber" : isSubscribed ? "text-muted hover:text-foreground" : "text-muted/40"}
+        className={saved ? "text-amber" : "text-muted hover:text-foreground"}
       >
         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
       </svg>
@@ -55,7 +70,7 @@ function BookmarkButton({ content, mentorSlug, isSubscribed }: { content: string
   );
 }
 
-export default function ChatMessage({ role, content, mentorSlug, isSubscribed: isSubProp }: ChatMessageProps) {
+export default function ChatMessage({ role, content, mentorSlug, isSubscribed: isSubProp, context }: ChatMessageProps) {
   const { data: session } = useSession();
 
   if (role === "user") {
@@ -99,7 +114,12 @@ export default function ChatMessage({ role, content, mentorSlug, isSubscribed: i
         </ReactMarkdown>
       </div>
       {session && mentorSlug && (
-        <BookmarkButton content={content} mentorSlug={mentorSlug} isSubscribed={isSubProp ?? false} />
+        <BookmarkButton
+          content={content}
+          mentorSlug={mentorSlug}
+          isSubscribed={isSubProp ?? false}
+          context={context}
+        />
       )}
     </div>
   );

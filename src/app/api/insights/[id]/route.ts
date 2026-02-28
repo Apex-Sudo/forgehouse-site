@@ -1,5 +1,4 @@
 import { auth } from "@/lib/auth";
-import { isSubscribed } from "@/lib/subscription";
 import { supabase } from "@/lib/supabase";
 
 export async function DELETE(
@@ -10,11 +9,6 @@ export async function DELETE(
   const user = session?.user as { id?: string; email?: string } | undefined;
   if (!user?.id || !user?.email) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const active = await isSubscribed(user.email);
-  if (!active) {
-    return Response.json({ error: "Subscription required" }, { status: 403 });
   }
 
   try {
