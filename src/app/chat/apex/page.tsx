@@ -5,9 +5,7 @@ import { Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { STARTERS } from "@/components/InlineChat";
 import ChatMessage from "@/components/ChatMessage";
-import MemoryBanner from "@/components/MemoryBanner";
 import SignInNudge from "@/components/SignInNudge";
-import UpgradePrompt from "@/components/UpgradePrompt";
 
 interface Message {
   role: "user" | "assistant";
@@ -22,8 +20,6 @@ function ChatContent() {
   const [streaming, setStreaming] = useState(false);
   const [seeded, setSeeded] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [showBanner, setShowBanner] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = useCallback(() => {
@@ -33,24 +29,6 @@ function ChatContent() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
-
-  // Check subscription status for signed-in users
-  useEffect(() => {
-    if (!session?.user) return;
-    // We show the banner for signed-in non-subscribers
-    // We determine subscription by trying to fetch insights (403 = not subscribed)
-    fetch("/api/insights?mentor=apex")
-      .then((r) => {
-        if (r.status === 403) {
-          setIsSubscribed(false);
-          setShowBanner(true);
-        } else if (r.ok) {
-          setIsSubscribed(true);
-          setShowBanner(false);
-        }
-      })
-      .catch(() => {});
-  }, [session]);
 
   // Handle ?new=true to start fresh conversation
   useEffect(() => {
@@ -187,14 +165,6 @@ function ChatContent() {
             <SignInNudge />
           )}
 
-          {/* Memory banner for free tier */}
-          {showBanner && <MemoryBanner />}
-
-          {/* Upgrade prompt for signed-in free tier users after 5 messages */}
-          {session && !isSubscribed && messages.filter(m => m.role === "user").length >= 5 && (
-            <UpgradePrompt mentorSlug="colin-chapman" mentorName="Colin Chapman" mentorPrice={150} />
-          )}
-
           {/* Messages area */}
           <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
             <div className="flex justify-start">
@@ -223,7 +193,7 @@ function ChatContent() {
                 role={m.role}
                 content={m.content}
                 mentorSlug="apex"
-                isSubscribed={isSubscribed}
+                isSubscribed={true}
               />
             ))}
 
