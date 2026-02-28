@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import ChatMessage from "@/components/ChatMessage";
 import ConversationHistory from "@/components/ConversationHistory";
 import MemoryBanner from "@/components/MemoryBanner";
-import SignInNudge from "@/components/SignInNudge";
+// SignInNudge no longer needed — Colin requires auth
 import UpgradePrompt from "@/components/UpgradePrompt";
 
 const STARTERS = [
@@ -21,6 +21,8 @@ interface Message {
   content: string;
 }
 
+const FREE_MESSAGE_LIMIT = 5;
+
 function ChatContent() {
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
@@ -31,7 +33,11 @@ function ChatContent() {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
+  const [hitPaywall, setHitPaywall] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const userMessageCount = messages.filter((m) => m.role === "user").length;
+  const isLocked = !isSubscribed && userMessageCount >= FREE_MESSAGE_LIMIT;
 
   const scrollToBottom = useCallback(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -40,6 +46,13 @@ function ChatContent() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
+
+  // Redirect anonymous users to sign-in
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      window.location.href = "/sign-in?callbackUrl=/chat/colin-chapman";
+    }
+  }, [status]);
 
   useEffect(() => {
     if (!session?.user) return;
@@ -110,6 +123,13 @@ function ChatContent() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Request failed" }));
+        if (err.code === "FREE_LIMIT_REACHED") {
+          setHitPaywall(true);
+          // Remove the user message we just added (it was rejected)
+          setMessages((prev) => prev.slice(0, -1));
+          setStreaming(false);
+          return;
+        }
         setMessages((prev) => [
           ...prev,
           { role: "assistant", content: err.error || "Something went wrong." },
@@ -164,6 +184,15 @@ function ChatContent() {
     setMessages([]);
   };
 
+  // Show loading while checking auth or redirecting
+  if (status === "loading" || status === "unauthenticated") {
+    return (
+      <div className="pt-20 flex flex-col h-screen items-center justify-center">
+        <span className="animate-pulse text-muted text-sm">Loading...</span>
+      </div>
+    );
+  }
+
   return (
     <div className="pt-20 flex flex-col h-screen">
       <div className="flex-1 flex justify-center px-4 py-6">
@@ -184,17 +213,7 @@ function ChatContent() {
             </div>
           </div>
 
-          {/* Sign-in nudge for anonymous users after 2 messages */}
-          {!session && status !== "loading" && messages.filter(m => m.role === "user").length >= 2 && (
-            <SignInNudge />
-          )}
-
           {showBanner && <MemoryBanner />}
-
-          {/* Upgrade prompt for signed-in free tier users after 5 messages */}
-          {session && !isSubscribed && messages.filter(m => m.role === "user").length >= 5 && (
-            <UpgradePrompt mentorSlug="colin-chapman" mentorName="Colin Chapman" mentorPrice={150} />
-          )}
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
@@ -241,26 +260,45 @@ function ChatContent() {
             <div ref={bottomRef} />
           </div>
 
-          {/* Input */}
-          <div className="border-t border-white/[0.06] px-6 py-4">
-            <div className="flex gap-3">
-              <textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Describe your situation..."
-                rows={1}
-                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#3B82F6]/40 transition resize-none"
-              />
-              <button
-                onClick={() => send()}
-                disabled={streaming}
-                className="bg-[#3B82F6] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#2563EB] transition disabled:opacity-50"
-              >
-                Send
-              </button>
+          {/* Input or Paywall */}
+          {isLocked || hitPaywall ? (
+            <div className="border-t border-white/[0.06] px-6 py-6">
+              <div className="text-center">
+                <p className="text-sm text-foreground/90 mb-1 font-medium">
+                  You&apos;ve used your {FREE_MESSAGE_LIMIT} free messages.
+                </p>
+                <p className="text-xs text-muted mb-4">
+                  Subscribe to keep talking to Colin and save your conversations.
+                </p>
+                <UpgradePrompt mentorSlug="colin-chapman" mentorName="Colin Chapman" mentorPrice={150} />
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="border-t border-white/[0.06] px-6 py-4">
+              <div className="flex gap-3">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Describe your situation..."
+                  rows={1}
+                  className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#3B82F6]/40 transition resize-none"
+                />
+                <button
+                  onClick={() => send()}
+                  disabled={streaming}
+                  className="bg-[#3B82F6] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#2563EB] transition disabled:opacity-50"
+                >
+                  Send
+                </button>
+              </div>
+              {!isSubscribed && userMessageCount >= 3 && (
+                <p className="text-xs text-muted text-center mt-2">
+                  {FREE_MESSAGE_LIMIT - userMessageCount} free message{FREE_MESSAGE_LIMIT - userMessageCount !== 1 ? "s" : ""} remaining
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

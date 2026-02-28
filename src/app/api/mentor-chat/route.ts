@@ -43,9 +43,35 @@ export async function POST(req: Request) {
       return Response.json({ error: "Unknown mentor" }, { status: 404 });
     }
 
-    // Check auth for context injection
+    // Check auth for context injection + free tier enforcement
     const session = await auth();
     const user = session?.user as { id?: string; email?: string } | undefined;
+
+    // Enforce free tier limit for Colin (5 user messages max)
+    if (mentor === "colin-chapman") {
+      if (!user?.id) {
+        return Response.json({ error: "Sign in to talk to Colin.", code: "AUTH_REQUIRED" }, { status: 401 });
+      }
+
+      const { data: userData } = await (await import("@/lib/supabase")).supabase
+        .from("users")
+        .select("subscribed, subscribed_mentor_slugs")
+        .eq("id", user.id)
+        .single();
+
+      const isSubscribed = userData?.subscribed &&
+        userData?.subscribed_mentor_slugs?.includes("colin-chapman");
+
+      if (!isSubscribed) {
+        const userMessageCount = messages.filter((m: { role: string }) => m.role === "user").length;
+        if (userMessageCount > 5) {
+          return Response.json({
+            error: "You've used your 5 free messages. Subscribe to keep talking to Colin.",
+            code: "FREE_LIMIT_REACHED",
+          }, { status: 403 });
+        }
+      }
+    }
 
     let contextMessages: { role: "user" | "assistant"; content: string }[] = [];
     if (user?.id && user?.email) {
