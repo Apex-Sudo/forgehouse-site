@@ -45,7 +45,6 @@ function ChatContent() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
   const [activeScenario, setActiveScenario] = useState<string | null>(null);
-  const [showProfileNudge, setShowProfileNudge] = useState(false);
   const summaryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -90,7 +89,7 @@ function ChatContent() {
     }
   }, [status]);
 
-  // Check profile status for nudge
+  // Force onboarding if profile not complete
   useEffect(() => {
     if (!session?.user) return;
     fetch("/api/profile")
@@ -98,7 +97,7 @@ function ChatContent() {
         if (r.ok) {
           const data = await r.json();
           if (!data.profile?.profile_complete) {
-            setShowProfileNudge(true);
+            window.location.href = "/chat/onboarding?redirect=/chat/colin-chapman";
           }
         }
       })
@@ -325,17 +324,6 @@ function ChatContent() {
                   <p className="text-xs text-muted mt-0.5">Unlimited access to Colin. Your conversations are saved. Ask him anything.</p>
                 </div>
                 <button onClick={() => setShowWelcome(false)} className="text-muted hover:text-foreground text-xs ml-4 cursor-pointer">✕</button>
-              </div>
-            </div>
-          )}
-
-          {showProfileNudge && !showWelcome && (
-            <div className="mx-6 mt-4 animate-in fade-in slide-in-from-top-2 duration-500">
-              <div className="bg-amber/10 border border-amber/20 rounded-xl px-5 py-3 flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-foreground">Get better advice. <a href="/chat/onboarding" className="text-amber hover:underline font-medium">Tell us about your business first.</a></p>
-                </div>
-                <button onClick={() => setShowProfileNudge(false)} className="text-muted hover:text-foreground text-xs ml-4 cursor-pointer">✕</button>
               </div>
             </div>
           )}

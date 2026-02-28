@@ -1,7 +1,8 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { IconUserCircle, IconArrowRight } from "@tabler/icons-react";
 
 interface Message {
@@ -9,9 +10,11 @@ interface Message {
   content: string;
 }
 
-export default function OnboardingChat() {
+function OnboardingContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/chat/colin-chapman";
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
@@ -192,10 +195,10 @@ export default function OnboardingChat() {
                   <p className="text-foreground font-medium mb-1">You&apos;re all set.</p>
                   <p className="text-sm text-muted mb-5">Colin now knows your business and can give you tailored advice.</p>
                   <button
-                    onClick={() => router.push("/chat/colin-chapman")}
+                    onClick={() => router.push(redirectTo)}
                     className="inline-flex items-center gap-2 bg-amber text-black px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-amber/90 transition cursor-pointer"
                   >
-                    Talk to Colin <IconArrowRight size={16} />
+                    Continue <IconArrowRight size={16} />
                   </button>
                 </div>
               </div>
@@ -229,5 +232,13 @@ export default function OnboardingChat() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OnboardingChat() {
+  return (
+    <Suspense>
+      <OnboardingContent />
+    </Suspense>
   );
 }
