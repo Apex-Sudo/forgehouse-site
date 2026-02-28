@@ -25,44 +25,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       const provider = account?.provider ?? null;
       const providerAccountId = account?.providerAccountId ?? null;
 
+      // Always upsert on email (the stable key across providers)
+      // If LinkedIn, also store linkedin_id
+      const upsertData: Record<string, unknown> = {
+        email: user.email,
+        name: user.name ?? null,
+        image: user.image ?? null,
+        provider,
+      };
+
       if (provider === "linkedin") {
-        // Upsert keyed on linkedin_id
-        const { error } = await supabase
-          .from("users")
-          .upsert(
-            {
-              email: user.email,
-              name: user.name ?? null,
-              image: user.image ?? null,
-              provider,
-              linkedin_id: providerAccountId,
-            },
-            { onConflict: "linkedin_id" }
-          );
+        upsertData.linkedin_id = providerAccountId;
+      }
 
-        if (error) {
-          console.error("Failed to upsert user:", error);
-          return false;
-        }
-      } else {
-        // Google and other providers: upsert keyed on email
-        const { error } = await supabase
-          .from("users")
-          .upsert(
-            {
-              email: user.email,
-              name: user.name ?? null,
-              image: user.image ?? null,
-              provider,
-              linkedin_id: null,
-            },
-            { onConflict: "email" }
-          );
+      const { error } = await supabase
+        .from("users")
+        .upsert(upsertData, { onConflict: "email" });
 
-        if (error) {
-          console.error("Failed to upsert user:", error);
-          return false;
-        }
+      if (error) {
+        console.error("Failed to upsert user:", error);
+        return false;
       }
 
       return true;
