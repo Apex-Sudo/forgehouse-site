@@ -1,14 +1,9 @@
 import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
 import LinkedIn from "next-auth/providers/linkedin";
 import { supabase } from "./supabase";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
     LinkedIn({
       clientId: process.env.LINKEDIN_CLIENT_ID!,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
@@ -19,7 +14,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async signIn({ user, account }) {
       if (!user.email) return false;
 
-      // Upsert user to Supabase
+      // Upsert user to Supabase (keyed on linkedin_id to prevent gaming)
+      const linkedinId = account?.providerAccountId ?? null;
       const { error } = await supabase
         .from("users")
         .upsert(
@@ -28,8 +24,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             name: user.name ?? null,
             image: user.image ?? null,
             provider: account?.provider ?? null,
+            linkedin_id: linkedinId,
           },
-          { onConflict: "email" }
+          { onConflict: "linkedin_id" }
         );
 
       if (error) {

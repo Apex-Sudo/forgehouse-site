@@ -1,6 +1,71 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
+import Image from "next/image";
+
+function UserMenu() {
+  const { data: session, status } = useSession();
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  if (status === "loading") return null;
+
+  if (!session) {
+    return (
+      <button
+        onClick={() => signIn("linkedin")}
+        className="text-muted hover:text-foreground transition text-sm"
+      >
+        Sign In
+      </button>
+    );
+  }
+
+  return (
+    <div className="relative" ref={menuRef}>
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-2 text-sm text-muted hover:text-foreground transition"
+      >
+        {session.user?.image ? (
+          <Image
+            src={session.user.image}
+            alt=""
+            width={28}
+            height={28}
+            className="rounded-full"
+          />
+        ) : (
+          <div className="w-7 h-7 rounded-full bg-white/[0.1] flex items-center justify-center text-xs font-semibold">
+            {session.user?.name?.[0] ?? "?"}
+          </div>
+        )}
+        <span className="hidden sm:inline">{session.user?.name?.split(" ")[0]}</span>
+      </button>
+      {open && (
+        <div className="absolute right-0 mt-2 w-40 bg-background border border-white/[0.08] rounded-lg shadow-lg py-1 z-50">
+          <button
+            onClick={() => { setOpen(false); signOut(); }}
+            className="w-full text-left px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-white/[0.04] transition"
+          >
+            Sign Out
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -16,6 +81,7 @@ export default function Navbar() {
           <Link href="/thinking" className="hover:text-foreground transition">Thinking</Link>
           <Link href="/pricing" className="hover:text-foreground transition">Pricing</Link>
           <Link href="/apply" className="hover:text-foreground transition">Apply</Link>
+          <UserMenu />
           <Link href="/chat/apex" className="bg-amber text-white px-5 py-2 rounded-lg font-semibold hover:bg-amber-dark transition">
             Start Chat
           </Link>
@@ -33,6 +99,7 @@ export default function Navbar() {
           <Link href="/thinking" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Thinking</Link>
           <Link href="/pricing" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Pricing</Link>
           <Link href="/apply" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Apply</Link>
+          <div onClick={() => setOpen(false)}><UserMenu /></div>
           <Link href="/chat/apex" onClick={() => setOpen(false)} className="bg-amber text-white px-4 py-2 rounded-lg font-semibold text-center">Start Chat</Link>
         </div>
       )}

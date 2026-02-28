@@ -2,7 +2,10 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { useSession } from "next-auth/react";
 import ChatMessage from "@/components/ChatMessage";
+import ConversationHistory from "@/components/ConversationHistory";
+import MemoryBanner from "@/components/MemoryBanner";
 
 const STARTERS = [
   "Our outbound isn't converting. Where do I even start diagnosing this?",
@@ -18,10 +21,14 @@ interface Message {
 
 function ChatContent() {
   const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [seeded, setSeeded] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [showBanner, setShowBanner] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = useCallback(() => {
@@ -33,6 +40,21 @@ function ChatContent() {
   }, [messages, scrollToBottom]);
 
   useEffect(() => {
+    if (!session?.user) return;
+    fetch("/api/insights?mentor=colin-chapman")
+      .then((r) => {
+        if (r.status === 403) {
+          setIsSubscribed(false);
+          setShowBanner(true);
+        } else if (r.ok) {
+          setIsSubscribed(true);
+          setShowBanner(false);
+        }
+      })
+      .catch(() => {});
+  }, [session]);
+
+  useEffect(() => {
     if (seeded) return;
     const q = searchParams.get("q");
     if (q) {
@@ -41,6 +63,22 @@ function ChatContent() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, seeded]);
+
+  const createConversation = async (): Promise<string | null> => {
+    try {
+      const res = await fetch("/api/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mentor_slug: "colin-chapman" }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setConversationId(data.id);
+        return data.id;
+      }
+    } catch { /* ignore */ }
+    return null;
+  };
 
   const send = async (override?: string) => {
     const text = (override ?? input).trim();
@@ -52,11 +90,20 @@ function ChatContent() {
     setInput("");
     setStreaming(true);
 
+    let convId = conversationId;
+    if (session?.user && !convId) {
+      convId = await createConversation();
+    }
+
     try {
       const res = await fetch("/api/mentor-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: updated, mentor: "colin-chapman" }),
+        body: JSON.stringify({
+          messages: updated,
+          mentor: "colin-chapman",
+          ...(convId ? { conversation_id: convId } : {}),
+        }),
       });
 
       if (!res.ok) {
@@ -105,18 +152,37 @@ function ChatContent() {
     }
   };
 
+  const loadConversation = (id: string, msgs: Message[]) => {
+    setConversationId(id);
+    setMessages(msgs);
+  };
+
+  const startNew = () => {
+    setConversationId(null);
+    setMessages([]);
+  };
+
   return (
     <div className="pt-20 flex flex-col h-screen">
       <div className="flex-1 flex justify-center px-4 py-6">
         <div className="w-full max-w-3xl glass-card flex flex-col overflow-hidden shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)]">
           {/* Chat header */}
           <div className="flex items-center gap-3 px-6 py-4 border-b border-white/[0.06]">
+            {session && status === "authenticated" && (
+              <ConversationHistory
+                mentorSlug="colin-chapman"
+                onSelect={loadConversation}
+                onNew={startNew}
+              />
+            )}
             <span className="text-2xl">🎯</span>
             <div>
               <h1 className="font-bold text-sm">Colin Chapman</h1>
               <p className="text-xs text-muted">GTM & Outbound Sales Mentor</p>
             </div>
           </div>
+
+          {showBanner && <MemoryBanner />}
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
@@ -141,7 +207,13 @@ function ChatContent() {
             )}
 
             {messages.map((m, i) => (
-              <ChatMessage key={i} role={m.role} content={m.content} />
+              <ChatMessage
+                key={i}
+                role={m.role}
+                content={m.content}
+                mentorSlug="colin-chapman"
+                isSubscribed={isSubscribed}
+              />
             ))}
 
             {streaming &&

@@ -9,6 +9,41 @@ async function getTable(email: string): Promise<"conversations" | "free_tier_con
   return active ? "conversations" : "free_tier_conversations";
 }
 
+// Check if user has already used their one-time free trial
+export async function hasUsedFreeTrial(userId: string): Promise<boolean> {
+  const { data } = await supabase
+    .from("users")
+    .select("free_trial_started_at")
+    .eq("id", userId)
+    .single();
+
+  return !!data?.free_trial_started_at;
+}
+
+// Activate the one-time free trial (called on first free-tier conversation creation)
+async function activateFreeTrial(userId: string): Promise<void> {
+  await supabase
+    .from("users")
+    .update({ free_trial_started_at: new Date().toISOString() })
+    .eq("id", userId)
+    .is("free_trial_started_at", null); // only set once
+}
+
+// Check if free trial is still active (within 7 days of activation)
+export async function isFreeTrialActive(userId: string): Promise<boolean> {
+  const { data } = await supabase
+    .from("users")
+    .select("free_trial_started_at")
+    .eq("id", userId)
+    .single();
+
+  if (!data?.free_trial_started_at) return true; // never started = can start
+  const started = new Date(data.free_trial_started_at);
+  const now = new Date();
+  const daysSinceStart = (now.getTime() - started.getTime()) / (1000 * 60 * 60 * 24);
+  return daysSinceStart <= 7;
+}
+
 // Get recent context messages from the most recent conversation with a mentor
 export async function getContextMessages(
   userId: string,
@@ -90,6 +125,16 @@ export async function createConversation(
 ) {
   const table = await getTable(email);
 
+  // For free tier: enforce one-time 7-day trial
+  if (table === "free_tier_conversations") {
+    const trialActive = await isFreeTrialActive(userId);
+    if (!trialActive) {
+      throw new Error("FREE_TRIAL_EXPIRED");
+    }
+    // Activate trial on first conversation (idempotent, only sets once)
+    await activateFreeTrial(userId);
+  }
+
   const record: Record<string, unknown> = {
     user_id: userId,
     mentor_slug: mentorSlug,
@@ -97,7 +142,15 @@ export async function createConversation(
   };
 
   if (table === "free_tier_conversations") {
-    record.expires_at = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    // Expire at trial end, not 7 days from conversation creation
+    const { data: user } = await supabase
+      .from("users")
+      .select("free_trial_started_at")
+      .eq("id", userId)
+      .single();
+
+    const trialStart = new Date(user?.free_trial_started_at ?? Date.now());
+    record.expires_at = new Date(trialStart.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
   }
 
   const { data, error } = await supabase

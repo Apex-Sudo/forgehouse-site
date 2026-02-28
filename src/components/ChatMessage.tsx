@@ -1,12 +1,63 @@
 "use client";
 import ReactMarkdown from "react-markdown";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface ChatMessageProps {
   role: "user" | "assistant";
   content: string;
+  mentorSlug?: string;
+  isSubscribed?: boolean;
 }
 
-export default function ChatMessage({ role, content }: ChatMessageProps) {
+function BookmarkButton({ content, mentorSlug, isSubscribed }: { content: string; mentorSlug: string; isSubscribed: boolean }) {
+  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const save = async () => {
+    if (saved || saving) return;
+    if (!isSubscribed) return;
+    setSaving(true);
+    try {
+      const res = await fetch("/api/insights", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mentor_slug: mentorSlug, content }),
+      });
+      if (res.ok) setSaved(true);
+    } catch {
+      // silent fail
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={save}
+      title={isSubscribed ? (saved ? "Saved" : "Save insight") : "Subscribe to save insights"}
+      className={`opacity-0 group-hover:opacity-100 transition-opacity ml-2 mt-1 shrink-0 ${
+        !isSubscribed ? "cursor-not-allowed" : "cursor-pointer"
+      }`}
+    >
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill={saved ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth="2"
+        className={saved ? "text-amber" : isSubscribed ? "text-muted hover:text-foreground" : "text-muted/40"}
+      >
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+      </svg>
+    </button>
+  );
+}
+
+export default function ChatMessage({ role, content, mentorSlug, isSubscribed: isSubProp }: ChatMessageProps) {
+  const { data: session } = useSession();
+
   if (role === "user") {
     return (
       <div className="flex justify-end">
@@ -18,7 +69,7 @@ export default function ChatMessage({ role, content }: ChatMessageProps) {
   }
 
   return (
-    <div className="flex justify-start">
+    <div className="flex justify-start group">
       <div className="max-w-[80%] px-4 py-3 text-sm leading-relaxed bg-white/[0.04] border border-white/[0.06] text-foreground rounded-2xl prose-chat">
         <ReactMarkdown
           components={{
@@ -47,6 +98,9 @@ export default function ChatMessage({ role, content }: ChatMessageProps) {
           {content}
         </ReactMarkdown>
       </div>
+      {session && mentorSlug && (
+        <BookmarkButton content={content} mentorSlug={mentorSlug} isSubscribed={isSubProp ?? false} />
+      )}
     </div>
   );
 }
