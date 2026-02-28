@@ -1,5 +1,7 @@
 "use client";
 import Link from "next/link";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { IconCheck } from "@tabler/icons-react";
 
 const included = [
@@ -65,6 +67,54 @@ const faqJsonLd = {
   })),
 };
 
+function SubscribeButton() {
+  const { data: session, status } = useSession();
+  const [loading, setLoading] = useState(false);
+
+  const handleSubscribe = async () => {
+    if (status === "loading") return;
+
+    if (!session) {
+      window.location.href = "/sign-in";
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mentorSlug: "colin-chapman" }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("Checkout error:", data.error);
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <button
+        onClick={handleSubscribe}
+        disabled={loading}
+        className="block w-full bg-amber text-white py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center disabled:opacity-50 cursor-pointer"
+      >
+        {loading ? "Loading..." : "Start with Colin — $197/mo"}
+      </button>
+      <div className="mt-3 text-xs text-muted text-center space-y-0.5">
+        <p>ForgeHouse Platform $47/mo + Colin Chapman $150/mo</p>
+      </div>
+    </div>
+  );
+}
+
 export default function PricingPage() {
   return (
     <div className="pt-16">
@@ -88,9 +138,9 @@ export default function PricingPage() {
       <section className="px-6 pb-24">
         <div className="max-w-lg mx-auto">
           <div className="glass-card p-10 text-center shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)]">
-            <p className="text-sm text-muted uppercase tracking-wide mb-4">Per Mentor Agent</p>
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">Unlimited conversations</h2>
-            <p className="text-muted text-sm mb-8">for the price of one live session.</p>
+            <p className="text-sm text-muted uppercase tracking-wide mb-2">Colin Chapman</p>
+            <div className="text-5xl font-bold mb-1">$197<span className="text-lg font-normal text-muted">/month</span></div>
+            <p className="text-muted text-sm mb-8">Unlimited conversations with Colin&apos;s AI mentor agent.</p>
 
             <ul className="text-left space-y-4 mb-10">
               {included.map((item) => (
@@ -101,12 +151,7 @@ export default function PricingPage() {
               ))}
             </ul>
 
-            <Link
-              href="/chat/apex"
-              className="block w-full bg-amber text-white py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center"
-            >
-              Try Apex Free
-            </Link>
+            <SubscribeButton />
             <p className="text-xs text-muted mt-4">Every mentor sets their own price.</p>
           </div>
         </div>

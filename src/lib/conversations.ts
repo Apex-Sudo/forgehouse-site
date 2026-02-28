@@ -4,7 +4,18 @@ import { isSubscribed } from "./subscription";
 type Message = { role: "user" | "assistant"; content: string };
 
 // Determine which table to use based on subscription status
+// Checks Supabase `subscribed` column first, falls back to Redis
 async function getTable(email: string): Promise<"conversations" | "free_tier_conversations"> {
+  // Check Supabase first (new Stripe-based subscriptions)
+  const { data: user } = await supabase
+    .from("users")
+    .select("subscribed")
+    .eq("email", email)
+    .single();
+
+  if (user?.subscribed) return "conversations";
+
+  // Fallback to Redis (legacy subscriptions)
   const active = await isSubscribed(email);
   return active ? "conversations" : "free_tier_conversations";
 }

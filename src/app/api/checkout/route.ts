@@ -1,24 +1,53 @@
-import { getStripe, PRICE_ID } from "@/lib/stripe";
+import { auth } from "@/lib/auth";
+import { getStripe } from "@/lib/stripe";
+import { getMentorPricing, PLATFORM_PRICE_ID } from "@/lib/mentor-pricing";
 
 export async function POST(req: Request) {
   try {
-    const { email } = (await req.json()) as { email?: string };
+    const session = await auth();
+    if (!session?.user?.email) {
+      return Response.json({ error: "Not authenticated" }, { status: 401 });
+    }
+
+    const { mentorSlug } = (await req.json()) as { mentorSlug?: string };
+    if (!mentorSlug) {
+      return Response.json({ error: "mentorSlug required" }, { status: 400 });
+    }
+
+    const mentor = getMentorPricing(mentorSlug);
+    if (!mentor) {
+      return Response.json({ error: "Unknown mentor" }, { status: 400 });
+    }
 
     const stripe = getStripe();
+    const userId = (session.user as { id?: string }).id;
 
-    const session = await stripe.checkout.sessions.create({
+    const checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
-      line_items: [{ price: PRICE_ID, quantity: 1 }],
-      ...(email ? { customer_email: email } : {}),
-      success_url: `${process.env.NEXT_PUBLIC_URL || "https://forgehouse.io"}/chat/apex?subscribed=1`,
-      cancel_url: `${process.env.NEXT_PUBLIC_URL || "https://forgehouse.io"}/chat/apex`,
-      metadata: { source: "forgehouse" },
+      line_items: [
+        { price: PLATFORM_PRICE_ID, quantity: 1 },
+        { price: mentor.stripePriceId, quantity: 1 },
+      ],
+      customer_email: session.user.email,
+      success_url: `${process.env.NEXTAUTH_URL || "https://forgehouse.io"}/chat/${mentorSlug}?subscribed=true`,
+      cancel_url: `${process.env.NEXTAUTH_URL || "https://forgehouse.io"}/pricing`,
+      subscription_data: {
+        metadata: {
+          userId: userId || "",
+          mentorSlug,
+        },
+      },
+      metadata: {
+        userId: userId || "",
+        mentorSlug,
+      },
     });
 
-    return Response.json({ url: session.url });
+    return Response.json({ url: checkoutSession.url });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Checkout failed";
+    console.error("Checkout error:", msg);
     return Response.json({ error: msg }, { status: 500 });
   }
 }
