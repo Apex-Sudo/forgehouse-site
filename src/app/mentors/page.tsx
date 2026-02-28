@@ -100,7 +100,7 @@ export default function MentorsPage() {
                 href="/chat/colin-chapman"
                 className="flex-1 bg-amber text-white py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center cursor-pointer"
               >
-                Talk to Colin
+                Talk to Colin · 5 Free Messages
               </Link>
               <Link
                 href="/mentors/colin-chapman"
@@ -109,6 +109,21 @@ export default function MentorsPage() {
                 Learn more
               </Link>
             </div>
+            <p className="text-xs text-muted text-center mt-3">No card required. See the value first.</p>
+          </div>
+
+          {/* Apex free tier */}
+          <div className="glass-card p-6 mt-6 flex items-center justify-between">
+            <div>
+              <p className="font-semibold text-sm">Not sure where to start?</p>
+              <p className="text-xs text-muted mt-1">Talk to Apex. Free, unlimited, no sign-up.</p>
+            </div>
+            <Link
+              href="/chat/apex"
+              className="border border-white/10 text-sm px-5 py-2.5 rounded-xl font-medium hover:text-foreground hover:border-white/20 transition cursor-pointer shrink-0"
+            >
+              Talk to Apex
+            </Link>
           </div>
         </div>
       </section>

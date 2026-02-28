@@ -34,7 +34,7 @@ export default function Home() {
             Meet the Mentors
           </Link>
           <Link href="/chat/apex" className="border border-border-light px-8 py-3.5 rounded-xl font-semibold hover:border-amber/30 hover:bg-white/[0.02] transition text-center">
-            Try Apex Now
+            Try Apex Free
           </Link>
         </div>
       </section>
@@ -85,11 +85,18 @@ export default function Home() {
       {/* CTA */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Your first 5 messages are on us.</h2>
-          <p className="text-muted text-lg mb-8"></p>
-          <Link href="/chat/apex" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
-            Talk to Apex
-          </Link>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">See it for yourself.</h2>
+          <p className="text-muted text-lg mb-8 max-w-xl mx-auto">
+            Apex is free, forever. Mentor agents get 5 messages on us. No card required.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/chat/apex" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
+              Talk to Apex · Free
+            </Link>
+            <Link href="/chat/colin-chapman" className="border border-border-light px-8 py-3.5 rounded-xl font-semibold hover:border-amber/30 hover:bg-white/[0.02] transition inline-block">
+              Try Colin · 5 Free Messages
+            </Link>
+          </div>
         </div>
       </section>
     </div>
