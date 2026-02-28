@@ -243,9 +243,9 @@ function ChatContent() {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full p-4">
       <div className="flex-1 flex justify-center">
-        <div className="w-full max-w-4xl flex flex-col overflow-hidden">
+        <div className="w-full max-w-5xl glass-card flex flex-col overflow-hidden shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)]">
           {/* Chat header */}
           <div className="flex items-center gap-3 px-6 py-4 border-b border-white/[0.06]">
             <IconTarget size={24} className="text-amber shrink-0" />
@@ -297,26 +297,6 @@ function ChatContent() {
                   ))}
                 </div>
 
-                <div className="max-w-xl mx-auto pt-4">
-                  <p className="text-xs text-muted/60 uppercase tracking-wider font-medium text-center mb-3">Or try a guided scenario</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {SCENARIOS.map((sc) => (
-                      <button
-                        key={sc.id}
-                        onClick={() => {
-                          setActiveScenario(sc.id);
-                          // Colin asks the first question
-                          setMessages([{ role: "assistant", content: sc.questions[0] }]);
-                        }}
-                        className="text-left bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 hover:bg-white/[0.06] hover:border-amber/20 transition group/sc cursor-pointer"
-                      >
-                        <div className="text-amber mb-1">{SCENARIO_ICONS[sc.icon] ?? sc.icon}</div>
-                        <div className="text-sm font-medium text-foreground/90 group-hover/sc:text-amber transition">{sc.title}</div>
-                        <div className="text-xs text-muted mt-1">{sc.description}</div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
               </>
             )}
 
