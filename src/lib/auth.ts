@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import LinkedIn from "next-auth/providers/linkedin";
+import Google from "next-auth/providers/google";
 import { supabase } from "./supabase";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -8,30 +9,60 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: process.env.LINKEDIN_CLIENT_ID!,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
     }),
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
+  pages: {
+    signIn: "/sign-in",
+  },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ user, account }) {
       if (!user.email) return false;
 
-      // Upsert user to Supabase (keyed on linkedin_id to prevent gaming)
-      const linkedinId = account?.providerAccountId ?? null;
-      const { error } = await supabase
-        .from("users")
-        .upsert(
-          {
-            email: user.email,
-            name: user.name ?? null,
-            image: user.image ?? null,
-            provider: account?.provider ?? null,
-            linkedin_id: linkedinId,
-          },
-          { onConflict: "linkedin_id" }
-        );
+      const provider = account?.provider ?? null;
+      const providerAccountId = account?.providerAccountId ?? null;
 
-      if (error) {
-        console.error("Failed to upsert user:", error);
-        return false;
+      if (provider === "linkedin") {
+        // Upsert keyed on linkedin_id
+        const { error } = await supabase
+          .from("users")
+          .upsert(
+            {
+              email: user.email,
+              name: user.name ?? null,
+              image: user.image ?? null,
+              provider,
+              linkedin_id: providerAccountId,
+            },
+            { onConflict: "linkedin_id" }
+          );
+
+        if (error) {
+          console.error("Failed to upsert user:", error);
+          return false;
+        }
+      } else {
+        // Google and other providers: upsert keyed on email
+        const { error } = await supabase
+          .from("users")
+          .upsert(
+            {
+              email: user.email,
+              name: user.name ?? null,
+              image: user.image ?? null,
+              provider,
+              linkedin_id: null,
+            },
+            { onConflict: "email" }
+          );
+
+        if (error) {
+          console.error("Failed to upsert user:", error);
+          return false;
+        }
       }
 
       return true;
