@@ -16,7 +16,7 @@ const SCENARIO_ICONS: Record<string, React.ReactNode> = {
   target: <IconTarget size={20} />,
 };
 
-const STARTERS = [
+const DEFAULT_STARTERS = [
   "Our outbound isn't converting. Where do I even start diagnosing this?",
   "How do I build an ICP that's actually useful, not just 'companies with 50+ employees'?",
   "We're getting meetings but deals stall after the first call. What's going wrong?",
@@ -41,6 +41,7 @@ function ChatContent() {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [hitPaywall, setHitPaywall] = useState(false);
+  const [starters, setStarters] = useState<string[]>(DEFAULT_STARTERS);
   const [showWelcome, setShowWelcome] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
   const [activeScenario, setActiveScenario] = useState<string | null>(null);
@@ -58,6 +59,17 @@ function ChatContent() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
+
+  // Fetch dynamic starters based on user profile
+  useEffect(() => {
+    if (!session?.user) return;
+    fetch("/api/starters?mentor=colin-chapman")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.starters?.length >= 4) setStarters(data.starters);
+      })
+      .catch(() => {});
+  }, [session]);
 
   // Show welcome banner after successful subscription
   useEffect(() => {
@@ -313,7 +325,7 @@ function ChatContent() {
             {messages.length === 0 && (
               <>
                 <div className="flex flex-wrap gap-2 justify-center max-w-xl mx-auto pt-4">
-                  {STARTERS.map((s) => (
+                  {starters.map((s) => (
                     <button
                       key={s}
                       onClick={() => send(s)}
