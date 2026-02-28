@@ -282,60 +282,52 @@ export default function Sidebar() {
 
         {/* Account section */}
         <div className="border-t border-white/[0.06] px-3 py-3">
-          <div className="px-3 py-2">
-            <div className="flex items-center gap-2 mb-2">
-              {session?.user?.image ? (
-                <Image
-                  src={session.user.image}
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="rounded-full"
-                />
-              ) : (
-                <div className="w-6 h-6 rounded-full bg-white/[0.1] flex items-center justify-center text-[10px] font-semibold">
-                  {session?.user?.name?.[0] ?? "?"}
-                </div>
-              )}
-              <span className="text-xs text-foreground truncate">{session?.user?.name}</span>
+          <Link {...navLink("/account")} className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/[0.04] transition">
+            {session?.user?.image ? (
+              <Image
+                src={session.user.image}
+                alt=""
+                width={32}
+                height={32}
+                className="rounded-full shrink-0"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-white/[0.08] flex items-center justify-center text-xs font-semibold shrink-0">
+                {session?.user?.name?.[0] ?? "?"}
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{session?.user?.name}</p>
+              <p className="text-[11px] text-muted">
+                {isSubscribed ? "Subscribed" : "Free tier"}
+              </p>
             </div>
-            <p className="text-[10px] text-muted mb-2">
-              {isSubscribed ? "Subscribed" : "Free tier"}
-            </p>
-            <div className="flex gap-2">
-              {isSubscribed ? (
-                <button
-                  onClick={async () => {
-                    try {
-                      const res = await fetch("/api/portal", { method: "POST" });
-                      const data = await res.json();
-                      if (data.url) window.location.href = data.url;
-                    } catch { /* silent */ }
-                  }}
-                  className="text-[10px] text-muted hover:text-foreground transition cursor-pointer"
-                >
-                  <IconCreditCard size={12} className="inline mr-0.5" /> Manage billing
-                </button>
-              ) : (
-                <Link href="/pricing" className="text-[10px] text-amber hover:text-amber-dark transition flex items-center gap-0.5">
-                  <IconArrowUp size={12} /> Upgrade
-                </Link>
-              )}
-              <span className="text-muted/20">·</span>
-              <Link
-                {...navLink("/account")}
-                className="text-[10px] text-muted hover:text-foreground transition flex items-center gap-0.5"
-              >
-                <IconUser size={12} /> Account
-              </Link>
-              <span className="text-muted/20">·</span>
+          </Link>
+          <div className="flex items-center px-3 mt-1">
+            {isSubscribed ? (
               <button
-                onClick={() => signOut()}
-                className="text-[10px] text-muted hover:text-foreground transition cursor-pointer flex items-center gap-0.5"
+                onClick={async () => {
+                  try {
+                    const res = await fetch("/api/portal", { method: "POST" });
+                    const data = await res.json();
+                    if (data.url) window.location.href = data.url;
+                  } catch { /* silent */ }
+                }}
+                className="text-[11px] text-muted hover:text-foreground transition cursor-pointer flex items-center gap-1 px-2 py-1.5 rounded-md hover:bg-white/[0.04]"
               >
-                <IconLogout size={12} /> Sign out
+                <IconCreditCard size={13} /> Billing
               </button>
-            </div>
+            ) : (
+              <Link href="/pricing" className="text-[11px] text-amber hover:text-amber-dark transition flex items-center gap-1 px-2 py-1.5 rounded-md hover:bg-white/[0.04]">
+                <IconArrowUp size={13} /> Upgrade
+              </Link>
+            )}
+            <button
+              onClick={() => signOut()}
+              className="text-[11px] text-muted hover:text-foreground transition cursor-pointer flex items-center gap-1 px-2 py-1.5 rounded-md hover:bg-white/[0.04] ml-auto"
+            >
+              <IconLogout size={13} /> Sign out
+            </button>
           </div>
         </div>
       </aside>
