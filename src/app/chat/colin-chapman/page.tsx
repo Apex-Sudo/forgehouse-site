@@ -120,6 +120,18 @@ function ChatContent() {
       .catch(() => {});
   }, [session]);
 
+  // Handle ?new=true to start fresh conversation
+  useEffect(() => {
+    if (searchParams.get("new") === "true") {
+      setConversationId(null);
+      setMessages([]);
+      setSummary(null);
+      setActiveScenario(null);
+      if (summaryTimerRef.current) clearTimeout(summaryTimerRef.current);
+      window.history.replaceState({}, "", "/chat/colin-chapman");
+    }
+  }, [searchParams]);
+
   // Launch scenario from sidebar link
   useEffect(() => {
     const scenarioParam = searchParams.get("scenario");

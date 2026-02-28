@@ -52,6 +52,15 @@ function ChatContent() {
       .catch(() => {});
   }, [session]);
 
+  // Handle ?new=true to start fresh conversation
+  useEffect(() => {
+    if (searchParams.get("new") === "true") {
+      setConversationId(null);
+      setMessages([]);
+      window.history.replaceState({}, "", "/chat/apex");
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     if (seeded) return;
     const q = searchParams.get("q");

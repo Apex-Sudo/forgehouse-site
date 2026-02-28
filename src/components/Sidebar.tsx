@@ -239,13 +239,23 @@ export default function Sidebar() {
 
           {/* Conversations */}
           <div className="px-3 pt-2 pb-2">
-            <button
-              onClick={() => setConvsExpanded(!convsExpanded)}
-              className="w-full flex items-center justify-between px-2 mb-2 cursor-pointer"
-            >
-              <p className="text-xs text-muted/60 uppercase tracking-wider font-medium">Conversations</p>
-              <IconChevronDown size={12} className={`text-muted/40 transition-transform ${convsExpanded ? "rotate-180" : ""}`} />
-            </button>
+            <div className="flex items-center justify-between px-2 mb-2">
+              <button
+                onClick={() => setConvsExpanded(!convsExpanded)}
+                className="flex items-center gap-1 cursor-pointer"
+              >
+                <p className="text-xs text-muted/60 uppercase tracking-wider font-medium">Conversations</p>
+                <IconChevronDown size={12} className={`text-muted/40 transition-transform ${convsExpanded ? "rotate-180" : ""}`} />
+              </button>
+              <Link
+                href={pathname?.startsWith("/chat/apex") ? "/chat/apex?new=true" : "/chat/colin-chapman?new=true"}
+                onClick={() => setSidebarOpen(false)}
+                className="text-muted/40 hover:text-foreground transition"
+                title="New conversation"
+              >
+                <IconPlus size={14} />
+              </Link>
+            </div>
             {convsExpanded && (
               <div className="space-y-0.5">
                 {loadingConvos && (
