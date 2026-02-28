@@ -86,6 +86,32 @@ export async function POST(req: Request) {
 
     // Build system prompt with context
     let enrichedSystemPrompt = systemPrompt;
+
+    // Inject user profile if available
+    if (user?.id) {
+      try {
+        const { data: profile } = await (await import("@/lib/supabase")).supabase
+          .from("user_profiles")
+          .select("*")
+          .eq("user_id", user.id)
+          .eq("profile_complete", true)
+          .single();
+
+        if (profile) {
+          enrichedSystemPrompt += `\n\n--- User Profile ---
+Company: ${profile.company_description || "Unknown"}
+Target Audience: ${profile.target_audience || "Unknown"}
+Stage: ${profile.company_stage || "Unknown"}
+Team Size: ${profile.team_size || "Unknown"}
+Revenue: ${profile.revenue_range || "Unknown"}
+Biggest Challenge: ${profile.biggest_challenge || "Unknown"}
+Sales Process: ${profile.sales_process || "Unknown"}
+--- End Profile ---`;
+        }
+      } catch {
+        // Profile not found, continue without it
+      }
+    }
     if (contextMessages.length > 0) {
       const contextSummary = contextMessages
         .map((m) => `${m.role}: ${m.content}`)

@@ -14,10 +14,12 @@ import {
   IconTriangle,
   IconCreditCard,
   IconUser,
+  IconUserCircle,
   IconLogout,
   IconArrowUp,
   IconSearch,
   IconMail,
+  IconCheck,
 } from "@tabler/icons-react";
 
 const SCENARIO_ICONS: Record<string, React.ReactNode> = {
@@ -47,6 +49,7 @@ export default function Sidebar() {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loadingConvos, setLoadingConvos] = useState(false);
   const [convsExpanded, setConvsExpanded] = useState(true);
+  const [profileComplete, setProfileComplete] = useState<boolean | null>(null);
 
   // Load conversations for all mentors
   useEffect(() => {
@@ -86,6 +89,19 @@ export default function Sidebar() {
     };
     load();
   }, [session, refreshConversations]);
+
+  // Check profile status
+  useEffect(() => {
+    if (!session?.user) return;
+    fetch("/api/profile")
+      .then(async (r) => {
+        if (r.ok) {
+          const data = await r.json();
+          setProfileComplete(data.profile?.profile_complete ?? false);
+        }
+      })
+      .catch(() => {});
+  }, [session]);
 
   // Load insight count
   useEffect(() => {
@@ -196,6 +212,30 @@ export default function Sidebar() {
               </div>
             </Link>
           </div>
+
+          {/* Profile Setup */}
+          {profileComplete !== null && (
+            <div className="px-3 pt-2 pb-2">
+              <Link
+                {...navLink("/chat/onboarding")}
+                className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition text-sm ${
+                  isActive("/chat/onboarding")
+                    ? "bg-amber/10 text-foreground border border-amber/20"
+                    : "text-muted hover:text-foreground hover:bg-white/[0.04]"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <IconUserCircle size={16} />
+                  <span>{profileComplete ? "Your Profile" : "Set up your profile"}</span>
+                </div>
+                {profileComplete ? (
+                  <IconCheck size={14} className="text-green-400" />
+                ) : (
+                  <span className="w-2 h-2 rounded-full bg-amber animate-pulse" />
+                )}
+              </Link>
+            </div>
+          )}
 
           {/* Conversations */}
           <div className="px-3 pt-2 pb-2">
