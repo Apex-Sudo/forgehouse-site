@@ -8,6 +8,13 @@ import MemoryBanner from "@/components/MemoryBanner";
 // SignInNudge no longer needed — Colin requires auth
 import UpgradePrompt from "@/components/UpgradePrompt";
 import { SCENARIOS } from "@/lib/scenarios";
+import { IconSearch, IconMail, IconTarget } from "@tabler/icons-react";
+
+const SCENARIO_ICONS: Record<string, React.ReactNode> = {
+  search: <IconSearch size={20} />,
+  mail: <IconMail size={20} />,
+  target: <IconTarget size={20} />,
+};
 
 const STARTERS = [
   "Our outbound isn't converting. Where do I even start diagnosing this?",
@@ -303,7 +310,7 @@ function ChatContent() {
                         }}
                         className="text-left bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 hover:bg-white/[0.06] hover:border-amber/20 transition group/sc cursor-pointer"
                       >
-                        <div className="text-lg mb-1">{sc.icon}</div>
+                        <div className="text-amber mb-1">{SCENARIO_ICONS[sc.icon] ?? sc.icon}</div>
                         <div className="text-sm font-medium text-foreground/90 group-hover/sc:text-amber transition">{sc.title}</div>
                         <div className="text-xs text-muted mt-1">{sc.description}</div>
                       </button>

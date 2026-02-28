@@ -12,7 +12,7 @@ export const SCENARIOS: Scenario[] = [
     id: "diagnose-pipeline",
     title: "Diagnose my pipeline",
     description: "Walk through your pipeline stage by stage to find where deals are leaking.",
-    icon: "🔍",
+    icon: "search",
     questions: [
       "Let's diagnose your pipeline. First: how many active deals do you have right now, and what does your pipeline look like stage by stage?",
       "Got it. Now walk me through your typical deal flow - from first touch to close. Where do deals tend to stall or go dark?",
@@ -41,7 +41,7 @@ Keep it direct and specific to their situation. No fluff.`,
     id: "review-cold-email",
     title: "Review my cold email",
     description: "Get a line-by-line teardown of your outbound email with rewrites.",
-    icon: "✉️",
+    icon: "mail",
     questions: [
       "Paste your cold email below - subject line and body. I'll give you a line-by-line teardown.",
       "Who exactly is this email going to? Give me the title, company size, and industry of your ideal recipient.",
@@ -69,7 +69,7 @@ Be specific and direct. Show don't tell - the rewrite should demonstrate the pri
     id: "stress-test-icp",
     title: "Stress-test my ICP",
     description: "Pressure-test your ideal customer profile to find blind spots.",
-    icon: "🎯",
+    icon: "target",
     questions: [
       "Describe your ICP as specifically as you can - company size, industry, role you're targeting, any other criteria you use.",
       "How did you arrive at this ICP? Was it data-driven, gut feel, or based on your current customer base?",

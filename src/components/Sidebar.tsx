@@ -10,14 +10,21 @@ import {
   IconBookmark,
   IconChevronDown,
   IconPlus,
-  IconMessageCircle,
   IconTarget,
   IconTriangle,
   IconCreditCard,
   IconUser,
   IconLogout,
   IconArrowUp,
+  IconSearch,
+  IconMail,
 } from "@tabler/icons-react";
+
+const SCENARIO_ICONS: Record<string, React.ReactNode> = {
+  search: <IconSearch size={16} />,
+  mail: <IconMail size={16} />,
+  target: <IconTarget size={16} />,
+};
 
 interface Conversation {
   id: string;
@@ -266,7 +273,7 @@ export default function Sidebar() {
                 {...navLink(`/chat/colin-chapman?scenario=${sc.id}`)}
                 className="flex items-center gap-2 px-3 py-2 text-sm text-muted hover:text-foreground hover:bg-white/[0.04] rounded-lg transition"
               >
-                <span className="text-base">{sc.icon}</span>
+                <span className="text-muted">{SCENARIO_ICONS[sc.icon] ?? sc.icon}</span>
                 <span className="text-xs">{sc.title}</span>
               </Link>
             ))}
