@@ -208,12 +208,6 @@ export default function Sidebar() {
             </button>
             {convsExpanded && (
               <div className="space-y-0.5">
-                <Link
-                  {...navLink("/chat/colin-chapman")}
-                  className="flex items-center gap-2 px-3 py-1.5 text-xs text-amber hover:text-amber-dark transition rounded-lg"
-                >
-                  <IconPlus size={12} /> New conversation
-                </Link>
                 {loadingConvos && (
                   <p className="px-3 py-2 text-xs text-muted animate-pulse">Loading...</p>
                 )}
