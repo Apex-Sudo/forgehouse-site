@@ -7,6 +7,7 @@ import ChatMessage from "@/components/ChatMessage";
 import ConversationHistory from "@/components/ConversationHistory";
 import MemoryBanner from "@/components/MemoryBanner";
 import SignInNudge from "@/components/SignInNudge";
+import UpgradePrompt from "@/components/UpgradePrompt";
 
 const STARTERS = [
   "Our outbound isn't converting. Where do I even start diagnosing this?",
@@ -189,6 +190,11 @@ function ChatContent() {
           )}
 
           {showBanner && <MemoryBanner />}
+
+          {/* Upgrade prompt for signed-in free tier users after 5 messages */}
+          {session && !isSubscribed && messages.filter(m => m.role === "user").length >= 5 && (
+            <UpgradePrompt mentorSlug="colin-chapman" mentorName="Colin Chapman" mentorPrice={150} />
+          )}
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">

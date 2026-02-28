@@ -152,6 +152,12 @@ export default function PricingPage() {
             </ul>
 
             <SubscribeButton />
+            <Link
+              href="/chat/apex"
+              className="block w-full mt-3 text-center text-sm text-muted hover:text-foreground transition"
+            >
+              or try Apex free first →
+            </Link>
             <p className="text-xs text-muted mt-4">Every mentor sets their own price.</p>
           </div>
         </div>
