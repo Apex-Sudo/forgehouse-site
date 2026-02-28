@@ -149,16 +149,12 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-background border-r border-white/[0.06] z-50 flex flex-col transition-transform duration-200 ${
+        className={`fixed top-16 left-0 h-[calc(100vh-4rem)] w-60 bg-background border-r border-white/[0.06] z-50 flex flex-col transition-transform duration-200 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:static md:z-auto`}
       >
-        {/* Logo */}
-        <div className="px-5 py-4 border-b border-white/[0.06]">
-          <Link href="/" className="text-lg font-bold tracking-tight">
-            <span className="text-amber">Forge</span>House
-          </Link>
-        </div>
+        {/* Spacer to align with navbar */}
+        <div className="h-3" />
 
         <div className="flex-1 overflow-y-auto">
           {/* Mentors */}
