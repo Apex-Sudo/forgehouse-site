@@ -49,7 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           <Navbar />
           <AppShell>
-            <main className="min-h-screen">{children}</main>
+            {children}
           </AppShell>
           <Footer />
         </AuthProvider>

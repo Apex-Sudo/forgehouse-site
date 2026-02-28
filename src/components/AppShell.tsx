@@ -18,7 +18,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   const showShell = !!session?.user && isAppRoute(pathname);
 
   if (!showShell) {
-    return <>{children}</>;
+    return <main className="min-h-screen">{children}</main>;
   }
 
   return (

@@ -236,7 +236,7 @@ function ChatContent() {
   // Show loading while checking auth or redirecting
   if (status === "loading" || status === "unauthenticated") {
     return (
-      <div className="flex flex-col h-full items-center justify-center">
+      <div className="flex flex-col h-screen items-center justify-center">
         <span className="animate-pulse text-muted text-sm">Loading...</span>
       </div>
     );
