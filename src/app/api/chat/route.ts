@@ -1,7 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { APEX_SYSTEM_PROMPT } from "@/lib/apex-system-prompt";
 import { chatLimiter } from "@/lib/rate-limit";
-// Paywall removed — rate limiting stays for abuse prevention
+import { auth } from "@/lib/auth";
+import { getContextMessages, appendMessages } from "@/lib/conversations";
 
 export async function POST(req: Request) {
   try {
@@ -16,7 +17,6 @@ export async function POST(req: Request) {
       rateLimited = !success;
     } catch (err) {
       console.error("Rate limit error:", err);
-      // Continue without rate limiting if Redis fails
     }
 
     if (rateLimited) {
@@ -24,12 +24,34 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { messages } = body as {
+    const { messages, conversation_id } = body as {
       messages: { role: "user" | "assistant"; content: string }[];
+      conversation_id?: string;
     };
 
     if (!messages?.length) {
       return Response.json({ error: "No messages provided" }, { status: 400 });
+    }
+
+    // Check auth for context injection
+    const session = await auth();
+    const user = session?.user as { id?: string; email?: string } | undefined;
+
+    let contextMessages: { role: "user" | "assistant"; content: string }[] = [];
+    if (user?.id && user?.email) {
+      try {
+        contextMessages = await getContextMessages(user.id, "apex", user.email);
+      } catch (err) {
+        console.error("Context fetch error:", err);
+      }
+    }
+
+    let enrichedSystemPrompt = APEX_SYSTEM_PROMPT;
+    if (contextMessages.length > 0) {
+      const contextSummary = contextMessages
+        .map((m) => `${m.role}: ${m.content}`)
+        .join("\n");
+      enrichedSystemPrompt = `${APEX_SYSTEM_PROMPT}\n\n--- Previous conversation context ---\n${contextSummary}\n--- End of context ---`;
     }
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -37,9 +59,11 @@ export async function POST(req: Request) {
     const stream = await client.messages.stream({
       model: "claude-sonnet-4-20250514",
       max_tokens: 1024,
-      system: APEX_SYSTEM_PROMPT,
+      system: enrichedSystemPrompt,
       messages,
     });
+
+    let fullResponse = "";
 
     const encoder = new TextEncoder();
     const readable = new ReadableStream({
@@ -50,7 +74,21 @@ export async function POST(req: Request) {
               event.type === "content_block_delta" &&
               event.delta.type === "text_delta"
             ) {
+              fullResponse += event.delta.text;
               controller.enqueue(encoder.encode(event.delta.text));
+            }
+          }
+
+          // Save messages to conversation if authenticated
+          if (user?.id && user?.email && conversation_id) {
+            const lastUserMessage = messages[messages.length - 1];
+            try {
+              await appendMessages(conversation_id, user.id, user.email, [
+                lastUserMessage,
+                { role: "assistant", content: fullResponse },
+              ]);
+            } catch (err) {
+              console.error("Failed to save messages:", err);
             }
           }
         } catch (err) {
