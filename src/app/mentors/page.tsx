@@ -6,7 +6,7 @@ const mentors = [
   {
     slug: "colin-chapman",
     name: "Colin Chapman",
-    title: "Growth Strategist & Startup Mentor",
+    title: "GTM & Outbound Sales — 25+ Years B2B",
     tagline: "Cuts through noise to the one thing that moves the needle.",
   },
 ];

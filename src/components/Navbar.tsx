@@ -89,7 +89,7 @@ export default function Navbar() {
           <span className="text-amber">Forge</span>House
         </Link>
         <div className="hidden md:flex items-center gap-8 text-sm text-muted">
-          <Link href="/agents" className="hover:text-foreground transition">Agents</Link>
+          <Link href="/mentors" className="hover:text-foreground transition">Mentors</Link>
           <Link href="/the-forge" className="hover:text-foreground transition">The Forge</Link>
           <Link href="/thinking" className="hover:text-foreground transition">Thinking</Link>
           <Link href="/pricing" className="hover:text-foreground transition">Pricing</Link>
@@ -107,7 +107,7 @@ export default function Navbar() {
       </div>
       {open && (
         <div className="md:hidden border-t border-white/[0.06] bg-background/90 backdrop-blur-xl px-6 py-4 flex flex-col gap-4 text-sm">
-          <Link href="/agents" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Agents</Link>
+          <Link href="/mentors" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Mentors</Link>
           <Link href="/the-forge" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">The Forge</Link>
           <Link href="/thinking" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Thinking</Link>
           <Link href="/pricing" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Pricing</Link>
