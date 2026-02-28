@@ -267,10 +267,10 @@ export default function Sidebar() {
                       <Link
                         key={c.id}
                         {...navLink(`/chat/${c.mentor_slug}?conv=${c.id}`)}
-                        className="block px-3 py-1.5 text-xs text-muted hover:text-foreground hover:bg-white/[0.04] rounded-lg transition truncate"
+                        className="flex items-baseline justify-between gap-2 px-3 py-1.5 text-xs text-muted hover:text-foreground hover:bg-white/[0.04] rounded-lg transition group"
                       >
-                        <span className="text-muted/40 mr-1">{formatDate(c.created_at)}</span>
-                        {getPreview(c)}
+                        <span className="truncate">{getPreview(c)}</span>
+                        <span className="text-[10px] text-muted/30 shrink-0 group-hover:text-muted/50">{formatDate(c.created_at)}</span>
                       </Link>
                     ))}
                   </div>
