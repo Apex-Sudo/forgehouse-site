@@ -121,6 +121,19 @@ function ChatContent() {
       .catch(() => {});
   }, [session]);
 
+  // Launch scenario from sidebar link
+  useEffect(() => {
+    const scenarioParam = searchParams.get("scenario");
+    if (!scenarioParam || !session?.user) return;
+    const scenario = SCENARIOS.find((s) => s.id === scenarioParam);
+    if (scenario && messages.length === 0) {
+      setActiveScenario(scenario.id);
+      setMessages([{ role: "assistant", content: scenario.questions[0] }]);
+      window.history.replaceState({}, "", "/chat/colin-chapman");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, session]);
+
   // Load conversation from sidebar link
   useEffect(() => {
     const convParam = searchParams.get("conv");
