@@ -121,6 +121,27 @@ function ChatContent() {
       .catch(() => {});
   }, [session]);
 
+  // Load conversation from sidebar link
+  useEffect(() => {
+    const convParam = searchParams.get("conv");
+    if (!convParam || !session?.user) return;
+    setConversationId(convParam);
+    fetch(`/api/conversations/${convParam}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.messages?.length) {
+          setMessages(data.messages.map((m: { role: string; content: string }) => ({
+            role: m.role as "user" | "assistant",
+            content: m.content,
+          })));
+        }
+        if (data?.summary) setSummary(data.summary);
+      })
+      .catch(() => {});
+    window.history.replaceState({}, "", "/chat/colin-chapman");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, session]);
+
   useEffect(() => {
     if (seeded) return;
     const q = searchParams.get("q");
