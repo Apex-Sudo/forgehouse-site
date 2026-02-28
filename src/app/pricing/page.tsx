@@ -70,9 +70,11 @@ const faqJsonLd = {
 function SubscribeButton() {
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubscribe = async () => {
     if (status === "loading") return;
+    setError(null);
 
     if (!session) {
       window.location.href = "/sign-in";
@@ -90,11 +92,11 @@ function SubscribeButton() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        console.error("Checkout error:", data.error);
+        setError(data.error || "Something went wrong");
         setLoading(false);
       }
     } catch (err) {
-      console.error("Checkout error:", err);
+      setError("Connection error. Please try again.");
       setLoading(false);
     }
   };
@@ -106,8 +108,9 @@ function SubscribeButton() {
         disabled={loading}
         className="block w-full bg-amber text-white py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center disabled:opacity-50 cursor-pointer"
       >
-        {loading ? "Loading..." : "Start with Colin — $197/mo"}
+        {loading ? "Loading..." : "Start with Colin · $197/mo"}
       </button>
+      {error && <p className="mt-2 text-sm text-red-400 text-center">{error}</p>}
       <div className="mt-3 text-xs text-muted text-center space-y-0.5">
         <p>ForgeHouse Platform $47/mo + Colin Chapman $150/mo</p>
       </div>
