@@ -34,11 +34,44 @@ const faq = [
     q: "Who are the mentors?",
     a: "Founders and operators who've done the work. No influencers, no theorists.",
   },
+  {
+    q: "How are the agents trained?",
+    a: "Through structured extraction sessions with the real mentor. Hours of conversation, scenario calibration, and voice tuning. Not book summaries. Not scraped content. The mentor's actual decision-making, captured first-hand.",
+  },
+  {
+    q: "Is this a replacement for live coaching?",
+    a: "No. Live coaching is irreplaceable for reading the room and emotional accountability. This extends the mentor between sessions. The 8,748 hours per year when your coach isn't available.",
+  },
+  {
+    q: "What kind of questions can I ask?",
+    a: "Anything you'd bring to a real session. Pipeline diagnosis, messaging review, ICP definition, deal strategy, hiring decisions. The agent reasons through your situation the way the mentor would.",
+  },
+  {
+    q: "How accurate is the agent compared to the real mentor?",
+    a: "Every agent goes through live calibration where the mentor talks to their own AI and corrects what's off. It's not perfect. But it's trained on how they actually think, not a generic prompt.",
+  },
 ];
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.a,
+    },
+  })),
+};
 
 export default function PricingPage() {
   return (
     <div className="pt-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       {/* Hero */}
       <section className="gradient-hero px-6 py-28 md:py-36 max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
