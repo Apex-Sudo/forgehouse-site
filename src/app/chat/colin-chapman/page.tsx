@@ -34,6 +34,7 @@ function ChatContent() {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [hitPaywall, setHitPaywall] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const userMessageCount = messages.filter((m) => m.role === "user").length;
@@ -46,6 +47,18 @@ function ChatContent() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
+
+  // Show welcome banner after successful subscription
+  useEffect(() => {
+    if (searchParams.get("subscribed") === "true") {
+      setShowWelcome(true);
+      setIsSubscribed(true);
+      const timer = setTimeout(() => setShowWelcome(false), 8000);
+      // Clean URL
+      window.history.replaceState({}, "", "/chat/colin-chapman");
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams]);
 
   // Redirect anonymous users to sign-in
   useEffect(() => {
@@ -212,6 +225,18 @@ function ChatContent() {
               <p className="text-xs text-muted">GTM & Outbound Sales Mentor</p>
             </div>
           </div>
+
+          {showWelcome && (
+            <div className="mx-6 mt-4 animate-in fade-in slide-in-from-top-2 duration-500">
+              <div className="bg-amber/10 border border-amber/20 rounded-xl px-5 py-3.5 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-foreground">You&apos;re in.</p>
+                  <p className="text-xs text-muted mt-0.5">Unlimited access to Colin. Your conversations are saved. Ask him anything.</p>
+                </div>
+                <button onClick={() => setShowWelcome(false)} className="text-muted hover:text-foreground text-xs ml-4 cursor-pointer">✕</button>
+              </div>
+            </div>
+          )}
 
           {showBanner && <MemoryBanner />}
 
