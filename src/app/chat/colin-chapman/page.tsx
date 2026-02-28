@@ -4,8 +4,6 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { useSession } from "next-auth/react";
 import ChatMessage from "@/components/ChatMessage";
-import ConversationHistory from "@/components/ConversationHistory";
-import SavedInsightsPanel from "@/components/SavedInsightsPanel";
 import MemoryBanner from "@/components/MemoryBanner";
 // SignInNudge no longer needed — Colin requires auth
 import UpgradePrompt from "@/components/UpgradePrompt";
@@ -238,26 +236,16 @@ function ChatContent() {
   }
 
   return (
-    <div className="pt-20 flex flex-col h-screen">
+    <div className="pt-4 flex flex-col h-full">
       <div className="flex-1 flex justify-center px-4 py-6">
         <div className="w-full max-w-3xl glass-card flex flex-col overflow-hidden shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)]">
           {/* Chat header */}
           <div className="flex items-center gap-3 px-6 py-4 border-b border-white/[0.06]">
-            {session && status === "authenticated" && (
-              <ConversationHistory
-                mentorSlug="colin-chapman"
-                onSelect={loadConversation}
-                onNew={startNew}
-              />
-            )}
             <span className="text-2xl">🎯</span>
             <div className="flex-1">
               <h1 className="font-bold text-sm">Colin Chapman</h1>
               <p className="text-xs text-muted">GTM & Outbound Sales Mentor</p>
             </div>
-            {session && status === "authenticated" && (
-              <SavedInsightsPanel mentorSlug="colin-chapman" />
-            )}
           </div>
 
           {showWelcome && (

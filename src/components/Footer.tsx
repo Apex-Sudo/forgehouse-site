@@ -1,7 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 
-const HIDDEN_ROUTES = ["/contribute", "/calibrate", "/chat"];
+const HIDDEN_ROUTES = ["/contribute", "/calibrate", "/chat", "/insights", "/account"];
 
 export default function Footer() {
   const pathname = usePathname();
