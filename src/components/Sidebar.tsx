@@ -219,9 +219,6 @@ export default function Sidebar() {
                 )}
                 {Object.entries(groupedConvos).map(([slug, convos]) => (
                   <div key={slug}>
-                    <p className="px-3 pt-2 pb-1 text-[10px] text-muted/40 uppercase tracking-wider font-medium">
-                      {mentorIcon(slug)} {mentorName(slug)}
-                    </p>
                     {convos.slice(0, 5).map((c) => (
                       <Link
                         key={c.id}
