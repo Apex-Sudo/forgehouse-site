@@ -204,7 +204,7 @@ export default function Sidebar() {
                   : "text-muted hover:text-foreground hover:bg-white/[0.04]"
               }`}
             >
-              <span className="w-7 h-7 flex items-center justify-center"><IconTriangle size={18} className="text-amber" /></span>
+              <span className="w-7 h-7 flex items-center justify-center"><IconTriangle size={18} className="text-red-500 fill-red-500" /></span>
               <div className="flex-1 min-w-0">
                 <span className="font-medium">Apex</span>
                 <span className="ml-1.5 text-[10px] bg-white/[0.06] text-muted px-1.5 py-0.5 rounded-full">free</span>
