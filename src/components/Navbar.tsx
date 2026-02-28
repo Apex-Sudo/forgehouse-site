@@ -25,7 +25,7 @@ function UserMenu() {
     return (
       <button
         onClick={() => signIn("linkedin")}
-        className="text-muted hover:text-foreground transition text-sm"
+        className="text-muted hover:text-foreground transition text-sm cursor-pointer"
       >
         Sign In
       </button>
