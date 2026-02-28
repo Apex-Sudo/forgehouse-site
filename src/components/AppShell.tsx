@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { AppShellProvider, useAppShell } from "./AppShellContext";
 import Sidebar from "./Sidebar";
+import { IconMenu2 } from "@tabler/icons-react";
 
 const APP_ROUTES = ["/chat", "/insights", "/scenarios", "/account"];
 
@@ -28,9 +29,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
         onClick={() => setSidebarOpen(true)}
         className="fixed top-[18px] left-16 z-50 md:hidden text-muted hover:text-foreground p-1"
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M3 12h18M3 6h18M3 18h18" />
-        </svg>
+        <IconMenu2 size={20} />
       </button>
       <main className="flex-1 overflow-hidden">{children}</main>
     </div>

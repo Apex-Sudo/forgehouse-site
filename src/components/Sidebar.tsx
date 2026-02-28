@@ -6,6 +6,18 @@ import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useAppShell } from "./AppShellContext";
 import { SCENARIOS } from "@/lib/scenarios";
+import {
+  IconBookmark,
+  IconChevronDown,
+  IconPlus,
+  IconMessageCircle,
+  IconTarget,
+  IconTriangle,
+  IconCreditCard,
+  IconUser,
+  IconLogout,
+  IconArrowUp,
+} from "@tabler/icons-react";
 
 interface Conversation {
   id: string;
@@ -96,7 +108,9 @@ export default function Sidebar() {
     return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
-  const mentorIcon = (slug: string) => slug === "colin-chapman" ? "🎯" : "🔺";
+  const mentorIcon = (slug: string) => slug === "colin-chapman"
+    ? <IconTarget size={14} className="text-amber" />
+    : <IconTriangle size={14} className="text-amber" />;
   const mentorName = (slug: string) => slug === "colin-chapman" ? "Colin" : "Apex";
 
   const isActive = (path: string) => pathname === path;
@@ -171,7 +185,7 @@ export default function Sidebar() {
                   : "text-muted hover:text-foreground hover:bg-white/[0.04]"
               }`}
             >
-              <span className="w-7 h-7 flex items-center justify-center text-lg">🔺</span>
+              <span className="w-7 h-7 flex items-center justify-center"><IconTriangle size={18} className="text-amber" /></span>
               <div className="flex-1 min-w-0">
                 <span className="font-medium">Apex</span>
                 <span className="ml-1.5 text-[10px] bg-white/[0.06] text-muted px-1.5 py-0.5 rounded-full">free</span>
@@ -187,17 +201,7 @@ export default function Sidebar() {
               className="w-full flex items-center justify-between px-2 mb-2 cursor-pointer"
             >
               <p className="text-xs text-muted/60 uppercase tracking-wider font-medium">Conversations</p>
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className={`text-muted/40 transition-transform ${convsExpanded ? "rotate-180" : ""}`}
-              >
-                <path d="M6 9l6 6 6-6" />
-              </svg>
+              <IconChevronDown size={12} className={`text-muted/40 transition-transform ${convsExpanded ? "rotate-180" : ""}`} />
             </button>
             {convsExpanded && (
               <div className="space-y-0.5">
@@ -205,7 +209,7 @@ export default function Sidebar() {
                   {...navLink("/chat/colin-chapman")}
                   className="flex items-center gap-2 px-3 py-1.5 text-xs text-amber hover:text-amber-dark transition rounded-lg"
                 >
-                  <span>+</span> New conversation
+                  <IconPlus size={12} /> New conversation
                 </Link>
                 {loadingConvos && (
                   <p className="px-3 py-2 text-xs text-muted animate-pulse">Loading...</p>
@@ -242,9 +246,7 @@ export default function Sidebar() {
               }`}
             >
               <div className="flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                </svg>
+                <IconBookmark size={16} />
                 <span>Saved Insights</span>
               </div>
               {insightCount.total > 0 && (
@@ -305,26 +307,26 @@ export default function Sidebar() {
                   }}
                   className="text-[10px] text-muted hover:text-foreground transition cursor-pointer"
                 >
-                  Manage billing
+                  <IconCreditCard size={12} className="inline mr-0.5" /> Manage billing
                 </button>
               ) : (
-                <Link href="/pricing" className="text-[10px] text-amber hover:text-amber-dark transition">
-                  Upgrade
+                <Link href="/pricing" className="text-[10px] text-amber hover:text-amber-dark transition flex items-center gap-0.5">
+                  <IconArrowUp size={12} /> Upgrade
                 </Link>
               )}
               <span className="text-muted/20">·</span>
               <Link
                 {...navLink("/account")}
-                className="text-[10px] text-muted hover:text-foreground transition"
+                className="text-[10px] text-muted hover:text-foreground transition flex items-center gap-0.5"
               >
-                Account
+                <IconUser size={12} /> Account
               </Link>
               <span className="text-muted/20">·</span>
               <button
                 onClick={() => signOut()}
-                className="text-[10px] text-muted hover:text-foreground transition cursor-pointer"
+                className="text-[10px] text-muted hover:text-foreground transition cursor-pointer flex items-center gap-0.5"
               >
-                Sign out
+                <IconLogout size={12} /> Sign out
               </button>
             </div>
           </div>
