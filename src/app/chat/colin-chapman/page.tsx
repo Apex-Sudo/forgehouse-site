@@ -243,9 +243,9 @@ function ChatContent() {
   }
 
   return (
-    <div className="flex flex-col h-full p-4">
-      <div className="flex-1 flex justify-center">
-        <div className="w-full max-w-5xl glass-card flex flex-col overflow-hidden shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)]">
+    <div className="flex flex-col h-full px-4 py-3">
+      <div className="flex-1 flex justify-center min-h-0">
+        <div className="w-full max-w-5xl glass-card flex flex-col overflow-hidden shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)] h-full">
           {/* Chat header */}
           <div className="flex items-center gap-3 px-6 py-4 border-b border-white/[0.06]">
             <IconTarget size={24} className="text-amber shrink-0" />
