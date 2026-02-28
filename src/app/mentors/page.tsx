@@ -49,9 +49,11 @@ export default function MentorsPage() {
           <div className="glass-card p-8 md:p-10">
             {/* Header */}
             <div className="flex items-start gap-5 mb-6">
-              <div className="w-16 h-16 rounded-2xl bg-amber/10 flex items-center justify-center text-2xl font-bold text-amber shrink-0">
-                CC
-              </div>
+              <img
+                src="/mentors/colin-chapman.png"
+                alt="Colin Chapman"
+                className="w-16 h-16 rounded-2xl object-cover shrink-0"
+              />
               <div>
                 <h2 className="text-2xl font-bold mb-1">Colin Chapman</h2>
                 <p className="text-muted text-sm">GTM & Outbound Sales · 25+ years of closing B2B deals</p>
