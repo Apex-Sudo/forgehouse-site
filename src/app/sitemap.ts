@@ -14,5 +14,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/thinking/sounding-board`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/thinking/executive-coaching-cost`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/thinking/you-got-promoted`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${baseUrl}/thinking/ai-vs-live-coaching`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
   ]
 }

@@ -2,6 +2,12 @@ import Link from "next/link";
 
 const posts = [
   {
+    slug: "ai-vs-live-coaching",
+    title: "When Your Mentor Can't Be in the Room",
+    excerpt: "The best coaching happens between sessions. That's exactly when you're on your own.",
+    date: "February 2026",
+  },
+  {
     slug: "you-got-promoted",
     title: "You Got Promoted. No One Trained You. Now What?",
     excerpt: "The skills that got you promoted are not the skills you need now. Nobody mentioned that during the congratulations.",
