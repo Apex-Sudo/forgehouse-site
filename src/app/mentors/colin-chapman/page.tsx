@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { ChatCircleDots, Lightning, Target, Handshake, Star } from "@phosphor-icons/react";
+import { ChatCircleDots, Lightning, Target, Handshake, Star, LinkedinLogo } from "@phosphor-icons/react";
 
 const highlights = [
   { icon: Target, label: "25+ years B2B sales" },
@@ -96,7 +96,15 @@ export default function ColinChapmanPage() {
                   <ChatCircleDots size={20} />
                   Talk to Colin&apos;s Agent
                 </Link>
-                <span className="text-muted text-sm self-center">Free during early access</span>
+                <a
+                  href="https://www.linkedin.com/in/colinchapmanza/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="border border-glass-border text-muted px-5 py-3.5 rounded-xl font-semibold hover:text-foreground hover:border-white/20 transition text-center inline-flex items-center justify-center gap-2 text-sm"
+                >
+                  <LinkedinLogo size={18} />
+                  View LinkedIn Profile
+                </a>
               </div>
             </div>
           </div>
