@@ -14,6 +14,10 @@ function redis() {
 
 const PREFIX = "fh:sub:";
 const FREE_PREFIX = "fh:free:";
+const AUTH_FREE_PREFIX = "fh:free:auth:";
+
+const ANONYMOUS_FREE_MESSAGES = 3;
+const AUTHENTICATED_FREE_MESSAGES = 2; // 2 more after login (5 total)
 
 // --- Subscription management ---
 
@@ -37,38 +41,76 @@ export async function isSubscribed(email: string): Promise<boolean> {
   return data?.active === true;
 }
 
-// --- Free message tracking (server-side, by IP) ---
+// --- Anonymous message tracking (by IP) ---
 
-const FREE_MESSAGES = 5;
-
-export async function hasFreeMessages(ip: string): Promise<boolean> {
+export async function getAnonymousMessageCount(ip: string): Promise<number> {
   const count = await redis().get<number>(`${FREE_PREFIX}${ip}`);
-  return (count ?? 0) < FREE_MESSAGES;
+  return count ?? 0;
 }
 
-export async function incrementFreeMessages(ip: string): Promise<void> {
+export async function incrementAnonymousMessages(ip: string): Promise<void> {
   const key = `${FREE_PREFIX}${ip}`;
   const exists = await redis().exists(key);
   await redis().incr(key);
   if (!exists) {
-    // Set 30-day expiry on first message so IPs eventually recycle
     await redis().expire(key, 30 * 24 * 60 * 60);
   }
 }
 
-// --- Access check: combines free + subscription ---
+// --- Authenticated message tracking (by email) ---
 
-export async function canAccess(ip: string, email?: string): Promise<{ allowed: boolean; reason: "free" | "subscribed" | "paywall" }> {
+export async function getAuthenticatedMessageCount(email: string): Promise<number> {
+  const count = await redis().get<number>(`${AUTH_FREE_PREFIX}${email.toLowerCase()}`);
+  return count ?? 0;
+}
+
+export async function incrementAuthenticatedMessages(email: string): Promise<void> {
+  const key = `${AUTH_FREE_PREFIX}${email.toLowerCase()}`;
+  const exists = await redis().exists(key);
+  await redis().incr(key);
+  if (!exists) {
+    await redis().expire(key, 30 * 24 * 60 * 60);
+  }
+}
+
+// --- Access check: tiered gating ---
+
+export async function canAccess(
+  ip: string,
+  email?: string
+): Promise<{ allowed: boolean; reason: "free" | "subscribed" | "login_required" | "paywall" }> {
   // If subscribed, always allow
   if (email) {
     const active = await isSubscribed(email);
     if (active) return { allowed: true, reason: "subscribed" };
   }
 
-  // If free messages remaining, allow
-  const hasFree = await hasFreeMessages(ip);
-  if (hasFree) return { allowed: true, reason: "free" };
+  // Check anonymous messages
+  const anonCount = await getAnonymousMessageCount(ip);
 
-  // Otherwise, paywall
+  if (!email) {
+    // No email: check anonymous tier
+    if (anonCount < ANONYMOUS_FREE_MESSAGES) {
+      return { allowed: true, reason: "free" };
+    }
+    return { allowed: false, reason: "login_required" };
+  }
+
+  // Has email but not subscribed: check authenticated tier
+  const authCount = await getAuthenticatedMessageCount(email);
+  if (authCount < AUTHENTICATED_FREE_MESSAGES) {
+    return { allowed: true, reason: "free" };
+  }
+
   return { allowed: false, reason: "paywall" };
+}
+
+// Legacy exports for backward compat
+export async function hasFreeMessages(ip: string): Promise<boolean> {
+  const count = await getAnonymousMessageCount(ip);
+  return count < ANONYMOUS_FREE_MESSAGES;
+}
+
+export async function incrementFreeMessages(ip: string): Promise<void> {
+  return incrementAnonymousMessages(ip);
 }

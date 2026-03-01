@@ -82,14 +82,9 @@ function ChatContent() {
     }
   }, [searchParams]);
 
-  // Redirect anonymous users to sign-in
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      window.location.href = "/sign-in?callbackUrl=/chat/colin-chapman";
-    }
-  }, [status]);
+  // No longer redirect anonymous users — first 3 messages are free without login
 
-  // Force onboarding if profile not complete
+  // Force onboarding if profile not complete (only for signed-in users)
   useEffect(() => {
     if (!session?.user) return;
     fetch("/api/profile")
@@ -219,15 +214,24 @@ function ChatContent() {
         }),
       });
 
+      if (res.status === 403) {
+        // Login required — redirect to sign-in
+        setMessages((prev) => prev.slice(0, -1));
+        setStreaming(false);
+        window.location.href = "/sign-in?callbackUrl=/chat/colin-chapman";
+        return;
+      }
+
+      if (res.status === 402) {
+        // Paywall
+        setHitPaywall(true);
+        setMessages((prev) => prev.slice(0, -1));
+        setStreaming(false);
+        return;
+      }
+
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Request failed" }));
-        if (err.code === "FREE_LIMIT_REACHED") {
-          setHitPaywall(true);
-          // Remove the user message we just added (it was rejected)
-          setMessages((prev) => prev.slice(0, -1));
-          setStreaming(false);
-          return;
-        }
         setMessages((prev) => [
           ...prev,
           { role: "assistant", content: err.error || "Something went wrong." },
@@ -306,8 +310,8 @@ function ChatContent() {
     if (summaryTimerRef.current) clearTimeout(summaryTimerRef.current);
   };
 
-  // Show loading while checking auth or redirecting
-  if (status === "loading" || status === "unauthenticated") {
+  // Show loading while checking auth
+  if (status === "loading") {
     return (
       <div className="flex flex-col h-screen items-center justify-center">
         <span className="animate-pulse text-muted text-sm">Loading...</span>
