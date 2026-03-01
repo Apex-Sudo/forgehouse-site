@@ -18,10 +18,15 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  "https://tmpjpjkaislwyjcskvpi.supabase.co",
-  "***REDACTED_SERVICE_KEY***"
-);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_KEY env vars");
+  process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 type Msg = { role: string; content: string };
 
