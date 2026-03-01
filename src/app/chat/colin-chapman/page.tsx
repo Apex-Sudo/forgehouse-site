@@ -41,6 +41,7 @@ function ChatContent() {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [hitPaywall, setHitPaywall] = useState(false);
+  const [showLoginGate, setShowLoginGate] = useState(false);
   const [starters, setStarters] = useState<string[]>(DEFAULT_STARTERS);
   const [showWelcome, setShowWelcome] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
@@ -215,10 +216,10 @@ function ChatContent() {
       });
 
       if (res.status === 403) {
-        // Login required — redirect to sign-in
+        // Login required — show inline prompt, keep conversation visible
         setMessages((prev) => prev.slice(0, -1));
         setStreaming(false);
-        window.location.href = "/sign-in?callbackUrl=/chat/colin-chapman";
+        setShowLoginGate(true);
         return;
       }
 
@@ -408,7 +409,32 @@ function ChatContent() {
           </div>
 
           {/* Input or Paywall */}
-          {isLocked || hitPaywall ? (
+          {showLoginGate ? (
+            <div className="border-t border-white/[0.06] px-6 py-6">
+              <div className="text-center">
+                <p className="text-sm text-foreground/90 mb-1 font-medium">
+                  Sign in to keep the conversation going
+                </p>
+                <p className="text-xs text-muted mb-4">
+                  Save your chat history, get personalized advice, and pick up right where you left off.
+                </p>
+                <div className="flex flex-col gap-2 max-w-xs mx-auto">
+                  <a
+                    href="/sign-in?callbackUrl=/chat/colin-chapman"
+                    className="bg-[#3B82F6] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#2563EB] transition text-center"
+                  >
+                    Continue with LinkedIn
+                  </a>
+                  <a
+                    href="/sign-in?callbackUrl=/chat/colin-chapman"
+                    className="bg-white/[0.06] text-foreground px-6 py-3 rounded-xl font-semibold text-sm hover:bg-white/[0.1] transition text-center"
+                  >
+                    Continue with Google
+                  </a>
+                </div>
+              </div>
+            </div>
+          ) : isLocked || hitPaywall ? (
             <div className="border-t border-white/[0.06] px-6 py-6">
               <div className="text-center">
                 <p className="text-sm text-foreground/90 mb-1 font-medium">
