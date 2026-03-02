@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     await storeCode(emailLower, code);
 
     await resend.emails.send({
-      from: "ForgeHouse <noreply@forgehousehq.com>",
+      from: "ForgeHouse <onboarding@resend.dev>",
       to: emailLower,
       subject: "Your ForgeHouse verification code",
       html: `
