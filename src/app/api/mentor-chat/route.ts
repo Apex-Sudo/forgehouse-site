@@ -30,12 +30,17 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { messages, mentor, conversation_id, scenario_id } = body as {
+    const { messages, mentor, conversation_id, scenario_id, invite } = body as {
       messages: { role: "user" | "assistant"; content: string }[];
       mentor: string;
       conversation_id?: string;
       scenario_id?: string;
+      invite?: string;
     };
+
+    // Valid invite codes bypass all gating (login + paywall)
+    const VALID_INVITE_CODES = new Set(["alexw", "steve", "ray", "colin", "amber", "mark", "test"]);
+    const isInvited = invite ? VALID_INVITE_CODES.has(invite) : false;
 
     if (!messages?.length) {
       return Response.json({ error: "No messages provided" }, { status: 400 });
@@ -52,13 +57,16 @@ export async function POST(req: Request) {
 
     // --- Tiered message gating (Redis-based) ---
     // 3 anonymous → login_required → 2 more authenticated → paywall
-    const effectiveEmail = user?.email || undefined;
-    const access = await canAccess(ip, effectiveEmail);
-    if (!access.allowed) {
-      if (access.reason === "login_required") {
-        return Response.json({ error: "login_required" }, { status: 403 });
+    // Invite codes bypass all gates
+    if (!isInvited) {
+      const effectiveEmail = user?.email || undefined;
+      const access = await canAccess(ip, effectiveEmail);
+      if (!access.allowed) {
+        if (access.reason === "login_required") {
+          return Response.json({ error: "login_required" }, { status: 403 });
+        }
+        return Response.json({ error: "paywall" }, { status: 402 });
       }
-      return Response.json({ error: "paywall" }, { status: 402 });
     }
 
     let contextMessages: { role: "user" | "assistant"; content: string }[] = [];

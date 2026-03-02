@@ -217,6 +217,7 @@ function ChatContent() {
           mentor: "colin-chapman",
           ...(convId ? { conversation_id: convId } : {}),
           ...(activeScenario ? { scenario_id: activeScenario } : {}),
+          ...(isInvited ? { invite: inviteCode } : {}),
         }),
       });
 
