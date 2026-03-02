@@ -10,7 +10,7 @@ interface UpgradePromptProps {
 export default function UpgradePrompt({
   mentorSlug,
   mentorName,
-  mentorPrice = 150,
+  mentorPrice = 1,
 }: UpgradePromptProps) {
   const [loading, setLoading] = useState(false);
   const [dismissed, setDismissed] = useState(false);

@@ -443,7 +443,7 @@ function ChatContent() {
                 <p className="text-xs text-muted mb-4">
                   Subscribe to keep talking to Colin and save your conversations.
                 </p>
-                <UpgradePrompt mentorSlug="colin-chapman" mentorName="Colin Chapman" mentorPrice={150} />
+                <UpgradePrompt mentorSlug="colin-chapman" mentorName="Colin Chapman" mentorPrice={1} />
               </div>
             </div>
           ) : (

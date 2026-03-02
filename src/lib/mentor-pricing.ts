@@ -12,7 +12,7 @@ export const PLATFORM_MONTHLY_PRICE = 47;
 export const mentorPricing: Record<string, MentorPricing> = {
   "colin-chapman": {
     stripePriceId: process.env.STRIPE_COLIN_PRICE_ID || "price_COLIN_PLACEHOLDER",
-    monthlyPrice: 150,
+    monthlyPrice: 1,
     mentorName: "Colin Chapman",
   },
 };

@@ -108,11 +108,11 @@ function SubscribeButton() {
         disabled={loading}
         className="block w-full bg-amber text-white py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center disabled:opacity-50 cursor-pointer"
       >
-        {loading ? "Loading..." : "Start with Colin · $197/mo"}
+        {loading ? "Loading..." : "Start with Colin · $48/mo"}
       </button>
       {error && <p className="mt-2 text-sm text-red-400 text-center">{error}</p>}
       <div className="mt-3 text-xs text-muted text-center space-y-0.5">
-        <p>ForgeHouse Platform $47/mo + Colin Chapman $150/mo</p>
+        <p>ForgeHouse Platform $47/mo + Colin Chapman $1/mo</p>
       </div>
     </div>
   );
@@ -142,7 +142,7 @@ export default function PricingPage() {
         <div className="max-w-lg mx-auto">
           <div className="glass-card p-10 text-center shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)]">
             <p className="text-sm text-muted uppercase tracking-wide mb-2">Colin Chapman</p>
-            <div className="text-5xl font-bold mb-1">$197<span className="text-lg font-normal text-muted">/month</span></div>
+            <div className="text-5xl font-bold mb-1">$48<span className="text-lg font-normal text-muted">/month</span></div>
             <p className="text-muted text-sm mb-8">Unlimited conversations with Colin&apos;s AI mentor agent.</p>
 
             <ul className="text-left space-y-4 mb-10">
