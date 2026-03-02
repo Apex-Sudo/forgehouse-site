@@ -21,6 +21,11 @@ export function generateCode(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+export async function getExistingCode(email: string): Promise<string | null> {
+  const key = `${PREFIX}${email.toLowerCase()}`;
+  return await redis().get<string>(key);
+}
+
 export async function storeCode(email: string, code: string): Promise<void> {
   const key = `${PREFIX}${email.toLowerCase()}`;
   await redis().set(key, code, { ex: CODE_TTL });

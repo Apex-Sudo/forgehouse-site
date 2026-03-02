@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import { generateCode, storeCode, checkRateLimit } from "@/lib/verification";
+import { generateCode, storeCode, checkRateLimit, getExistingCode } from "@/lib/verification";
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
@@ -30,6 +30,12 @@ export async function POST(req: Request) {
         { error: "Email service not configured" },
         { status: 500 }
       );
+    }
+
+    // Reuse existing valid code instead of overwriting
+    const existing = await getExistingCode(emailLower);
+    if (existing) {
+      return NextResponse.json({ success: true, reused: true });
     }
 
     const code = generateCode();
