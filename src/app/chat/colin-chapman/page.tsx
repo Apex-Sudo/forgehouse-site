@@ -481,7 +481,7 @@ function ChatContent() {
                         {gateError && <p className="text-red-400 text-xs text-center">{gateError}</p>}
                       </form>
                     ) : (
-                      <form onSubmit={(e) => { e.preventDefault(); setGateError(""); signIn("credentials", { email: gateEmail, code: gateCode, callbackUrl: "/chat/colin-chapman" }); }} className="space-y-2">
+                      <form onSubmit={async (e) => { e.preventDefault(); setGateError(""); const res = await signIn("credentials", { email: gateEmail, code: gateCode, redirect: false }); if (res?.error) { setGateError("Invalid or expired code. Try again."); } else if (res?.ok) { window.location.href = "/chat/colin-chapman"; } }} className="space-y-2">
                         <p className="text-muted text-xs text-center">Code sent to <span className="text-foreground">{gateEmail}</span></p>
                         <input
                           type="text"

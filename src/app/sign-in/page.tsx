@@ -108,7 +108,7 @@ function SignInContent() {
                 {error && <p className="text-red-400 text-xs text-center">{error}</p>}
               </form>
             ) : (
-              <form onSubmit={(e) => { e.preventDefault(); setError(""); signIn("credentials", { email: emailValue, code: codeValue, callbackUrl }); }} className="space-y-2">
+              <form onSubmit={async (e) => { e.preventDefault(); setError(""); const res = await signIn("credentials", { email: emailValue, code: codeValue, redirect: false }); if (res?.error) { setError("Invalid or expired code. Try again."); } else if (res?.ok) { window.location.href = callbackUrl; } }} className="space-y-2">
                 <p className="text-zinc-400 text-xs text-center">We sent a 6-digit code to <span className="text-white">{emailValue}</span></p>
                 <input type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} placeholder="Enter 6-digit code" value={codeValue} onChange={(e) => setCodeValue(e.target.value.replace(/\D/g, ""))} required className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-xl text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 text-center tracking-[0.3em] text-lg" />
                 <button type="submit" className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-4 rounded-xl transition-colors border border-zinc-700 cursor-pointer text-sm">Verify & Sign In</button>
