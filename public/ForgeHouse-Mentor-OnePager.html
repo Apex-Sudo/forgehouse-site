@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ForgeHouse — Mentor One-Pager</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  html, body {
+    width: 210mm;
+    height: 297mm;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #0A0A0A;
+    color: #EDEDED;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    padding: 48px 56px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .accent { color: #D4A574; }
+  .muted { color: #737373; }
+
+  /* Wordmark */
+  .wordmark {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+
+  .tagline {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #737373;
+    margin-bottom: 40px;
+  }
+
+  /* Hero statement */
+  .hero {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    max-width: 480px;
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    color: rgba(237, 237, 237, 0.6);
+    margin-bottom: 36px;
+    max-width: 440px;
+    line-height: 1.5;
+  }
+
+  /* Section labels */
+  .section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #D4A574;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  /* Sections grid */
+  .sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 48px;
+    flex: 1;
+  }
+
+  .section { margin-bottom: 0; }
+
+  /* Steps */
+  .steps {
+    list-style: none;
+    counter-reset: step;
+  }
+
+  .steps li {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: rgba(237, 237, 237, 0.75);
+  }
+
+  .step-num {
+    font-family: 'Inter', monospace;
+    font-size: 11px;
+    color: rgba(212, 165, 116, 0.6);
+    font-weight: 600;
+    flex-shrink: 0;
+    width: 16px;
+  }
+
+  .step-title {
+    font-weight: 600;
+    color: #EDEDED;
+  }
+
+  /* Bullet lists */
+  .benefits {
+    list-style: none;
+  }
+
+  .benefits li {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: rgba(237, 237, 237, 0.75);
+    margin-bottom: 8px;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .benefits li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #D4A574;
+  }
+
+  /* Case study */
+  .case-study {
+    background: rgba(212, 165, 116, 0.04);
+    border: 1px solid rgba(212, 165, 116, 0.1);
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+
+  .case-name {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .case-detail {
+    font-size: 12.5px;
+    color: rgba(237, 237, 237, 0.5);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .case-stats {
+    display: flex;
+    gap: 24px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #737373;
+    margin-bottom: 2px;
+  }
+
+  .stat-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #D4A574;
+  }
+
+  /* CTA */
+  .cta {
+    margin-top: auto;
+    padding-top: 28px;
+    border-top: 1px solid rgba(237, 237, 237, 0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cta-text {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .cta-url {
+    font-size: 14px;
+    font-weight: 600;
+    color: #D4A574;
+    letter-spacing: -0.2px;
+  }
+
+  .cta-sub {
+    font-size: 11px;
+    color: #737373;
+    margin-top: 2px;
+  }
+
+  /* Separator */
+  .divider {
+    width: 32px;
+    height: 1px;
+    background: rgba(212, 165, 116, 0.3);
+    margin: 4px 0 36px;
+  }
+
+  @media print {
+    html, body { background: #0A0A0A !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="wordmark">Forge<span class="accent">House</span></div>
+  <div class="tagline">For Mentors</div>
+
+  <div class="hero">More people need what you know than you'll ever have time to help.</div>
+  <p class="hero-sub">ForgeHouse turns elite mentors into AI agents — trained on your real expertise, available to subscribers 24/7. You stay in control. Your knowledge works while you don't.</p>
+  <div class="divider"></div>
+
+  <div class="sections">
+
+    <div class="section">
+      <div class="section-label">How It Works</div>
+      <ol class="steps">
+        <li><span class="step-num">01</span><span><span class="step-title">Extract.</span> We conduct deep sessions to capture your frameworks, mental models, and real-world advice.</span></li>
+        <li><span class="step-num">02</span><span><span class="step-title">Build.</span> We train an AI agent that thinks and responds like you — not a generic chatbot, your actual expertise.</span></li>
+        <li><span class="step-num">03</span><span><span class="step-title">Launch.</span> Your agent goes live on ForgeHouse. Subscribers get 24/7 access. You get reach, revenue, and leads.</span></li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <div class="section-label">What You Get</div>
+      <ul class="benefits">
+        <li><strong>Reach without time.</strong> Help hundreds of people simultaneously without a single extra call.</li>
+        <li><strong>Revenue from every conversation.</strong> Earn from your agent's usage — passive income from decades of expertise.</li>
+        <li><strong>Consulting leads.</strong> Every subscriber is a potential high-ticket client. We refer them to you directly.</li>
+        <li><strong>Two-way growth.</strong> You promote your agent to your network. We send leads to your consulting practice.</li>
+      </ul>
+    </div>
+
+    <div class="section" style="grid-column: 1 / -1;">
+      <div class="section-label">First Mentor — Live Now</div>
+      <div class="case-study">
+        <div class="case-name">Colin Chapman</div>
+        <div class="case-detail">GTM Strategy & Outbound Sales · 26 years experience · 4.92★ on GrowthMentor</div>
+        <div class="case-stats">
+          <div>
+            <div class="stat-label">Status</div>
+            <div class="stat-value">Live on ForgeHouse</div>
+          </div>
+          <div>
+            <div class="stat-label">Platform</div>
+            <div class="stat-value">$47/mo per subscriber</div>
+          </div>
+          <div>
+            <div class="stat-label">Mentor Cost</div>
+            <div class="stat-value">Free at launch</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="cta">
+    <div>
+      <div class="cta-text">Ready to extend your reach?</div>
+      <div class="cta-sub">Limited spots. We handpick every mentor.</div>
+    </div>
+    <div style="text-align: right;">
+      <div class="cta-url">forgehouse.io/apply</div>
+    </div>
+  </div>
+
+</body>
+</html>
