@@ -30,8 +30,13 @@ interface Message {
 
 const FREE_MESSAGE_LIMIT = 5;
 
+// Invite codes bypass the paywall — unlimited free messages
+const VALID_INVITE_CODES = new Set(["alexw", "steve", "ray", "colin", "test"]);
+
 function ChatContent() {
   const searchParams = useSearchParams();
+  const inviteCode = searchParams.get("invite");
+  const isInvited = inviteCode ? VALID_INVITE_CODES.has(inviteCode) : false;
   const { data: session, status } = useSession();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -50,7 +55,7 @@ function ChatContent() {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const userMessageCount = messages.filter((m) => m.role === "user").length;
-  const isLocked = !isSubscribed && userMessageCount >= FREE_MESSAGE_LIMIT;
+  const isLocked = !isInvited && !isSubscribed && userMessageCount >= FREE_MESSAGE_LIMIT;
 
   const scrollToBottom = useCallback(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -465,7 +470,7 @@ function ChatContent() {
                   Send
                 </button>
               </div>
-              {!isSubscribed && userMessageCount >= 3 && (
+              {!isInvited && !isSubscribed && userMessageCount >= 3 && (
                 <p className="text-xs text-muted text-center mt-2">
                   {FREE_MESSAGE_LIMIT - userMessageCount} free message{FREE_MESSAGE_LIMIT - userMessageCount !== 1 ? "s" : ""} remaining
                 </p>
