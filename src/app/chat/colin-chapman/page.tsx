@@ -31,7 +31,7 @@ interface Message {
 const FREE_MESSAGE_LIMIT = 5;
 
 // Invite codes bypass the paywall — unlimited free messages
-const VALID_INVITE_CODES = new Set(["alexw", "steve", "ray", "colin", "test"]);
+const VALID_INVITE_CODES = new Set(["alexw", "steve", "ray", "colin", "amber", "test"]);
 
 function ChatContent() {
   const searchParams = useSearchParams();
