@@ -222,8 +222,7 @@ function ChatContent() {
       });
 
       if (res.status === 403) {
-        // Login required — show inline prompt, keep conversation visible
-        setMessages((prev) => prev.slice(0, -1));
+        // Login required — keep user's message visible, show gate below
         setStreaming(false);
         setShowLoginGate(true);
         return;
@@ -419,15 +418,15 @@ function ChatContent() {
             <div className="border-t border-white/[0.06] px-6 py-6">
               <div className="text-center">
                 <p className="text-sm text-foreground/90 mb-1 font-medium">
-                  Sign in to keep the conversation going
+                  Thanks for trying ForgeHouse
                 </p>
                 <p className="text-xs text-muted mb-4">
-                  Save your chat history, get personalized advice, and pick up right where you left off.
+                  Sign in to get Colin&apos;s answer and keep the conversation going.
                 </p>
                 <div className="flex flex-col gap-2 max-w-xs mx-auto">
                   <a
                     href="/sign-in?callbackUrl=/chat/colin-chapman"
-                    className="bg-[#3B82F6] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#2563EB] transition text-center"
+                    className="bg-[#0A66C2] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#004182] transition text-center"
                   >
                     Continue with LinkedIn
                   </a>
@@ -437,6 +436,34 @@ function ChatContent() {
                   >
                     Continue with Google
                   </a>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      const form = e.target as HTMLFormElement;
+                      const email = (form.elements.namedItem("gate-email") as HTMLInputElement).value;
+                      if (email) window.location.href = `/api/auth/signin?callbackUrl=/chat/colin-chapman&email=${encodeURIComponent(email)}`;
+                    }}
+                    className="space-y-2 mt-1"
+                  >
+                    <div className="flex items-center gap-3 my-1">
+                      <div className="flex-1 h-px bg-white/[0.08]" />
+                      <span className="text-muted text-xs">or</span>
+                      <div className="flex-1 h-px bg-white/[0.08]" />
+                    </div>
+                    <input
+                      name="gate-email"
+                      type="email"
+                      placeholder="Enter your email"
+                      required
+                      className="w-full bg-white/[0.03] border border-white/[0.08] text-foreground px-4 py-3 rounded-xl text-sm placeholder:text-muted focus:outline-none focus:border-white/[0.2]"
+                    />
+                    <button
+                      type="submit"
+                      className="w-full bg-white/[0.06] text-foreground px-6 py-3 rounded-xl font-semibold text-sm hover:bg-white/[0.1] transition"
+                    >
+                      Continue with Email
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>
@@ -471,6 +498,7 @@ function ChatContent() {
                   Send
                 </button>
               </div>
+              <p className="text-[11px] text-zinc-600 text-center mt-2">Your conversations are private. We don&apos;t sell or share your data.</p>
               {!isInvited && !isSubscribed && userMessageCount >= 3 && (
                 <p className="text-xs text-muted text-center mt-2">
                   {FREE_MESSAGE_LIMIT - userMessageCount} free message{FREE_MESSAGE_LIMIT - userMessageCount !== 1 ? "s" : ""} remaining

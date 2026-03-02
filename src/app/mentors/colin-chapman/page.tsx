@@ -275,6 +275,7 @@ export default function ColinChapmanPage() {
             <ChatCircleDots size={20} />
             Diagnose your pipeline
           </Link>
+          <p className="text-[11px] text-zinc-600 text-center mt-4">Your conversations are private. We don&apos;t sell or share your data.</p>
         </div>
       </section>
     </div>

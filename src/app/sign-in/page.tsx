@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
@@ -7,6 +8,7 @@ import { Suspense } from "react";
 function SignInContent() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const [emailValue, setEmailValue] = useState("");
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
@@ -66,6 +68,19 @@ function SignInContent() {
               </svg>
               Continue with Google
             </button>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 my-2">
+              <div className="flex-1 h-px bg-zinc-700" />
+              <span className="text-zinc-500 text-xs">or</span>
+              <div className="flex-1 h-px bg-zinc-700" />
+            </div>
+
+            {/* Email */}
+            <form onSubmit={(e) => { e.preventDefault(); signIn("credentials", { email: emailValue, callbackUrl }); }} className="space-y-2">
+              <input type="email" placeholder="Enter your email" value={emailValue} onChange={(e) => setEmailValue(e.target.value)} required className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-xl text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500" />
+              <button type="submit" className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-4 rounded-xl transition-colors border border-zinc-700 cursor-pointer text-sm">Continue with Email</button>
+            </form>
           </div>
 
           {/* Footer */}

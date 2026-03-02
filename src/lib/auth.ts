@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import LinkedIn from "next-auth/providers/linkedin";
 import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 import { supabase } from "./supabase";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -12,6 +13,37 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    Credentials({
+      name: "Email",
+      credentials: {
+        email: { label: "Email", type: "email" },
+      },
+      async authorize(credentials) {
+        const email = credentials?.email as string;
+        if (!email) return null;
+
+        // Find or create user
+        const { data: existing } = await supabase
+          .from("users")
+          .select("id, email, name")
+          .eq("email", email)
+          .single();
+
+        if (existing) {
+          return { id: existing.id, email: existing.email, name: existing.name };
+        }
+
+        // Create new user
+        const { data: newUser, error } = await supabase
+          .from("users")
+          .insert({ email, provider: "email" })
+          .select("id, email")
+          .single();
+
+        if (error || !newUser) return null;
+        return { id: newUser.id, email: newUser.email, name: null };
+      },
     }),
   ],
   pages: {
