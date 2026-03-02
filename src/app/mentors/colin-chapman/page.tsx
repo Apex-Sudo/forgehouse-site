@@ -5,8 +5,8 @@ import { ChatCircleDots, Lightning, Target, Star, LinkedinLogo, Globe } from "@p
 const highlights = [
   { icon: Target, label: "26 years in B2B sales" },
   { icon: Globe, label: "15 years in business development" },
-  { icon: Lightning, label: "Trained on 80+ real sessions" },
-  { icon: Star, label: "4.92 from 80+ reviews" },
+  { icon: Lightning, label: "Trained on real session transcripts" },
+  { icon: Star, label: "4.92 on GrowthMentor" },
 ];
 
 const sessions = [
