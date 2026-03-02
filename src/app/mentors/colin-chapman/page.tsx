@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
-import { ChatCircleDots, Lightning, Target, Handshake, Star, LinkedinLogo } from "@phosphor-icons/react";
+import { ChatCircleDots, Lightning, Target, Handshake, Star, LinkedinLogo, Globe } from "@phosphor-icons/react";
 
 const highlights = [
-  { icon: Target, label: "25+ years B2B sales" },
+  { icon: Target, label: "26 years in B2B sales" },
+  { icon: Globe, label: "6 continents, always in English" },
   { icon: Lightning, label: "66% win rate at peak" },
-  { icon: Handshake, label: "IBM, Siemens, BMW" },
-  { icon: Star, label: "4.92 from 13 sessions" },
+  { icon: Star, label: "4.92 from 80+ reviews" },
 ];
 
 const sessions = [
@@ -18,12 +18,12 @@ const sessions = [
   {
     num: "02",
     title: "What does my buyer actually care about?",
-    desc: "Map the Jobs-to-be-Done framework behind the buyer decision. Three layers: functional, social, and emotional. Most founders only address the functional job. The other two are where differentiation lives.",
+    desc: "Map the Jobs-to-be-Done framework across all three layers: functional, social, and emotional. Most founders only address the functional job. The other two are where differentiation lives.",
   },
   {
     num: "03",
     title: "How do I build a playbook my team can run?",
-    desc: "Design messaging that translates what makes your product valuable into language buyers recognise as being about them. The goal: a system that works without the founder in every conversation.",
+    desc: "Translate what makes your product valuable into language buyers recognise as being about them. The knowledge is in the founder's head. Colin turns it into a system that works without you in every conversation.",
   },
 ];
 
@@ -51,10 +51,10 @@ const reviews = [
 ];
 
 const starters = [
-  "I'm a solo founder. How do I build outbound without a sales team?",
-  "My pipeline is stalled. Where do I start diagnosing?",
-  "How do I define my ICP when my product is new to the market?",
+  "My pipeline is stalled. Where do I start?",
+  "How do I define my ICP when my product is new?",
   "What should my first outreach sequence look like?",
+  "I hired a sales rep and nothing changed. What now?",
 ];
 
 export default function ColinChapmanPage() {
@@ -76,9 +76,10 @@ export default function ColinChapmanPage() {
                 GTM & Outbound for B2B Tech Founders
               </p>
               <p className="text-muted text-base leading-relaxed mb-6">
-                Most B2B tech founders at Seed or Series A are still closing the majority of their own deals. 
-                The first sales hire arrives, three months pass, and the pipeline hasn&apos;t moved. 
-                The rep inherited a territory, not a system. That&apos;s the specific problem Colin addresses.
+                Most B2B tech founders are still closing the majority of their own deals.
+                The first sales hire arrives, three months pass, and the pipeline hasn&apos;t moved.
+                The rep inherited a territory, not a playbook. Nobody ever translated the founder&apos;s
+                knowledge into a system. That&apos;s the specific problem Colin solves.
               </p>
               <div className="flex flex-wrap gap-3 mb-8">
                 {highlights.map((h) => (
@@ -94,7 +95,7 @@ export default function ColinChapmanPage() {
                   className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center inline-flex items-center justify-center gap-2"
                 >
                   <ChatCircleDots size={20} />
-                  Talk to Colin&apos;s Agent
+                  Diagnose your pipeline
                 </Link>
                 <a
                   href="https://www.linkedin.com/in/colinchapmanza/"
@@ -111,7 +112,21 @@ export default function ColinChapmanPage() {
         </div>
       </section>
 
-      {/* What a session covers — numbered sequence */}
+      {/* Philosophy quote */}
+      <section className="px-6 py-10">
+        <div className="max-w-4xl mx-auto">
+          <div className="pl-6 border-l-2 border-amber/20">
+            <p className="text-foreground/40 italic text-[15px] leading-relaxed">
+              &ldquo;The message has to be about the buyer&apos;s problem, not the seller&apos;s solution.
+              The outreach usually reads like it was written by someone who knows the product extremely well,
+              which sounds like a compliment until you think about it.&rdquo;
+            </p>
+            <p className="text-foreground/25 text-[11px] mt-2">Colin Chapman</p>
+          </div>
+        </div>
+      </section>
+
+      {/* What a session covers */}
       <section className="px-6 py-14">
         <div className="max-w-4xl mx-auto">
           <p className="text-[11px] uppercase tracking-widest text-muted mb-3">Sessions</p>
@@ -137,7 +152,7 @@ export default function ColinChapmanPage() {
           <p className="text-[11px] uppercase tracking-widest text-muted mb-3">The agent</p>
           <h2 className="text-xl md:text-2xl font-bold mb-3">How Colin&apos;s agent thinks</h2>
           <p className="text-muted text-base mb-10 max-w-2xl">
-            Built from structured extraction sessions, live calibration, and a 42-minute deep dive. 
+            Built from structured extraction sessions, live calibration, and deep dives into 26 years of deal-making.
             Not a chatbot with a sales prompt. A system that reasons the way Colin does.
           </p>
           <div className="grid md:grid-cols-3 gap-6">
@@ -150,8 +165,8 @@ export default function ColinChapmanPage() {
               <p className="text-muted text-sm">If your ICP is &quot;anyone,&quot; he&apos;ll tell you. If your sequence is too long, he&apos;ll cut it. Consultative means prepared to challenge your thinking.</p>
             </div>
             <div className="glass-card p-6">
-              <p className="text-amber font-semibold mb-2 text-sm">Speaks from experience</p>
-              <p className="text-muted text-sm">Every framework comes from deals closed or lost. 301 dials, 98 connects, 32.6% connect rate. War stories, not theory.</p>
+              <p className="text-amber font-semibold mb-2 text-sm">Buyer psychology, not templates</p>
+              <p className="text-muted text-sm">Uses the Jobs-to-be-Done framework across functional, social, and emotional layers. Maps what buyers care about before a word of copy gets written.</p>
             </div>
           </div>
         </div>
@@ -166,6 +181,7 @@ export default function ColinChapmanPage() {
             <div className="flex items-center gap-1.5 text-amber">
               <Star size={16} weight="fill" />
               <span className="font-semibold">4.92</span>
+              <a href="https://www.growthmentor.com/mentors/colin-chapman/" target="_blank" rel="noopener noreferrer" className="text-muted text-xs hover:text-foreground transition ml-1">on GrowthMentor</a>
             </div>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
@@ -184,11 +200,11 @@ export default function ColinChapmanPage() {
         </div>
       </section>
 
-      {/* Try it — starters only, no redundant button */}
+      {/* Try it */}
       <section className="px-6 py-14 gradient-blue">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-[11px] uppercase tracking-widest text-muted mb-3">Try it</p>
-          <h2 className="text-xl md:text-2xl font-bold mb-3">Start a conversation</h2>
+          <h2 className="text-xl md:text-2xl font-bold mb-3">Find out what&apos;s blocking your pipeline</h2>
           <p className="text-muted text-base mb-10 max-w-xl mx-auto">
             Pick one, or ask whatever&apos;s on your mind.
           </p>
@@ -208,7 +224,7 @@ export default function ColinChapmanPage() {
             className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-flex items-center gap-2"
           >
             <ChatCircleDots size={20} />
-            Talk to Colin&apos;s Agent
+            Diagnose your pipeline
           </Link>
         </div>
       </section>
