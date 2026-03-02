@@ -58,8 +58,8 @@ export async function POST(req: Request) {
     // --- Tiered message gating (Redis-based) ---
     // 3 anonymous → login_required → 2 more authenticated → paywall
     // Invite codes bypass all gates
+    const effectiveEmail = user?.email || undefined;
     if (!isInvited) {
-      const effectiveEmail = user?.email || undefined;
       const access = await canAccess(ip, effectiveEmail);
       if (!access.allowed) {
         if (access.reason === "login_required") {
