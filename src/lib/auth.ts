@@ -3,6 +3,7 @@ import LinkedIn from "next-auth/providers/linkedin";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { supabase } from "./supabase";
+import { verifyCode } from "./verification";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -18,16 +19,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       name: "Email",
       credentials: {
         email: { label: "Email", type: "email" },
+        code: { label: "Code", type: "text" },
       },
       async authorize(credentials) {
         const email = credentials?.email as string;
-        if (!email) return null;
+        const code = credentials?.code as string;
+        if (!email || !code) return null;
+
+        // Verify the 6-digit code
+        const valid = await verifyCode(email.toLowerCase().trim(), code);
+        if (!valid) return null;
 
         // Find or create user
         const { data: existing } = await supabase
           .from("users")
           .select("id, email, name")
-          .eq("email", email)
+          .eq("email", email.toLowerCase().trim())
           .single();
 
         if (existing) {
@@ -37,7 +44,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // Create new user
         const { data: newUser, error } = await supabase
           .from("users")
-          .insert({ email, provider: "email" })
+          .insert({ email: email.toLowerCase().trim(), provider: "email" })
           .select("id, email")
           .single();
 

@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import ChatMessage from "@/components/ChatMessage";
 import MemoryBanner from "@/components/MemoryBanner";
 // SignInNudge no longer needed — Colin requires auth
@@ -47,6 +47,11 @@ function ChatContent() {
   const [showBanner, setShowBanner] = useState(false);
   const [hitPaywall, setHitPaywall] = useState(false);
   const [showLoginGate, setShowLoginGate] = useState(false);
+  const [gateEmail, setGateEmail] = useState("");
+  const [gateCode, setGateCode] = useState("");
+  const [gateCodeSent, setGateCodeSent] = useState(false);
+  const [gateSending, setGateSending] = useState(false);
+  const [gateError, setGateError] = useState("");
   const [starters, setStarters] = useState<string[]>(DEFAULT_STARTERS);
   const [showWelcome, setShowWelcome] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
@@ -436,34 +441,65 @@ function ChatContent() {
                   >
                     Continue with Google
                   </a>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      const form = e.target as HTMLFormElement;
-                      const email = (form.elements.namedItem("gate-email") as HTMLInputElement).value;
-                      if (email) window.location.href = `/api/auth/signin?callbackUrl=/chat/colin-chapman&email=${encodeURIComponent(email)}`;
-                    }}
-                    className="space-y-2 mt-1"
-                  >
+                  <div className="space-y-2 mt-1">
                     <div className="flex items-center gap-3 my-1">
                       <div className="flex-1 h-px bg-white/[0.08]" />
                       <span className="text-muted text-xs">or</span>
                       <div className="flex-1 h-px bg-white/[0.08]" />
                     </div>
-                    <input
-                      name="gate-email"
-                      type="email"
-                      placeholder="Enter your email"
-                      required
-                      className="w-full bg-white/[0.03] border border-white/[0.08] text-foreground px-4 py-3 rounded-xl text-sm placeholder:text-muted focus:outline-none focus:border-white/[0.2]"
-                    />
-                    <button
-                      type="submit"
-                      className="w-full bg-white/[0.06] text-foreground px-6 py-3 rounded-xl font-semibold text-sm hover:bg-white/[0.1] transition"
-                    >
-                      Continue with Email
-                    </button>
-                  </form>
+                    {!gateCodeSent ? (
+                      <form onSubmit={async (e) => {
+                        e.preventDefault();
+                        setGateError("");
+                        setGateSending(true);
+                        try {
+                          const res = await fetch("/api/auth/send-code", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ email: gateEmail }),
+                          });
+                          if (res.ok) {
+                            setGateCodeSent(true);
+                          } else {
+                            const data = await res.json();
+                            setGateError(data.error || "Failed to send code");
+                          }
+                        } catch { setGateError("Failed to send code"); }
+                        setGateSending(false);
+                      }} className="space-y-2">
+                        <input
+                          type="email"
+                          placeholder="Enter your email"
+                          value={gateEmail}
+                          onChange={(e) => setGateEmail(e.target.value)}
+                          required
+                          className="w-full bg-white/[0.03] border border-white/[0.08] text-foreground px-4 py-3 rounded-xl text-sm placeholder:text-muted focus:outline-none focus:border-white/[0.2]"
+                        />
+                        <button type="submit" disabled={gateSending} className="w-full bg-white/[0.06] text-foreground px-6 py-3 rounded-xl font-semibold text-sm hover:bg-white/[0.1] transition disabled:opacity-50">
+                          {gateSending ? "Sending..." : "Continue with Email"}
+                        </button>
+                        {gateError && <p className="text-red-400 text-xs text-center">{gateError}</p>}
+                      </form>
+                    ) : (
+                      <form onSubmit={(e) => { e.preventDefault(); setGateError(""); signIn("credentials", { email: gateEmail, code: gateCode, callbackUrl: "/chat/colin-chapman" }); }} className="space-y-2">
+                        <p className="text-muted text-xs text-center">Code sent to <span className="text-foreground">{gateEmail}</span></p>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]{6}"
+                          maxLength={6}
+                          placeholder="Enter 6-digit code"
+                          value={gateCode}
+                          onChange={(e) => setGateCode(e.target.value.replace(/\D/g, ""))}
+                          required
+                          className="w-full bg-white/[0.03] border border-white/[0.08] text-foreground px-4 py-3 rounded-xl text-sm placeholder:text-muted focus:outline-none focus:border-white/[0.2] text-center tracking-[0.3em] text-lg"
+                        />
+                        <button type="submit" className="w-full bg-white/[0.06] text-foreground px-6 py-3 rounded-xl font-semibold text-sm hover:bg-white/[0.1] transition">Verify & Sign In</button>
+                        <button type="button" onClick={() => { setGateCodeSent(false); setGateCode(""); setGateError(""); }} className="w-full text-muted text-xs hover:text-foreground transition cursor-pointer">Use a different email</button>
+                        {gateError && <p className="text-red-400 text-xs text-center">{gateError}</p>}
+                      </form>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

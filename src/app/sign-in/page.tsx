@@ -9,6 +9,10 @@ function SignInContent() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
   const [emailValue, setEmailValue] = useState("");
+  const [codeValue, setCodeValue] = useState("");
+  const [codeSent, setCodeSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
@@ -76,11 +80,42 @@ function SignInContent() {
               <div className="flex-1 h-px bg-zinc-700" />
             </div>
 
-            {/* Email */}
-            <form onSubmit={(e) => { e.preventDefault(); signIn("credentials", { email: emailValue, callbackUrl }); }} className="space-y-2">
-              <input type="email" placeholder="Enter your email" value={emailValue} onChange={(e) => setEmailValue(e.target.value)} required className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-xl text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500" />
-              <button type="submit" className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-4 rounded-xl transition-colors border border-zinc-700 cursor-pointer text-sm">Continue with Email</button>
-            </form>
+            {/* Email with verification */}
+            {!codeSent ? (
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                setError("");
+                setSending(true);
+                try {
+                  const res = await fetch("/api/auth/send-code", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: emailValue }),
+                  });
+                  if (res.ok) {
+                    setCodeSent(true);
+                  } else {
+                    const data = await res.json();
+                    setError(data.error || "Failed to send code");
+                  }
+                } catch { setError("Failed to send code"); }
+                setSending(false);
+              }} className="space-y-2">
+                <input type="email" placeholder="Enter your email" value={emailValue} onChange={(e) => setEmailValue(e.target.value)} required className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-xl text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500" />
+                <button type="submit" disabled={sending} className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-4 rounded-xl transition-colors border border-zinc-700 cursor-pointer text-sm disabled:opacity-50">
+                  {sending ? "Sending..." : "Continue with Email"}
+                </button>
+                {error && <p className="text-red-400 text-xs text-center">{error}</p>}
+              </form>
+            ) : (
+              <form onSubmit={(e) => { e.preventDefault(); setError(""); signIn("credentials", { email: emailValue, code: codeValue, callbackUrl }); }} className="space-y-2">
+                <p className="text-zinc-400 text-xs text-center">We sent a 6-digit code to <span className="text-white">{emailValue}</span></p>
+                <input type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} placeholder="Enter 6-digit code" value={codeValue} onChange={(e) => setCodeValue(e.target.value.replace(/\D/g, ""))} required className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-xl text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 text-center tracking-[0.3em] text-lg" />
+                <button type="submit" className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-4 rounded-xl transition-colors border border-zinc-700 cursor-pointer text-sm">Verify & Sign In</button>
+                <button type="button" onClick={() => { setCodeSent(false); setCodeValue(""); setError(""); }} className="w-full text-zinc-500 text-xs hover:text-zinc-300 transition cursor-pointer">Use a different email</button>
+                {error && <p className="text-red-400 text-xs text-center">{error}</p>}
+              </form>
+            )}
           </div>
 
           {/* Footer */}
