@@ -15,10 +15,10 @@ const responsibilities = [
     "Collect checks",
   ]},
   { side: "ours", items: [
-    "No content to create",
-    "No tech to learn",
-    "No customers to support",
-    "No scheduling, invoicing, or admin",
+    "We create all the content",
+    "We handle the tech",
+    "We support your subscribers",
+    "We manage billing, scheduling, and admin",
   ]},
 ];
 
