@@ -122,8 +122,18 @@ Use the user's first name naturally in conversation. Don't overdo it.`;
             }
           }
         } catch (err) {
-          const msg = err instanceof Error ? err.message : "Unknown error";
-          controller.enqueue(encoder.encode(`\n[Error: ${msg}]`));
+          const rawMsg = err instanceof Error ? err.message : "Unknown error";
+          console.error("Stream error:", rawMsg);
+          
+          let userMsg = "Something went wrong. Please try again in a moment.";
+          if (rawMsg.includes("credit balance") || rawMsg.includes("billing")) {
+            userMsg = "I'm temporarily unavailable due to a system issue. Please try again in a few minutes.";
+          } else if (rawMsg.includes("rate") || rawMsg.includes("429")) {
+            userMsg = "I'm getting a lot of questions right now. Please try again in a moment.";
+          } else if (rawMsg.includes("overloaded") || rawMsg.includes("529")) {
+            userMsg = "I'm experiencing high demand. Please try again shortly.";
+          }
+          controller.enqueue(encoder.encode(`\n${userMsg}`));
         } finally {
           controller.close();
         }
