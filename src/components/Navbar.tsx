@@ -106,7 +106,7 @@ export default function Navbar() {
               <Link href="/the-forge" className="hover:text-foreground transition">The Forge</Link>
               <Link href="/thinking" className="hover:text-foreground transition">Thinking</Link>
               <Link href="/pricing" className="hover:text-foreground transition">Pricing</Link>
-              <Link href="/apply" className="hover:text-foreground transition">Apply</Link>
+              <Link href="/for-mentors" className="hover:text-foreground transition">Apply</Link>
               <UserMenu />
               <Link href="/chat/apex" className="bg-amber text-white px-5 py-2 rounded-lg font-semibold hover:bg-amber-dark transition">
                 Start Chat
@@ -126,7 +126,7 @@ export default function Navbar() {
           <Link href="/the-forge" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">The Forge</Link>
           <Link href="/thinking" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Thinking</Link>
           <Link href="/pricing" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Pricing</Link>
-          <Link href="/apply" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Apply</Link>
+          <Link href="/for-mentors" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Apply</Link>
           <div onClick={() => setOpen(false)}><UserMenu /></div>
           <Link href="/chat/apex" onClick={() => setOpen(false)} className="bg-amber text-white px-4 py-2 rounded-lg font-semibold text-center">Start Chat</Link>
         </div>
