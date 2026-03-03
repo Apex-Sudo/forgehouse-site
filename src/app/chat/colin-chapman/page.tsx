@@ -47,6 +47,8 @@ function ChatContent() {
   const [showBanner, setShowBanner] = useState(false);
   const [hitPaywall, setHitPaywall] = useState(false);
   const [showLoginGate, setShowLoginGate] = useState(false);
+  const [gateChecked, setGateChecked] = useState(false);
+  const [gateRemaining, setGateRemaining] = useState<number | null>(null);
   const [gateEmail, setGateEmail] = useState("");
   const [gateCode, setGateCode] = useState("");
   const [gateCodeSent, setGateCodeSent] = useState(false);
@@ -92,6 +94,24 @@ function ChatContent() {
       return () => clearTimeout(timer);
     }
   }, [searchParams]);
+
+  // Check gate status on load (preemptive, no hostage-taking)
+  useEffect(() => {
+    if (isInvited) return;
+    fetch("/api/gate-check")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.gate === "login") {
+          setShowLoginGate(true);
+        } else if (data.gate === "paywall") {
+          setHitPaywall(true);
+        }
+        if (data.remaining !== null) {
+          setGateRemaining(data.remaining);
+        }
+      })
+      .catch(() => {});
+  }, [isInvited, session]);
 
   // No longer redirect anonymous users — first 3 messages are free without login
 
@@ -279,6 +299,17 @@ function ChatContent() {
       setStreaming(false);
       // Schedule auto-summary after 30s idle if 3+ user messages
       scheduleSummary(convId);
+      // Recheck gate so next message shows login/paywall preemptively
+      if (!isInvited) {
+        fetch("/api/gate-check")
+          .then((r) => r.json())
+          .then((data) => {
+            if (data.gate === "login") setShowLoginGate(true);
+            else if (data.gate === "paywall") setHitPaywall(true);
+            if (data.remaining !== null) setGateRemaining(data.remaining);
+          })
+          .catch(() => {});
+      }
     }
   };
 
