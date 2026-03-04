@@ -87,10 +87,10 @@ Generate 4 fresh, specific conversation starters.`,
 function getDefaultStarters(mentor: string): string[] {
   if (mentor === "colin-chapman") {
     return [
-      "Our outbound isn't converting. Where do I even start diagnosing this?",
-      "How do I build an ICP that's actually useful, not just 'companies with 50+ employees'?",
-      "We're getting meetings but deals stall after the first call. What's going wrong?",
-      "I'm a solo founder doing my own outbound. How do I structure my week?",
+      "Tear apart my last cold email",
+      "Tell me who I should actually be selling to",
+      "My last deal died after the first call. Diagnose it",
+      "Give me a 5-day outbound plan for this week",
     ];
   }
   return [

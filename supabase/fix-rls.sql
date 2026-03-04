@@ -1,0 +1,11 @@
+-- Fix Supabase Security Advisor warnings
+-- Enable RLS on all tables that don't have it
+-- No anon policies = locked down. Service key bypasses RLS.
+
+ALTER TABLE IF EXISTS saved_insights ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS free_tier_conversations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS waitlist ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS user_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS conversations ENABLE ROW LEVEL SECURITY;
