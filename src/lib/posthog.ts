@@ -1,5 +1,5 @@
-const POSTHOG_API_KEY = "phc_uJOopGcIoW4caqPea4fZ8NtAvao3N5Zgb7KgTSorMIl";
-const POSTHOG_HOST = "https://us.i.posthog.com";
+const POSTHOG_API_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY || "";
+const POSTHOG_HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com";
 
 export async function captureServerEvent(
   distinctId: string,
