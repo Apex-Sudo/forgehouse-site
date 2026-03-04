@@ -4,6 +4,7 @@ import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { supabase } from "./supabase";
 import { verifyCode } from "./verification";
+import { captureServerEvent } from "./posthog";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -108,6 +109,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return false;
           }
         }
+
+        // Track sign-in event
+        captureServerEvent(user.email, "user_signed_in", {
+          provider: account?.provider ?? "unknown",
+          is_new_user: !existing,
+        });
 
         return true;
       } catch (err) {

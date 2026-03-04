@@ -20,6 +20,7 @@ export default function UpgradePrompt({
 
   const handleSubscribe = async () => {
     setLoading(true);
+    window.posthog?.capture("checkout_started", { mentor: mentorSlug, mentor_name: mentorName, price: total });
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",

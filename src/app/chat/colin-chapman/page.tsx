@@ -103,8 +103,10 @@ function ChatContent() {
       .then((data) => {
         if (data.gate === "login") {
           setShowLoginGate(true);
+          window.posthog?.capture("gate_hit", { mentor: "colin-chapman", trigger: "preemptive" });
         } else if (data.gate === "paywall") {
           setHitPaywall(true);
+          window.posthog?.capture("paywall_hit", { mentor: "colin-chapman", trigger: "preemptive" });
         }
         if (data.remaining !== null) {
           setGateRemaining(data.remaining);
@@ -250,6 +252,7 @@ function ChatContent() {
         // Login required — keep user's message visible, show gate below
         setStreaming(false);
         setShowLoginGate(true);
+        window.posthog?.capture("gate_hit", { mentor: "colin-chapman", trigger: "message_blocked" });
         return;
       }
 
@@ -258,6 +261,7 @@ function ChatContent() {
         setHitPaywall(true);
         setMessages((prev) => prev.slice(0, -1));
         setStreaming(false);
+        window.posthog?.capture("paywall_hit", { mentor: "colin-chapman", trigger: "message_blocked" });
         return;
       }
 
@@ -304,8 +308,13 @@ function ChatContent() {
         fetch("/api/gate-check")
           .then((r) => r.json())
           .then((data) => {
-            if (data.gate === "login") setShowLoginGate(true);
-            else if (data.gate === "paywall") setHitPaywall(true);
+            if (data.gate === "login" && !showLoginGate) {
+              setShowLoginGate(true);
+              window.posthog?.capture("gate_hit", { mentor: "colin-chapman", trigger: "recheck" });
+            } else if (data.gate === "paywall" && !hitPaywall) {
+              setHitPaywall(true);
+              window.posthog?.capture("paywall_hit", { mentor: "colin-chapman", trigger: "recheck" });
+            }
             if (data.remaining !== null) setGateRemaining(data.remaining);
           })
           .catch(() => {});

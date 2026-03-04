@@ -1,5 +1,6 @@
 import { getStripe } from "@/lib/stripe";
 import { supabase } from "@/lib/supabase";
+import { captureServerEvent } from "@/lib/posthog";
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -70,6 +71,15 @@ export async function POST(req: Request) {
               .eq("user_id", userId)
               .eq("mentor_slug", mentorSlug);
           }
+        }
+
+        // Track subscription event
+        if (email) {
+          captureServerEvent(email, "subscription_completed", {
+            mentor_slug: mentorSlug || "unknown",
+            stripe_customer_id: customerId,
+            stripe_subscription_id: subscriptionId,
+          });
         }
 
         // Notify
