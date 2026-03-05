@@ -104,10 +104,8 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-8 text-sm text-muted">
               <Link href="/mentors" className="hover:text-foreground transition">Mentors</Link>
               <Link href="/tools/icp-diagnostic" className="hover:text-foreground transition">Tools</Link>
-              <Link href="/the-forge" className="hover:text-foreground transition">The Forge</Link>
               <Link href="/thinking" className="hover:text-foreground transition">Thinking</Link>
               <Link href="/pricing" className="hover:text-foreground transition">Pricing</Link>
-              <Link href="/for-mentors" className="hover:text-foreground transition">Apply</Link>
               <UserMenu />
               <Link href="/chat/apex" className="bg-amber text-white px-5 py-2 rounded-lg font-semibold hover:bg-amber-dark transition">
                 Start Chat
@@ -125,10 +123,8 @@ export default function Navbar() {
         <div className="md:hidden border-t border-white/[0.06] bg-background/90 backdrop-blur-xl px-6 py-4 flex flex-col gap-4 text-sm">
           <Link href="/mentors" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Mentors</Link>
           <Link href="/tools/icp-diagnostic" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Tools</Link>
-          <Link href="/the-forge" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">The Forge</Link>
           <Link href="/thinking" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Thinking</Link>
           <Link href="/pricing" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Pricing</Link>
-          <Link href="/for-mentors" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Apply</Link>
           <div onClick={() => setOpen(false)}><UserMenu /></div>
           <Link href="/chat/apex" onClick={() => setOpen(false)} className="bg-amber text-white px-4 py-2 rounded-lg font-semibold text-center">Start Chat</Link>
         </div>
