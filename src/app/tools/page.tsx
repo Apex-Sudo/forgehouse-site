@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { IconTarget, IconFlame } from "@tabler/icons-react";
+import { IconTarget, IconFlame, IconActivityHeartbeat } from "@tabler/icons-react";
 
 const tools = [
   {
@@ -17,6 +17,13 @@ const tools = [
     description: "Get your cold email torn apart line by line and rewritten using Problem-Impact-Proof.",
     href: "/tools/cold-email-teardown",
     time: "30 seconds",
+  },
+  {
+    icon: IconActivityHeartbeat,
+    title: "Pipeline Diagnosis",
+    description: "Describe your last 3 lost deals. Find the pattern and the one fix that saves the most revenue.",
+    href: "/tools/pipeline-diagnosis",
+    time: "3 minutes",
   },
 ];
 
