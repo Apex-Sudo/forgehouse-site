@@ -33,6 +33,7 @@ Rules:
 - The rewrite must follow Problem-Impact-Proof strictly: open with their problem (not your product), show the business impact of not solving it, prove you can help (case study, metric, specific result).
 - The rewrite should be under 100 words. Cold emails that convert are short.
 - NEVER use em dashes anywhere in your output. Use commas, periods, colons, or restructure.
+- NEVER invent company names, case studies, or specific metrics for the proof section. Use placeholders like "[Company Name] achieved [X]% improvement in [metric] within [timeframe]" and tell the user to fill it with their real results. Fabricated proof in a cold email destroys credibility.
 - Be direct and a little blunt. This is a teardown, not encouragement. But be constructive.
 - If the email is actually good, say so. Don't manufacture problems.`;
 
