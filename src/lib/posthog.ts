@@ -6,6 +6,8 @@ export async function captureServerEvent(
   event: string,
   properties?: Record<string, unknown>
 ) {
+  if (!POSTHOG_API_KEY || !distinctId) return;
+
   try {
     await fetch(`${POSTHOG_HOST}/capture/`, {
       method: "POST",
@@ -17,6 +19,8 @@ export async function captureServerEvent(
         properties: {
           ...properties,
           $lib: "forgehouse-server",
+          $host: "forgehouse.io",
+          source: "server",
         },
       }),
     });

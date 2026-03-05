@@ -110,11 +110,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           }
         }
 
-        // Track sign-in event
+        // Track auth events
         captureServerEvent(user.email, "user_signed_in", {
           provider: account?.provider ?? "unknown",
           is_new_user: !existing,
         });
+
+        if (!existing) {
+          captureServerEvent(user.email, "signup_completed", {
+            provider: account?.provider ?? "unknown",
+          });
+        }
 
         return true;
       } catch (err) {

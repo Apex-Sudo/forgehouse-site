@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { listConversations, createConversation } from "@/lib/conversations";
+import { captureServerEvent } from "@/lib/posthog";
 
 export async function GET(req: Request) {
   const session = await auth();
@@ -37,6 +38,14 @@ export async function POST(req: Request) {
     }
 
     const data = await createConversation(user.id, mentor_slug, user.email, scenario_type);
+
+    captureServerEvent(user.email, "conversation_started", {
+      mentor_slug,
+      conversation_id: data.id,
+      scenario_type: scenario_type || null,
+      source: "chat",
+    });
+
     return Response.json(data);
   } catch (err) {
     console.error("Create conversation error:", err);

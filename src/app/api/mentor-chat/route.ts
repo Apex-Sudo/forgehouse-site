@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { getContextMessages, appendMessages } from "@/lib/conversations";
 import { getScenario } from "@/lib/scenarios";
 import { canAccess, incrementAnonymousMessages, incrementAuthenticatedMessages } from "@/lib/subscription";
+import { captureServerEvent } from "@/lib/posthog";
 
 const MENTOR_PROMPTS: Record<string, string> = {
   "colin-chapman": COLIN_SYSTEM_PROMPT,
@@ -66,6 +67,33 @@ export async function POST(req: Request) {
           return Response.json({ error: "login_required" }, { status: 403 });
         }
         return Response.json({ error: "paywall" }, { status: 402 });
+      }
+    }
+
+    const lastUserMessage = messages[messages.length - 1];
+
+    // Detect return behavior (user comes back to an existing conversation after a meaningful gap)
+    let hoursSinceLastUserMessage: number | null = null;
+    let isReturningConversation = false;
+    if (user?.id && conversation_id) {
+      try {
+        const { supabase } = await import("@/lib/supabase");
+        const { data: previousUserMessage } = await supabase
+          .from("messages")
+          .select("created_at")
+          .eq("conversation_id", conversation_id)
+          .eq("role", "user")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (previousUserMessage?.created_at) {
+          hoursSinceLastUserMessage =
+            (Date.now() - new Date(previousUserMessage.created_at).getTime()) / (1000 * 60 * 60);
+          isReturningConversation = hoursSinceLastUserMessage >= 6;
+        }
+      } catch (err) {
+        console.error("Return detection error:", err);
       }
     }
 
@@ -135,6 +163,24 @@ Use the user's first name naturally in conversation. Don't overdo it.`;
       }
     }
 
+    const distinctId = user?.email || `anon:${ip}`;
+
+    captureServerEvent(distinctId, "message_sent", {
+      mentor_slug: mentor,
+      conversation_id: conversation_id || null,
+      is_authenticated: Boolean(user?.email),
+      is_invited: isInvited,
+      message_length: typeof lastUserMessage?.content === "string" ? lastUserMessage.content.length : null,
+    });
+
+    if (isReturningConversation) {
+      captureServerEvent(distinctId, "conversation_returned", {
+        mentor_slug: mentor,
+        conversation_id: conversation_id || null,
+        hours_since_last_message: hoursSinceLastUserMessage,
+      });
+    }
+
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
     const stream = await client.messages.stream({
@@ -161,9 +207,14 @@ Use the user's first name naturally in conversation. Don't overdo it.`;
             }
           }
 
+          captureServerEvent(distinctId, "message_received", {
+            mentor_slug: mentor,
+            conversation_id: conversation_id || null,
+            response_length: fullResponse.length,
+          });
+
           // Save messages to conversation if authenticated
           if (user?.id && user?.email && conversation_id) {
-            const lastUserMessage = messages[messages.length - 1];
             try {
               await appendMessages(conversation_id, user.id, user.email, [
                 lastUserMessage,

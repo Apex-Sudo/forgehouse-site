@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { generateCode, storeCode, checkRateLimit, getExistingCode } from "@/lib/verification";
+import { captureServerEvent } from "@/lib/posthog";
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
@@ -14,6 +15,10 @@ export async function POST(req: Request) {
     }
 
     const emailLower = email.toLowerCase().trim();
+
+    captureServerEvent(emailLower, "signup_started", {
+      method: "email_code",
+    });
 
     // Rate limit
     const allowed = await checkRateLimit(emailLower);
