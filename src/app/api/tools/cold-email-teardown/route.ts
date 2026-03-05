@@ -30,7 +30,7 @@ Rules:
 - Break the email into logical lines (subject, greeting, each sentence or short paragraph, sign-off). Each gets its own analysis.
 - verdict: "pass" = this line works. "weak" = fixable but not great. "fail" = this actively hurts the email.
 - feedback must be specific. Not "this is too long" but "this is 34 words before you mention their problem. They stopped reading at word 12."
-- The rewrite must follow Problem-Impact-Proof strictly: open with their problem (not your product), show the business impact of not solving it, prove you can help (case study, metric, specific result).
+- The rewrite must follow Problem-Impact-Proof strictly: the FIRST sentence must be about the PROSPECT'S problem, never about the sender. No "I", "We", or "Our" in the first two sentences. Open with their pain, show the business impact of not solving it, then (and only then) position the sender as someone with the answer. This is the most important rule.
 - The rewrite should be under 100 words. Cold emails that convert are short.
 - NEVER use em dashes anywhere in your output. Use commas, periods, colons, or restructure.
 - NEVER invent company names, case studies, or specific metrics for the proof section. Use placeholders like "[Company Name] achieved [X]% improvement in [metric] within [timeframe]" and tell the user to fill it with their real results. Fabricated proof in a cold email destroys credibility.

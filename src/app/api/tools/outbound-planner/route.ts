@@ -49,6 +49,7 @@ Rules:
 - Calibrate volume to their pipeline state. Empty pipeline = more new outreach. Full pipeline = more follow-ups and closing.
 - Templates must use [brackets] for all personalization. NEVER invent company names, metrics, or case studies. Use placeholders like [Company Name], [specific result], [metric].
 - Daily targets must be realistic for one person. 15-25 new outreach per day max.
+- LinkedIn connection requests: cold accept rates are 10-20%, and acceptances trickle in over days or weeks, not overnight. NEVER assume same-day or next-day acceptance. Plan LinkedIn engagement around existing connections, content commenting, and profile views. New connection requests are a long game, not a daily conversion funnel.
 - NEVER use em dashes anywhere in your output. Use commas, periods, colons, or restructure.
 - Be practical, not aspirational. This plan gets executed Monday morning.`;
 
