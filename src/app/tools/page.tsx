@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { IconTarget, IconFlame, IconActivityHeartbeat } from "@tabler/icons-react";
+import { IconTarget, IconFlame, IconActivityHeartbeat, IconCalendarWeek } from "@tabler/icons-react";
 
 const tools = [
   {
@@ -24,6 +24,13 @@ const tools = [
     description: "Describe your last 3 lost deals. Find the pattern and the one fix that saves the most revenue.",
     href: "/tools/pipeline-diagnosis",
     time: "3 minutes",
+  },
+  {
+    icon: IconCalendarWeek,
+    title: "Outbound Week Planner",
+    description: "Get a concrete Mon-Fri outbound plan with daily tasks, email templates, and targets.",
+    href: "/tools/outbound-planner",
+    time: "60 seconds",
   },
 ];
 
