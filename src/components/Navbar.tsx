@@ -103,7 +103,7 @@ export default function Navbar() {
           <>
             <div className="hidden md:flex items-center gap-8 text-sm text-muted">
               <Link href="/mentors" className="hover:text-foreground transition">Mentors</Link>
-              <Link href="/tools/icp-diagnostic" className="hover:text-foreground transition">Tools</Link>
+              <Link href="/tools" className="hover:text-foreground transition">Tools</Link>
               <Link href="/thinking" className="hover:text-foreground transition">Thinking</Link>
               <Link href="/pricing" className="hover:text-foreground transition">Pricing</Link>
               <UserMenu />
@@ -122,7 +122,7 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden border-t border-white/[0.06] bg-background/90 backdrop-blur-xl px-6 py-4 flex flex-col gap-4 text-sm">
           <Link href="/mentors" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Mentors</Link>
-          <Link href="/tools/icp-diagnostic" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Tools</Link>
+          <Link href="/tools" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Tools</Link>
           <Link href="/thinking" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Thinking</Link>
           <Link href="/pricing" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Pricing</Link>
           <div onClick={() => setOpen(false)}><UserMenu /></div>
