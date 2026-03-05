@@ -94,11 +94,11 @@ function ResultView({ result, onStartOver }: { result: PlanResult; onStartOver: 
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-10 animate-in fade-in duration-500">
       {/* Week Summary */}
-      <div className="glass-card p-6 text-center">
-        <p className="text-amber text-xs font-medium uppercase tracking-wider mb-2">This Week&apos;s Focus</p>
-        <p className="text-foreground text-lg font-semibold mb-2">{result.weekSummary.focus}</p>
+      <div className="glass-card p-8 text-center">
+        <p className="text-amber text-xs font-medium uppercase tracking-wider mb-3">This Week&apos;s Focus</p>
+        <p className="text-foreground text-xl font-semibold mb-3 leading-snug">{result.weekSummary.focus}</p>
         <p className="text-muted text-sm">{result.weekSummary.targetOutcomes}</p>
       </div>
 
@@ -115,21 +115,19 @@ function ResultView({ result, onStartOver }: { result: PlanResult; onStartOver: 
 
       {/* Daily Plans */}
       {result.days.map((day, i) => (
-        <div key={i} className={`glass-card p-6 border-l-2 ${dayColors[day.day] || "border-amber/30"}`}>
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-lg font-semibold">{day.day}</h3>
-              <p className="text-muted text-sm">{day.theme}</p>
-            </div>
+        <div key={i} className={`glass-card p-8 border-l-2 ${dayColors[day.day] || "border-amber/30"}`}>
+          <div className="mb-6">
+            <h3 className="text-xl font-semibold">{day.day}</h3>
+            <p className="text-muted text-sm mt-1">{day.theme}</p>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-6">
             {day.tasks.map((task, j) => (
-              <div key={j} className="flex gap-3">
-                <span className="text-xs text-muted/60 uppercase tracking-wider w-16 shrink-0 pt-0.5">{task.time}</span>
-                <div className="flex-1">
-                  <p className="text-foreground text-sm">{task.action}</p>
-                  <p className="text-muted/60 text-xs mt-1">{task.why}</p>
+              <div key={j}>
+                <div className="flex items-baseline gap-3 mb-1">
+                  <span className="text-xs text-amber/60 uppercase tracking-wider shrink-0">{task.time}</span>
+                  <p className="text-foreground text-sm leading-relaxed">{task.action}</p>
                 </div>
+                <p className="text-muted/40 text-xs ml-[calc(theme(spacing.3)+3.5rem)] leading-relaxed">{task.why}</p>
               </div>
             ))}
           </div>
@@ -137,19 +135,19 @@ function ResultView({ result, onStartOver }: { result: PlanResult; onStartOver: 
       ))}
 
       {/* Templates */}
-      <div className="glass-card p-6">
-        <div className="flex items-center gap-3 mb-5">
+      <div className="glass-card p-8">
+        <div className="flex items-center gap-3 mb-8">
           <IconMail size={20} className="text-amber" />
           <h3 className="text-lg font-semibold">Ready-to-Use Templates</h3>
         </div>
-        <div className="space-y-5">
+        <div className="space-y-8">
           {([
             { key: "coldOutreach", label: "Cold Outreach", text: result.templates.coldOutreach },
             { key: "followUp", label: "Follow-Up (Day 3-4)", text: result.templates.followUp },
             { key: "breakup", label: "Breakup (End of Week)", text: result.templates.breakup },
           ] as const).map((tpl) => (
             <div key={tpl.key}>
-              <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center justify-between mb-2">
                 <span className="text-amber text-xs font-medium uppercase tracking-wider">{tpl.label}</span>
                 <button
                   onClick={() => copyTemplate(tpl.key, tpl.text)}
@@ -158,7 +156,7 @@ function ResultView({ result, onStartOver }: { result: PlanResult; onStartOver: 
                   {copiedTemplate === tpl.key ? "Copied" : "Copy"}
                 </button>
               </div>
-              <div className="text-sm text-foreground whitespace-pre-wrap bg-white/[0.03] rounded-xl p-4 border border-border-light font-mono leading-relaxed">
+              <div className="text-sm text-foreground whitespace-pre-wrap bg-white/[0.02] rounded-xl p-5 border border-border-light font-mono leading-loose">
                 {tpl.text}
               </div>
             </div>
@@ -167,15 +165,15 @@ function ResultView({ result, onStartOver }: { result: PlanResult; onStartOver: 
       </div>
 
       {/* Metrics */}
-      <div className="glass-card p-6">
-        <div className="flex items-center gap-3 mb-5">
+      <div className="glass-card p-8">
+        <div className="flex items-center gap-3 mb-8">
           <IconChartBar size={20} className="text-amber" />
           <h3 className="text-lg font-semibold">Targets</h3>
         </div>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-10">
           <div>
             <span className="text-muted text-xs uppercase tracking-wider">Daily</span>
-            <div className="space-y-2 mt-2">
+            <div className="space-y-3 mt-3">
               <div className="flex justify-between text-sm">
                 <span className="text-muted">New outreach</span>
                 <span className="text-foreground font-medium">{result.metrics.dailyTargets.newOutreach}</span>
@@ -192,7 +190,7 @@ function ResultView({ result, onStartOver }: { result: PlanResult; onStartOver: 
           </div>
           <div>
             <span className="text-muted text-xs uppercase tracking-wider">Weekly</span>
-            <div className="space-y-2 mt-2">
+            <div className="space-y-3 mt-3">
               <div className="flex justify-between text-sm">
                 <span className="text-muted">Conversations</span>
                 <span className="text-foreground font-medium">{result.metrics.weeklyTargets.conversationsStarted}</span>
