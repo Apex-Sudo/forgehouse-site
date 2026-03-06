@@ -14,12 +14,14 @@ export default function UpgradePrompt({
 }: UpgradePromptProps) {
   const [loading, setLoading] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const [error, setError] = useState("");
   const total = 47 + mentorPrice;
 
   if (dismissed) return null;
 
   const handleSubscribe = async () => {
     setLoading(true);
+    setError("");
     window.posthog?.capture("checkout_started", { mentor: mentorSlug, mentor_name: mentorName, price: total });
     window.posthog?.capture("subscription_started", { mentor: mentorSlug, mentor_name: mentorName, price: total });
     try {
@@ -31,10 +33,16 @@ export default function UpgradePrompt({
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
+      } else if (res.status === 401) {
+        // Session expired, redirect to sign-in
+        window.location.href = `/sign-in?callbackUrl=/chat/${mentorSlug}`;
+        return;
       } else {
+        setError(data.error || "Something went wrong. Please try again.");
         setLoading(false);
       }
     } catch {
+      setError("Connection failed. Please try again.");
       setLoading(false);
     }
   };
@@ -77,6 +85,9 @@ export default function UpgradePrompt({
             Not now
           </button>
         </div>
+        {error && (
+          <p className="text-red-400 text-xs text-center mt-2">{error}</p>
+        )}
       </div>
     </div>
   );
