@@ -1,5 +1,16 @@
+import type { Metadata } from "next";
 import OutboundPlannerTool from "./OutboundPlannerTool";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Outbound Planner — Get a Mon-Fri Sales Action Plan | ForgeHouse",
+  description: "Get a concrete Mon-Fri outbound action plan with daily tasks, email templates, and targets. Free sales planning tool.",
+  openGraph: {
+    title: "Outbound Planner — Get a Mon-Fri Sales Action Plan",
+    description: "Get a concrete Mon-Fri outbound action plan with daily tasks, email templates, and targets. Free sales planning tool.",
+    url: "https://forgehouse.io/tools/outbound-planner",
+  },
+};
 
 const jsonLd = {
   "@context": "https://schema.org",

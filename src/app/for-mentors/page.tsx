@@ -1,5 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { IconArrowRight, IconCheck } from "@tabler/icons-react";
+
+export const metadata: Metadata = {
+  title: "For Mentors — Turn Your Expertise Into a 24/7 AI Agent | ForgeHouse",
+  description: "Your thinking, available anytime. We build an AI agent from your real expertise. You earn revenue while you sleep.",
+  openGraph: {
+    title: "For Mentors — Turn Your Expertise Into a 24/7 AI Agent",
+    description: "Your thinking, available anytime. We build an AI agent from your real expertise. You earn revenue while you sleep.",
+    url: "https://forgehouse.io/for-mentors",
+  },
+};
 
 const steps = [
   { num: "01", title: "We talk.", desc: "2-3 conversations where you do what you already do: explain how you think about problems. We capture the patterns, the mental models, the stuff that takes years to learn." },

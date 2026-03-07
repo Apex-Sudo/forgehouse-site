@@ -1,5 +1,16 @@
+import type { Metadata } from "next";
 import ColdEmailTeardownTool from "./ColdEmailTeardownTool";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Cold Email Teardown — Get Your Email Rewritten Line by Line | ForgeHouse",
+  description: "Paste your cold email and get a line-by-line diagnosis plus a rewrite using the Problem-Impact-Proof framework. Free.",
+  openGraph: {
+    title: "Cold Email Teardown — Get Your Email Rewritten Line by Line",
+    description: "Paste your cold email and get a line-by-line diagnosis plus a rewrite using the Problem-Impact-Proof framework. Free.",
+    url: "https://forgehouse.io/tools/cold-email-teardown",
+  },
+};
 
 const jsonLd = {
   "@context": "https://schema.org",

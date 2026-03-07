@@ -1,18 +1,15 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Free Sales Tools | ForgeHouse",
-  description:
-    "Free tools built on real mentor frameworks. Define your ICP, fix your cold emails, diagnose your pipeline. No login required.",
+  title: "Free Sales & GTM Tools | ForgeHouse",
+  description: "Free diagnostic tools for founders: ICP builder, cold email teardown, pipeline diagnosis, and outbound planner. No signup required.",
   openGraph: {
-    title: "Free Sales Tools | ForgeHouse",
-    description: "Free tools built on real mentor frameworks. No login required.",
+    title: "Free Sales & GTM Tools | ForgeHouse",
+    description: "Free diagnostic tools for founders: ICP builder, cold email teardown, pipeline diagnosis, and outbound planner. No signup required.",
     url: "https://forgehouse.io/tools",
-    siteName: "ForgeHouse",
-    type: "website",
   },
 };
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return children;
+export default function ToolsLayout({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
 }

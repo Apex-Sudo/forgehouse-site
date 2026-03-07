@@ -1,5 +1,16 @@
+import type { Metadata } from "next";
 import PipelineDiagnosisTool from "./PipelineDiagnosisTool";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Pipeline Diagnosis — Find the Pattern Killing Your Deals | ForgeHouse",
+  description: "Describe your last 3 lost deals and find the pattern killing your pipeline. Free sales diagnostic tool.",
+  openGraph: {
+    title: "Pipeline Diagnosis — Find the Pattern Killing Your Deals",
+    description: "Describe your last 3 lost deals and find the pattern killing your pipeline. Free sales diagnostic tool.",
+    url: "https://forgehouse.io/tools/pipeline-diagnosis",
+  },
+};
 
 const jsonLd = {
   "@context": "https://schema.org",

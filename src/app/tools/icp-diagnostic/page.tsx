@@ -1,5 +1,16 @@
+import type { Metadata } from "next";
 import ICPDiagnosticTool from "./ICPDiagnosticTool";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "ICP Diagnostic — Define Your Ideal Customer in 60 Seconds | ForgeHouse",
+  description: "Define your ideal customer profile using the Jobs-to-be-Done framework. Free, no login required.",
+  openGraph: {
+    title: "ICP Diagnostic — Define Your Ideal Customer in 60 Seconds",
+    description: "Define your ideal customer profile using the Jobs-to-be-Done framework. Free, no login required.",
+    url: "https://forgehouse.io/tools/icp-diagnostic",
+  },
+};
 
 const jsonLd = {
   "@context": "https://schema.org",
