@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { IconArrowRight, IconCheck } from "@tabler/icons-react";
+import { IconArrowRight, IconCheck, IconMessageCircle, IconBrush, IconHeadset, IconReceipt, IconMicrophone, IconEyeCheck, IconShare, IconCash } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
   title: "For Mentors — Turn Your Expertise Into a 24/7 AI Agent | ForgeHouse",
@@ -18,19 +18,18 @@ const steps = [
   { num: "03", title: "It works.", desc: "Your agent talks to people 24/7. They get the clarity they came for. You get reach, revenue, and leads you didn't have to chase." },
 ];
 
-const responsibilities = [
-  { side: "yours", items: [
-    "A few conversations with us (one-time)",
-    "Review your agent until it feels right",
-    "Share it with your network when you're ready",
-    "Collect checks",
-  ]},
-  { side: "ours", items: [
-    "We create all the content",
-    "We handle the tech",
-    "We support your subscribers",
-    "We manage billing, scheduling, and admin",
-  ]},
+const yourPart = [
+  { icon: IconMicrophone, text: "A few conversations with us (one-time)" },
+  { icon: IconEyeCheck, text: "Review your agent until it feels right" },
+  { icon: IconShare, text: "Share it with your network when you're ready" },
+  { icon: IconCash, text: "Collect checks" },
+];
+
+const ourPart = [
+  { icon: IconBrush, text: "We create all the content" },
+  { icon: IconMessageCircle, text: "We handle the tech" },
+  { icon: IconHeadset, text: "We support your subscribers" },
+  { icon: IconReceipt, text: "We manage billing, scheduling, and admin" },
 ];
 
 export default function ForMentorsPage() {
@@ -53,9 +52,9 @@ export default function ForMentorsPage() {
         </div>
       </section>
 
-      {/* The problem - #7: subtle atmosphere on emotional core, #5: crescendo to punch line */}
+      {/* The problem */}
       <section className="px-6 py-24">
-        <div className="max-w-3xl mx-auto gradient-blue" style={{ borderRadius: "20px", padding: "3rem" }}>
+        <div className="max-w-3xl mx-auto section-module" style={{ padding: "3rem" }}>
           <h2 className="text-2xl md:text-3xl font-bold mb-10 text-center">You already know this is true</h2>
           <div className="space-y-6 text-[15px] text-muted/80 leading-relaxed">
             <p>Your calendar is full, but half the calls are with people who aren&apos;t ready for you yet. They need the basics. Your basics. But your basics take an hour, and that hour could go to someone further along.</p>
@@ -63,6 +62,18 @@ export default function ForMentorsPage() {
             <p>You&apos;ve thought about courses, templates, content products. But packaging your thinking into a static format feels wrong. Your value isn&apos;t in slides. It&apos;s in how you respond to someone&apos;s specific situation.</p>
           </div>
           <p className="text-foreground font-semibold text-lg mt-10 text-center">That&apos;s exactly what we built ForgeHouse to do.</p>
+        </div>
+      </section>
+
+      {/* Anti-commoditization — address the fear early */}
+      <section className="px-6 py-24">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">This doesn&apos;t replace you. It proves you.</h2>
+          <div className="space-y-6 text-[15px] text-muted/80 leading-relaxed">
+            <p>ChatGPT already gives generic advice in your field. Anyone can get a textbook answer for free. What they can&apos;t get is <span className="text-foreground font-medium">your</span> version. Your frameworks, your pattern recognition, the way you think about problems after doing this for a decade.</p>
+            <p>That&apos;s what makes your agent valuable, and that&apos;s what makes you irreplaceable. The generic version already exists. Your version doesn&apos;t, until you build it here.</p>
+            <p className="text-foreground/60 text-sm">Your knowledge stays in our system, never in theirs. AI providers are contractually prohibited from using API data for model training. Your IP is yours.</p>
+          </div>
         </div>
       </section>
 
@@ -82,7 +93,7 @@ export default function ForMentorsPage() {
         </div>
       </section>
 
-      {/* What changes - #3: individual items with dividers instead of one dense module, #4 reorder: proof right after promise */}
+      {/* What changes for you */}
       <section className="px-6 py-24">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">What changes for you</h2>
@@ -111,7 +122,7 @@ export default function ForMentorsPage() {
         </div>
       </section>
 
-      {/* Proof: Colin - moved up, right after promise (#4 reorder) */}
+      {/* Proof: Colin */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto section-module">
           <p className="text-amber font-mono text-sm tracking-widest uppercase mb-6 text-center">First Mentor Live</p>
@@ -136,7 +147,7 @@ export default function ForMentorsPage() {
         </div>
       </section>
 
-      {/* Revenue - inline */}
+      {/* Revenue */}
       <section className="px-6 py-24">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-6">The math</h2>
@@ -149,35 +160,32 @@ export default function ForMentorsPage() {
         </div>
       </section>
 
-      {/* Why this doesn't commoditize you */}
-      <section className="px-6 py-24">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">This doesn&apos;t replace you. It proves you.</h2>
-          <div className="space-y-6 text-[15px] text-muted/80 leading-relaxed">
-            <p>ChatGPT already gives generic advice in your field. Anyone can get a textbook answer for free. What they can&apos;t get is <span className="text-foreground font-medium">your</span> version. Your frameworks, your pattern recognition, the way you think about problems after doing this for a decade.</p>
-            <p>That&apos;s what makes your agent valuable, and that&apos;s what makes you irreplaceable. The generic version already exists. Your version doesn&apos;t, until you build it here.</p>
-            <p className="text-foreground/60 text-sm">Your knowledge stays in our system, never in theirs. AI providers are contractually prohibited from using API data for model training. Your IP is yours.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Your part / Our part - #4: balanced 4/4 */}
+      {/* Your part / Our part */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8">
-            {responsibilities.map((r) => (
-              <div key={r.side} className="glass-card p-8">
-                <h3 className="text-xl font-bold mb-6">{r.side === "yours" ? "Your part" : "Our part"}</h3>
-                <ul className="space-y-4">
-                  {r.items.map((item) => (
-                    <li key={item} className="flex items-start gap-3">
-                      <IconCheck size={20} className="text-amber mt-0.5 shrink-0" />
-                      <span className="text-muted leading-relaxed">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            <div className="glass-card p-8">
+              <h3 className="text-xl font-bold mb-6">Your part</h3>
+              <ul className="space-y-5">
+                {yourPart.map((item) => (
+                  <li key={item.text} className="flex items-start gap-4">
+                    <item.icon size={20} className="text-amber mt-0.5 shrink-0" />
+                    <span className="text-muted leading-relaxed">{item.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="glass-card p-8">
+              <h3 className="text-xl font-bold mb-6">Our part</h3>
+              <ul className="space-y-5">
+                {ourPart.map((item) => (
+                  <li key={item.text} className="flex items-start gap-4">
+                    <item.icon size={20} className="text-amber mt-0.5 shrink-0" />
+                    <span className="text-muted leading-relaxed">{item.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -186,7 +194,7 @@ export default function ForMentorsPage() {
       <section className="px-6 py-24 pb-32">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-muted text-[15px] leading-relaxed mb-10">
-            Your frameworks stay yours. We have a license to run the agent, not ownership of your IP. You can pull it anytime. Extraction recordings stay confidential.
+            Your frameworks stay yours. We have a license to run the agent, not ownership of your IP. You can pull it anytime. All recordings stay confidential.
           </p>
           <h2 className="text-2xl md:text-3xl font-bold mb-4">Ready to stop leaving reach on the table?</h2>
           <p className="text-muted text-lg mb-10 leading-relaxed">One voice per domain. We work with 10 mentors per vertical, handpicked.</p>
