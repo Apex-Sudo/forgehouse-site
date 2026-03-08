@@ -140,13 +140,12 @@ export default function ForMentorsPage() {
       <section className="px-6 py-24">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-6">The math</h2>
-          <p className="text-muted text-lg mb-8 leading-relaxed">You set your mentor price. You keep 75%. At $150/month per subscriber:</p>
+          <p className="text-muted text-lg mb-8 leading-relaxed">Subscribers pay two fees: a $47/mo platform fee (goes to ForgeHouse) and your mentor fee (you keep 75%). You set your price. At $150/mo mentor fee:</p>
           <p className="text-lg leading-relaxed">
-            <span className="text-foreground font-semibold">10 subscribers</span> <span className="text-muted">= $1,125/mo.</span>{" "}
+            <span className="text-foreground font-semibold">10 subscribers</span> <span className="text-muted">= $1,125/mo to you.</span>{" "}
             <span className="text-foreground font-semibold">25</span> <span className="text-muted">= $2,812.</span>{" "}
             <span className="text-foreground font-semibold">50</span> <span className="text-muted">= $5,625.</span>
           </p>
-          <p className="text-muted text-sm mt-6">Platform fee ($47/mo) paid by subscriber, 100% to ForgeHouse. Your mentor fee is yours.</p>
         </div>
       </section>
 
