@@ -99,9 +99,13 @@ export default function ForMentorsPage() {
               <p className="text-foreground font-semibold mb-2">You earn from conversations you&apos;re not in.</p>
               <p className="text-muted leading-relaxed">You set your price. You keep 75%. Every subscriber is revenue that doesn&apos;t require your time.</p>
             </div>
-            <div className="py-8 last:pb-0">
+            <div className="py-8">
               <p className="text-foreground font-semibold mb-2">Your best clients find you.</p>
               <p className="text-muted leading-relaxed">Every agent conversation is a qualifying layer. The people who need the real you get referred directly to your calendar, pre-qualified and already speaking your language.</p>
+            </div>
+            <div className="py-8 last:pb-0">
+              <p className="text-foreground font-semibold mb-2">Your live practice grows, not shrinks.</p>
+              <p className="text-muted leading-relaxed">The agent proves your methodology works. People experience your thinking, see results, and want the real thing. It creates demand for you, not a substitute.</p>
             </div>
           </div>
         </div>
@@ -146,6 +150,18 @@ export default function ForMentorsPage() {
         </div>
       </section>
 
+      {/* Why this doesn't commoditize you */}
+      <section className="px-6 py-24">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">This doesn&apos;t replace you. It proves you.</h2>
+          <div className="space-y-6 text-[15px] text-muted/80 leading-relaxed">
+            <p>ChatGPT already gives generic advice in your field. Anyone can get a textbook answer for free. What they can&apos;t get is <span className="text-foreground font-medium">your</span> version. Your frameworks, your pattern recognition, the way you think about problems after doing this for a decade.</p>
+            <p>That&apos;s what makes your agent valuable, and that&apos;s what makes you irreplaceable. The generic version already exists. Your version doesn&apos;t, until you build it here.</p>
+            <p className="text-foreground/60 text-sm">Your knowledge stays in our system, never in theirs. AI providers are contractually prohibited from using API data for model training. Your IP is yours.</p>
+          </div>
+        </div>
+      </section>
+
       {/* Your part / Our part - #4: balanced 4/4 */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto">
@@ -174,7 +190,7 @@ export default function ForMentorsPage() {
             Your frameworks stay yours. We have a license to run the agent, not ownership of your IP. You can pull it anytime. Extraction recordings stay confidential.
           </p>
           <h2 className="text-2xl md:text-3xl font-bold mb-4">Ready to stop leaving reach on the table?</h2>
-          <p className="text-muted text-lg mb-10 leading-relaxed">Limited spots. We handpick every mentor.</p>
+          <p className="text-muted text-lg mb-10 leading-relaxed">One voice per domain. We work with 10 mentors per vertical, handpicked.</p>
           <Link href="/apply" className="bg-amber text-white px-10 py-4 rounded-xl font-semibold hover:bg-amber-dark transition inline-flex items-center gap-2 text-lg">
             Apply Now <IconArrowRight size={20} />
           </Link>
