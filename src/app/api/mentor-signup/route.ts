@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
+import { formLimiter } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown";
+    const { success } = await formLimiter().limit(ip);
+    if (!success) {
+      return NextResponse.json({ error: "Rate limit exceeded. Try again later." }, { status: 429 });
+    }
+
     const { name, email, linkedin, role, expertise, whyForgeHouse, contentLink } = await req.json();
 
     if (!name || !email || !linkedin || !role || !expertise || !whyForgeHouse) {

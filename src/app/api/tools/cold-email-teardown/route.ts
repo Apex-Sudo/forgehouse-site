@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { toolLimiter } from "@/lib/rate-limit";
 
 const SYSTEM_PROMPT = `You are a cold email diagnostic engine built on Colin Chapman's Problem-Impact-Proof framework. You analyze cold emails line by line, identify what's weak, and produce a rewrite.
 
@@ -40,6 +41,10 @@ Rules:
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown";
+    const { success } = await toolLimiter().limit(ip);
+    if (!success) { return Response.json({ error: "Rate limit exceeded. Try again later." }, { status: 429 }); }
+
     const body = await req.json();
     const { email } = body as { email: string };
 

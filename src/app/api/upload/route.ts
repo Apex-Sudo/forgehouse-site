@@ -1,7 +1,14 @@
 import { extractText } from "unpdf";
+import { uploadLimiter } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown";
+    const { success } = await uploadLimiter().limit(ip);
+    if (!success) {
+      return Response.json({ error: "Rate limit exceeded. Try again later." }, { status: 429 });
+    }
+
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
 

@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { toolLimiter } from "@/lib/rate-limit";
 
 const SYSTEM_PROMPT = `You are an ICP (Ideal Customer Profile) diagnostic engine built on the Jobs-to-be-Done framework. You analyze a founder's product and customer data to produce a precise, actionable ICP definition.
 
@@ -49,6 +50,11 @@ export async function POST(req: Request) {
       req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
       req.headers.get("x-real-ip") ||
       "unknown";
+
+    const { success } = await toolLimiter().limit(ip);
+    if (!success) {
+      return Response.json({ error: "Rate limit exceeded. Try again later." }, { status: 429 });
+    }
 
     const body = await req.json();
     const { answers, path } = body as {
