@@ -16,8 +16,8 @@ create index if not exists idx_fh_sessions_slug on fh_sessions (slug);
 -- Enable RLS
 alter table fh_sessions enable row level security;
 
--- Allow all operations via anon key (no auth for now)
-create policy "Allow all operations" on fh_sessions
+-- Service role only (mentor extraction data is sensitive IP)
+create policy "Service role only" on fh_sessions
   for all
-  using (true)
-  with check (true);
+  using (auth.role() = 'service_role')
+  with check (auth.role() = 'service_role');
