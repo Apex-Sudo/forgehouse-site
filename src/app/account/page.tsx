@@ -8,6 +8,11 @@ export default function AccountPage() {
   const { data: session, status } = useSession();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [apiKey, setApiKey] = useState<string | null>(null);
+  const [apiKeyLoading, setApiKeyLoading] = useState(false);
+  const [apiKeyCopied, setApiKeyCopied] = useState(false);
+  const [apiKeyRevealed, setApiKeyRevealed] = useState(false);
+  const [generatingKey, setGeneratingKey] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -25,6 +30,45 @@ export default function AccountPage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [session, status]);
+
+  // Fetch existing API key when subscribed
+  useEffect(() => {
+    if (!isSubscribed || loading) return;
+    setApiKeyLoading(true);
+    fetch("/api/v1/api-key")
+      .then(async (r) => {
+        if (r.ok) {
+          const data = await r.json();
+          setApiKey(data.api_key);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setApiKeyLoading(false));
+  }, [isSubscribed, loading]);
+
+  const generateApiKey = async () => {
+    setGeneratingKey(true);
+    try {
+      const res = await fetch("/api/v1/api-key", { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        setApiKey(data.api_key);
+        setApiKeyRevealed(true); // Show it immediately on first generation
+      }
+    } catch { /* silent */ }
+    setGeneratingKey(false);
+  };
+
+  const copyApiKey = () => {
+    if (!apiKey) return;
+    navigator.clipboard.writeText(apiKey);
+    setApiKeyCopied(true);
+    setTimeout(() => setApiKeyCopied(false), 2000);
+  };
+
+  const maskKey = (key: string) => {
+    return key.slice(0, 7) + "•".repeat(20) + key.slice(-4);
+  };
 
   if (status === "loading" || status === "unauthenticated" || loading) {
     return (
@@ -105,6 +149,87 @@ export default function AccountPage() {
             </div>
           )}
         </div>
+
+        {/* API Access */}
+        {isSubscribed && (
+          <div className="glass-card px-6 py-5 mb-4">
+            <h2 className="text-sm font-semibold mb-3">API Access</h2>
+            <p className="text-xs text-muted mb-4">
+              Connect your AI agent (OpenClaw, Claude Code, Cursor) directly to ForgeHouse mentors via API or MCP.
+            </p>
+
+            {apiKeyLoading ? (
+              <span className="animate-pulse text-muted text-xs">Loading...</span>
+            ) : apiKey ? (
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <code className="bg-white/[0.06] border border-white/[0.08] rounded px-3 py-2 text-xs font-mono flex-1 overflow-hidden text-ellipsis">
+                    {apiKeyRevealed ? apiKey : maskKey(apiKey)}
+                  </code>
+                  <button
+                    onClick={() => setApiKeyRevealed(!apiKeyRevealed)}
+                    className="bg-white/[0.06] border border-white/[0.08] text-xs px-3 py-2 rounded hover:bg-white/[0.1] transition cursor-pointer"
+                  >
+                    {apiKeyRevealed ? "Hide" : "Reveal"}
+                  </button>
+                  <button
+                    onClick={copyApiKey}
+                    className="bg-white/[0.06] border border-white/[0.08] text-xs px-3 py-2 rounded hover:bg-white/[0.1] transition cursor-pointer"
+                  >
+                    {apiKeyCopied ? "Copied!" : "Copy"}
+                  </button>
+                </div>
+                <button
+                  onClick={generateApiKey}
+                  disabled={generatingKey}
+                  className="text-xs text-muted hover:text-foreground transition cursor-pointer"
+                >
+                  {generatingKey ? "Generating..." : "Regenerate key"} (revokes current)
+                </button>
+
+                {/* Quick start */}
+                <div className="mt-4 pt-4 border-t border-white/[0.06]">
+                  <p className="text-xs font-semibold mb-2">Quick start</p>
+
+                  <div className="mb-3">
+                    <p className="text-xs text-muted mb-1">cURL:</p>
+                    <pre className="bg-white/[0.04] border border-white/[0.06] rounded p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all">
+{`curl -X POST https://forgehouse.io/api/v1/chat \\
+  -H "Authorization: Bearer ${apiKeyRevealed ? apiKey : "fh_..."}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"mentor":"colin-chapman","message":"Your question here","stream":false}'`}
+                    </pre>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-muted mb-1">MCP (OpenClaw / Claude Code / Cursor):</p>
+                    <pre className="bg-white/[0.04] border border-white/[0.06] rounded p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all">
+{`{
+  "mcpServers": {
+    "forgehouse": {
+      "command": "npx",
+      "args": ["@forgehouse/mcp-server"],
+      "env": {
+        "FORGEHOUSE_API_KEY": "${apiKeyRevealed ? apiKey : "fh_..."}"
+      }
+    }
+  }
+}`}
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={generateApiKey}
+                disabled={generatingKey}
+                className="bg-white/[0.06] border border-white/[0.08] text-sm px-4 py-2 rounded-lg text-foreground hover:bg-white/[0.1] transition cursor-pointer"
+              >
+                {generatingKey ? "Generating..." : "Generate API key"}
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Sign out */}
         <button
