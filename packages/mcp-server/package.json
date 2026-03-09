@@ -1,0 +1,17 @@
+{
+  "name": "@forgehouse/mcp-server",
+  "version": "0.1.0",
+  "description": "MCP server for ForgeHouse AI mentors",
+  "main": "index.js",
+  "bin": {
+    "forgehouse-mcp": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "keywords": ["mcp", "forgehouse", "ai-mentors", "mentor"],
+  "license": "MIT"
+}
