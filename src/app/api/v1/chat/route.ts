@@ -1,3 +1,4 @@
+import { after } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { COLIN_SYSTEM_PROMPT } from "@/lib/colin-system-prompt";
 import { validateApiKey } from "@/lib/api-keys";
@@ -74,10 +75,12 @@ export async function POST(req: Request) {
     // Check for stream preference
     const wantsStream = body.stream !== false; // default to streaming
 
-    captureServerEvent(keyData.email, "api_message_sent", {
-      mentor_slug: mentor,
-      via: "api_v1",
-      message_count: chatMessages.length,
+    after(async () => {
+      await captureServerEvent(keyData.email, "api_message_sent", {
+        mentor_slug: mentor,
+        via: "api_v1",
+        message_count: chatMessages.length,
+      });
     });
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -96,10 +99,12 @@ export async function POST(req: Request) {
         .map((b) => b.text)
         .join("");
 
-      captureServerEvent(keyData.email, "api_message_received", {
-        mentor_slug: mentor,
-        via: "api_v1",
-        response_length: text.length,
+      after(async () => {
+        await captureServerEvent(keyData.email, "api_message_received", {
+          mentor_slug: mentor,
+          via: "api_v1",
+          response_length: text.length,
+        });
       });
 
       return Response.json({
@@ -135,10 +140,12 @@ export async function POST(req: Request) {
             }
           }
 
-          captureServerEvent(keyData.email, "api_message_received", {
-            mentor_slug: mentor,
-            via: "api_v1",
-            response_length: fullResponse.length,
+          after(async () => {
+            await captureServerEvent(keyData.email, "api_message_received", {
+              mentor_slug: mentor,
+              via: "api_v1",
+              response_length: fullResponse.length,
+            });
           });
         } catch (err) {
           const msg = err instanceof Error ? err.message : "Unknown error";

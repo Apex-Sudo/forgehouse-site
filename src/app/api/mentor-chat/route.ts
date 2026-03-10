@@ -1,3 +1,4 @@
+import { after } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { COLIN_SYSTEM_PROMPT } from "@/lib/colin-system-prompt";
 import { chatLimiter } from "@/lib/rate-limit";
@@ -164,22 +165,26 @@ Use the user's first name naturally in conversation. Don't overdo it.`;
     }
 
     const distinctId = user?.email || `anon:${ip}`;
+    const messageNumber = messages.filter((m) => m.role === "user").length;
 
-    captureServerEvent(distinctId, "message_sent", {
-      mentor_slug: mentor,
-      conversation_id: conversation_id || null,
-      is_authenticated: Boolean(user?.email),
-      is_invited: isInvited,
-      message_length: typeof lastUserMessage?.content === "string" ? lastUserMessage.content.length : null,
-    });
-
-    if (isReturningConversation) {
-      captureServerEvent(distinctId, "conversation_returned", {
+    after(async () => {
+      await captureServerEvent(distinctId, "message_sent", {
         mentor_slug: mentor,
         conversation_id: conversation_id || null,
-        hours_since_last_message: hoursSinceLastUserMessage,
+        is_authenticated: Boolean(user?.email),
+        is_invited: isInvited,
+        message_length: typeof lastUserMessage?.content === "string" ? lastUserMessage.content.length : null,
+        message_number: messageNumber,
       });
-    }
+
+      if (isReturningConversation) {
+        await captureServerEvent(distinctId, "conversation_returned", {
+          mentor_slug: mentor,
+          conversation_id: conversation_id || null,
+          hours_since_last_message: hoursSinceLastUserMessage,
+        });
+      }
+    });
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -207,10 +212,14 @@ Use the user's first name naturally in conversation. Don't overdo it.`;
             }
           }
 
-          captureServerEvent(distinctId, "message_received", {
-            mentor_slug: mentor,
-            conversation_id: conversation_id || null,
-            response_length: fullResponse.length,
+          // Use after() for analytics so Vercel doesn't kill the function before capture completes
+          after(async () => {
+            await captureServerEvent(distinctId, "message_received", {
+              mentor_slug: mentor,
+              conversation_id: conversation_id || null,
+              response_length: fullResponse.length,
+              message_number: messageNumber,
+            });
           });
 
           // Save messages to conversation if authenticated
