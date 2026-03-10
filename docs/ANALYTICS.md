@@ -7,15 +7,15 @@ ForgeHouse uses PostHog for product analytics. Client-side events (pageviews, cl
 ## PostHog Setup
 
 - **Project**: 246820 (Default project)
-- **Project token** (capture): `phc_uJOopGcIoW4caqPea4fZ8NtAvao3N5Zgb7KgTSorMIl`
-- **Personal API key** (query): `phx_RCzJekjKVO38OrWuMOLldhFSH9SAkqs4iGaCOczYQi56jW4` (read-only)
+- **Project token** (capture): Set in `NEXT_PUBLIC_POSTHOG_KEY` env var on Vercel
+- **Personal API key** (query, read-only): Stored locally, not committed. Check TOOLS.md or Apex for the key
 - **Capture host**: `https://us.i.posthog.com`
 - **Query endpoint**: `https://us.posthog.com/api/projects/246820/query/`
 
 ### Env vars (Vercel)
 
 ```
-NEXT_PUBLIC_POSTHOG_KEY=phc_uJOopGcIoW4caqPea4fZ8NtAvao3N5Zgb7KgTSorMIl
+NEXT_PUBLIC_POSTHOG_KEY=<your-project-token>
 NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
 ```
 
@@ -110,7 +110,7 @@ Use HogQL via the PostHog API:
 ```python
 import requests
 
-API_KEY = "phx_RCzJekjKVO38OrWuMOLldhFSH9SAkqs4iGaCOczYQi56jW4"
+API_KEY = os.environ["POSTHOG_PERSONAL_API_KEY"]  # or hardcode your read-only key locally
 URL = "https://us.posthog.com/api/projects/246820/query/"
 
 r = requests.post(URL,
