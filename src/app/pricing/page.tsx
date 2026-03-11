@@ -49,7 +49,7 @@ const faq = [
     a: "Anything you'd bring to a real session. Pipeline diagnosis, messaging review, ICP definition, deal strategy, hiring decisions. The module reasons through your situation the way the expert would.",
   },
   {
-    q: "How accurate is the agent compared to the real mentor?",
+    q: "How accurate is the module compared to the real expert?",
     a: "Every module goes through live calibration where the expert reviews and corrects what's off. It's not perfect. But it's trained on how they actually think, not a generic prompt.",
   },
 ];
@@ -143,7 +143,7 @@ export default function PricingPage() {
           <div className="glass-card p-10 text-center shadow-[0_0_24px_rgba(184,145,106,0.12)] border-[rgba(184,145,106,0.2)]">
             <p className="text-sm text-muted uppercase tracking-wide mb-2">Colin Chapman</p>
             <div className="text-5xl font-bold mb-1">$48<span className="text-lg font-normal text-muted">/month</span></div>
-            <p className="text-muted text-sm mb-8">Unlimited conversations with Colin&apos;s AI mentor agent.</p>
+            <p className="text-muted text-sm mb-8">Unlimited conversations with the Colin module.</p>
 
             <ul className="text-left space-y-4 mb-10">
               {included.map((item) => (
@@ -161,7 +161,7 @@ export default function PricingPage() {
             >
               or try 5 free messages first →
             </Link>
-            <p className="text-xs text-muted mt-4">Every mentor sets their own price.</p>
+            <p className="text-xs text-muted mt-4">Every expert sets their own price.</p>
           </div>
         </div>
       </section>

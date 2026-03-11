@@ -12,10 +12,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-white/[0.06] py-16 px-6">
       <div className="max-w-6xl mx-auto flex flex-col items-center gap-6 text-sm text-muted text-center">
-        <div>
-          <span className="text-amber font-bold">Forge</span>
-          <span className="font-bold text-foreground">House</span>
-        </div>
+        <img src="/logo.svg" alt="ForgeHouse" className="h-5" />
         <div className="flex gap-6 text-muted">
           <Link href="/the-forge" className="hover:text-foreground transition">The Forge</Link>
           <Link href="/for-mentors" className="hover:text-foreground transition">For Experts</Link>
