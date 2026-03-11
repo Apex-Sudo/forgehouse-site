@@ -208,7 +208,7 @@ export default function AccountPage() {
   "mcpServers": {
     "forgehouse": {
       "command": "npx",
-      "args": ["@forgehouse/mcp-server"],
+      "args": ["-y", "@forgehouse/mcp-server"],
       "env": {
         "FORGEHOUSE_API_KEY": "${apiKeyRevealed ? apiKey : "fh_..."}"
       }
