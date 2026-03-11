@@ -103,7 +103,7 @@ export default function Home() {
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-[10px] bg-amber text-background flex items-center justify-center font-bold text-sm">R</div>
                 <div>
-                  <p className="text-sm font-semibold">Richard O.</p>
+                  <p className="text-sm font-semibold">Richard Okonicha</p>
                   <p className="text-xs text-muted">Founder, Fugoku</p>
                 </div>
               </div>
@@ -113,7 +113,7 @@ export default function Home() {
               <div className="flex items-center gap-3">
                 <Image src="/mentors/leon-freier.webp" alt="Leon Freier" width={36} height={36} className="rounded-[10px] object-cover" />
                 <div>
-                  <p className="text-sm font-semibold">Leon F.</p>
+                  <p className="text-sm font-semibold">Leon Freier</p>
                   <p className="text-xs text-muted">Founder, ApexAlpha (& ForgeHouse)</p>
                 </div>
               </div>
