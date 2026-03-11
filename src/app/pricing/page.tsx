@@ -141,22 +141,22 @@ export default function PricingPage() {
       <section className="px-6 pb-24">
         <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-5">
           {/* Free tier */}
-          <div className="glass-card p-10 text-center flex flex-col">
+          <div className="glass-card p-8 text-center flex flex-col">
             <p className="text-sm text-muted uppercase tracking-wide mb-2">Try it</p>
-            <div className="text-5xl font-bold mb-1">Free</div>
-            <p className="text-muted text-[15px] mb-8">5 messages with Colin. No card, no signup.</p>
+            <div className="text-4xl font-bold mb-1">Free</div>
+            <p className="text-muted text-sm mb-6">5 messages with Colin. No card, no signup.</p>
 
-            <ul className="text-left space-y-4 mb-10 flex-1">
-              <li className="flex items-start gap-3 text-[15px]">
-                <IconCheck size={18} stroke={3} className="text-amber mt-0.5 shrink-0" />
+            <ul className="text-left space-y-3 mb-8 flex-1">
+              <li className="flex items-start gap-3 text-sm">
+                <IconCheck size={16} stroke={3} className="text-amber mt-0.5 shrink-0" />
                 <span className="text-foreground/90">5 free messages</span>
               </li>
-              <li className="flex items-start gap-3 text-[15px]">
-                <IconCheck size={18} stroke={3} className="text-amber mt-0.5 shrink-0" />
+              <li className="flex items-start gap-3 text-sm">
+                <IconCheck size={16} stroke={3} className="text-amber mt-0.5 shrink-0" />
                 <span className="text-foreground/90">No account required</span>
               </li>
-              <li className="flex items-start gap-3 text-[15px]">
-                <IconCheck size={18} stroke={3} className="text-amber mt-0.5 shrink-0" />
+              <li className="flex items-start gap-3 text-sm">
+                <IconCheck size={16} stroke={3} className="text-amber mt-0.5 shrink-0" />
                 <span className="text-foreground/90">Full module, not a teaser</span>
               </li>
             </ul>
