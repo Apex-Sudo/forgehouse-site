@@ -139,15 +139,45 @@ export default function PricingPage() {
 
       {/* Pricing Model */}
       <section className="px-6 pb-24">
-        <div className="max-w-lg mx-auto">
-          <div className="glass-card p-10 text-center shadow-[0_0_24px_rgba(184,145,106,0.12)] border-[rgba(184,145,106,0.2)]">
+        <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-5">
+          {/* Free tier */}
+          <div className="glass-card p-10 text-center flex flex-col">
+            <p className="text-sm text-muted uppercase tracking-wide mb-2">Try it</p>
+            <div className="text-5xl font-bold mb-1">Free</div>
+            <p className="text-muted text-[15px] mb-8">5 messages with Colin. No card, no signup.</p>
+
+            <ul className="text-left space-y-4 mb-10 flex-1">
+              <li className="flex items-start gap-3 text-[15px]">
+                <IconCheck size={18} stroke={3} className="text-amber mt-0.5 shrink-0" />
+                <span className="text-foreground/90">5 free messages</span>
+              </li>
+              <li className="flex items-start gap-3 text-[15px]">
+                <IconCheck size={18} stroke={3} className="text-amber mt-0.5 shrink-0" />
+                <span className="text-foreground/90">No account required</span>
+              </li>
+              <li className="flex items-start gap-3 text-[15px]">
+                <IconCheck size={18} stroke={3} className="text-amber mt-0.5 shrink-0" />
+                <span className="text-foreground/90">Full module, not a teaser</span>
+              </li>
+            </ul>
+
+            <Link
+              href="/chat/colin-chapman"
+              className="block w-full bg-foreground/10 text-foreground py-3.5 rounded-xl font-semibold hover:bg-foreground/20 transition text-center"
+            >
+              Try Colin free →
+            </Link>
+          </div>
+
+          {/* Paid tier */}
+          <div className="glass-card p-10 text-center shadow-[0_0_24px_rgba(184,145,106,0.12)] border-[rgba(184,145,106,0.2)] flex flex-col">
             <p className="text-sm text-muted uppercase tracking-wide mb-2">Colin Chapman</p>
             <div className="text-5xl font-bold mb-1">$48<span className="text-lg font-normal text-muted">/month</span></div>
-            <p className="text-muted text-sm mb-8">Unlimited conversations with the Colin module.</p>
+            <p className="text-muted text-[15px] mb-8">Unlimited conversations with the Colin module.</p>
 
-            <ul className="text-left space-y-4 mb-10">
+            <ul className="text-left space-y-4 mb-10 flex-1">
               {included.map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm">
+                <li key={item} className="flex items-start gap-3 text-[15px]">
                   <IconCheck size={18} stroke={3} className="text-amber mt-0.5 shrink-0" />
                   <span className="text-foreground/90">{item}</span>
                 </li>
@@ -155,12 +185,6 @@ export default function PricingPage() {
             </ul>
 
             <SubscribeButton />
-            <Link
-              href="/chat/colin-chapman"
-              className="block w-full mt-3 text-center text-sm text-muted hover:text-foreground transition"
-            >
-              or try 5 free messages first →
-            </Link>
             <p className="text-xs text-muted mt-4">Every expert sets their own price.</p>
           </div>
         </div>

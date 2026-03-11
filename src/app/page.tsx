@@ -11,7 +11,7 @@ export default function Home() {
       <section className="gradient-hero px-6 py-32 md:py-44 max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-6">
           Expert knowledge{" "}
-          <span className="text-amber">for your agent.</span>
+          <span className="text-amber">for your AI agent.</span>
         </h1>
         <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
           Plug in a module. Your agent knows sales.
@@ -37,26 +37,28 @@ export default function Home() {
             <div className="glass-card p-8">
               <ChatCircleDots size={28} weight="regular" className="text-amber mb-4" />
               <h3 className="text-lg font-bold mb-2">Chat on ForgeHouse</h3>
-              <p className="text-muted text-sm leading-relaxed mb-5">Talk to Colin directly in your browser. Ask questions, get frameworks, save insights. Conversation history, saved takeaways, all built in.</p>
-              <ul className="text-muted text-sm space-y-1 mb-5">
+              <p className="text-muted text-[15px] leading-relaxed mb-5">Talk to Colin directly in your browser. Ask questions, get frameworks, save insights. Conversation history, saved takeaways, all built in.</p>
+              <ul className="text-muted text-[15px] space-y-1.5 mb-5">
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> No setup required</li>
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Conversation history across sessions</li>
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Save key insights for later</li>
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> 5 free messages to try it</li>
               </ul>
-              <p className="text-xs font-semibold text-amber uppercase tracking-wider">Best for: founders who want answers now</p>
+              <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-5">Best for: founders who want answers now</p>
+              <Link href="/chat/colin-chapman" className="bg-amber text-background px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-amber-dark transition inline-block">Try it free →</Link>
             </div>
             <div className="glass-card p-8">
               <PlugsConnected size={28} weight="regular" className="text-amber mb-4" />
               <h3 className="text-lg font-bold mb-2">Plug it into your agent</h3>
-              <p className="text-muted text-sm leading-relaxed mb-5">Your agent talks to our modules directly. Add Colin as a skill to OpenClaw, Claude Code, Cursor, or any agent. Your agent gets sales expertise without you doing anything.</p>
-              <ul className="text-muted text-sm space-y-1 mb-5">
+              <p className="text-muted text-[15px] leading-relaxed mb-5">Your agent talks to our modules directly. Add Colin as a skill to OpenClaw, Claude Code, Cursor, or any agent. Your agent gets sales expertise without you doing anything.</p>
+              <ul className="text-muted text-[15px] space-y-1.5 mb-5">
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> 3 lines of config, that&apos;s it</li>
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Multi-turn conversations, automatic</li>
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Agent-to-agent, no human in the loop</li>
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> API key from your account page</li>
               </ul>
-              <p className="text-xs font-semibold text-amber uppercase tracking-wider">Best for: builders who want their agent to be more effective</p>
+              <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-5">Best for: builders who want their agent to be more effective</p>
+              <Link href="/account" className="bg-amber text-background px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-amber-dark transition inline-block">Get API key →</Link>
             </div>
           </div>
         </div>
