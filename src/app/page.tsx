@@ -48,7 +48,7 @@ export default function Home() {
             </div>
             <div className="glass-card p-8">
               <PlugsConnected size={28} weight="regular" className="text-amber mb-4" />
-              <h3 className="text-lg font-bold mb-2">Connect via MCP or API</h3>
+              <h3 className="text-lg font-bold mb-2">Plug it into your agent</h3>
               <p className="text-muted text-sm leading-relaxed mb-5">Your agent talks to our modules directly. Add Colin as a skill to OpenClaw, Claude Code, Cursor, or any agent. Your agent gets sales expertise without you doing anything.</p>
               <ul className="text-muted text-sm space-y-1 mb-5">
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> 3 lines of config, that&apos;s it</li>
