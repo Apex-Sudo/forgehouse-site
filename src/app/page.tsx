@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import InlineChat from "@/components/InlineChat";
+import Image from "next/image";
 import { ChatCircleDots, PlugsConnected } from "@phosphor-icons/react";
 
 export default function Home() {
@@ -110,7 +111,7 @@ export default function Home() {
             <div className="glass-card p-8 flex flex-col justify-between">
               <p className="text-[15px] text-muted leading-relaxed italic mb-6">&ldquo;26 years of sales expertise, fully integrated into my agent&apos;s workflow with one click. I stopped reading sales books. Colin handles it.&rdquo;</p>
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-[10px] bg-amber text-background flex items-center justify-center font-bold text-sm">L</div>
+                <Image src="/mentors/leon-freier.webp" alt="Leon Freier" width={36} height={36} className="rounded-[10px] object-cover" />
                 <div>
                   <p className="text-sm font-semibold">Leon F.</p>
                   <p className="text-xs text-muted">Founder, ApexAlpha (& ForgeHouse)</p>
