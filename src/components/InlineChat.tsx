@@ -25,8 +25,14 @@ export default function InlineChat() {
   };
 
   return (
-    <div className="glass-card max-w-[840px] mx-auto min-h-[380px] flex flex-col overflow-hidden shadow-[0_0_80px_rgba(184,145,106,0.04)] border-amber/[0.12]"
-      style={{ borderRadius: "20px" }}>
+    <div className="max-w-[840px] mx-auto min-h-[380px] flex flex-col overflow-hidden rounded-[20px]"
+      style={{
+        background: "rgba(184,145,106,0.02)",
+        border: "1px solid rgba(184,145,106,0.12)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
+        boxShadow: "0 0 80px rgba(184,145,106,0.04), 0 0 1px rgba(184,145,106,0.1)",
+      }}>
       {/* Header */}
       <div className="flex items-center gap-3.5 px-8 py-6 border-b border-amber/[0.08]">
         <div className="w-11 h-11 rounded-xl bg-amber text-background flex items-center justify-center font-bold text-[17px]">C</div>

@@ -90,10 +90,10 @@ export default function Navbar() {
   const inAppShell = !!session?.user && APP_ROUTES.some((r) => pathname.startsWith(r));
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-xl border-b border-white/[0.06]">
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold tracking-tight">
-          <span className="text-amber">Forge</span>House
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/85 backdrop-blur-xl border-b border-amber/[0.08]">
+      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between relative">
+        <Link href="/" className="text-lg font-bold tracking-tight" style={{ letterSpacing: "-0.02em" }}>
+          Forge<span className="text-amber">House</span>
         </Link>
         {inAppShell ? (
           <div className="hidden md:flex items-center gap-4 text-sm text-muted">
@@ -101,13 +101,15 @@ export default function Navbar() {
           </div>
         ) : (
           <>
-            <div className="hidden md:flex items-center gap-8 text-sm text-muted">
-              <Link href="/mentors" className="hover:text-foreground transition">Modules</Link>
-              <Link href="/tools" className="hover:text-foreground transition">Tools</Link>
-              <Link href="/thinking" className="hover:text-foreground transition">Thinking</Link>
-              <Link href="/pricing" className="hover:text-foreground transition">Pricing</Link>
+            <div className="hidden md:flex items-center gap-8 text-sm text-muted absolute left-1/2 -translate-x-1/2">
+              <Link href="/mentors" className="hover:text-foreground transition font-medium">Modules</Link>
+              <Link href="/tools" className="hover:text-foreground transition font-medium">Tools</Link>
+              <Link href="/thinking" className="hover:text-foreground transition font-medium">Thinking</Link>
+              <Link href="/pricing" className="hover:text-foreground transition font-medium">Pricing</Link>
               <UserMenu />
-              <Link href="/chat/colin-chapman" className="bg-amber text-white px-5 py-2 rounded-lg font-semibold hover:bg-amber-dark transition">
+            </div>
+            <div className="hidden md:flex items-center">
+              <Link href="/chat/colin-chapman" className="bg-amber text-background px-5 py-2 rounded-md font-semibold text-sm hover:opacity-90 transition">
                 Get Started
               </Link>
             </div>
@@ -120,13 +122,13 @@ export default function Navbar() {
         )}
       </div>
       {open && (
-        <div className="md:hidden border-t border-white/[0.06] bg-background/90 backdrop-blur-xl px-6 py-4 flex flex-col gap-4 text-sm">
-          <Link href="/mentors" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Modules</Link>
-          <Link href="/tools" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Tools</Link>
-          <Link href="/thinking" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Thinking</Link>
-          <Link href="/pricing" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Pricing</Link>
+        <div className="md:hidden border-t border-amber/[0.08] bg-background/90 backdrop-blur-xl px-6 py-4 flex flex-col gap-4 text-sm">
+          <Link href="/mentors" onClick={() => setOpen(false)} className="text-muted hover:text-foreground font-medium">Modules</Link>
+          <Link href="/tools" onClick={() => setOpen(false)} className="text-muted hover:text-foreground font-medium">Tools</Link>
+          <Link href="/thinking" onClick={() => setOpen(false)} className="text-muted hover:text-foreground font-medium">Thinking</Link>
+          <Link href="/pricing" onClick={() => setOpen(false)} className="text-muted hover:text-foreground font-medium">Pricing</Link>
           <div onClick={() => setOpen(false)}><UserMenu /></div>
-          <Link href="/chat/colin-chapman" onClick={() => setOpen(false)} className="bg-amber text-white px-4 py-2 rounded-lg font-semibold text-center">Get Started</Link>
+          <Link href="/chat/colin-chapman" onClick={() => setOpen(false)} className="bg-amber text-background px-4 py-2 rounded-md font-semibold text-center">Get Started</Link>
         </div>
       )}
     </nav>
