@@ -93,7 +93,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/85 backdrop-blur-xl border-b border-amber/[0.08]">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between relative">
         <Link href="/">
-          <img src="/logo.svg" alt="ForgeHouse" className="h-4" />
+          <img src="/logo.svg" alt="ForgeHouse" className="h-5" />
         </Link>
         {inAppShell ? (
           <div className="hidden md:flex items-center gap-4 text-sm text-muted">
