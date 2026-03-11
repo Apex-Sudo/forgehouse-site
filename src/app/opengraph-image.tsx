@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "ForgeHouse - Mentor Agents, Available 24/7";
+export const alt = "ForgeHouse - Expert Knowledge for Your Agent";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

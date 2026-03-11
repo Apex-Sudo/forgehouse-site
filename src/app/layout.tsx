@@ -10,8 +10,8 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ForgeHouse | Mentor Agents, Available 24/7",
-  description: "Talk to AI agents trained by real founders and mentors. Get clarity on your next move, anytime.",
+  title: "ForgeHouse | Expert Knowledge for Your Agent",
+  description: "Plug in expert knowledge modules. Your agent gets sales, GTM, and outbound expertise on demand.",
   verification: {
     google: "rMq3vtms-3w0Vq3WwMse4xWUGlkfqQK2pJ7gwGs8fds",
   },
@@ -19,16 +19,16 @@ export const metadata: Metadata = {
     icon: "/favicon.svg",
   },
   openGraph: {
-    title: "ForgeHouse | Mentor Agents, Available 24/7",
-    description: "Talk to AI agents trained by real founders and mentors. Get clarity on your next move, anytime.",
+    title: "ForgeHouse | Expert Knowledge for Your Agent",
+    description: "Plug in expert knowledge modules. Your agent gets sales, GTM, and outbound expertise on demand.",
     url: "https://forgehouse.io",
     siteName: "ForgeHouse",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ForgeHouse | Mentor Agents, Available 24/7",
-    description: "Talk to AI agents trained by real founders and mentors. Get clarity on your next move, anytime.",
+    title: "ForgeHouse | Expert Knowledge for Your Agent",
+    description: "Plug in expert knowledge modules. Your agent gets sales, GTM, and outbound expertise on demand.",
   },
 };
 
