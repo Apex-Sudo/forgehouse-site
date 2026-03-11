@@ -11,7 +11,7 @@ import {
   IconChevronDown,
   IconPlus,
   IconTarget,
-  IconTriangle,
+
   IconCreditCard,
   IconUser,
   IconUserCircle,
@@ -57,18 +57,12 @@ export default function Sidebar() {
     const load = async () => {
       setLoadingConvos(true);
       try {
-        const [colinRes, apexRes] = await Promise.all([
-          fetch("/api/conversations?mentor=colin-chapman"),
-          fetch("/api/conversations?mentor=apex"),
-        ]);
+        const colinRes = await fetch("/api/conversations?mentor=colin-chapman");
         const colinData = colinRes.ok ? await colinRes.json() : [];
-        const apexData = apexRes.ok ? await apexRes.json() : [];
 
-        // Merge and sort by date
-        const all = [
-          ...colinData.map((c: Conversation) => ({ ...c, mentor_slug: "colin-chapman" })),
-          ...apexData.map((c: Conversation) => ({ ...c, mentor_slug: "apex" })),
-        ].sort((a: Conversation, b: Conversation) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        const all = colinData
+          .map((c: Conversation) => ({ ...c, mentor_slug: "colin-chapman" }))
+          .sort((a: Conversation, b: Conversation) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
         // Load previews for recent ones (top 10)
         const withPreviews = await Promise.all(
@@ -131,10 +125,8 @@ export default function Sidebar() {
     return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
-  const mentorIcon = (slug: string) => slug === "colin-chapman"
-    ? <IconTarget size={14} className="text-amber" />
-    : <IconTriangle size={14} className="text-amber" />;
-  const mentorName = (slug: string) => slug === "colin-chapman" ? "Colin" : "Apex";
+  const mentorIcon = () => <IconTarget size={14} className="text-amber" />;
+  const mentorName = () => "Colin";
 
   const isActive = (path: string) => pathname === path;
 
@@ -175,7 +167,7 @@ export default function Sidebar() {
         <div className="flex-1 overflow-y-auto">
           {/* Mentors */}
           <div className="px-3 pt-4 pb-2">
-            <p className="text-xs text-muted/60 uppercase tracking-wider font-medium px-2 mb-2">Mentors</p>
+            <p className="text-xs text-muted/60 uppercase tracking-wider font-medium px-2 mb-2">Modules</p>
             <Link
               {...navLink("/chat/colin-chapman")}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition text-sm ${
