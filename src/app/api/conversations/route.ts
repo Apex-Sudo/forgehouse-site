@@ -1,3 +1,4 @@
+import { after } from "next/server";
 import { auth } from "@/lib/auth";
 import { listConversations, createConversation } from "@/lib/conversations";
 import { captureServerEvent } from "@/lib/posthog";
@@ -39,11 +40,13 @@ export async function POST(req: Request) {
 
     const data = await createConversation(user.id, mentor_slug, user.email, scenario_type);
 
-    captureServerEvent(user.email, "conversation_started", {
-      mentor_slug,
-      conversation_id: data.id,
-      scenario_type: scenario_type || null,
-      source: "chat",
+    after(async () => {
+      await captureServerEvent(user.email!, "conversation_started", {
+        mentor_slug,
+        conversation_id: data.id,
+        scenario_type: scenario_type || null,
+        source: "chat",
+      });
     });
 
     return Response.json(data);

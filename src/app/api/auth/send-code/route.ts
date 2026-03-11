@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { Resend } from "resend";
 import { generateCode, storeCode, checkRateLimit, getExistingCode } from "@/lib/verification";
 import { captureServerEvent } from "@/lib/posthog";
@@ -16,8 +16,10 @@ export async function POST(req: Request) {
 
     const emailLower = email.toLowerCase().trim();
 
-    captureServerEvent(emailLower, "signup_started", {
-      method: "email_code",
+    after(async () => {
+      await captureServerEvent(emailLower, "signup_started", {
+        method: "email_code",
+      });
     });
 
     // Rate limit

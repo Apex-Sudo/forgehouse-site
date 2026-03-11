@@ -1,3 +1,4 @@
+import { after } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { supabase } from "@/lib/supabase";
 import { captureServerEvent } from "@/lib/posthog";
@@ -75,10 +76,12 @@ export async function POST(req: Request) {
 
         // Track subscription event
         if (email) {
-          captureServerEvent(email, "subscription_completed", {
-            mentor_slug: mentorSlug || "unknown",
-            stripe_customer_id: customerId,
-            stripe_subscription_id: subscriptionId,
+          after(async () => {
+            await captureServerEvent(email, "subscription_completed", {
+              mentor_slug: mentorSlug || "unknown",
+              stripe_customer_id: customerId,
+              stripe_subscription_id: subscriptionId,
+            });
           });
         }
 
