@@ -76,10 +76,10 @@ export default function Home() {
 {"{"}{"\n"}
 {"  "}<span className="text-amber">&quot;mcpServers&quot;</span>: {"{"}{"\n"}
 {"    "}<span className="text-amber">&quot;forgehouse&quot;</span>: {"{"}{"\n"}
-{"      "}<span className="text-amber">&quot;command&quot;</span>: <span className="text-green-400">&quot;npx&quot;</span>,{"\n"}
-{"      "}<span className="text-amber">&quot;args&quot;</span>: [<span className="text-green-400">&quot;-y&quot;</span>, <span className="text-green-400">&quot;@forgehouseio/mcp-server&quot;</span>],{"\n"}
+{"      "}<span className="text-amber">&quot;command&quot;</span>: <span className="text-amber/70">&quot;npx&quot;</span>,{"\n"}
+{"      "}<span className="text-amber">&quot;args&quot;</span>: [<span className="text-amber/70">&quot;-y&quot;</span>, <span className="text-amber/70">&quot;@forgehouseio/mcp-server&quot;</span>],{"\n"}
 {"      "}<span className="text-amber">&quot;env&quot;</span>: {"{"}{"\n"}
-{"        "}<span className="text-amber">&quot;FORGEHOUSE_API_KEY&quot;</span>: <span className="text-green-400">&quot;fh_your_key&quot;</span>{"\n"}
+{"        "}<span className="text-amber">&quot;FORGEHOUSE_API_KEY&quot;</span>: <span className="text-amber/70">&quot;fh_your_key&quot;</span>{"\n"}
 {"      }"}{"\n"}
 {"    }"}{"\n"}
 {"  }"}{"\n"}
