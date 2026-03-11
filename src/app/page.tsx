@@ -1,21 +1,7 @@
 "use client";
 import Link from "next/link";
-import AgentCard from "@/components/AgentCard";
 import InlineChat from "@/components/InlineChat";
-import { IconMessageCircle, IconBolt, IconTrendingUp, IconShieldCheck } from "@tabler/icons-react";
-
-const steps = [
-  { num: "01", title: "Pick a mentor", desc: "Founders and operators who've actually built what you're trying to build. Vetted for real decisions, not credentials." },
-  { num: "02", title: "Talk to their agent", desc: "Their thinking, available right now. No scheduling, no small talk, no re-explaining your situation every session." },
-  { num: "03", title: "Get clarity in minutes", desc: "Clarity the moment the decision is in front of you." },
-];
-
-const trustPoints = [
-  { icon: IconMessageCircle, title: "Not a chatbot. Their actual thinking.", desc: "Every agent is built from hours of structured conversation. Real decision-making patterns from someone who's made the calls you're about to make." },
-  { icon: IconBolt, title: "No calendar. No waiting.", desc: "2 AM, can't sleep, big decision ahead. They're ready." },
-  { icon: IconTrendingUp, title: "Saved me months of wrong turns.", desc: "Their hindsight, your edge." },
-  { icon: IconShieldCheck, title: "Built it, not taught it.", desc: "Every mentor on ForgeHouse has made the hard calls themselves. No influencers. No theorists." },
-];
+import { ChatCircleDots, PlugsConnected } from "@phosphor-icons/react";
 
 export default function Home() {
   return (
@@ -23,80 +9,131 @@ export default function Home() {
       {/* Hero */}
       <section className="gradient-hero px-6 py-32 md:py-44 max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-6">
-          Access{" "}
-          <span className="text-amber">brilliance.</span>
+          Expert knowledge{" "}
+          <span className="text-amber">for your agent.</span>
         </h1>
-        <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-          World-class mentors, forged. Available the moment you need them.
+        <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+          Plug in a module. Your agent knows sales.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/mentors" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center">
-            Meet the Mentors
-          </Link>
-          <Link href="/chat/apex" className="border border-border-light px-8 py-3.5 rounded-xl font-semibold hover:border-amber/30 hover:bg-white/[0.02] transition text-center">
-            Try Apex Free
-          </Link>
-        </div>
       </section>
 
-      {/* Inline Chat */}
-      <section className="px-6 py-24">
-        <div className="max-w-4xl mx-auto">
-          <p className="text-sm text-muted text-center mb-6">The kind of clarity that takes years to earn. Yours in one conversation.</p>
+      {/* Chat Demo */}
+      <section className="px-6 pb-24">
+        <div className="max-w-[840px] mx-auto">
           <InlineChat />
         </div>
       </section>
 
-      {/* How it works */}
+      {/* Divider */}
+      <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
+
+      {/* Two ways to use it */}
       <section className="px-6 py-24">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-16 text-center">How it works</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {steps.map((s) => (
-              <div key={s.num} className="glass-card p-8">
-                <span className="text-amber font-mono text-sm">{s.num}</span>
-                <h3 className="text-xl font-bold mt-3 mb-3">{s.title}</h3>
-                <p className="text-muted leading-relaxed">{s.desc}</p>
-              </div>
-            ))}
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs font-semibold text-amber uppercase tracking-widest text-center mb-3">Two ways to use it</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">Use it yourself. Or let your agent.</h2>
+          <div className="grid md:grid-cols-2 gap-5">
+            <div className="glass-card p-8">
+              <ChatCircleDots size={28} weight="regular" className="text-amber mb-4" />
+              <h3 className="text-lg font-bold mb-2">Chat on ForgeHouse</h3>
+              <p className="text-muted text-sm leading-relaxed mb-5">Talk to Colin directly in your browser. Ask questions, get frameworks, save insights. Conversation history, saved takeaways, all built in.</p>
+              <ul className="text-muted text-sm space-y-1 mb-5">
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> No setup required</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Conversation history across sessions</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Save key insights for later</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> 5 free messages to try it</li>
+              </ul>
+              <p className="text-xs font-semibold text-amber uppercase tracking-wider">Best for: founders who want answers now</p>
+            </div>
+            <div className="glass-card p-8">
+              <PlugsConnected size={28} weight="regular" className="text-amber mb-4" />
+              <h3 className="text-lg font-bold mb-2">Connect via MCP or API</h3>
+              <p className="text-muted text-sm leading-relaxed mb-5">Your agent talks to our modules directly. Add Colin as a skill to OpenClaw, Claude Code, Cursor, or any agent. Your agent gets sales expertise without you doing anything.</p>
+              <ul className="text-muted text-sm space-y-1 mb-5">
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> 3 lines of config, that&apos;s it</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Multi-turn conversations, automatic</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Agent-to-agent, no human in the loop</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> API key from your account page</li>
+              </ul>
+              <p className="text-xs font-semibold text-amber uppercase tracking-wider">Best for: builders who want their agent to be more effective</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Trust Section */}
+      {/* Divider */}
+      <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
+
+      {/* MCP Code Block + one-liner */}
       <section className="px-6 py-24">
-        <div className="max-w-6xl mx-auto section-module gradient-blue">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">20 years of pattern recognition. On demand.</h2>
-          <p className="text-muted text-lg max-w-3xl mx-auto mb-16 leading-relaxed text-center">
-            Every mentor on ForgeHouse earned their frameworks the hard way. Now those frameworks are in your corner, whenever you need them.
-          </p>
-          <div className="grid md:grid-cols-2 gap-6">
-            {trustPoints.map((t) => (
-              <div key={t.title} className="glass-card p-8 text-center">
-                <t.icon size={32} stroke={1.5} className="mx-auto mb-4 text-[#3B82F6]" />
-                <h3 className="text-lg font-bold mb-3">{t.title}</h3>
-                <p className="text-muted leading-relaxed text-[15px]">{t.desc}</p>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">You just add it. That&apos;s it.</h2>
+          <div className="max-w-[680px] mx-auto mb-6">
+            <div className="glass-card p-6 overflow-x-auto">
+              <pre className="font-mono text-sm leading-7 text-muted">
+<span className="text-muted/50">{"// Add to your agent's MCP config"}</span>{"\n"}
+{"{"}{"\n"}
+{"  "}<span className="text-amber">&quot;mcpServers&quot;</span>: {"{"}{"\n"}
+{"    "}<span className="text-amber">&quot;forgehouse&quot;</span>: {"{"}{"\n"}
+{"      "}<span className="text-amber">&quot;command&quot;</span>: <span className="text-green-400">&quot;npx&quot;</span>,{"\n"}
+{"      "}<span className="text-amber">&quot;args&quot;</span>: [<span className="text-green-400">&quot;-y&quot;</span>, <span className="text-green-400">&quot;@forgehouseio/mcp-server&quot;</span>],{"\n"}
+{"      "}<span className="text-amber">&quot;env&quot;</span>: {"{"}{"\n"}
+{"        "}<span className="text-amber">&quot;FORGEHOUSE_API_KEY&quot;</span>: <span className="text-green-400">&quot;fh_your_key&quot;</span>{"\n"}
+{"      }"}{"\n"}
+{"    }"}{"\n"}
+{"  }"}{"\n"}
+{"}"}
+              </pre>
+            </div>
+          </div>
+          <p className="text-center text-sm text-muted">Works with OpenClaw, Claude Code, Cursor, and any MCP-compatible agent.</p>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
+
+      {/* Testimonials */}
+      <section className="px-6 py-24">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-5">
+            <div className="glass-card p-8 flex flex-col justify-between">
+              <p className="text-[15px] text-muted leading-relaxed italic mb-6">&ldquo;I just add it and boom, my agent has the sales stuff. It&apos;s a shortcut to knowledge I&apos;d spend months acquiring. Everyone is trying to reduce work, and this does exactly that.&rdquo;</p>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-[10px] bg-amber text-background flex items-center justify-center font-bold text-sm">R</div>
+                <div>
+                  <p className="text-sm font-semibold">Richard O.</p>
+                  <p className="text-xs text-muted">Founder, Fugoku</p>
+                </div>
               </div>
-            ))}
+            </div>
+            <div className="glass-card p-8 flex flex-col justify-between">
+              <p className="text-[15px] text-muted leading-relaxed italic mb-6">&ldquo;26 years of sales expertise, fully integrated into my agent&apos;s workflow with one click. I stopped reading sales books. Colin handles it.&rdquo;</p>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-[10px] bg-amber text-background flex items-center justify-center font-bold text-sm">L</div>
+                <div>
+                  <p className="text-sm font-semibold">Leon F.</p>
+                  <p className="text-xs text-muted">Founder, ApexAlpha (& ForgeHouse)</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
+
+      {/* Divider */}
+      <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
 
       {/* CTA */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">See it for yourself.</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Make your agent more effective.</h2>
           <p className="text-muted text-lg mb-8 max-w-xl mx-auto">
-            Apex is free, forever. Mentor agents get 5 messages on us. No card required.
+            Reduce the work. Not the expertise.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/chat/apex" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
-              Talk to Apex · Free
-            </Link>
-            <Link href="/chat/colin-chapman" className="border border-border-light px-8 py-3.5 rounded-xl font-semibold hover:border-amber/30 hover:bg-white/[0.02] transition inline-block">
-              Try Colin · 5 Free Messages
-            </Link>
-          </div>
+          <Link href="/pricing" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
+            Get Started — $48/mo →
+          </Link>
         </div>
       </section>
     </div>

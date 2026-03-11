@@ -102,13 +102,13 @@ export default function Navbar() {
         ) : (
           <>
             <div className="hidden md:flex items-center gap-8 text-sm text-muted">
-              <Link href="/mentors" className="hover:text-foreground transition">Mentors</Link>
+              <Link href="/mentors" className="hover:text-foreground transition">Modules</Link>
               <Link href="/tools" className="hover:text-foreground transition">Tools</Link>
               <Link href="/thinking" className="hover:text-foreground transition">Thinking</Link>
               <Link href="/pricing" className="hover:text-foreground transition">Pricing</Link>
               <UserMenu />
-              <Link href="/chat/apex" className="bg-amber text-white px-5 py-2 rounded-lg font-semibold hover:bg-amber-dark transition">
-                Start Chat
+              <Link href="/chat/colin-chapman" className="bg-amber text-white px-5 py-2 rounded-lg font-semibold hover:bg-amber-dark transition">
+                Get Started
               </Link>
             </div>
             <button className="md:hidden text-muted" onClick={() => setOpen(!open)}>
@@ -121,12 +121,12 @@ export default function Navbar() {
       </div>
       {open && (
         <div className="md:hidden border-t border-white/[0.06] bg-background/90 backdrop-blur-xl px-6 py-4 flex flex-col gap-4 text-sm">
-          <Link href="/mentors" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Mentors</Link>
+          <Link href="/mentors" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Modules</Link>
           <Link href="/tools" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Tools</Link>
           <Link href="/thinking" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Thinking</Link>
           <Link href="/pricing" onClick={() => setOpen(false)} className="text-muted hover:text-foreground">Pricing</Link>
           <div onClick={() => setOpen(false)}><UserMenu /></div>
-          <Link href="/chat/apex" onClick={() => setOpen(false)} className="bg-amber text-white px-4 py-2 rounded-lg font-semibold text-center">Start Chat</Link>
+          <Link href="/chat/colin-chapman" onClick={() => setOpen(false)} className="bg-amber text-white px-4 py-2 rounded-lg font-semibold text-center">Get Started</Link>
         </div>
       )}
     </nav>
