@@ -213,7 +213,7 @@ export default function CalibrationPage() {
                 <div
                   className={`max-w-[80%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
                     m.role === "user"
-                      ? "bg-[#3B82F6] text-white rounded-2xl"
+                      ? "bg-[#B8916A] text-white rounded-2xl"
                       : "bg-white/[0.04] border border-white/[0.06] text-foreground rounded-2xl"
                   }`}
                 >
@@ -243,7 +243,7 @@ export default function CalibrationPage() {
                   <div
                     key={p}
                     className={`h-1.5 w-12 rounded-full transition-all duration-500 ${
-                      phases === p ? "bg-[#3B82F6]" : corrections > ["Voice", "Frameworks", "Edge Cases", "Final"].indexOf(p) * 5 ? "bg-[#3B82F6]/40" : "bg-white/[0.06]"
+                      phases === p ? "bg-[#B8916A]" : corrections > ["Voice", "Frameworks", "Edge Cases", "Final"].indexOf(p) * 5 ? "bg-[#B8916A]/40" : "bg-white/[0.06]"
                     }`}
                   />
                 ))}
@@ -261,12 +261,12 @@ export default function CalibrationPage() {
                 onKeyDown={handleKeyDown}
                 placeholder="Tell me what's right and what's off..."
                 rows={1}
-                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#3B82F6]/40 transition resize-none"
+                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#B8916A]/40 transition resize-none"
               />
               <button
                 onClick={() => send()}
                 disabled={streaming}
-                className="bg-[#3B82F6] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#2563EB] transition disabled:opacity-50"
+                className="bg-[#B8916A] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#A07B56] transition disabled:opacity-50"
               >
                 Send
               </button>

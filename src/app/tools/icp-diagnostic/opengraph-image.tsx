@@ -25,7 +25,7 @@ export default async function Image() {
               width: "48px",
               height: "48px",
               borderRadius: "10px",
-              background: "#3B82F6",
+              background: "#B8916A",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -38,7 +38,7 @@ export default async function Image() {
             F
           </div>
           <span style={{ fontSize: "28px", color: "#EDEDED", fontWeight: "bold" }}>
-            <span style={{ color: "#3B82F6" }}>Forge</span>House
+            <span style={{ color: "#B8916A" }}>Forge</span>House
           </span>
           <span style={{ fontSize: "20px", color: "#525252", marginLeft: "16px" }}>Free Tool</span>
         </div>
@@ -51,7 +51,7 @@ export default async function Image() {
             marginBottom: "24px",
           }}
         >
-          Define your <span style={{ color: "#3B82F6" }}>ideal customer</span>
+          Define your <span style={{ color: "#B8916A" }}>ideal customer</span>
           <br />
           in 60 seconds.
         </div>

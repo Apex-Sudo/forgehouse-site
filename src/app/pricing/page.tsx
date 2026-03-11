@@ -140,7 +140,7 @@ export default function PricingPage() {
       {/* Pricing Model */}
       <section className="px-6 pb-24">
         <div className="max-w-lg mx-auto">
-          <div className="glass-card p-10 text-center shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)]">
+          <div className="glass-card p-10 text-center shadow-[0_0_24px_rgba(184,145,106,0.12)] border-[rgba(184,145,106,0.2)]">
             <p className="text-sm text-muted uppercase tracking-wide mb-2">Colin Chapman</p>
             <div className="text-5xl font-bold mb-1">$48<span className="text-lg font-normal text-muted">/month</span></div>
             <p className="text-muted text-sm mb-8">Unlimited conversations with Colin&apos;s AI mentor agent.</p>

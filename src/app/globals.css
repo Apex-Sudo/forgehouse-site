@@ -3,16 +3,15 @@
 @theme inline {
   --color-background: #0A0A0A;
   --color-foreground: #EDEDED;
-  --color-amber: #3B82F6;
-  --color-amber-dark: #2563EB;
+  --color-amber: #B8916A;
+  --color-amber-dark: #A07B56;
   --color-surface: #141414;
   --color-surface-light: #1A1A1A;
-  --color-surface-blue: #0D1520;
   --color-muted: #737373;
   --color-border: #1E1E1E;
   --color-border-light: #2A2A2A;
-  --color-glass: rgba(59, 130, 246, 0.04);
-  --color-glass-border: rgba(59, 130, 246, 0.08);
+  --color-glass: rgba(184, 145, 106, 0.04);
+  --color-glass-border: rgba(184, 145, 106, 0.08);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -34,11 +33,11 @@ body {
 
 /* Subtle gradient backgrounds */
 .gradient-hero {
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(184, 145, 106, 0.06) 0%, transparent 70%);
 }
 
-.gradient-blue {
-  background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(59, 130, 246, 0.04) 0%, transparent 70%);
+.gradient-bronze {
+  background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(184, 145, 106, 0.04) 0%, transparent 70%);
 }
 
 /* Section container module */

@@ -53,7 +53,7 @@ export default function TheForgePage() {
 
       {/* Why it takes time */}
       <section className="px-6 py-24">
-        <div className="max-w-3xl mx-auto section-module gradient-blue text-center">
+        <div className="max-w-3xl mx-auto section-module gradient-bronze text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-6">Why this can&apos;t be rushed</h2>
           <p className="text-muted text-[15px] leading-relaxed max-w-2xl mx-auto">
             20 hours of conversation and refinement. Every mentor approves their own agent. Their reputation is on the line.

@@ -53,11 +53,11 @@ export default function ApexPage() {
 
         {/* Sample Conversation */}
         <p className="text-sm text-muted/60 uppercase tracking-wider text-center mb-4">See it in action</p>
-        <div className="glass-card p-10 md:p-12 mb-16 overflow-hidden text-left shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)] max-w-3xl mx-auto relative before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-[#3B82F6]/40 before:to-transparent">
+        <div className="glass-card p-10 md:p-12 mb-16 overflow-hidden text-left shadow-[0_0_24px_rgba(184,145,106,0.12)] border-[rgba(184,145,106,0.2)] max-w-3xl mx-auto relative before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-[#B8916A]/40 before:to-transparent">
           <h2 className="text-sm font-mono text-amber uppercase tracking-wider mb-10 text-center">Sample conversation</h2>
           <div className="space-y-6">
             <div className="flex justify-end">
-              <div className="max-w-[75%] bg-[#3B82F6] text-white px-5 py-3.5 text-sm leading-relaxed rounded-2xl">
+              <div className="max-w-[75%] bg-[#B8916A] text-white px-5 py-3.5 text-sm leading-relaxed rounded-2xl">
                 I&apos;m stuck between two GTM strategies. Should I go PLG or sales-led?
               </div>
             </div>
@@ -67,7 +67,7 @@ export default function ApexPage() {
               </div>
             </div>
             <div className="flex justify-end">
-              <div className="max-w-[75%] bg-[#3B82F6] text-white px-5 py-3.5 text-sm leading-relaxed rounded-2xl">
+              <div className="max-w-[75%] bg-[#B8916A] text-white px-5 py-3.5 text-sm leading-relaxed rounded-2xl">
                 Most ask for a demo.
               </div>
             </div>

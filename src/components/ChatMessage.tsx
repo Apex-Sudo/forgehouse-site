@@ -76,7 +76,7 @@ export default function ChatMessage({ role, content, mentorSlug, isSubscribed: i
   if (role === "user") {
     return (
       <div className="flex justify-end">
-        <div className="max-w-[80%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap bg-[#3B82F6] text-white rounded-2xl">
+        <div className="max-w-[80%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap bg-[#B8916A] text-white rounded-2xl">
           {content}
         </div>
       </div>

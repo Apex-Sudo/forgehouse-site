@@ -150,7 +150,7 @@ function ChatContent() {
   return (
     <div className="flex flex-col h-full px-4 py-3">
       <div className="flex-1 flex justify-center min-h-0">
-        <div className="w-full max-w-5xl glass-card flex flex-col overflow-hidden shadow-[0_0_24px_rgba(59,130,246,0.12)] border-[rgba(59,130,246,0.2)] h-full">
+        <div className="w-full max-w-5xl glass-card flex flex-col overflow-hidden shadow-[0_0_24px_rgba(184,145,106,0.12)] border-[rgba(184,145,106,0.2)] h-full">
           {/* Chat header */}
           <div className="flex items-center gap-3 px-6 py-4 border-b border-white/[0.06]">
             <span className="text-2xl">🔺</span>
@@ -219,12 +219,12 @@ function ChatContent() {
                 onKeyDown={handleKeyDown}
                 placeholder="Type your message..."
                 rows={1}
-                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#3B82F6]/40 transition resize-none"
+                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#B8916A]/40 transition resize-none"
               />
               <button
                 onClick={() => send()}
                 disabled={streaming}
-                className="bg-[#3B82F6] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#2563EB] transition disabled:opacity-50"
+                className="bg-[#B8916A] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#A07B56] transition disabled:opacity-50"
               >
                 Send
               </button>

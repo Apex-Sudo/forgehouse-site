@@ -232,7 +232,7 @@ export default function ExtractionPage() {
                 <div
                   className={`max-w-[80%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
                     m.role === "user"
-                      ? "bg-[#3B82F6] text-white rounded-2xl"
+                      ? "bg-[#B8916A] text-white rounded-2xl"
                       : "bg-white/[0.04] border border-white/[0.06] text-foreground rounded-2xl"
                   }`}
                 >
@@ -259,7 +259,7 @@ export default function ExtractionPage() {
             <div className="flex items-center gap-3">
               <div className="flex-1 h-1 bg-white/[0.06] rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-[#3B82F6] rounded-full transition-all duration-500"
+                  className="h-full bg-[#B8916A] rounded-full transition-all duration-500"
                   style={{ width: `${Math.min((messageCount / 40) * 100, 100)}%` }}
                 />
               </div>
@@ -301,13 +301,13 @@ export default function ExtractionPage() {
                 onKeyDown={handleKeyDown}
                 placeholder={started ? "Continue where you left off..." : "Start by telling me about yourself..."}
                 rows={1}
-                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#3B82F6]/40 transition resize-none overflow-y-auto"
+                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#B8916A]/40 transition resize-none overflow-y-auto"
                 style={{ maxHeight: 200 }}
               />
               <button
                 onClick={() => send()}
                 disabled={streaming}
-                className="bg-[#3B82F6] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#2563EB] transition disabled:opacity-50"
+                className="bg-[#B8916A] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#A07B56] transition disabled:opacity-50"
               >
                 Send
               </button>

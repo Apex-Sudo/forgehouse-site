@@ -50,7 +50,7 @@ interface PlanResult {
 }
 
 const dayColors: Record<string, string> = {
-  Monday: "border-blue-400/30",
+  Monday: "border-amber/30",
   Tuesday: "border-amber/30",
   Wednesday: "border-amber/30",
   Thursday: "border-amber/30",

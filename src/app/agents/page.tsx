@@ -48,7 +48,7 @@ export default function AgentsPage() {
           <h2 className="text-xl md:text-2xl font-bold mb-2">First wave incoming.</h2>
           <p className="text-muted mb-6">Get notified.</p>
           {submitted ? (
-            <div className="border border-[#3B82F6]/20 bg-[#3B82F6]/5 p-6 rounded-xl text-center">
+            <div className="border border-[#B8916A]/20 bg-[#B8916A]/5 p-6 rounded-xl text-center">
               <p className="font-semibold">You&apos;re on the list.</p>
               <p className="text-muted text-sm mt-1">We&apos;ll ping you when someone new goes live.</p>
             </div>
@@ -60,12 +60,12 @@ export default function AgentsPage() {
                 placeholder="your@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-[#3B82F6]/40 transition"
+                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-[#B8916A]/40 transition"
               />
               <button
                 type="submit"
                 disabled={submitting}
-                className="bg-[#3B82F6] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#2563EB] transition disabled:opacity-50 whitespace-nowrap"
+                className="bg-[#B8916A] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#A07B56] transition disabled:opacity-50 whitespace-nowrap"
               >
                 {submitting ? "Joining..." : "Get Early Access"}
               </button>
