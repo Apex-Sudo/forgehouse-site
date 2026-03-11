@@ -22,7 +22,7 @@ const faq = [
   },
   {
     q: "Can I try before I subscribe?",
-    a: "Talk to Apex. No card, no signup. Then decide.",
+    a: "5 free messages with Colin. No card, no signup. Then decide.",
   },
   {
     q: "Can I cancel?",
@@ -156,10 +156,10 @@ export default function PricingPage() {
 
             <SubscribeButton />
             <Link
-              href="/chat/apex"
+              href="/chat/colin-chapman"
               className="block w-full mt-3 text-center text-sm text-muted hover:text-foreground transition"
             >
-              or try Apex free first →
+              or try 5 free messages first →
             </Link>
             <p className="text-xs text-muted mt-4">Every mentor sets their own price.</p>
           </div>
@@ -186,8 +186,8 @@ export default function PricingPage() {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">20 years of pattern recognition. On demand.</h2>
           <p className="text-muted text-lg mb-8">Every mentor on ForgeHouse earned their frameworks the hard way. Now those frameworks work for you, whenever you need them.</p>
-          <Link href="/chat/apex" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
-            Talk to Apex
+          <Link href="/chat/colin-chapman" className="bg-amber text-background px-8 py-3.5 rounded-xl font-semibold hover:opacity-90 transition inline-block">
+            Try Colin — 5 Free Messages
           </Link>
         </div>
       </section>

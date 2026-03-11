@@ -196,21 +196,7 @@ export default function Sidebar() {
                 <p className="text-xs text-muted truncate">GTM & Outbound</p>
               </div>
             </Link>
-            <Link
-              {...navLink("/chat/apex")}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition text-sm mt-1 ${
-                isActive("/chat/apex")
-                  ? "bg-amber/10 text-foreground border border-amber/20"
-                  : "text-muted hover:text-foreground hover:bg-white/[0.04]"
-              }`}
-            >
-              <span className="w-7 h-7 flex items-center justify-center"><IconTriangle size={18} className="text-red-500 fill-red-500" /></span>
-              <div className="flex-1 min-w-0">
-                <span className="font-medium">Apex</span>
-                <span className="ml-1.5 text-[10px] bg-white/[0.06] text-muted px-1.5 py-0.5 rounded-full">free</span>
-                <p className="text-xs text-muted truncate">Decision partner</p>
-              </div>
-            </Link>
+
           </div>
 
           {/* Profile Setup */}
@@ -248,7 +234,7 @@ export default function Sidebar() {
                 <IconChevronDown size={12} className={`text-muted/40 transition-transform ${convsExpanded ? "rotate-180" : ""}`} />
               </button>
               <Link
-                href={pathname?.startsWith("/chat/apex") ? "/chat/apex?new=true" : "/chat/colin-chapman?new=true"}
+                href="/chat/colin-chapman?new=true"
                 onClick={() => setSidebarOpen(false)}
                 className="text-muted/40 hover:text-foreground transition"
                 title="New conversation"

@@ -112,17 +112,17 @@ export default function MentorsPage() {
             <p className="text-xs text-muted text-center mt-3">No card required. See the value first.</p>
           </div>
 
-          {/* Apex free tier */}
+          {/* Try Colin */}
           <div className="glass-card p-6 mt-6 flex items-center justify-between">
             <div>
               <p className="font-semibold text-sm">Not sure where to start?</p>
-              <p className="text-xs text-muted mt-1">Talk to Apex. Free, unlimited, no sign-up.</p>
+              <p className="text-xs text-muted mt-1">Try Colin. 5 free messages, no sign-up.</p>
             </div>
             <Link
-              href="/chat/apex"
+              href="/chat/colin-chapman"
               className="border border-white/10 text-sm px-5 py-2.5 rounded-xl font-medium hover:text-foreground hover:border-white/20 transition cursor-pointer shrink-0"
             >
-              Talk to Apex
+              Try Colin
             </Link>
           </div>
         </div>
