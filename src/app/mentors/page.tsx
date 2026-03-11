@@ -132,13 +132,13 @@ export default function MentorsPage() {
       <section className="px-6 py-24 border-t border-white/[0.06]">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-xs text-muted uppercase tracking-widest mb-4">In the forge</p>
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">More mentors are being forged.</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">More modules are being forged.</h2>
           <p className="text-muted text-lg mb-4 max-w-xl mx-auto">
             Revenue operators. Product leaders. Founders who&apos;ve scaled past $10M.
             Each one goes through weeks of extraction before they go live.
           </p>
           <p className="text-muted text-sm mb-8">
-            We don&apos;t rush this. Every mentor earns their place.
+            We don&apos;t rush this. Every expert earns their place.
           </p>
 
           {/* Upcoming silhouettes */}
@@ -157,7 +157,7 @@ export default function MentorsPage() {
           {submitted ? (
             <div className="glass-card p-6 max-w-md mx-auto">
               <p className="text-amber font-medium">You&apos;re on the list.</p>
-              <p className="text-muted text-sm mt-1">We&apos;ll notify you when the next mentor goes live.</p>
+              <p className="text-muted text-sm mt-1">We&apos;ll notify you when the next module goes live.</p>
             </div>
           ) : (
             <form onSubmit={handleWaitlist} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
@@ -186,7 +186,7 @@ export default function MentorsPage() {
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-muted mb-3">Have frameworks worth preserving?</p>
           <Link href="/apply" className="text-amber hover:underline font-medium">
-            Apply to become a mentor →
+            Apply to become an expert →
           </Link>
         </div>
       </section>

@@ -14,11 +14,11 @@ const included = [
 const faq = [
   {
     q: "What do I get access to?",
-    a: "A specific mentor's thinking, built from hours of real conversation. Not generic AI. Not a static course.",
+    a: "A specific expert's thinking, built from hours of real conversation. Not generic AI. Not a static course.",
   },
   {
     q: "How is this different from ChatGPT?",
-    a: "ChatGPT gives general knowledge. A ForgeHouse agent gives you one person's decision-making. Like asking someone who's closed 500 deals vs googling it.",
+    a: "ChatGPT gives general knowledge. A ForgeHouse module gives you one person's decision-making. Like asking someone who's closed 500 deals vs googling it.",
   },
   {
     q: "Can I try before I subscribe?",
@@ -29,28 +29,28 @@ const faq = [
     a: "Anytime. One click.",
   },
   {
-    q: "Why per mentor instead of one flat price?",
-    a: "Different mentors, different expertise. You pay for what you need.",
+    q: "Why per module instead of one flat price?",
+    a: "Different experts, different expertise. You pay for what you need.",
   },
   {
-    q: "Who are the mentors?",
+    q: "Who are the experts?",
     a: "Founders and operators who've done the work. No influencers, no theorists.",
   },
   {
     q: "How are the agents trained?",
-    a: "Through structured extraction sessions with the real mentor. Hours of conversation, scenario calibration, and voice tuning. Not book summaries. Not scraped content. The mentor's actual decision-making, captured first-hand.",
+    a: "Through structured extraction sessions with the real expert. Hours of conversation, scenario calibration, and voice tuning. Not book summaries. Not scraped content. Their actual decision-making, captured first-hand.",
   },
   {
     q: "Is this a replacement for live coaching?",
-    a: "No. Live coaching is irreplaceable for reading the room and emotional accountability. This extends the mentor between sessions. The 8,748 hours per year when your coach isn't available.",
+    a: "No. Live coaching is irreplaceable for reading the room and emotional accountability. This extends the expert between sessions. The 8,748 hours per year when your coach isn't available.",
   },
   {
     q: "What kind of questions can I ask?",
-    a: "Anything you'd bring to a real session. Pipeline diagnosis, messaging review, ICP definition, deal strategy, hiring decisions. The agent reasons through your situation the way the mentor would.",
+    a: "Anything you'd bring to a real session. Pipeline diagnosis, messaging review, ICP definition, deal strategy, hiring decisions. The module reasons through your situation the way the expert would.",
   },
   {
     q: "How accurate is the agent compared to the real mentor?",
-    a: "Every agent goes through live calibration where the mentor talks to their own AI and corrects what's off. It's not perfect. But it's trained on how they actually think, not a generic prompt.",
+    a: "Every module goes through live calibration where the expert reviews and corrects what's off. It's not perfect. But it's trained on how they actually think, not a generic prompt.",
   },
 ];
 
@@ -184,8 +184,8 @@ export default function PricingPage() {
       {/* Bottom CTA */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">20 years of pattern recognition. On demand.</h2>
-          <p className="text-muted text-lg mb-8">Every mentor on ForgeHouse earned their frameworks the hard way. Now those frameworks work for you, whenever you need them.</p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Make your agent more effective.</h2>
+          <p className="text-muted text-lg mb-8">Reduce the work. Not the expertise.</p>
           <Link href="/chat/colin-chapman" className="bg-amber text-background px-8 py-3.5 rounded-xl font-semibold hover:opacity-90 transition inline-block">
             Try Colin — 5 Free Messages
           </Link>

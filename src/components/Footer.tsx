@@ -18,7 +18,7 @@ export default function Footer() {
         </div>
         <div className="flex gap-6 text-muted">
           <Link href="/the-forge" className="hover:text-foreground transition">The Forge</Link>
-          <Link href="/for-mentors" className="hover:text-foreground transition">For Mentors</Link>
+          <Link href="/for-mentors" className="hover:text-foreground transition">For Experts</Link>
           <Link href="/privacy" className="hover:text-foreground transition">Privacy</Link>
         </div>
         <p className="text-xs text-muted/50">&copy; {new Date().getFullYear()} ForgeHouse</p>

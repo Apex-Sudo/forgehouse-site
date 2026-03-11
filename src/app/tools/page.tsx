@@ -42,7 +42,7 @@ export default function ToolsPage() {
           <p className="text-amber text-sm font-medium uppercase tracking-wider mb-3">Free Tools</p>
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">Sales Tools</h1>
           <p className="text-muted max-w-lg mx-auto">
-            Built on real mentor frameworks. Free, no login, instant output.
+            Built on real expert frameworks. Free, no login, instant output.
           </p>
         </div>
 
@@ -68,7 +68,7 @@ export default function ToolsPage() {
         </div>
 
         <p className="text-center text-muted/40 text-xs mt-10">
-          More tools coming. Each built on a specific mentor&apos;s methodology.
+          More tools coming. Each built on a specific expert&apos;s methodology.
         </p>
       </div>
     </div>

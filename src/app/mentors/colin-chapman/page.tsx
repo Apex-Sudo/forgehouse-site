@@ -88,7 +88,7 @@ export default function ColinChapmanPage() {
               className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border border-border-light shrink-0"
             />
             <div className="flex-1">
-              <p className="text-amber text-sm font-semibold mb-2 tracking-wide uppercase">ForgeHouse Mentor</p>
+              <p className="text-amber text-sm font-semibold mb-2 tracking-wide uppercase">ForgeHouse Expert</p>
               <h1 className="text-3xl md:text-5xl font-bold mb-3">Colin Chapman</h1>
               <p className="text-muted text-lg md:text-xl leading-relaxed mb-2">
                 GTM & Outbound for B2B Tech Founders
