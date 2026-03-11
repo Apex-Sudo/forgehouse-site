@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const STARTERS = [
   "My cold emails aren't getting replies",
@@ -35,7 +36,7 @@ export default function InlineChat() {
       }}>
       {/* Header */}
       <div className="flex items-center gap-3.5 px-8 py-6 border-b border-amber/[0.08]">
-        <div className="w-11 h-11 rounded-xl bg-amber text-background flex items-center justify-center font-bold text-[17px]">C</div>
+        <Image src="/mentors/colin-chapman.png" alt="Colin Chapman" width={44} height={44} className="rounded-xl object-cover" />
         <div>
           <p className="text-[16px] font-semibold">Colin Chapman</p>
           <p className="text-[11px] text-muted uppercase tracking-wider">GTM & Outbound Sales · 26 years</p>
