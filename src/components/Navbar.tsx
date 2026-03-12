@@ -110,7 +110,7 @@ export default function Navbar() {
             </div>
             <div className="hidden md:flex items-center">
               <Link href="/chat/colin-chapman" className="bg-amber text-background px-5 py-2 rounded-md font-semibold text-sm hover:opacity-90 transition">
-                Get Started
+                Chat Now
               </Link>
             </div>
             <button className="md:hidden text-muted" onClick={() => setOpen(!open)}>
@@ -128,7 +128,7 @@ export default function Navbar() {
           <Link href="/thinking" onClick={() => setOpen(false)} className="text-muted hover:text-foreground font-medium">Thinking</Link>
           <Link href="/pricing" onClick={() => setOpen(false)} className="text-muted hover:text-foreground font-medium">Pricing</Link>
           <div onClick={() => setOpen(false)}><UserMenu /></div>
-          <Link href="/chat/colin-chapman" onClick={() => setOpen(false)} className="bg-amber text-background px-4 py-2 rounded-md font-semibold text-center">Get Started</Link>
+          <Link href="/chat/colin-chapman" onClick={() => setOpen(false)} className="bg-amber text-background px-4 py-2 rounded-md font-semibold text-center">Chat Now</Link>
         </div>
       )}
     </nav>
