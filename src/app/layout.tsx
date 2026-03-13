@@ -19,16 +19,25 @@ export const metadata: Metadata = {
     icon: "/favicon.svg",
   },
   openGraph: {
-    title: "ForgeHouse | Expert Knowledge for Your Agent",
-    description: "Plug in expert knowledge modules. Your agent gets sales, GTM, and outbound expertise on demand.",
+    title: "ForgeHouse | Expert Knowledge on Demand",
+    description: "Real expertise, delivered by AI. Talk to domain experts like Colin Chapman (26 years B2B sales) anytime, or plug them into your AI agent.",
     url: "https://forgehouse.io",
     siteName: "ForgeHouse",
     type: "website",
+    images: [
+      {
+        url: "https://forgehouse.io/og.png",
+        width: 1200,
+        height: 630,
+        alt: "ForgeHouse - Expert Knowledge on Demand",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ForgeHouse | Expert Knowledge for Your Agent",
-    description: "Plug in expert knowledge modules. Your agent gets sales, GTM, and outbound expertise on demand.",
+    title: "ForgeHouse | Expert Knowledge on Demand",
+    description: "Real expertise, delivered by AI. Talk to domain experts like Colin Chapman (26 years B2B sales) anytime, or plug them into your AI agent.",
+    images: ["https://forgehouse.io/og.png"],
   },
 };
 
