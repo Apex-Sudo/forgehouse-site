@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { IconArrowRight, IconCheck, IconMessageCircle, IconBrush, IconHeadset, IconReceipt, IconMicrophone, IconEyeCheck, IconShare, IconCash } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
@@ -35,15 +36,15 @@ const ourPart = [
 export default function ForMentorsPage() {
   return (
     <div className="pt-16">
-      {/* Hero - #5: each line lands separately */}
+      {/* 1. Hero */}
       <section className="gradient-hero px-6 py-32 md:py-44 max-w-4xl mx-auto text-center">
         <p className="text-amber font-mono text-sm tracking-widest uppercase mb-6">For Mentors</p>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-10">
-          You keep answering the{" "}
-          <span className="text-amber">same questions.</span>
+          The people who need you most{" "}
+          <span className="text-amber">will never book a call.</span>
         </h1>
         <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-          What if your thinking was available 24/7, without you being in the room?
+          What if they didn&apos;t have to?
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/apply" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center inline-flex items-center justify-center gap-2">
@@ -52,32 +53,20 @@ export default function ForMentorsPage() {
         </div>
       </section>
 
-      {/* The problem */}
+      {/* 2. Problem */}
       <section className="px-6 py-24">
         <div className="max-w-3xl mx-auto section-module" style={{ padding: "3rem" }}>
           <h2 className="text-2xl md:text-3xl font-bold mb-10 text-center">You already know this is true</h2>
           <div className="space-y-6 text-[15px] text-muted/80 leading-relaxed">
-            <p>Your calendar is full, but half the calls are with people who aren&apos;t ready for you yet. They need the basics. Your basics. But your basics take an hour, and that hour could go to someone further along.</p>
-            <p>Your best frameworks only reach the people who can afford your rate. Everyone else reads your posts, nods, and tries to figure it out alone.</p>
-            <p>You&apos;ve thought about courses, templates, content products. But packaging your thinking into a static format feels wrong. Your value isn&apos;t in slides. It&apos;s in how you respond to someone&apos;s specific situation.</p>
+            <p><strong className="text-foreground">A whole generation of founders would rather talk to an AI than schedule a video call with a stranger.</strong> It&apos;s not that they don&apos;t value your expertise. The friction of booking, showing up, and asking &ldquo;dumb questions&rdquo; in front of someone senior stops them before they start.</p>
+            <p>You&apos;ve tried training people on what you do. You thought it was simple. Then you realized just how much of your thinking runs on autopilot, how many things you factor in without noticing. <strong className="text-foreground">The curse of knowledge: once you know how to ride the bike, you can&apos;t remember what it felt like not to.</strong></p>
+            <p>Courses don&apos;t capture it. Templates don&apos;t capture it. Even a two-hour training session only gets the surface. <strong className="text-foreground">Your real value is in how you respond to a specific situation, not in slides.</strong></p>
           </div>
           <p className="text-foreground font-semibold text-lg mt-10 text-center">That&apos;s exactly what we built ForgeHouse to do.</p>
         </div>
       </section>
 
-      {/* Anti-commoditization — address the fear early */}
-      <section className="px-6 py-24">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">This doesn&apos;t replace you. It proves you.</h2>
-          <div className="space-y-6 text-[15px] text-muted/80 leading-relaxed">
-            <p>ChatGPT already gives generic advice in your field. Anyone can get a textbook answer for free. What they can&apos;t get is <span className="text-foreground font-medium">your</span> version. Your frameworks, your pattern recognition, the way you think about problems after doing this for a decade.</p>
-            <p>That&apos;s what makes your agent valuable, and that&apos;s what makes you irreplaceable. The generic version already exists. Your version doesn&apos;t, until you build it here.</p>
-            <p className="text-foreground/60 text-sm">Your knowledge stays in our system, never in theirs. AI providers are contractually prohibited from using API data for model training. Your IP is yours.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
+      {/* 3. How it works */}
       <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold mb-16 text-center">How it works</h2>
@@ -93,7 +82,48 @@ export default function ForMentorsPage() {
         </div>
       </section>
 
-      {/* What changes for you */}
+      {/* 4. Proof: Colin */}
+      <section className="px-6 py-24">
+        <div className="max-w-4xl mx-auto section-module">
+          <p className="text-amber font-mono text-sm tracking-widest uppercase mb-6 text-center">First Mentor Live</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Colin Chapman</h2>
+          <p className="text-muted text-lg text-center mb-8 leading-relaxed">
+            GTM Strategy &amp; Outbound Sales · 26 years experience · 4.92★ on GrowthMentor
+          </p>
+          <div className="grid sm:grid-cols-3 gap-6 text-center">
+            <div>
+              <p className="text-sm text-muted uppercase tracking-wide mb-1">Status</p>
+              <p className="font-semibold">Live on ForgeHouse</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted uppercase tracking-wide mb-1">Platform</p>
+              <p className="font-semibold">$47/mo per subscriber</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted uppercase tracking-wide mb-1">Mentor Cost</p>
+              <p className="font-semibold">Free at launch</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Colin Testimonial */}
+      <section className="px-6 py-24">
+        <div className="max-w-3xl mx-auto">
+          <div className="glass-card p-10">
+            <p className="text-[16px] text-muted leading-relaxed italic mb-6">&ldquo;When Leon first pitched me on this, I wasn&apos;t sure an AI could capture how I actually think about sales. I&apos;ve spent 26 years doing this, and most of what I do is instinct at this point. But the process surprised me. <strong className="text-foreground not-italic">It forced me to articulate things I&apos;d been doing on autopilot for decades</strong>, and <strong className="text-foreground not-italic">the output captured my thinking better than I anticipated</strong>. Is it the same as talking to me? No. But for founders who are stuck on outreach and don&apos;t know where to start, <strong className="text-foreground not-italic">it gets them pointed in the right direction with the right fundamentals</strong>. I&apos;m happy to put my name on it.&rdquo;</p>
+            <div className="flex items-center gap-3">
+              <Image src="/mentors/colin-chapman.png" alt="Colin Chapman" width={40} height={40} className="rounded-[10px] object-cover" />
+              <div>
+                <p className="text-sm font-semibold">Colin Chapman</p>
+                <p className="text-xs text-muted">GTM &amp; Outbound Sales · 26 years · First ForgeHouse Mentor</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. What changes for you */}
       <section className="px-6 py-24">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">What changes for you</h2>
@@ -122,32 +152,19 @@ export default function ForMentorsPage() {
         </div>
       </section>
 
-      {/* Proof: Colin */}
+      {/* 7. Anti-commoditization */}
       <section className="px-6 py-24">
-        <div className="max-w-4xl mx-auto section-module">
-          <p className="text-amber font-mono text-sm tracking-widest uppercase mb-6 text-center">First Mentor Live</p>
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Colin Chapman</h2>
-          <p className="text-muted text-lg text-center mb-8 leading-relaxed">
-            GTM Strategy &amp; Outbound Sales · 26 years experience · 4.92★ on GrowthMentor
-          </p>
-          <div className="grid sm:grid-cols-3 gap-6 text-center">
-            <div>
-              <p className="text-sm text-muted uppercase tracking-wide mb-1">Status</p>
-              <p className="font-semibold">Live on ForgeHouse</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted uppercase tracking-wide mb-1">Platform</p>
-              <p className="font-semibold">$47/mo per subscriber</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted uppercase tracking-wide mb-1">Mentor Cost</p>
-              <p className="font-semibold">Free at launch</p>
-            </div>
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">This doesn&apos;t replace you. It proves you.</h2>
+          <div className="space-y-6 text-[15px] text-muted/80 leading-relaxed">
+            <p>ChatGPT already gives generic advice in your field. Anyone can get a textbook answer for free. What they can&apos;t get is <span className="text-foreground font-medium">your</span> version. Your frameworks, your pattern recognition, the way you think about problems after doing this for a decade.</p>
+            <p>That&apos;s what makes your agent valuable, and that&apos;s what makes you irreplaceable. The generic version already exists. Your version doesn&apos;t, until you build it here.</p>
+            <p className="text-foreground/60 text-sm">Your knowledge stays in our system, never in theirs. AI providers are contractually prohibited from using API data for model training. Your IP is yours.</p>
           </div>
         </div>
       </section>
 
-      {/* Revenue */}
+      {/* 8. Revenue */}
       <section className="px-6 py-24">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-6">The math</h2>
@@ -160,7 +177,7 @@ export default function ForMentorsPage() {
         </div>
       </section>
 
-      {/* Your part / Our part */}
+      {/* 9. Your part / Our part */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8">
@@ -190,7 +207,7 @@ export default function ForMentorsPage() {
         </div>
       </section>
 
-      {/* IP + CTA merged */}
+      {/* 10. IP + CTA */}
       <section className="px-6 py-24 pb-32">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-muted text-[15px] leading-relaxed mb-10">
