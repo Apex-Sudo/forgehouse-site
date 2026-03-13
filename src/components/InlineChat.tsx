@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 
 const STARTERS = [
   "My cold emails aren't getting replies",
@@ -56,15 +57,19 @@ export default function InlineChat() {
     >
       {/* Header */}
       <div className="flex items-center gap-3.5 px-8 py-6" style={{ borderBottom: "1px solid #E5E2DC" }}>
-        <Image
-          src="/mentors/colin-chapman.png"
-          alt="Colin Chapman"
-          width={44}
-          height={44}
-          className="rounded-xl object-cover"
-        />
+        <Link href="/mentors/colin-chapman" className="shrink-0">
+          <Image
+            src="/mentors/colin-chapman.png"
+            alt="Colin Chapman"
+            width={44}
+            height={44}
+            className="rounded-xl object-cover hover:opacity-80 transition"
+          />
+        </Link>
         <div>
-          <p className="text-[16px] font-semibold text-[#1A1A1A]">Colin Chapman</p>
+          <Link href="/mentors/colin-chapman" className="hover:text-amber transition">
+            <p className="text-[16px] font-semibold text-[#1A1A1A]">Colin Chapman</p>
+          </Link>
           <p className="text-[11px] text-[#888] uppercase tracking-wider">
             GTM & Outbound Sales · 26 years
           </p>
