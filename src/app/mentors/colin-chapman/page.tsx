@@ -120,7 +120,7 @@ export default function ColinChapmanPage() {
                   className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center inline-flex items-center justify-center gap-2"
                 >
                   <ChatCircleDots size={20} />
-                  Diagnose your pipeline
+                  Chat with his agent
                 </Link>
                 <a
                   href="https://www.linkedin.com/in/colinchapmanza/"
@@ -273,7 +273,7 @@ export default function ColinChapmanPage() {
             className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-flex items-center gap-2"
           >
             <ChatCircleDots size={20} />
-            Diagnose your pipeline
+            Chat with his agent
           </Link>
           <p className="text-[11px] text-zinc-600 text-center mt-4">Your conversations are private. We don&apos;t sell or share your data.</p>
         </div>

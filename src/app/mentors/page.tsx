@@ -79,14 +79,13 @@ export default function ModulesPage() {
                 className="flex items-center justify-center gap-2 bg-amber text-background py-3.5 rounded-xl font-semibold hover:opacity-90 transition cursor-pointer"
               >
                 <ChatCircleDots size={18} weight="bold" />
-                Chat with Colin
+                Chat with Colin&apos;s agent
               </Link>
               <Link
-                href="/account"
+                href="/mentors/colin-chapman"
                 className="flex items-center justify-center gap-2 border border-white/10 text-muted py-3.5 rounded-xl font-medium hover:text-foreground hover:border-white/20 transition cursor-pointer"
               >
-                <PlugsConnected size={18} />
-                Connect via API
+                Learn more
               </Link>
             </div>
 

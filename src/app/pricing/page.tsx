@@ -5,52 +5,48 @@ import { useSession } from "next-auth/react";
 import { IconCheck } from "@tabler/icons-react";
 
 const included = [
-  "Their real decision-making patterns",
+  "His real decision-making patterns",
   "Available 24/7, any language",
-  "Gets sharper over time",
+  "Personally approved by Colin",
   "Cancel anytime",
 ];
 
 const faq = [
   {
     q: "What do I get access to?",
-    a: "A specific expert's thinking, built from hours of real conversation. Not generic AI. Not a static course.",
+    a: "Colin's actual thinking, built from hours of real conversation with him. His frameworks, his judgment calls, his way of diagnosing a pipeline. Available as a chat or through your AI agent via API.",
   },
   {
     q: "How is this different from ChatGPT?",
-    a: "ChatGPT gives general knowledge. A ForgeHouse module gives you one person's decision-making. Like asking someone who's closed 500 deals vs googling it.",
+    a: "ChatGPT gives general knowledge. Colin's agent gives you one person's decision-making. Like asking someone who's closed 500 deals vs. googling it.",
   },
   {
     q: "Can I try before I subscribe?",
-    a: "5 free messages with Colin. No card, no signup. Then decide.",
+    a: "5 free messages with Colin's agent. No card, no signup. Then decide.",
   },
   {
     q: "Can I cancel?",
     a: "Anytime. One click.",
   },
   {
-    q: "Why per module instead of one flat price?",
-    a: "Different experts, different expertise. You pay for what you need.",
+    q: "Who is Colin Chapman?",
+    a: "26 years in B2B sales, GTM, and outbound. He's worked with companies like IBM, Siemens, and BMW. 4.92-rated mentor on GrowthMentor. A real person whose expertise we turned into an AI agent.",
   },
   {
-    q: "Who are the experts?",
-    a: "Founders and operators who've done the work. No influencers, no theorists.",
-  },
-  {
-    q: "How are the agents trained?",
-    a: "Through structured extraction sessions with the real expert. Hours of conversation, scenario calibration, and voice tuning. Not book summaries. Not scraped content. Their actual decision-making, captured first-hand.",
+    q: "How is the agent built?",
+    a: "Through structured extraction sessions with Colin himself. Hours of conversation, scenario calibration, and voice tuning. His actual decision-making, captured first-hand.",
   },
   {
     q: "Is this a replacement for live coaching?",
-    a: "No. Live coaching is irreplaceable for reading the room and emotional accountability. This extends the expert between sessions. The 8,748 hours per year when your coach isn't available.",
+    a: "It extends the expert between sessions. Live coaching is great for reading the room and accountability. This covers the 8,748 hours per year when your coach isn't available.",
   },
   {
     q: "What kind of questions can I ask?",
-    a: "Anything you'd bring to a real session. Pipeline diagnosis, messaging review, ICP definition, deal strategy, hiring decisions. The module reasons through your situation the way the expert would.",
+    a: "Anything you'd bring to a real session. Pipeline diagnosis, messaging review, ICP definition, deal strategy, hiring decisions. The agent reasons through your situation the way Colin would.",
   },
   {
-    q: "How accurate is the module compared to the real expert?",
-    a: "Every module goes through live calibration where the expert reviews and corrects what's off. It's not perfect. But it's trained on how they actually think, not a generic prompt.",
+    q: "How accurate is the agent?",
+    a: "Colin reviews and approves the agent himself. It's trained on how he actually thinks, and he personally calibrates every response pattern.",
   },
 ];
 
@@ -112,7 +108,6 @@ function SubscribeButton() {
       </button>
       {error && <p className="mt-2 text-sm text-red-400 text-center">{error}</p>}
       <div className="mt-3 text-xs text-muted text-center space-y-0.5">
-        <p>ForgeHouse Platform $47/mo + Colin Chapman $1/mo</p>
       </div>
     </div>
   );
@@ -128,12 +123,12 @@ export default function PricingPage() {
       {/* Hero */}
       <section className="gradient-hero px-6 py-28 md:py-36 max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
-          One live session&apos;s worth.
+          A shortcut to knowledge
           <br />
-          <span className="text-amber">Unlimited access to how they think.</span>
+          <span className="text-amber">you&apos;d spend months acquiring.</span>
         </h1>
         <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-          The most value you&apos;ll get from a single subscription.
+          Skip the learning curve. Get the expertise.
         </p>
       </section>
 
@@ -173,7 +168,7 @@ export default function PricingPage() {
           <div className="glass-card p-10 text-center shadow-[0_0_24px_rgba(184,145,106,0.12)] border-[rgba(184,145,106,0.2)] flex flex-col">
             <p className="text-sm text-muted uppercase tracking-wide mb-2">Colin Chapman</p>
             <div className="text-5xl font-bold mb-1">$48<span className="text-lg font-normal text-muted">/month</span></div>
-            <p className="text-muted text-[15px] mb-8">Unlimited conversations with the Colin module.</p>
+            <p className="text-muted text-[15px] mb-8">Unlimited conversations with Colin&apos;s AI agent. Built from 26 years of real deal-making.</p>
 
             <ul className="text-left space-y-4 mb-10 flex-1">
               {included.map((item) => (
@@ -185,7 +180,7 @@ export default function PricingPage() {
             </ul>
 
             <SubscribeButton />
-            <p className="text-xs text-muted mt-4">Every expert sets their own price.</p>
+            
           </div>
         </div>
       </section>

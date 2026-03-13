@@ -11,10 +11,10 @@ export default function Home() {
       <section className="gradient-hero px-6 py-32 md:py-44 max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-6">
           Expert knowledge{" "}
-          <span className="text-amber">for your AI agent.</span>
+          <span className="text-amber">on demand.</span>
         </h1>
         <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-          Plug in a module. Your agent knows sales.
+          Real expertise, delivered by AI.
         </p>
       </section>
 
@@ -22,6 +22,23 @@ export default function Home() {
       <section className="px-6 pb-24">
         <div className="max-w-[840px] mx-auto">
           <InlineChat />
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
+
+      {/* What ForgeHouse does */}
+      <section className="px-6 py-24">
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="text-xs font-semibold text-amber uppercase tracking-widest mb-3">How it works</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-6">We find the people who&apos;ve done it a million times.</h2>
+          <p className="text-muted text-[16px] md:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
+            Colin Chapman has spent 26 years closing B2B deals, training sales teams, and building outbound systems for companies like IBM, Siemens, and BMW. He&apos;s a 4.92-rated mentor on GrowthMentor. We turned everything he knows into an AI agent you can talk to right now, or plug directly into your own agent.
+          </p>
+          <Link href="/mentors/colin-chapman" className="text-amber text-[15px] hover:text-foreground transition">
+            Learn more about Colin &rarr;
+          </Link>
         </div>
       </section>
 
