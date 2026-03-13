@@ -7,21 +7,19 @@ import { ChatCircleDots, PlugsConnected } from "@phosphor-icons/react";
 export default function Home() {
   return (
     <div className="pt-16">
-      {/* Hero */}
-      <section className="gradient-hero px-6 py-32 md:py-44 max-w-4xl mx-auto text-center">
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-6">
-          Expert knowledge{" "}
-          <span className="text-amber">on demand.</span>
-        </h1>
-        <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-          Real expertise, delivered by AI.
-        </p>
-      </section>
-
-      {/* Chat Demo */}
-      <section className="px-6 pb-24">
-        <div className="max-w-[840px] mx-auto">
+      {/* Hero: Chat first */}
+      <section className="px-6 pt-20 md:pt-28 pb-6">
+        <div className="max-w-[840px] mx-auto mb-10">
           <InlineChat />
+        </div>
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] mb-4">
+            Talk to a sales expert.{" "}
+            <span className="text-amber">Right now.</span>
+          </h1>
+          <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            26 years of B2B sales experience. No booking, no waiting. Just ask.
+          </p>
         </div>
       </section>
 
@@ -32,9 +30,9 @@ export default function Home() {
       <section className="px-6 py-24">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs font-semibold text-amber uppercase tracking-widest mb-3">How it works</p>
-          <h2 className="text-2xl md:text-3xl font-bold mb-6">We find the people who&apos;ve done it a million times.</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-6">Real mentors. Not a chatbot.</h2>
           <p className="text-muted text-[16px] md:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
-            Colin Chapman has spent 26 years closing B2B deals, training sales teams, and building outbound systems for companies like IBM, Siemens, and BMW. He&apos;s a 4.92-rated mentor on GrowthMentor. We turned everything he knows into an AI agent you can talk to right now, or plug directly into your own agent.
+            Colin Chapman has spent 26 years closing B2B deals, training sales teams, and building outbound systems for companies like IBM, Siemens, and BMW. He&apos;s a 4.92-rated mentor on GrowthMentor. We extracted everything he knows so you can get his advice anytime, or plug it directly into your workflow.
           </p>
           <Link href="/mentors/colin-chapman" className="text-amber text-[15px] hover:text-foreground transition">
             Learn more about Colin &rarr;
@@ -53,8 +51,8 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-5">
             <div className="glass-card p-8">
               <ChatCircleDots size={28} weight="regular" className="text-amber mb-4" />
-              <h3 className="text-lg font-bold mb-2">Chat on ForgeHouse</h3>
-              <p className="text-muted text-[15px] leading-relaxed mb-5">Talk to Colin directly in your browser. Ask questions, get frameworks, save insights. Conversation history, saved takeaways, all built in.</p>
+              <h3 className="text-lg font-bold mb-2">Talk to Colin</h3>
+              <p className="text-muted text-[15px] leading-relaxed mb-5">Ask questions, get actionable advice, save insights. It&apos;s a conversation, not a course. Your history and takeaways are saved automatically.</p>
               <ul className="text-muted text-[15px] space-y-1.5 mb-5">
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> No setup required</li>
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Conversation history across sessions</li>
@@ -66,15 +64,15 @@ export default function Home() {
             </div>
             <div className="glass-card p-8">
               <PlugsConnected size={28} weight="regular" className="text-amber mb-4" />
-              <h3 className="text-lg font-bold mb-2">Plug it into your agent</h3>
-              <p className="text-muted text-[15px] leading-relaxed mb-5">Your agent talks to our modules directly. Add Colin as a skill to OpenClaw, Claude Code, Cursor, or any agent. Your agent gets sales expertise without you doing anything.</p>
+              <h3 className="text-lg font-bold mb-2">Add it to your AI tools</h3>
+              <p className="text-muted text-[15px] leading-relaxed mb-5">Already using Claude, Cursor, or another AI assistant? Add Colin&apos;s expertise directly. Your tools get sales knowledge without you doing anything.</p>
               <ul className="text-muted text-[15px] space-y-1.5 mb-5">
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> 3 lines of config, that&apos;s it</li>
-                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Multi-turn conversations, automatic</li>
-                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Agent-to-agent, no human in the loop</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Ongoing conversations, fully automatic</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Works in the background, no extra effort</li>
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> API key from your account page</li>
               </ul>
-              <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-5">Best for: builders who want their agent to be more effective</p>
+              <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-5">Best for: founders already using AI tools daily</p>
               <Link href="/account" className="bg-amber text-background px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-amber-dark transition inline-block">Get API key →</Link>
             </div>
           </div>
@@ -87,7 +85,7 @@ export default function Home() {
       {/* MCP Code Block + one-liner */}
       <section className="px-6 py-24">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">You just add it. That&apos;s it.</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">Already using AI tools? Just add this.</h2>
           <div className="max-w-[680px] mx-auto mb-6">
             <div className="glass-card p-6 overflow-x-auto">
               <pre className="font-mono text-sm leading-7 text-muted">
@@ -147,12 +145,12 @@ export default function Home() {
       {/* CTA */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Make your agent more effective.</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Get expert advice whenever you need it.</h2>
           <p className="text-muted text-lg mb-8 max-w-xl mx-auto">
-            Reduce the work. Not the expertise.
+            No scheduling. No hourly rates. Just answers.
           </p>
-          <Link href="/pricing" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
-            Get Started — $48/mo →
+          <Link href="/chat/colin-chapman" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
+            Talk to Colin — free to try →
           </Link>
         </div>
       </section>
