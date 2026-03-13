@@ -11,7 +11,7 @@ const STARTERS = [
 ];
 
 const COLIN_MESSAGE =
-  "Hey, I'm Colin. I've spent 26 years in GTM and outbound sales. What are you working on? Tell me about your product and who you're trying to reach, and I'll help you figure out how to get in front of them.";
+  "Hey, I'm an AI agent based on Colin Chapman and his 26 years in GTM and outbound sales. What are you working on? Tell me about your product and who you're trying to reach, and I'll help you figure out how to get in front of them.";
 
 export default function InlineChat() {
   const router = useRouter();

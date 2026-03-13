@@ -18,7 +18,7 @@ export default function Home() {
             <span className="text-amber">Right now.</span>
           </h1>
           <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            26 years of B2B sales experience. No booking, no waiting. Just ask.
+            26 years of B2B sales expertise, distilled into an AI agent. Ask anything.
           </p>
         </div>
       </section>
