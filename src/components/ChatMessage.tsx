@@ -9,6 +9,7 @@ interface ChatMessageProps {
   mentorSlug?: string;
   isSubscribed?: boolean;
   context?: string; // the user message that prompted this response
+  isStreaming?: boolean;
 }
 
 function BookmarkButton({
@@ -70,7 +71,7 @@ function BookmarkButton({
   );
 }
 
-export default function ChatMessage({ role, content, mentorSlug, isSubscribed: isSubProp, context }: ChatMessageProps) {
+export default function ChatMessage({ role, content, mentorSlug, isSubscribed: isSubProp, context, isStreaming }: ChatMessageProps) {
   const { data: session } = useSession();
 
   if (role === "user") {
@@ -112,6 +113,9 @@ export default function ChatMessage({ role, content, mentorSlug, isSubscribed: i
         >
           {content}
         </ReactMarkdown>
+        {isStreaming && (
+          <span className="inline-block w-1.5 h-4 bg-amber/70 rounded-sm animate-pulse ml-0.5 align-text-bottom" />
+        )}
       </div>
       {session && mentorSlug && (
         <BookmarkButton

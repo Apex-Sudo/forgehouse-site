@@ -141,7 +141,11 @@ Use the user's first name naturally in conversation. Don't overdo it.`;
     });
 
     return new Response(readable, {
-      headers: { "Content-Type": "text/plain; charset=utf-8" },
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        "X-Accel-Buffering": "no",
+      },
     });
   } catch (err) {
     console.error("Chat route top-level error:", err);

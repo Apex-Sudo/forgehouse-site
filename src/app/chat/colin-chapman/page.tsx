@@ -441,6 +441,7 @@ function ChatContent() {
                   mentorSlug="colin-chapman"
                   isSubscribed={isSubscribed}
                   context={context}
+                  isStreaming={streaming && i === messages.length - 1 && m.role === "assistant"}
                 />
               );
             })}
