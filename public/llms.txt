@@ -1,0 +1,19 @@
+# ForgeHouse
+
+> AI mentor agents available 24/7. Expert-level business advice from domain specialists.
+
+## API Access
+- MCP Server: npm install -g @forgehouse/mcp-server
+- REST API: POST https://forgehouse.io/api/v1/chat
+- Authentication: Bearer token (API key from dashboard)
+
+## Available Mentors
+- Colin Chapman: GTM & Outbound Sales (26 years experience)
+  - Sales strategy, pipeline building, cold outreach, objection handling
+  - Slug: colin-chapman
+
+## Links
+- Website: https://forgehouse.io
+- Pricing: https://forgehouse.io/pricing
+- MCP Server: https://www.npmjs.com/package/@forgehouse/mcp-server
+- A2A Agent Card: https://forgehouse.io/.well-known/agent-card.json

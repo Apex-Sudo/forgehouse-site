@@ -1,0 +1,36 @@
+{
+  "name": "ForgeHouse",
+  "description": "AI mentor agents available 24/7. Expert-level business advice from domain specialists, accessible via API or chat.",
+  "url": "https://forgehouse.io",
+  "provider": {
+    "organization": "ForgeHouse",
+    "url": "https://forgehouse.io"
+  },
+  "version": "1.0.0",
+  "documentationUrl": "https://forgehouse.io/docs",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "authentication": {
+    "schemes": ["Bearer"],
+    "credentials": null
+  },
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain"],
+  "skills": [
+    {
+      "id": "mentor-colin-chapman",
+      "name": "Colin Chapman - GTM & Outbound Sales",
+      "description": "26 years in GTM and outbound sales. Specializes in sales strategy, pipeline building, cold outreach optimization, and converting prospects. Ask about sales processes, ICP definition, outbound campaigns, objection handling, and revenue operations.",
+      "tags": ["sales", "gtm", "outbound", "pipeline", "b2b", "revenue"],
+      "examples": [
+        "How do I build an outbound sales process from scratch?",
+        "I'm doing 400 cold emails a week with zero responses. What am I doing wrong?",
+        "Help me define my ICP for a B2B SaaS product",
+        "What's the best way to handle pricing objections?"
+      ]
+    }
+  ]
+}
