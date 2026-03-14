@@ -1,7 +1,8 @@
 {
   "name": "@forgehouse/mcp-server",
   "version": "0.1.0",
-  "description": "MCP server for ForgeHouse AI mentors",
+  "description": "MCP server for ForgeHouse AI mentors — connect your AI agent to world-class business mentors",
+  "type": "module",
   "main": "index.js",
   "bin": {
     "forgehouse-mcp": "./index.js"
@@ -12,6 +13,15 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0"
   },
-  "keywords": ["mcp", "forgehouse", "ai-mentors", "mentor"],
-  "license": "MIT"
+  "keywords": ["mcp", "forgehouse", "ai-mentors", "mentor", "ai-agent", "model-context-protocol", "business", "sales", "gtm"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Apex-Sudo/forgehouse-site",
+    "directory": "packages/mcp-server"
+  },
+  "homepage": "https://forgehouse.io",
+  "engines": {
+    "node": ">=18"
+  }
 }
