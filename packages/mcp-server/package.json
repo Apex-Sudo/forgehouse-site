@@ -11,9 +11,20 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0"
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "esbuild": "^0.27.4"
   },
-  "keywords": ["mcp", "forgehouse", "ai-mentors", "mentor", "ai-agent", "model-context-protocol", "business", "sales", "gtm"],
+  "keywords": [
+    "mcp",
+    "forgehouse",
+    "ai-mentors",
+    "mentor",
+    "ai-agent",
+    "model-context-protocol",
+    "business",
+    "sales",
+    "gtm"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",

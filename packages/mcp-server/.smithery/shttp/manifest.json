@@ -1,0 +1,85 @@
+{
+  "payload": {
+    "type": "hosted",
+    "stateful": false,
+    "hasAuthAdapter": false,
+    "serverCard": {
+      "serverInfo": {
+        "name": "ForgeHouse",
+        "version": "0.1.0"
+      },
+      "tools": [
+        {
+          "name": "list_mentors",
+          "description": "List all available ForgeHouse mentors",
+          "inputSchema": {
+            "type": "object",
+            "properties": {},
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "execution": {
+            "taskSupport": "forbidden"
+          }
+        },
+        {
+          "name": "ask_mentor",
+          "description": "Ask a ForgeHouse mentor a question. Use for GTM strategy, sales, outbound, and business advice.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "mentor": {
+                "type": "string",
+                "description": "Mentor slug (e.g., \"colin-chapman\")"
+              },
+              "message": {
+                "type": "string",
+                "description": "Your question or message to the mentor"
+              },
+              "conversation": {
+                "description": "Previous conversation messages for context",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "role": {
+                      "type": "string",
+                      "enum": [
+                        "user",
+                        "assistant"
+                      ]
+                    },
+                    "content": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "role",
+                    "content"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "mentor",
+              "message"
+            ],
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "execution": {
+            "taskSupport": "forbidden"
+          }
+        }
+      ],
+      "resources": [],
+      "prompts": []
+    },
+    "source": {
+      "commit": "27dcb2d7246f48732d14ecbca29f5c9ebc15d37d",
+      "branch": "main"
+    }
+  },
+  "artifacts": {
+    "module": "module.js",
+    "sourcemap": "module.js.map"
+  }
+}

@@ -7,7 +7,9 @@ import { z } from "zod";
 const API_KEY = process.env.FORGEHOUSE_API_KEY;
 const BASE_URL = process.env.FORGEHOUSE_URL || "https://forgehouse.io";
 
-if (!API_KEY) {
+// Skip API key check when imported as module (for Smithery scanning)
+const isMainModule = import.meta.url === `file://${process.argv[1]}`;
+if (isMainModule && !API_KEY) {
   console.error("Error: FORGEHOUSE_API_KEY environment variable is required.");
   console.error("Get your API key at https://forgehouse.io/dashboard/api");
   process.exit(1);
@@ -116,12 +118,20 @@ server.tool(
   }
 );
 
+// Smithery sandbox scanning support
+export function createSandboxServer() {
+  return server;
+}
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
 }
 
-main().catch((err) => {
-  console.error("MCP server error:", err);
-  process.exit(1);
-});
+// Only auto-start when run directly
+if (isMainModule) {
+  main().catch((err) => {
+    console.error("MCP server error:", err);
+    process.exit(1);
+  });
+}
