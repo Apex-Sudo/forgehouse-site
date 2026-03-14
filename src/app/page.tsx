@@ -95,16 +95,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="text-center">
-            <p className="text-lg md:text-xl text-muted/90 leading-relaxed italic mb-6">&ldquo;26 years of sales expertise, fully integrated into my agent&apos;s workflow with one click. I stopped reading sales books. Colin handles it.&rdquo;</p>
-            <div className="flex items-center justify-center gap-3">
-              <Image src="/mentors/leon-freier.webp" alt="Leon Freier" width={36} height={36} className="rounded-[10px] object-cover" />
-              <div className="text-left">
-                <p className="text-sm font-semibold">Leon Freier</p>
-                <p className="text-xs text-muted">Founder, ApexAlpha (&amp; ForgeHouse)</p>
-              </div>
-            </div>
-          </div>
+
         </div>
       </section>
 
