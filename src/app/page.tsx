@@ -51,7 +51,7 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-5">
             <div className="glass-card p-8">
               <ChatCircleDots size={28} weight="regular" className="text-amber mb-4" />
-              <h3 className="text-lg font-bold mb-2">Talk to Colin</h3>
+              <h3 className="text-lg font-bold mb-2">Talk to Colin&apos;s agent</h3>
               <p className="text-muted text-[15px] leading-relaxed mb-5">Ask questions, get actionable advice, save insights. It&apos;s a conversation, not a course. Your history and takeaways are saved automatically.</p>
               <ul className="text-muted text-[15px] space-y-1.5 mb-5">
                 <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> No setup required</li>
