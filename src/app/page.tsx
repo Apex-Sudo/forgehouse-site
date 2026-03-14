@@ -84,26 +84,24 @@ export default function Home() {
 
       {/* Testimonials */}
       <section className="px-6 py-24">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-5">
-            <div className="glass-card p-8 flex flex-col justify-between">
-              <p className="text-[15px] text-muted leading-relaxed italic mb-6">&ldquo;I just add it and boom, my agent has the sales stuff. It&apos;s a shortcut to knowledge I&apos;d spend months acquiring. Everyone is trying to reduce work, and this does exactly that.&rdquo;</p>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-[10px] bg-amber text-background flex items-center justify-center font-bold text-sm">R</div>
-                <div>
-                  <p className="text-sm font-semibold">Richard Okonicha</p>
-                  <p className="text-xs text-muted">Founder, Fugoku</p>
-                </div>
+        <div className="max-w-3xl mx-auto space-y-16">
+          <div className="text-center">
+            <p className="text-lg md:text-xl text-muted/90 leading-relaxed italic mb-6">&ldquo;I just add it and boom, my agent has the sales stuff. It&apos;s a shortcut to knowledge I&apos;d spend months acquiring. Everyone is trying to reduce work, and this does exactly that.&rdquo;</p>
+            <div className="flex items-center justify-center gap-3">
+              <div className="w-9 h-9 rounded-[10px] bg-amber text-background flex items-center justify-center font-bold text-sm">R</div>
+              <div className="text-left">
+                <p className="text-sm font-semibold">Richard Okonicha</p>
+                <p className="text-xs text-muted">Founder, Fugoku</p>
               </div>
             </div>
-            <div className="glass-card p-8 flex flex-col justify-between">
-              <p className="text-[15px] text-muted leading-relaxed italic mb-6">&ldquo;26 years of sales expertise, fully integrated into my agent&apos;s workflow with one click. I stopped reading sales books. Colin handles it.&rdquo;</p>
-              <div className="flex items-center gap-3">
-                <Image src="/mentors/leon-freier.webp" alt="Leon Freier" width={36} height={36} className="rounded-[10px] object-cover" />
-                <div>
-                  <p className="text-sm font-semibold">Leon Freier</p>
-                  <p className="text-xs text-muted">Founder, ApexAlpha (& ForgeHouse)</p>
-                </div>
+          </div>
+          <div className="text-center">
+            <p className="text-lg md:text-xl text-muted/90 leading-relaxed italic mb-6">&ldquo;26 years of sales expertise, fully integrated into my agent&apos;s workflow with one click. I stopped reading sales books. Colin handles it.&rdquo;</p>
+            <div className="flex items-center justify-center gap-3">
+              <Image src="/mentors/leon-freier.webp" alt="Leon Freier" width={36} height={36} className="rounded-[10px] object-cover" />
+              <div className="text-left">
+                <p className="text-sm font-semibold">Leon Freier</p>
+                <p className="text-xs text-muted">Founder, ApexAlpha (&amp; ForgeHouse)</p>
               </div>
             </div>
           </div>
