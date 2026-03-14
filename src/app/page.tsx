@@ -2,7 +2,7 @@
 import Link from "next/link";
 import InlineChat from "@/components/InlineChat";
 import Image from "next/image";
-import { ChatCircleDots } from "@phosphor-icons/react";
+import { ChatCircleDots, PlugsConnected } from "@phosphor-icons/react";
 
 export default function Home() {
   return (
@@ -43,20 +43,38 @@ export default function Home() {
       {/* Divider */}
       <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
 
-      {/* What you get */}
+      {/* Two ways to use it */}
       <section className="px-6 py-24">
-        <div className="max-w-3xl mx-auto">
-          <div className="glass-card p-8">
-            <ChatCircleDots size={28} weight="regular" className="text-amber mb-4" />
-            <h3 className="text-lg font-bold mb-2">Talk to Colin</h3>
-            <p className="text-muted text-[15px] leading-relaxed mb-5">Ask questions, get actionable advice, save insights. It&apos;s a conversation, not a course. Your history and takeaways are saved automatically.</p>
-            <ul className="text-muted text-[15px] space-y-1.5 mb-5">
-              <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> No setup required</li>
-              <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Conversation history across sessions</li>
-              <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Save key insights for later</li>
-              <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> 5 free messages to try it</li>
-            </ul>
-            <Link href="/chat/colin-chapman" className="bg-amber text-background px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-amber-dark transition inline-block">Try it free →</Link>
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs font-semibold text-amber uppercase tracking-widest text-center mb-3">Two ways to use it</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">Use it yourself. Or let your agent.</h2>
+          <div className="grid md:grid-cols-2 gap-5">
+            <div className="glass-card p-8">
+              <ChatCircleDots size={28} weight="regular" className="text-amber mb-4" />
+              <h3 className="text-lg font-bold mb-2">Talk to Colin</h3>
+              <p className="text-muted text-[15px] leading-relaxed mb-5">Ask questions, get actionable advice, save insights. It&apos;s a conversation, not a course. Your history and takeaways are saved automatically.</p>
+              <ul className="text-muted text-[15px] space-y-1.5 mb-5">
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> No setup required</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Conversation history across sessions</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Save key insights for later</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> 5 free messages to try it</li>
+              </ul>
+              <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-5">Best for: founders who want answers now</p>
+              <Link href="/chat/colin-chapman" className="bg-amber text-background px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-amber-dark transition inline-block">Try it free →</Link>
+            </div>
+            <div className="glass-card p-8">
+              <PlugsConnected size={28} weight="regular" className="text-amber mb-4" />
+              <h3 className="text-lg font-bold mb-2">Add it to your AI tools</h3>
+              <p className="text-muted text-[15px] leading-relaxed mb-5">Already using Claude, Cursor, or another AI assistant? Add Colin&apos;s expertise directly. Your tools get sales knowledge without you doing anything.</p>
+              <ul className="text-muted text-[15px] space-y-1.5 mb-5">
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> 3 lines of config, that&apos;s it</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Ongoing conversations, fully automatic</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Works in the background, no extra effort</li>
+                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> API key from your account page</li>
+              </ul>
+              <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-5">Best for: founders already using AI tools daily</p>
+              <Link href="/account" className="bg-amber text-background px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-amber-dark transition inline-block">Get API key →</Link>
+            </div>
           </div>
         </div>
       </section>
