@@ -33,7 +33,7 @@ export default function Home() {
           <p className="text-xs font-semibold text-amber uppercase tracking-widest mb-3">How it works</p>
           <h2 className="text-2xl md:text-3xl font-bold mb-6 text-[#1A1A1A]">Real mentors. Not a chatbot.</h2>
           <p className="text-[#737373] text-[16px] md:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
-            Colin Chapman has spent 26 years closing B2B deals, training sales teams, and building outbound systems for companies like IBM, Siemens, and BMW. He&apos;s a 4.92-rated mentor on GrowthMentor. We extracted everything he knows so you can get his advice anytime, or plug it directly into your workflow.
+            Colin Chapman has spent 26 years closing B2B deals, training sales teams, and building outbound systems for companies like IBM, Siemens, and BMW. He&apos;s a 4.92-rated mentor on GrowthMentor. We <span className="font-bold">turned his expertise into an AI mentor</span> you can talk to anytime, or plug directly into your workflow.
           </p>
           <Link href="/mentors/colin-chapman" className="text-amber text-[15px] hover:text-[#A07D5A] transition">
             Learn more about Colin &rarr;
