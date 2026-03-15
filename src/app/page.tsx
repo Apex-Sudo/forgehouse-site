@@ -2,8 +2,8 @@
 import Link from "next/link";
 import InlineChat from "@/components/InlineChat";
 import Image from "next/image";
-import { ChatCircleDots, PlugsConnected } from "@phosphor-icons/react";
-import { IconTarget, IconFlame, IconActivityHeartbeat, IconCalendarWeek } from "@tabler/icons-react";
+
+
 
 export default function Home() {
   return (
@@ -18,76 +18,34 @@ export default function Home() {
             Talk to a sales expert.{" "}
             <span className="text-amber">Right now.</span>
           </h1>
-          <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+          <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-3">
             26 years of B2B sales expertise, distilled into an AI agent. Ask anything.
+          </p>
+          <p className="text-muted/50 text-sm max-w-2xl mx-auto">
+            ForgeHouse turns real experts into AI mentors you can talk to anytime.
           </p>
         </div>
       </section>
 
-      {/* Divider */}
-      <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
-
       {/* What ForgeHouse does */}
-      <section className="px-6 py-24">
+      <section className="px-6 py-32" style={{ background: "#FAFAF8" }}>
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs font-semibold text-amber uppercase tracking-widest mb-3">How it works</p>
-          <h2 className="text-2xl md:text-3xl font-bold mb-6">Real mentors. Not a chatbot.</h2>
-          <p className="text-muted text-[16px] md:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold mb-6 text-[#1A1A1A]">Real mentors. Not a chatbot.</h2>
+          <p className="text-[#737373] text-[16px] md:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
             Colin Chapman has spent 26 years closing B2B deals, training sales teams, and building outbound systems for companies like IBM, Siemens, and BMW. He&apos;s a 4.92-rated mentor on GrowthMentor. We extracted everything he knows so you can get his advice anytime, or plug it directly into your workflow.
           </p>
-          <Link href="/mentors/colin-chapman" className="text-amber text-[15px] hover:text-foreground transition">
+          <Link href="/mentors/colin-chapman" className="text-amber text-[15px] hover:text-[#A07D5A] transition">
             Learn more about Colin &rarr;
           </Link>
         </div>
       </section>
 
-      {/* Divider */}
-      <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
-
-      {/* Two ways to use it */}
-      <section className="px-6 py-24">
-        <div className="max-w-5xl mx-auto">
-          <p className="text-xs font-semibold text-amber uppercase tracking-widest text-center mb-3">Two ways to use it</p>
-          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">Use it yourself. Or let your agent.</h2>
-          <div className="grid md:grid-cols-2 gap-5">
-            <div className="glass-card p-8">
-              <ChatCircleDots size={28} weight="regular" className="text-amber mb-4" />
-              <h3 className="text-lg font-bold mb-2">Talk to Colin&apos;s agent</h3>
-              <p className="text-muted text-[15px] leading-relaxed mb-5">Ask questions, get actionable advice, save insights. It&apos;s a conversation, not a course. Your history and takeaways are saved automatically.</p>
-              <ul className="text-muted text-[15px] space-y-1.5 mb-5">
-                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> No setup required</li>
-                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Conversation history across sessions</li>
-                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Save key insights for later</li>
-                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> 5 free messages to try it</li>
-              </ul>
-              <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-5">Best for: founders who want answers now</p>
-              <Link href="/chat/colin-chapman" className="bg-amber text-background px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-amber-dark transition inline-block">Try it free →</Link>
-            </div>
-            <div className="glass-card p-8">
-              <PlugsConnected size={28} weight="regular" className="text-amber mb-4" />
-              <h3 className="text-lg font-bold mb-2">Add it to your AI tools</h3>
-              <p className="text-muted text-[15px] leading-relaxed mb-5">Already using Claude, Cursor, or another AI assistant? Add Colin&apos;s expertise directly. Your tools get sales knowledge without you doing anything.</p>
-              <ul className="text-muted text-[15px] space-y-1.5 mb-5">
-                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> 3 lines of config, that&apos;s it</li>
-                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Ongoing conversations, fully automatic</li>
-                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> Works in the background, no extra effort</li>
-                <li className="flex items-center gap-2"><span className="text-amber text-xs">→</span> API key from your account page</li>
-              </ul>
-              <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-5">Best for: founders already using AI tools daily</p>
-              <Link href="/account" className="bg-amber text-background px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-amber-dark transition inline-block">Get API key →</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Divider */}
-      <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
-
       {/* Testimonials */}
-      <section className="px-6 py-24">
+      <section className="px-6 py-36">
         <div className="max-w-3xl mx-auto space-y-16">
           <div className="text-center">
-            <p className="text-lg md:text-xl text-muted/90 leading-relaxed italic mb-6">&ldquo;I just add it and boom, my agent has the sales stuff. It&apos;s a shortcut to knowledge I&apos;d spend months acquiring. Everyone is trying to reduce work, and this does exactly that.&rdquo;</p>
+            <p className="text-lg md:text-xl text-muted/90 leading-relaxed italic mb-6">&ldquo;I just add it and boom, my agent has the sales stuff. It&apos;s a <span className="font-bold not-italic">shortcut to knowledge</span> I&apos;d spend months acquiring. Everyone is trying to reduce work, and this does exactly that.&rdquo;</p>
             <div className="flex items-center justify-center gap-3">
               <div className="w-9 h-9 rounded-[10px] bg-amber text-background flex items-center justify-center font-bold text-sm">R</div>
               <div className="text-left">
@@ -104,23 +62,25 @@ export default function Home() {
       <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
 
       {/* Free Tools - pain point framing */}
-      <section className="px-6 py-24">
-        <div className="max-w-3xl mx-auto">
+      <section className="px-6 py-32">
+        <div className="max-w-4xl mx-auto">
           <p className="text-xs font-semibold text-amber uppercase tracking-widest text-center mb-3">Free tools</p>
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Pick a problem. Get an answer.</h2>
-          <p className="text-muted text-center text-[16px] mb-12 max-w-xl mx-auto">Each tool runs on Colin&apos;s methodology. Use one, then go deeper with him if you need to.</p>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Doing sales alone is hard. These help.</h2>
+          <p className="text-muted text-center text-[16px] mb-16 max-w-xl mx-auto">Free tools built on 26 years of B2B sales experience. Get clarity in under 3 minutes.</p>
+          <div className="space-y-10">
             {[
-              { icon: IconTarget, title: "ICP Diagnostic", pain: "Not sure who your ideal customer is?", href: "/tools/icp-diagnostic", time: "60 sec" },
-              { icon: IconFlame, title: "Cold Email Teardown", pain: "Cold emails getting ignored?", href: "/tools/cold-email-teardown", time: "30 sec" },
-              { icon: IconActivityHeartbeat, title: "Pipeline Diagnosis", pain: "Deals stalling and you don't know why?", href: "/tools/pipeline-diagnosis", time: "3 min" },
-              { icon: IconCalendarWeek, title: "Outbound Week Planner", pain: "No structure in your outbound?", href: "/tools/outbound-planner", time: "60 sec" },
-            ].map((tool) => (
-              <Link key={tool.href} href={tool.href} className="glass-card p-6 hover:border-amber/20 transition group">
-                <tool.icon size={22} className="text-amber mb-3" />
-                <p className="text-muted text-sm mb-1.5">{tool.pain}</p>
-                <h3 className="text-base font-semibold group-hover:text-amber transition mb-1">{tool.title}</h3>
-                <span className="text-xs text-muted/60">{tool.time} · No signup</span>
+              { title: "ICP Diagnostic", pain: "Not sure who your ideal customer is?", desc: "Define your ideal customer profile in 60 seconds using the Jobs-to-be-Done framework. Stop guessing who to sell to.", href: "/tools/icp-diagnostic", time: "60 sec" },
+              { title: "Cold Email Teardown", pain: "Cold emails getting ignored?", desc: "Paste your cold email. Get it torn apart line by line and rewritten using Colin's Problem-Impact-Proof framework.", href: "/tools/cold-email-teardown", time: "30 sec" },
+              { title: "Pipeline Diagnosis", pain: "Deals stalling and you don't know why?", desc: "Describe your last 3 lost deals. Find the pattern killing your pipeline and the one fix that saves the most revenue.", href: "/tools/pipeline-diagnosis", time: "3 min" },
+              { title: "Outbound Week Planner", pain: "No structure in your outbound?", desc: "Get a concrete Mon-Fri outbound plan with daily tasks, email templates, and targets. Built for founder-led sales.", href: "/tools/outbound-planner", time: "60 sec" },
+            ].map((tool, i) => (
+              <Link key={tool.href} href={tool.href} className={`glass-card p-8 md:p-10 flex flex-col hover:border-amber/20 transition group max-w-3xl mx-auto`}>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-amber uppercase tracking-wider mb-2">{tool.title}</p>
+                  <h3 className="text-xl font-bold mb-2 text-foreground">{tool.pain}</h3>
+                  <p className="text-muted text-[15px] leading-relaxed mb-3">{tool.desc}</p>
+                  <span className="text-xs text-muted/60">{tool.time} · No signup needed</span>
+                </div>
               </Link>
             ))}
           </div>
@@ -131,15 +91,18 @@ export default function Home() {
       <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
 
       {/* CTA */}
-      <section className="px-6 py-24">
+      <section className="px-6 py-32" style={{ background: "#FAFAF8" }}>
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Get expert advice whenever you need it.</h2>
-          <p className="text-muted text-lg mb-8 max-w-xl mx-auto">
-            No scheduling. No hourly rates. Just answers.
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#1A1A1A]">Ask Colin anything about sales.</h2>
+          <p className="text-[#737373] text-lg mb-8 max-w-xl mx-auto">
+            No scheduling, no hourly rates. 5 free messages to try it. Your conversation history and insights are saved automatically.
           </p>
           <Link href="/chat/colin-chapman" className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-block">
             Talk to Colin — free to try →
           </Link>
+          <p className="text-[#737373]/50 text-sm mt-6">
+            Already using AI tools? <Link href="/account" className="text-amber hover:text-[#A07D5A] transition">Add Colin via API →</Link>
+          </p>
         </div>
       </section>
     </div>

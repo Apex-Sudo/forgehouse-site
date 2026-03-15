@@ -51,7 +51,7 @@ export default function InlineChat() {
       className="max-w-[840px] mx-auto min-h-[540px] flex flex-col overflow-hidden rounded-[20px]"
       style={{
         background: "#FAFAF8",
-        border: "1px solid #E5E2DC",
+        border: "1px solid rgba(184, 145, 106, 0.25)",
         boxShadow: "0 8px 40px rgba(0,0,0,0.12), 0 0 1px rgba(0,0,0,0.08)",
       }}
     >
@@ -91,7 +91,7 @@ export default function InlineChat() {
             )}
           </div>
           <div
-            className={`flex flex-wrap gap-2 mt-2 transition-all duration-500 ${
+            className={`flex flex-col gap-2 mt-2 transition-all duration-500 ${
               showStarters
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-2"
