@@ -3,6 +3,7 @@ import Link from "next/link";
 import InlineChat from "@/components/InlineChat";
 import Image from "next/image";
 import { ChatCircleDots, PlugsConnected } from "@phosphor-icons/react";
+import { IconTarget, IconFlame, IconActivityHeartbeat, IconCalendarWeek } from "@tabler/icons-react";
 
 export default function Home() {
   return (
@@ -96,6 +97,33 @@ export default function Home() {
             </div>
           </div>
 
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
+
+      {/* Free Tools - pain point framing */}
+      <section className="px-6 py-24">
+        <div className="max-w-3xl mx-auto">
+          <p className="text-xs font-semibold text-amber uppercase tracking-widest text-center mb-3">Free tools</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Pick a problem. Get an answer.</h2>
+          <p className="text-muted text-center text-[16px] mb-12 max-w-xl mx-auto">Each tool runs on Colin&apos;s methodology. Use one, then go deeper with him if you need to.</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {[
+              { icon: IconTarget, title: "ICP Diagnostic", pain: "Not sure who your ideal customer is?", href: "/tools/icp-diagnostic", time: "60 sec" },
+              { icon: IconFlame, title: "Cold Email Teardown", pain: "Cold emails getting ignored?", href: "/tools/cold-email-teardown", time: "30 sec" },
+              { icon: IconActivityHeartbeat, title: "Pipeline Diagnosis", pain: "Deals stalling and you don't know why?", href: "/tools/pipeline-diagnosis", time: "3 min" },
+              { icon: IconCalendarWeek, title: "Outbound Week Planner", pain: "No structure in your outbound?", href: "/tools/outbound-planner", time: "60 sec" },
+            ].map((tool) => (
+              <Link key={tool.href} href={tool.href} className="glass-card p-6 hover:border-amber/20 transition group">
+                <tool.icon size={22} className="text-amber mb-3" />
+                <p className="text-muted text-sm mb-1.5">{tool.pain}</p>
+                <h3 className="text-base font-semibold group-hover:text-amber transition mb-1">{tool.title}</h3>
+                <span className="text-xs text-muted/60">{tool.time} · No signup</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
