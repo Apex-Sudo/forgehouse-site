@@ -134,9 +134,9 @@ export default function PricingPage() {
 
       {/* Pricing Model */}
       <section className="px-6 pb-24">
-        <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-5">
-          {/* Free tier */}
-          <div className="glass-card p-8 text-center flex flex-col">
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center md:items-stretch justify-center gap-0">
+          {/* Free tier — slightly behind, offset left */}
+          <div className="glass-card p-8 text-center flex flex-col w-full md:w-[340px] md:-mr-6 md:mt-8 md:mb-8 relative z-0 opacity-90">
             <p className="text-sm text-muted uppercase tracking-wide mb-2">Try it</p>
             <div className="text-4xl font-bold mb-1">Free</div>
             <p className="text-muted text-sm mb-6">5 messages with Colin. No card, no signup.</p>
@@ -164,9 +164,9 @@ export default function PricingPage() {
             </Link>
           </div>
 
-          {/* Paid tier */}
-          <div className="glass-card p-10 text-center shadow-[0_0_24px_rgba(184,145,106,0.12)] border-[rgba(184,145,106,0.2)] flex flex-col">
-            <p className="text-sm text-muted uppercase tracking-wide mb-2">Colin Chapman</p>
+          {/* Paid tier — center, elevated */}
+          <div className="bg-white p-10 text-center shadow-[0_4px_40px_rgba(0,0,0,0.08)] border-2 border-amber/30 rounded-2xl flex flex-col w-full md:w-[400px] relative z-10">
+            <p className="text-sm text-amber uppercase tracking-wide font-semibold mb-2">Colin Chapman</p>
             <div className="text-5xl font-bold mb-1">$48<span className="text-lg font-normal text-muted">/month</span></div>
             <p className="text-muted text-[15px] mb-8">Unlimited conversations with Colin&apos;s AI agent. Built from 26 years of real deal-making.</p>
 

@@ -17,12 +17,12 @@ function SignInContent() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 sm:p-10">
+        <div className="bg-white border border-foreground/[0.08] rounded-2xl p-8 sm:p-10 shadow-[0_4px_40px_rgba(0,0,0,0.06)]">
           {/* Icon */}
           <div className="flex justify-center mb-6">
-            <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-amber/10 flex items-center justify-center">
               <svg
-                className="w-6 h-6 text-amber-500"
+                className="w-6 h-6 text-amber"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
@@ -38,10 +38,10 @@ function SignInContent() {
           </div>
 
           {/* Heading */}
-          <h1 className="text-2xl font-semibold text-white text-center mb-2">
+          <h1 className="text-2xl font-semibold text-foreground text-center mb-2">
             Save your conversation history
           </h1>
-          <p className="text-zinc-400 text-center text-sm leading-relaxed mb-8">
+          <p className="text-muted text-center text-sm leading-relaxed mb-8">
             Sign in to keep your chat history, save insights, and pick up right where you left off.
           </p>
 
@@ -56,13 +56,13 @@ function SignInContent() {
               </svg>
               Continue with LinkedIn
             </button>
-            <p className="text-zinc-500 text-xs text-center -mt-1 mb-1">
+            <p className="text-muted text-xs text-center -mt-1 mb-1">
               Personalized experience with your professional context
             </p>
 
             <button
               onClick={() => signIn("google", { callbackUrl })}
-              className="w-full flex items-center justify-center gap-3 bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-4 rounded-xl transition-colors border border-zinc-700 cursor-pointer"
+              className="w-full flex items-center justify-center gap-3 bg-white hover:bg-foreground/[0.03] text-foreground font-medium py-3 px-4 rounded-xl transition-colors border border-foreground/[0.12] cursor-pointer"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
@@ -75,9 +75,9 @@ function SignInContent() {
 
             {/* Divider */}
             <div className="flex items-center gap-3 my-2">
-              <div className="flex-1 h-px bg-zinc-700" />
-              <span className="text-zinc-500 text-xs">or</span>
-              <div className="flex-1 h-px bg-zinc-700" />
+              <div className="flex-1 h-px bg-foreground/[0.1]" />
+              <span className="text-muted text-xs">or</span>
+              <div className="flex-1 h-px bg-foreground/[0.1]" />
             </div>
 
             {/* Email with verification */}
@@ -101,25 +101,25 @@ function SignInContent() {
                 } catch { setError("Failed to send code"); }
                 setSending(false);
               }} className="space-y-2">
-                <input type="email" placeholder="Enter your email" value={emailValue} onChange={(e) => setEmailValue(e.target.value)} required className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-xl text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500" />
-                <button type="submit" disabled={sending} className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-4 rounded-xl transition-colors border border-zinc-700 cursor-pointer text-sm disabled:opacity-50">
+                <input type="email" placeholder="Enter your email" value={emailValue} onChange={(e) => setEmailValue(e.target.value)} required className="w-full bg-white border border-foreground/[0.12] text-foreground px-4 py-3 rounded-xl text-sm placeholder:text-muted focus:outline-none focus:border-amber/40" />
+                <button type="submit" disabled={sending} className="w-full bg-white hover:bg-foreground/[0.03] text-foreground font-medium py-3 px-4 rounded-xl transition-colors border border-foreground/[0.12] cursor-pointer text-sm disabled:opacity-50">
                   {sending ? "Sending..." : "Continue with Email"}
                 </button>
                 {error && <p className="text-red-400 text-xs text-center">{error}</p>}
               </form>
             ) : (
               <form onSubmit={async (e) => { e.preventDefault(); setError(""); const res = await signIn("credentials", { email: emailValue, code: codeValue, redirect: false }); if (res?.error) { setError("Invalid or expired code. Try again."); } else if (res?.ok) { window.location.href = callbackUrl; } }} className="space-y-2">
-                <p className="text-zinc-400 text-xs text-center">We sent a 6-digit code to <span className="text-white">{emailValue}</span></p>
-                <input type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} placeholder="Enter 6-digit code" value={codeValue} onChange={(e) => setCodeValue(e.target.value.replace(/\D/g, ""))} required className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-xl text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 text-center tracking-[0.3em] text-lg" />
-                <button type="submit" className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-4 rounded-xl transition-colors border border-zinc-700 cursor-pointer text-sm">Verify & Sign In</button>
-                <button type="button" onClick={() => { setCodeSent(false); setCodeValue(""); setError(""); }} className="w-full text-zinc-500 text-xs hover:text-zinc-300 transition cursor-pointer">Use a different email</button>
+                <p className="text-muted text-xs text-center">We sent a 6-digit code to <span className="text-foreground font-semibold">{emailValue}</span></p>
+                <input type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} placeholder="Enter 6-digit code" value={codeValue} onChange={(e) => setCodeValue(e.target.value.replace(/\D/g, ""))} required className="w-full bg-white border border-foreground/[0.12] text-foreground px-4 py-3 rounded-xl text-sm placeholder:text-muted focus:outline-none focus:border-amber/40 text-center tracking-[0.3em] text-lg" />
+                <button type="submit" className="w-full bg-white hover:bg-foreground/[0.03] text-foreground font-medium py-3 px-4 rounded-xl transition-colors border border-foreground/[0.12] cursor-pointer text-sm">Verify & Sign In</button>
+                <button type="button" onClick={() => { setCodeSent(false); setCodeValue(""); setError(""); }} className="w-full text-muted text-xs hover:text-foreground transition cursor-pointer">Use a different email</button>
                 {error && <p className="text-red-400 text-xs text-center">{error}</p>}
               </form>
             )}
           </div>
 
           {/* Footer */}
-          <p className="text-zinc-600 text-xs text-center mt-6">
+          <p className="text-muted/60 text-xs text-center mt-6">
             By signing in, you agree to our terms of service and privacy policy.
           </p>
         </div>

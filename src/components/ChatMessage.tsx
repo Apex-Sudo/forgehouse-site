@@ -86,12 +86,12 @@ export default function ChatMessage({ role, content, mentorSlug, isSubscribed: i
 
   return (
     <div className="flex justify-start group">
-      <div className="max-w-[80%] px-4 py-3 text-sm leading-relaxed bg-white/[0.04] border border-white/[0.06] text-foreground rounded-2xl prose-chat">
+      <div className="max-w-[80%] px-4 py-3 text-sm leading-relaxed bg-[#F5F3F0] text-foreground rounded-2xl prose-chat">
         <ReactMarkdown
           components={{
             p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
-            strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
-            em: ({ children }) => <em className="italic text-white/80">{children}</em>,
+            strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
+            em: ({ children }) => <em className="italic text-foreground/80">{children}</em>,
             ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
             ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
             li: ({ children }) => (
@@ -101,11 +101,11 @@ export default function ChatMessage({ role, content, mentorSlug, isSubscribed: i
               </li>
             ),
             code: ({ children }) => (
-              <code className="bg-white/[0.08] px-1.5 py-0.5 rounded text-xs font-mono">{children}</code>
+              <code className="bg-foreground/[0.06] px-1.5 py-0.5 rounded text-xs font-mono">{children}</code>
             ),
-            h1: ({ children }) => <h3 className="font-bold text-white mb-2 text-base">{children}</h3>,
-            h2: ({ children }) => <h3 className="font-bold text-white mb-2 text-base">{children}</h3>,
-            h3: ({ children }) => <h3 className="font-semibold text-white mb-1.5 text-sm">{children}</h3>,
+            h1: ({ children }) => <h3 className="font-bold text-foreground mb-2 text-base">{children}</h3>,
+            h2: ({ children }) => <h3 className="font-bold text-foreground mb-2 text-base">{children}</h3>,
+            h3: ({ children }) => <h3 className="font-semibold text-foreground mb-1.5 text-sm">{children}</h3>,
             blockquote: ({ children }) => (
               <blockquote className="border-l-2 border-amber/40 pl-3 my-2 text-muted italic">{children}</blockquote>
             ),

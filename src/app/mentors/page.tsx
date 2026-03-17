@@ -83,7 +83,7 @@ export default function ModulesPage() {
               </Link>
               <Link
                 href="/mentors/colin-chapman"
-                className="flex items-center justify-center gap-2 border border-white/10 text-muted py-3.5 rounded-xl font-medium hover:text-foreground hover:border-white/20 transition cursor-pointer"
+                className="flex items-center justify-center gap-2 border border-foreground/[0.1] text-muted py-3.5 rounded-xl font-medium hover:text-foreground hover:border-foreground/[0.2] transition cursor-pointer"
               >
                 Learn more
               </Link>
@@ -114,8 +114,8 @@ export default function ModulesPage() {
               { label: "Product Strategy", desc: "Roadmap, prioritization, PMF" },
             ].map((mod) => (
               <div key={mod.label} className="text-center">
-                <div className="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/[0.06] mx-auto mb-2 flex items-center justify-center">
-                  <span className="text-white/10 text-lg">?</span>
+                <div className="w-12 h-12 rounded-xl bg-foreground/[0.03] border border-foreground/[0.08] mx-auto mb-2 flex items-center justify-center">
+                  <span className="text-foreground/20 text-lg">?</span>
                 </div>
                 <p className="text-[11px] text-muted/70 font-medium">{mod.label}</p>
                 <p className="text-[10px] text-muted/40 mt-0.5">{mod.desc}</p>
@@ -137,7 +137,7 @@ export default function ModulesPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 required
-                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition"
+                className="flex-1 bg-white border border-foreground/[0.12] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition"
               />
               <button
                 type="submit"

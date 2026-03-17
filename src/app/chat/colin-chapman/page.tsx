@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { useSession, signIn } from "next-auth/react";
+import Image from "next/image";
 import ChatMessage from "@/components/ChatMessage";
 import MemoryBanner from "@/components/MemoryBanner";
 // SignInNudge no longer needed — Colin requires auth
@@ -371,12 +372,12 @@ function ChatContent() {
   }
 
   return (
-    <div className="flex flex-col h-full px-4 py-3">
+    <div className="flex flex-col h-full px-4 py-3" style={{ background: "#F7F5F2" }}>
       <div className="flex-1 flex justify-center min-h-0">
-        <div className="w-full max-w-5xl glass-card flex flex-col overflow-hidden shadow-[0_0_24px_rgba(184,145,106,0.12)] border-[rgba(184,145,106,0.2)] h-full">
+        <div className="w-full max-w-5xl bg-white flex flex-col overflow-hidden shadow-[0_0_24px_rgba(0,0,0,0.06)] border border-foreground/[0.08] rounded-2xl h-full">
           {/* Chat header */}
-          <div className="flex items-center gap-3 px-6 py-4 border-b border-white/[0.06]">
-            <IconTarget size={24} className="text-amber shrink-0" />
+          <div className="flex items-center gap-3 px-6 py-4 border-b border-foreground/[0.08]">
+            <Image src="/mentors/colin-chapman.png" alt="Colin Chapman" width={36} height={36} className="rounded-full object-cover shrink-0" />
             <div className="flex-1">
               <h1 className="font-bold text-sm">Colin Chapman</h1>
               <p className="text-xs text-muted">GTM & Outbound Sales Mentor</p>
@@ -400,13 +401,13 @@ function ChatContent() {
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
             {summary && messages.length > 0 && (
-              <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-3 mb-2">
+              <div className="bg-[#F5F3F0] border border-foreground/[0.06] rounded-xl px-4 py-3 mb-2">
                 <p className="text-xs font-semibold text-muted uppercase tracking-wider mb-2">Session Summary</p>
                 <div className="text-sm text-foreground/70 whitespace-pre-line">{summary}</div>
               </div>
             )}
             <div className="flex justify-start">
-              <div className="max-w-[80%] bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm leading-relaxed rounded-2xl">
+              <div className="max-w-[80%] bg-[#F5F3F0] px-4 py-3 text-sm leading-relaxed rounded-2xl">
                 Before I can help, I need to understand your situation. What are you selling, who are you selling it to, and what does your current outbound look like?
               </div>
             </div>
@@ -418,7 +419,7 @@ function ChatContent() {
                     <button
                       key={s}
                       onClick={() => send(s)}
-                      className="text-sm bg-white/[0.04] border border-white/[0.08] px-4 py-2 rounded-full text-muted hover:text-foreground hover:bg-white/[0.08] hover:border-white/[0.12] transition"
+                      className="text-sm bg-transparent border border-foreground/[0.12] px-4 py-2 rounded-full text-muted hover:text-foreground hover:bg-foreground/[0.04] hover:border-foreground/[0.2] transition"
                     >
                       {s}
                     </button>
@@ -557,7 +558,7 @@ function ChatContent() {
               </div>
             </div>
           ) : (
-            <div className="border-t border-white/[0.06] px-6 py-4">
+            <div className="border-t border-foreground/[0.08] px-6 py-4">
               <div className="flex gap-3">
                 <textarea
                   value={input}
@@ -565,7 +566,7 @@ function ChatContent() {
                   onKeyDown={handleKeyDown}
                   placeholder="Describe your situation..."
                   rows={1}
-                  className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#B8916A]/40 transition resize-none"
+                  className="flex-1 bg-transparent border border-foreground/[0.12] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#B8916A]/40 transition resize-none"
                 />
                 <button
                   onClick={() => send()}

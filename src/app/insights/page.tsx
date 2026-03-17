@@ -153,7 +153,7 @@ export default function InsightsPage() {
                             <ReactMarkdown
                               components={{
                                 p: ({ children }) => <p className="mb-1.5 last:mb-0 text-sm">{children}</p>,
-                                strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
+                                strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
                                 ul: ({ children }) => <ul className="space-y-0.5 list-none">{children}</ul>,
                                 li: ({ children }) => (
                                   <li className="flex items-start gap-1.5 text-sm">

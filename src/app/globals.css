@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #0A0A0A;
-  --color-foreground: #EDEDED;
+  --color-background: #FFFFFF;
+  --color-foreground: #1A1A1A;
   --color-amber: #B8916A;
-  --color-amber-dark: #A07B56;
-  --color-surface: #141414;
-  --color-surface-light: #1A1A1A;
+  --color-amber-dark: #A07D5A;
+  --color-surface: #F5F3F0;
+  --color-surface-light: #F0EDE8;
   --color-muted: #737373;
-  --color-border: #1E1E1E;
-  --color-border-light: #2A2A2A;
-  --color-glass: rgba(184, 145, 106, 0.04);
-  --color-glass-border: rgba(184, 145, 106, 0.08);
+  --color-border: #E8E5E0;
+  --color-border-light: #DDD9D3;
+  --color-glass: rgba(184, 145, 106, 0.05);
+  --color-glass-border: rgba(184, 145, 106, 0.12);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -41,11 +41,11 @@ body {
 
 /* Subtle gradient backgrounds */
 .gradient-hero {
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(184, 145, 106, 0.06) 0%, transparent 70%);
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(184, 145, 106, 0.08) 0%, transparent 70%);
 }
 
 .gradient-bronze {
-  background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(184, 145, 106, 0.04) 0%, transparent 70%);
+  background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(184, 145, 106, 0.06) 0%, transparent 70%);
 }
 
 /* Section container module */
@@ -82,14 +82,14 @@ body {
 
 /* Blog prose styling */
 .prose-fh p {
-  color: #a1a1aa;
+  color: rgba(26, 26, 26, 0.65);
   font-size: 1rem;
   line-height: 1.75;
   margin-bottom: 1.25rem;
 }
 
 .prose-fh h2 {
-  color: #ffffff;
+  color: #1A1A1A;
   font-size: 1.25rem;
   font-weight: 600;
   margin-top: 2.5rem;
@@ -103,14 +103,14 @@ body {
 }
 
 .prose-fh blockquote p {
-  color: #888;
+  color: #737373;
   font-style: italic;
   font-size: 0.9375rem;
   margin-bottom: 0.25rem;
 }
 
 .prose-fh blockquote cite {
-  color: #555;
+  color: #999;
   font-size: 0.75rem;
   font-style: normal;
 }

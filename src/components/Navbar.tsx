@@ -48,14 +48,14 @@ function UserMenu() {
             className="rounded-full"
           />
         ) : (
-          <div className="w-7 h-7 rounded-full bg-white/[0.1] flex items-center justify-center text-xs font-semibold">
+          <div className="w-7 h-7 rounded-full bg-foreground/[0.08] flex items-center justify-center text-xs font-semibold">
             {session.user?.name?.[0] ?? "?"}
           </div>
         )}
         <span className="hidden sm:inline">{session.user?.name?.split(" ")[0]}</span>
       </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-48 bg-background border border-white/[0.08] rounded-lg shadow-lg py-1 z-50">
+        <div className="absolute right-0 mt-2 w-48 bg-background border border-foreground/[0.06] rounded-lg shadow-lg py-1 z-50">
           <button
             onClick={async () => {
               setOpen(false);
@@ -65,13 +65,13 @@ function UserMenu() {
                 if (data.url) window.location.href = data.url;
               } catch { /* silent */ }
             }}
-            className="w-full text-left px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-white/[0.04] transition"
+            className="w-full text-left px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-foreground/[0.04] transition"
           >
             Manage Subscription
           </button>
           <button
             onClick={() => { setOpen(false); signOut(); }}
-            className="w-full text-left px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-white/[0.04] transition"
+            className="w-full text-left px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-foreground/[0.04] transition"
           >
             Sign Out
           </button>
