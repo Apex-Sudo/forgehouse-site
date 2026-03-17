@@ -1,0 +1,89 @@
+/* Light theme scoped to /for-mentors — leonfreier.com palette */
+
+.mentors-light {
+  background: #FAFAF8;
+  color: #1A1A1A;
+  min-height: 100vh;
+}
+
+.mentors-fg {
+  color: #1A1A1A;
+}
+
+.mentors-muted {
+  color: #737373;
+}
+
+.mentors-accent {
+  color: #B8916A;
+}
+
+.mentors-body {
+  color: rgba(26, 26, 26, 0.65);
+}
+
+.mentors-hero {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(184, 145, 106, 0.08) 0%, transparent 70%);
+}
+
+.mentors-card {
+  background: rgba(184, 145, 106, 0.05);
+  border: 1px solid rgba(184, 145, 106, 0.12);
+  border-radius: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.mentors-card:hover {
+  border-color: rgba(184, 145, 106, 0.22);
+}
+
+.mentors-module {
+  background: rgba(184, 145, 106, 0.04);
+  border: 1px solid rgba(184, 145, 106, 0.10);
+  border-radius: 20px;
+}
+
+.mentors-cta {
+  background: #B8916A;
+  color: #FFFFFF;
+}
+
+.mentors-cta:hover {
+  background: #A07D5A;
+}
+
+.mentors-icon {
+  color: #B8916A;
+}
+
+/* Override any dark theme leaking from parent layout */
+.mentors-light h1,
+.mentors-light h2,
+.mentors-light h3,
+.mentors-light p,
+.mentors-light span,
+.mentors-light li {
+  color: inherit;
+}
+
+.mentors-light h1,
+.mentors-light h2,
+.mentors-light h3 {
+  color: #1A1A1A;
+}
+
+.mentors-light .mentors-muted {
+  color: #737373;
+}
+
+.mentors-light .mentors-accent {
+  color: #B8916A;
+}
+
+.mentors-light .mentors-body {
+  color: rgba(26, 26, 26, 0.65);
+}
+
+.mentors-light .mentors-fg {
+  color: #1A1A1A;
+}
