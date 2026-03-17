@@ -1,0 +1,33 @@
+/* Partner pitch page — light theme, presentation-weight text */
+
+.partner-light {
+  background: #FFFFFF;
+  color: #1A1A1A;
+  min-height: 100vh;
+}
+
+.partner-accent {
+  color: #B8916A;
+}
+
+.partner-hero {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(184, 145, 106, 0.08) 0%, transparent 70%);
+}
+
+.partner-card {
+  background: #F9F7F4;
+  border: 1px solid rgba(184, 145, 106, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.partner-card:hover {
+  border-color: rgba(184, 145, 106, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.partner-light h1,
+.partner-light h2,
+.partner-light h3 {
+  color: #1A1A1A;
+}
