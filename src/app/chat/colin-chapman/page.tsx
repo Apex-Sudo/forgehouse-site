@@ -462,12 +462,12 @@ function ChatContent() {
 
           {/* Input or Paywall */}
           {showLoginGate ? (
-            <div className="border-t border-white/[0.06] px-6 py-6">
-              <div className="text-center">
-                <p className="text-sm text-foreground/90 mb-1 font-medium">
+            <div className="px-6 py-6">
+              <div className="max-w-sm mx-auto rounded-2xl border border-[#E5E2DC] p-8 text-center" style={{ background: "#FAFAF8", boxShadow: "0 4px 24px rgba(0,0,0,0.06)" }}>
+                <p className="text-sm text-[#1A1A1A] mb-1 font-medium">
                   Thanks for trying ForgeHouse
                 </p>
-                <p className="text-xs text-muted mb-4">
+                <p className="text-xs text-[#737373] mb-4">
                   Sign in to get Colin&apos;s answer and keep the conversation going.
                 </p>
                 <div className="flex flex-col gap-2 max-w-xs mx-auto">
@@ -479,15 +479,15 @@ function ChatContent() {
                   </a>
                   <a
                     href="/sign-in?callbackUrl=/chat/colin-chapman"
-                    className="bg-white/[0.06] text-foreground px-6 py-3 rounded-xl font-semibold text-sm hover:bg-white/[0.1] transition text-center"
+                    className="bg-white text-[#1A1A1A] border border-[#DDD] px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#F5F5F5] transition text-center"
                   >
                     Continue with Google
                   </a>
                   <div className="space-y-2 mt-1">
                     <div className="flex items-center gap-3 my-1">
-                      <div className="flex-1 h-px bg-white/[0.08]" />
-                      <span className="text-muted text-xs">or</span>
-                      <div className="flex-1 h-px bg-white/[0.08]" />
+                      <div className="flex-1 h-px bg-[#E5E2DC]" />
+                      <span className="text-[#999] text-xs">or</span>
+                      <div className="flex-1 h-px bg-[#E5E2DC]" />
                     </div>
                     {!gateCodeSent ? (
                       <form onSubmit={async (e) => {
@@ -515,12 +515,12 @@ function ChatContent() {
                           value={gateEmail}
                           onChange={(e) => setGateEmail(e.target.value)}
                           required
-                          className="w-full bg-white/[0.03] border border-white/[0.08] text-foreground px-4 py-3 rounded-xl text-sm placeholder:text-muted focus:outline-none focus:border-white/[0.2]"
+                          className="w-full bg-white border border-[#DDD] text-[#1A1A1A] px-4 py-3 rounded-xl text-sm placeholder:text-[#999] focus:outline-none focus:border-amber"
                         />
-                        <button type="submit" disabled={gateSending} className="w-full bg-white/[0.06] text-foreground px-6 py-3 rounded-xl font-semibold text-sm hover:bg-white/[0.1] transition disabled:opacity-50">
+                        <button type="submit" disabled={gateSending} className="w-full bg-white text-[#1A1A1A] border border-[#DDD] px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#F5F5F5] transition disabled:opacity-50">
                           {gateSending ? "Sending..." : "Continue with Email"}
                         </button>
-                        {gateError && <p className="text-red-400 text-xs text-center">{gateError}</p>}
+                        {gateError && <p className="text-red-500 text-xs text-center">{gateError}</p>}
                       </form>
                     ) : (
                       <form onSubmit={async (e) => { e.preventDefault(); setGateError(""); const res = await signIn("credentials", { email: gateEmail, code: gateCode, redirect: false }); if (res?.error) { setGateError("Invalid or expired code. Try again."); } else if (res?.ok) { window.location.href = "/chat/colin-chapman"; } }} className="space-y-2">

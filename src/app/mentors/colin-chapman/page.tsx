@@ -175,7 +175,7 @@ export default function ColinChapmanPage() {
                 key={c.alt}
                 src={c.src}
                 alt={c.alt}
-                className={`${c.h} w-auto object-contain opacity-30 brightness-0 invert`}
+                className={`${c.h} w-auto object-contain opacity-40 brightness-0`}
               />
             ))}
           </div>

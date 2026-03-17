@@ -28,13 +28,15 @@ export default function Home() {
         <div className="max-w-[720px] w-full mx-auto text-center">
           {/* Avatar + Greeting */}
           <div className="flex flex-col items-center mb-8">
-            <Image
-              src="/mentors/colin-chapman.png"
-              alt="Colin Chapman"
-              width={80}
-              height={80}
-              className="rounded-full object-cover mb-6"
-            />
+            <Link href="/mentors/colin-chapman">
+              <Image
+                src="/mentors/colin-chapman.png"
+                alt="Colin Chapman"
+                width={80}
+                height={80}
+                className="rounded-full object-cover mb-6 hover:opacity-80 transition cursor-pointer"
+              />
+            </Link>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] text-[#1A1A1A] mb-2">
               What's your <span className="text-amber">toughest</span> sales challenge?
             </h1>
