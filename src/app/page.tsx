@@ -1,29 +1,79 @@
 "use client";
 import Link from "next/link";
-import InlineChat from "@/components/InlineChat";
+import InlineChat, { STARTERS } from "@/components/InlineChat";
 import Image from "next/image";
-
-
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+  const [input, setInput] = useState("");
+
+  const handleSubmit = (text: string) => {
+    if (!text.trim()) return;
+    router.push(`/chat/colin-chapman?q=${encodeURIComponent(text.trim())}`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(input);
+    }
+  };
+
   return (
     <div className="pt-16">
-      {/* Hero: Chat first */}
-      <section className="px-6 pt-20 md:pt-28 pb-6">
-        <div className="max-w-[840px] mx-auto mb-10">
-          <InlineChat />
-        </div>
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] mb-4">
-            Talk to a sales expert.{" "}
-            <span className="text-amber">Right now.</span>
-          </h1>
-          <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-3">
-            26 years of B2B sales expertise, distilled into an AI agent. Ask anything.
-          </p>
-          <p className="text-muted/50 text-sm max-w-2xl mx-auto">
-            ForgeHouse turns real experts into AI mentors you can talk to anytime.
-          </p>
+      {/* Hero: Centered input, ChatGPT/Gemini style */}
+      <section className="px-6 min-h-[85vh] flex items-center justify-center">
+        <div className="max-w-[720px] w-full mx-auto text-center">
+          {/* Avatar + Greeting */}
+          <div className="flex flex-col items-center mb-8">
+            <Image
+              src="/mentors/colin-chapman.png"
+              alt="Colin Chapman"
+              width={80}
+              height={80}
+              className="rounded-full object-cover mb-6"
+            />
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] text-[#1A1A1A] mb-2">
+              What's your <span className="text-amber">toughest</span> sales challenge?
+            </h1>
+          </div>
+
+          {/* Input Box */}
+          <div className="mb-6">
+            <div className="relative">
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                rows={1}
+                placeholder="Ask Colin about sales..."
+                className="w-full px-6 py-4 text-[16px] rounded-2xl border border-[#E5E2DC] focus:border-amber focus:outline-none focus:ring-2 focus:ring-amber/20 transition resize-none bg-white text-[#1A1A1A] placeholder:text-[#999]"
+                style={{ minHeight: '60px' }}
+              />
+              <button
+                onClick={() => handleSubmit(input)}
+                disabled={!input.trim()}
+                className="absolute right-3 top-1/2 -translate-y-1/2 bg-amber text-white w-10 h-10 rounded-xl hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center font-bold text-lg"
+              >
+                →
+              </button>
+            </div>
+          </div>
+
+          {/* Suggestion Chips */}
+          <div className="flex flex-wrap gap-3 justify-center">
+            {STARTERS.slice(0, 3).map((starter) => (
+              <button
+                key={starter}
+                onClick={() => handleSubmit(starter)}
+                className="px-5 py-2.5 rounded-full border border-[#E5E2DC] bg-white text-[#555] text-[14px] hover:border-amber hover:text-amber transition"
+              >
+                {starter}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -41,20 +91,22 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Divider */}
+      <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
+
       {/* Testimonials */}
       <section className="px-6 py-36">
-        <div className="max-w-3xl mx-auto space-y-16">
-          <div className="text-center">
-            <p className="text-lg md:text-xl text-muted/90 leading-relaxed italic mb-6">&ldquo;I just add it and boom, my agent has the sales stuff. It&apos;s a <span className="font-bold not-italic">shortcut to knowledge</span> I&apos;d spend months acquiring. Everyone is trying to reduce work, and this does exactly that.&rdquo;</p>
+        <div className="max-w-2xl mx-auto">
+          <div className="rounded-2xl border border-amber/[0.15] p-10 md:p-12 text-center" style={{ background: "#FAFAF8" }}>
+            <p className="text-lg md:text-xl text-[#1A1A1A]/80 leading-relaxed italic mb-8">&ldquo;I just add it and boom, my agent has the sales stuff. It&apos;s a <span className="font-bold not-italic text-[#1A1A1A]">shortcut to knowledge</span> I&apos;d spend months acquiring. Everyone is trying to reduce work, and this does exactly that.&rdquo;</p>
             <div className="flex items-center justify-center gap-3">
-              <div className="w-9 h-9 rounded-[10px] bg-amber text-background flex items-center justify-center font-bold text-sm">R</div>
+              <div className="w-9 h-9 rounded-[10px] bg-amber text-white flex items-center justify-center font-bold text-sm">R</div>
               <div className="text-left">
-                <p className="text-sm font-semibold">Richard Okonicha</p>
-                <p className="text-xs text-muted">Founder, Fugoku</p>
+                <p className="text-sm font-semibold text-[#1A1A1A]">Richard Okonicha</p>
+                <p className="text-xs text-[#737373]">Founder, Fugoku</p>
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
