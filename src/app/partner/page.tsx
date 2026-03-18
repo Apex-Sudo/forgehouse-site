@@ -113,10 +113,9 @@ export default function PartnerPage() {
             </div>
           </div>
 
-          <div className="partner-card p-10 text-center">
+          <div className="py-10 text-center">
             <p className="text-2xl font-bold mb-2">Our first customer chose the agent over the human.</p>
             <p className="text-muted text-lg">&ldquo;I prefer the agent. It&apos;s a shortcut to the knowledge I need, available when I need it.&rdquo;</p>
-            <p className="text-muted/50 text-sm mt-4">He pays $48/mo. He was offered direct access to the mentor. He declined.</p>
           </div>
         </div>
       </section>
