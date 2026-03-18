@@ -156,10 +156,9 @@ export default function ForMentorsPage() {
       {/* 7. First customer proof */}
       <section className="px-6 py-20">
         <div className="max-w-3xl mx-auto">
-          <div className="mentors-card p-10">
-            <p className="text-[16px] mentors-body leading-relaxed mb-4">Our first paying customer is a technical founder building AI products. He uses ForgeHouse as his sales knowledge module. When offered direct access to the human mentor behind the agent, he declined.</p>
+          <div className="mentors-card p-10 text-center">
             <p className="mentors-fg font-semibold text-lg">&ldquo;I prefer the agent. It&apos;s a shortcut to the knowledge I need, available when I need it.&rdquo;</p>
-            <p className="mentors-muted text-sm mt-4" style={{ opacity: 0.6 }}>He pays $48/mo. He chose the agent over the human. That&apos;s the shift.</p>
+            <p className="mentors-muted text-sm mt-4" style={{ opacity: 0.6 }}>When offered direct access to the human mentor behind the agent, he declined.</p>
           </div>
         </div>
       </section>
