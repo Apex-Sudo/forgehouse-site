@@ -83,6 +83,39 @@ export default function PartnerPage() {
         </p>
       </section>
 
+      {/* 1b. The Evidence */}
+      <section className="px-6 py-16">
+        <div className="max-w-3xl mx-auto">
+          <div className="partner-card p-10 space-y-6">
+            <p className="partner-accent font-mono text-sm tracking-widest uppercase">The Data</p>
+            <div className="space-y-4 text-lg text-muted leading-relaxed">
+              <p><span className="font-bold text-foreground">9 out of 10</span> Gen Zers would rather text than pick up the phone. <span className="text-sm text-muted/50">(CommBank, 2023)</span></p>
+              <p><span className="font-bold text-foreground">70%</span> of 18-34 year olds prefer text over calls. 23% never answer their phone at all. <span className="text-sm text-muted/50">(BBC/Uswitch, 2024)</span></p>
+              <p><span className="font-bold text-foreground">A UK college launched a class</span> to teach young people how to make phone calls. <span className="text-sm text-muted/50">(Fortune, 2025)</span></p>
+            </div>
+            <p className="text-xl font-semibold pt-4 border-t border-foreground/[0.08]">
+              This is the generation starting companies right now. They need mentorship. They won&apos;t book a Calendly link to get it.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 1c. Privacy & Revenue — Upfront */}
+      <section className="px-6 py-16">
+        <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-6">
+          <div className="partner-card p-8 text-center">
+            <p className="partner-accent text-4xl font-bold mb-2">75%</p>
+            <p className="text-lg font-semibold mb-2">Revenue is yours</p>
+            <p className="text-muted text-sm">You set the price. You keep 75% of every subscriber. We handle billing, tech, and support.</p>
+          </div>
+          <div className="partner-card p-8 text-center">
+            <p className="partner-accent text-4xl font-bold mb-2">100%</p>
+            <p className="text-lg font-semibold mb-2">Your IP stays yours</p>
+            <p className="text-muted text-sm">We license, never own. You can pull your agent anytime. Delaware LLC. Formal contract.</p>
+          </div>
+        </div>
+      </section>
+
       {/* 2. How it works */}
       <section className="px-6 py-20">
         <div className="max-w-5xl mx-auto">
@@ -114,8 +147,8 @@ export default function PartnerPage() {
           </div>
 
           <div className="py-10 text-center">
-            <p className="text-2xl font-bold mb-2">Our first customer chose the agent over the human.</p>
-            <p className="text-muted text-lg">&ldquo;I prefer the agent. It&apos;s a shortcut to the knowledge I need, available when I need it.&rdquo;</p>
+            <p className="text-2xl font-bold mb-2">Headspace replaced the therapist&apos;s office. BetterHelp made therapy text-first.</p>
+            <p className="text-muted text-lg">Same pattern: expert knowledge delivered in the format the generation actually uses.</p>
           </div>
         </div>
       </section>
