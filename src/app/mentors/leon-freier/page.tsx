@@ -81,6 +81,15 @@ export default function LeonFreierPage() {
                   <ChatCircleDots size={20} />
                   Chat with his agent
                 </Link>
+                <a
+                  href="https://www.airbnb.com/users/profile/1462809375056842073"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="border border-glass-border text-muted px-5 py-3.5 rounded-xl font-semibold hover:text-foreground hover:border-white/20 transition text-center inline-flex items-center justify-center gap-2 text-sm"
+                >
+                  <Star size={18} />
+                  View Airbnb Profile
+                </a>
               </div>
             </div>
           </div>
