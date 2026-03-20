@@ -177,9 +177,9 @@ export default function Home() {
               <Image
                 src="/mentors/colin-chapman.png"
                 alt="Colin Chapman"
-                width={80}
-                height={80}
-                className="rounded-full object-cover group-hover:opacity-90 transition mb-5"
+                width={160}
+                height={160}
+                className="w-20 h-20 rounded-full object-cover group-hover:opacity-90 transition mb-5"
               />
               <p className="text-xl font-bold text-[#1A1A1A] mb-0.5">Colin Chapman</p>
               <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-3">B2B Sales & GTM</p>
@@ -200,9 +200,9 @@ export default function Home() {
               <Image
                 src="/mentors/leon-freier.png"
                 alt="Leon Freier"
-                width={80}
-                height={80}
-                className="rounded-full object-cover group-hover:opacity-90 transition mb-5"
+                width={160}
+                height={160}
+                className="w-20 h-20 rounded-full object-cover group-hover:opacity-90 transition mb-5"
               />
               <p className="text-xl font-bold text-[#1A1A1A] mb-0.5">Leon Freier</p>
               <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-3">Luxury STR & Guest Experience</p>
