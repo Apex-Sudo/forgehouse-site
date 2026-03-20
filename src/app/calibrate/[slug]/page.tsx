@@ -279,11 +279,16 @@ export default function CalibrationPage() {
             <div className="flex gap-3">
               <textarea
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  e.target.style.height = "auto";
+                  e.target.style.height = Math.min(e.target.scrollHeight, 200) + "px";
+                }}
                 onKeyDown={handleKeyDown}
                 placeholder="Tell me what's right and what's off..."
                 rows={1}
-                className="flex-1 bg-white border border-[#E5E2DC] rounded-xl px-4 py-3 text-sm text-[#1A1A1A] placeholder:text-[#C5C0B8] focus:outline-none focus:border-[#B8916A]/50 focus:ring-1 focus:ring-[#B8916A]/20 transition resize-none"
+                className="flex-1 bg-white border border-[#E5E2DC] rounded-xl px-4 py-3 text-sm text-[#1A1A1A] placeholder:text-[#C5C0B8] focus:outline-none focus:border-[#B8916A]/50 focus:ring-1 focus:ring-[#B8916A]/20 transition resize-none overflow-y-auto"
+                style={{ maxHeight: 200 }}
               />
               <button
                 onClick={() => send()}
