@@ -1,6 +1,7 @@
 import { after } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { COLIN_SYSTEM_PROMPT } from "@/lib/colin-system-prompt";
+import { LEON_SYSTEM_PROMPT } from "@/lib/leon-system-prompt";
 import { chatLimiter } from "@/lib/rate-limit";
 import { auth } from "@/lib/auth";
 import { getContextMessages, appendMessages } from "@/lib/conversations";
@@ -10,6 +11,7 @@ import { captureServerEvent } from "@/lib/posthog";
 
 const MENTOR_PROMPTS: Record<string, string> = {
   "colin-chapman": COLIN_SYSTEM_PROMPT,
+  "leon-freier": LEON_SYSTEM_PROMPT,
 };
 
 export async function POST(req: Request) {
