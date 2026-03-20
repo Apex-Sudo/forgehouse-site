@@ -195,20 +195,26 @@ export default function Home() {
               <span className="inline-block bg-amber text-white px-6 py-2.5 rounded-xl text-sm font-semibold group-hover:opacity-90 transition w-full">Talk to Colin →</span>
             </Link>
 
-            {/* Ghost card 2 - right */}
-            <div className="hidden md:flex flex-col items-center rounded-2xl border border-dashed border-[#E0DDD8] bg-white/60 p-10 text-center opacity-50">
-              <div className="w-20 h-20 rounded-full bg-[#F0EDE8] mb-5 flex items-center justify-center">
-                <svg className="w-8 h-8 text-[#C5C0B8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+            {/* Leon Freier card - right */}
+            <Link href="/mentors/leon-freier" className="hidden md:flex group flex-col items-center rounded-2xl border border-[#E5E2DC] bg-white p-10 text-center hover:border-amber/30 hover:shadow-md transition">
+              <Image
+                src="/mentors/leon-freier.png"
+                alt="Leon Freier"
+                width={80}
+                height={80}
+                className="rounded-full object-cover group-hover:opacity-90 transition mb-5"
+              />
+              <p className="text-xl font-bold text-[#1A1A1A] mb-0.5">Leon Freier</p>
+              <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-3">Luxury STR & Guest Experience</p>
+              <p className="text-sm text-[#666] leading-relaxed mb-4">10 years building a luxury villa portfolio in Vietnam from scratch.</p>
+              <p className="text-[12px] text-[#999] mb-5">350+ reviews · $20 to $1K+/night · Da Nang Beach Villas</p>
+              <div className="flex flex-wrap justify-center gap-2 mb-6">
+                <span className="text-xs px-3 py-1.5 rounded-full border border-[#E5E2DC] text-[#666] font-medium">Guest Experience</span>
+                <span className="text-xs px-3 py-1.5 rounded-full border border-[#E5E2DC] text-[#666] font-medium">Property Evaluation</span>
+                <span className="text-xs px-3 py-1.5 rounded-full border border-[#E5E2DC] text-[#666] font-medium">Revenue Optimization</span>
               </div>
-              <p className="text-lg font-bold text-[#C5C0B8] mb-1">Coming Soon</p>
-              <p className="text-sm text-[#C5C0B8] mb-4">New domain expert</p>
-              <div className="flex flex-wrap justify-center gap-2 mb-5">
-                <span className="text-xs px-3 py-1 rounded-full bg-[#F5F3EF] text-[#C5C0B8]">???</span>
-                <span className="text-xs px-3 py-1 rounded-full bg-[#F5F3EF] text-[#C5C0B8]">???</span>
-                <span className="text-xs px-3 py-1 rounded-full bg-[#F5F3EF] text-[#C5C0B8]">???</span>
-              </div>
-              <Link href="/for-mentors" className="text-sm text-amber hover:text-[#c9a87c] transition font-medium">Apply to mentor →</Link>
-            </div>
+              <span className="inline-block bg-amber text-white px-6 py-2.5 rounded-xl text-sm font-semibold group-hover:opacity-90 transition w-full">Talk to Leon →</span>
+            </Link>
 
           </div>
         </div>
