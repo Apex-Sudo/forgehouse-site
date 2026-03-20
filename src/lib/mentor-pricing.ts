@@ -16,7 +16,7 @@ export const mentorPricing: Record<string, MentorPricing> = {
     mentorName: "Colin Chapman",
   },
   "leon-freier": {
-    stripePriceId: process.env.STRIPE_LEON_PRICE_ID || "price_LEON_PLACEHOLDER",
+    stripePriceId: process.env.STRIPE_LEON_PRICE_ID || "price_1T6VRu6mX5Jyd7kwODz7aY6x",
     monthlyPrice: 1,
     mentorName: "Leon Freier",
   },
