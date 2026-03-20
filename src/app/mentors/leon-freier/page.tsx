@@ -44,6 +44,8 @@ export default function LeonFreierPage() {
             <img
               src="/mentors/leon-freier.png"
               alt="Leon Freier"
+              width={256}
+              height={256}
               className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border border-border-light shrink-0"
             />
             <div className="flex-1">
