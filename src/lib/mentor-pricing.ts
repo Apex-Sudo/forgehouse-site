@@ -15,6 +15,11 @@ export const mentorPricing: Record<string, MentorPricing> = {
     monthlyPrice: 1,
     mentorName: "Colin Chapman",
   },
+  "leon-freier": {
+    stripePriceId: process.env.STRIPE_LEON_PRICE_ID || "price_LEON_PLACEHOLDER",
+    monthlyPrice: 1,
+    mentorName: "Leon Freier",
+  },
 };
 
 export function getMentorPricing(slug: string): MentorPricing | null {
