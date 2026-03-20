@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   role: "user" | "assistant";
@@ -181,7 +182,7 @@ export default function ExtractionPage() {
       <div className="flex-1 flex justify-center px-4 py-6">
         <div className="w-full max-w-3xl glass-card flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E2DC]">
             <div className="flex items-center gap-3">
               <span className="text-2xl">🔧</span>
               <div>
@@ -199,13 +200,13 @@ export default function ExtractionPage() {
                       setStarted(false);
                     }
                   }}
-                  className="text-xs text-muted hover:text-red-400 border border-white/[0.08] px-3 py-1.5 rounded-lg hover:border-red-400/30 transition"
+                  className="text-xs text-[#999] hover:text-red-500 border border-[#E5E2DC] px-3 py-1.5 rounded-lg hover:border-red-400/30 transition"
                 >
                   Reset
                 </button>
                 <button
                   onClick={exportConversation}
-                  className="text-xs text-muted hover:text-foreground border border-white/[0.08] px-3 py-1.5 rounded-lg hover:border-white/[0.15] transition"
+                  className="text-xs text-[#999] hover:text-[#1A1A1A] border border-[#E5E2DC] px-3 py-1.5 rounded-lg hover:border-[#B8916A]/30 transition"
                 >
                   Export
                 </button>
@@ -218,7 +219,7 @@ export default function ExtractionPage() {
             {/* Auto-greeting if fresh session */}
             {!started && (
               <div className="flex justify-start">
-                <div className="max-w-[80%] bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm leading-relaxed rounded-2xl">
+                <div className="max-w-[80%] bg-[#F5F3F0] border border-[#E5E2DC] px-5 py-3.5 text-sm leading-relaxed text-[#1A1A1A] rounded-2xl rounded-bl-md shadow-sm">
                   Hey! Thanks for being here. What you know took years to build, and most of it lives in your head where only a few people at a time can access it. We&apos;re going to change that. Over our conversations, I&apos;ll learn how you think, how you diagnose problems, and what makes your approach yours. No prep needed, no right answers. Just talk to me the way you&apos;d talk to someone you&apos;re helping. Before we start: if you have any documents that capture your background, frameworks, or past work (a CV, a portfolio doc, case studies, anything), upload them using the paperclip icon below. It saves us time and lets me ask better questions from the start. If not, no worries. Just tell me what you do and who you help, and we&apos;ll go from there.
                 </div>
               </div>
@@ -229,15 +230,37 @@ export default function ExtractionPage() {
                 key={i}
                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
               >
-                <div
-                  className={`max-w-[80%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
-                    m.role === "user"
-                      ? "bg-[#B8916A] text-white rounded-2xl"
-                      : "bg-white/[0.04] border border-white/[0.06] text-foreground rounded-2xl"
-                  }`}
-                >
-                  {m.content}
-                </div>
+                {m.role === "user" ? (
+                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap bg-[#B8916A] text-white rounded-2xl rounded-br-md shadow-sm">
+                    {m.content}
+                  </div>
+                ) : (
+                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed bg-[#F5F3F0] border border-[#E5E2DC] text-[#1A1A1A] rounded-2xl rounded-bl-md shadow-sm">
+                    <ReactMarkdown
+                      components={{
+                        p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                        strong: ({ children }) => <strong className="font-semibold text-[#1A1A1A]">{children}</strong>,
+                        em: ({ children }) => <em className="italic text-[#555]">{children}</em>,
+                        ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
+                        ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
+                        li: ({ children }) => (
+                          <li className="flex items-start gap-2">
+                            <span className="text-[#B8916A] mt-0.5 shrink-0">▸</span>
+                            <span>{children}</span>
+                          </li>
+                        ),
+                        h1: ({ children }) => <h3 className="font-bold text-[#1A1A1A] mb-2 text-base">{children}</h3>,
+                        h2: ({ children }) => <h3 className="font-bold text-[#1A1A1A] mb-2 text-base">{children}</h3>,
+                        h3: ({ children }) => <h3 className="font-semibold text-[#1A1A1A] mb-1.5 text-sm">{children}</h3>,
+                        blockquote: ({ children }) => (
+                          <blockquote className="border-l-2 border-[#B8916A]/40 pl-3 my-2 text-[#737373] italic">{children}</blockquote>
+                        ),
+                      }}
+                    >
+                      {m.content}
+                    </ReactMarkdown>
+                  </div>
+                )}
               </div>
             ))}
 
@@ -245,8 +268,8 @@ export default function ExtractionPage() {
               messages.length > 0 &&
               messages[messages.length - 1].content === "" && (
                 <div className="flex justify-start">
-                  <div className="bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm rounded-2xl">
-                    <span className="animate-pulse text-muted">●●●</span>
+                  <div className="bg-[#F5F3F0] border border-[#E5E2DC] px-5 py-3.5 text-sm rounded-2xl rounded-bl-md shadow-sm">
+                    <span className="animate-pulse text-[#999]">●●●</span>
                   </div>
                 </div>
               )}
@@ -255,20 +278,20 @@ export default function ExtractionPage() {
           </div>
 
           {/* Progress bar */}
-          <div className="px-6 py-2 border-t border-white/[0.04]">
+          <div className="px-6 py-2 border-t border-[#E5E2DC]">
             <div className="flex items-center gap-3">
-              <div className="flex-1 h-1 bg-white/[0.06] rounded-full overflow-hidden">
+              <div className="flex-1 h-1 bg-[#E5E2DC] rounded-full overflow-hidden">
                 <div
                   className="h-full bg-[#B8916A] rounded-full transition-all duration-500"
                   style={{ width: `${Math.min((messageCount / 40) * 100, 100)}%` }}
                 />
               </div>
-              <span className="text-xs text-muted">{messageCount} of ~40 exchanges</span>
+              <span className="text-xs text-[#999]">{messageCount} of ~40 exchanges</span>
             </div>
           </div>
 
           {/* Input */}
-          <div className="border-t border-white/[0.06] px-6 py-4">
+          <div className="border-t border-[#E5E2DC] px-6 py-4">
             <div className="flex gap-2 sm:gap-3 items-end">
               <input
                 ref={fileInputRef}
@@ -281,7 +304,7 @@ export default function ExtractionPage() {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={streaming || uploading}
                 title="Upload a file (.txt, .pdf, .docx, .md)"
-                className="text-muted hover:text-foreground border border-white/[0.08] px-3 py-3 rounded-xl hover:border-white/[0.15] transition disabled:opacity-50 shrink-0"
+                className="text-[#999] hover:text-[#1A1A1A] border border-[#E5E2DC] px-3 py-3 rounded-xl hover:border-[#B8916A]/30 transition disabled:opacity-50 shrink-0"
               >
                 {uploading ? (
                   <span className="animate-pulse text-sm">...</span>
@@ -301,7 +324,7 @@ export default function ExtractionPage() {
                 onKeyDown={handleKeyDown}
                 placeholder={started ? "Continue where you left off..." : "Start by telling me about yourself..."}
                 rows={1}
-                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#B8916A]/40 transition resize-none overflow-y-auto"
+                className="flex-1 bg-white border border-[#E5E2DC] rounded-xl px-4 py-3 text-sm text-[#1A1A1A] placeholder:text-[#C5C0B8] focus:outline-none focus:border-[#B8916A]/50 focus:ring-1 focus:ring-[#B8916A]/20 transition resize-none overflow-y-auto"
                 style={{ maxHeight: 200 }}
               />
               <button
