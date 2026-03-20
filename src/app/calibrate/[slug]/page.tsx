@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   role: "user" | "assistant";
@@ -38,7 +39,6 @@ export default function CalibrationPage() {
   useEffect(() => {
     if (messages.length > 0) {
       localStorage.setItem(`fh-calibrate-${slug}`, JSON.stringify(messages));
-      // Async persist to Supabase (best-effort, debounced by React batching)
       fetch("/api/calibrate-save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -52,7 +52,7 @@ export default function CalibrationPage() {
   // Load extraction context from localStorage or Supabase fallback
   useEffect(() => {
     const local = localStorage.getItem(`fh-contribute-${slug}`);
-    if (local) return; // localStorage has it, no need to fetch
+    if (local) return;
     fetch(`/api/extraction-context?slug=${slug}`)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => { if (data?.context) setRemoteContext(data.context); })
@@ -163,12 +163,12 @@ export default function CalibrationPage() {
       <div className="flex-1 flex justify-center px-4 py-6">
         <div className="w-full max-w-3xl glass-card flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E2DC]">
             <div className="flex items-center gap-3">
               <span className="text-2xl">🎯</span>
               <div>
                 <h1 className="font-bold text-sm">Calibration Session</h1>
-                <p className="text-xs text-muted">{slug} &middot; Phase: {phases}</p>
+                <p className="text-xs text-[#999]">{slug} &middot; Phase: {phases}</p>
               </div>
             </div>
             {messages.length > 0 && (
@@ -181,13 +181,13 @@ export default function CalibrationPage() {
                       setStarted(false);
                     }
                   }}
-                  className="text-xs text-muted hover:text-red-400 border border-white/[0.08] px-3 py-1.5 rounded-lg hover:border-red-400/30 transition"
+                  className="text-xs text-[#999] hover:text-red-500 border border-[#E5E2DC] px-3 py-1.5 rounded-lg hover:border-red-400/30 transition"
                 >
                   Reset
                 </button>
                 <button
                   onClick={exportCorrections}
-                  className="text-xs text-muted hover:text-foreground border border-white/[0.08] px-3 py-1.5 rounded-lg hover:border-white/[0.15] transition"
+                  className="text-xs text-[#999] hover:text-[#1A1A1A] border border-[#E5E2DC] px-3 py-1.5 rounded-lg hover:border-[#B8916A]/30 transition"
                 >
                   Export
                 </button>
@@ -199,7 +199,7 @@ export default function CalibrationPage() {
           <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
             {!started && (
               <div className="flex justify-start">
-                <div className="max-w-[80%] bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm leading-relaxed rounded-2xl">
+                <div className="max-w-[80%] bg-[#F5F3F0] border border-[#E5E2DC] px-5 py-3.5 text-sm leading-relaxed text-[#1A1A1A] rounded-2xl rounded-bl-md shadow-sm">
                   Welcome back! Your agent is built and ready for you to put it through its paces. I&apos;m going to show you how it handles different situations, and you tell me where it nails it and where it&apos;s off. Think of it like training a new team member who&apos;s read all your playbooks but hasn&apos;t sat in the room with you yet. Let&apos;s start with something simple.
                 </div>
               </div>
@@ -210,15 +210,37 @@ export default function CalibrationPage() {
                 key={i}
                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
               >
-                <div
-                  className={`max-w-[80%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
-                    m.role === "user"
-                      ? "bg-[#B8916A] text-white rounded-2xl"
-                      : "bg-white/[0.04] border border-white/[0.06] text-foreground rounded-2xl"
-                  }`}
-                >
-                  {m.content}
-                </div>
+                {m.role === "user" ? (
+                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap bg-[#B8916A] text-white rounded-2xl rounded-br-md shadow-sm">
+                    {m.content}
+                  </div>
+                ) : (
+                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed bg-[#F5F3F0] border border-[#E5E2DC] text-[#1A1A1A] rounded-2xl rounded-bl-md shadow-sm">
+                    <ReactMarkdown
+                      components={{
+                        p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                        strong: ({ children }) => <strong className="font-semibold text-[#1A1A1A]">{children}</strong>,
+                        em: ({ children }) => <em className="italic text-[#555]">{children}</em>,
+                        ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
+                        ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
+                        li: ({ children }) => (
+                          <li className="flex items-start gap-2">
+                            <span className="text-[#B8916A] mt-0.5 shrink-0">▸</span>
+                            <span>{children}</span>
+                          </li>
+                        ),
+                        h1: ({ children }) => <h3 className="font-bold text-[#1A1A1A] mb-2 text-base">{children}</h3>,
+                        h2: ({ children }) => <h3 className="font-bold text-[#1A1A1A] mb-2 text-base">{children}</h3>,
+                        h3: ({ children }) => <h3 className="font-semibold text-[#1A1A1A] mb-1.5 text-sm">{children}</h3>,
+                        blockquote: ({ children }) => (
+                          <blockquote className="border-l-2 border-[#B8916A]/40 pl-3 my-2 text-[#737373] italic">{children}</blockquote>
+                        ),
+                      }}
+                    >
+                      {m.content}
+                    </ReactMarkdown>
+                  </div>
+                )}
               </div>
             ))}
 
@@ -226,8 +248,8 @@ export default function CalibrationPage() {
               messages.length > 0 &&
               messages[messages.length - 1].content === "" && (
                 <div className="flex justify-start">
-                  <div className="bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm rounded-2xl">
-                    <span className="animate-pulse text-muted">●●●</span>
+                  <div className="bg-[#F5F3F0] border border-[#E5E2DC] px-5 py-3.5 text-sm rounded-2xl rounded-bl-md shadow-sm">
+                    <span className="animate-pulse text-[#999]">●●●</span>
                   </div>
                 </div>
               )}
@@ -236,24 +258,24 @@ export default function CalibrationPage() {
           </div>
 
           {/* Phase indicator */}
-          <div className="px-6 py-2 border-t border-white/[0.04]">
+          <div className="px-6 py-2 border-t border-[#E5E2DC]">
             <div className="flex items-center gap-3">
               <div className="flex gap-1">
                 {["Voice", "Frameworks", "Edge Cases", "Final"].map((p) => (
                   <div
                     key={p}
                     className={`h-1.5 w-12 rounded-full transition-all duration-500 ${
-                      phases === p ? "bg-[#B8916A]" : corrections > ["Voice", "Frameworks", "Edge Cases", "Final"].indexOf(p) * 5 ? "bg-[#B8916A]/40" : "bg-white/[0.06]"
+                      phases === p ? "bg-[#B8916A]" : corrections > ["Voice", "Frameworks", "Edge Cases", "Final"].indexOf(p) * 5 ? "bg-[#B8916A]/40" : "bg-[#E5E2DC]"
                     }`}
                   />
                 ))}
               </div>
-              <span className="text-xs text-muted">{phases} phase</span>
+              <span className="text-xs text-[#999]">{phases} phase</span>
             </div>
           </div>
 
           {/* Input */}
-          <div className="border-t border-white/[0.06] px-6 py-4">
+          <div className="border-t border-[#E5E2DC] px-6 py-4">
             <div className="flex gap-3">
               <textarea
                 value={input}
@@ -261,7 +283,7 @@ export default function CalibrationPage() {
                 onKeyDown={handleKeyDown}
                 placeholder="Tell me what's right and what's off..."
                 rows={1}
-                className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#B8916A]/40 transition resize-none"
+                className="flex-1 bg-white border border-[#E5E2DC] rounded-xl px-4 py-3 text-sm text-[#1A1A1A] placeholder:text-[#C5C0B8] focus:outline-none focus:border-[#B8916A]/50 focus:ring-1 focus:ring-[#B8916A]/20 transition resize-none"
               />
               <button
                 onClick={() => send()}
