@@ -146,22 +146,71 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Meet the mentor */}
-      <section className="px-6 py-24" style={{ background: "#FAFAF8" }}>
-        <div className="max-w-lg mx-auto">
-          <p className="text-xs font-semibold text-amber uppercase tracking-widest text-center mb-10">Meet the mentor</p>
-          <Link href="/mentors/colin-chapman" className="group block rounded-2xl border border-[#E5E2DC] p-10 text-center hover:border-amber/30 transition bg-white">
-            <Image
-              src="/mentors/colin-chapman.png"
-              alt="Colin Chapman"
-              width={80}
-              height={80}
-              className="rounded-full object-cover mx-auto mb-5 group-hover:opacity-80 transition"
-            />
-            <p className="text-xl font-bold text-[#1A1A1A] mb-1">Colin Chapman</p>
-            <p className="text-[15px] text-[#737373] mb-5">26 years B2B sales · IBM, Siemens, BMW · 4.92★ on GrowthMentor</p>
-            <span className="inline-block bg-amber text-white px-6 py-2.5 rounded-xl text-sm font-semibold group-hover:opacity-90 transition">Talk to Colin →</span>
-          </Link>
+      {/* Meet the mentors */}
+      <section className="px-6 py-28" style={{ background: "#FAFAF8" }}>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#1A1A1A] text-center mb-3">Meet the Mentors</h2>
+          <p className="text-[15px] text-[#737373] text-center mb-4">Real expertise, available as AI agents. Built from hours of real mentoring sessions.</p>
+          <div className="w-10 h-1 bg-amber mx-auto rounded-full mb-14"></div>
+
+          {/* Pricing-style 3-card grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+
+            {/* Ghost card 1 - left */}
+            <div className="hidden md:flex flex-col items-center rounded-2xl border border-dashed border-[#E0DDD8] bg-white/60 p-10 text-center opacity-50">
+              <div className="w-20 h-20 rounded-full bg-[#F0EDE8] mb-5 flex items-center justify-center">
+                <svg className="w-8 h-8 text-[#C5C0B8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+              </div>
+              <p className="text-lg font-bold text-[#C5C0B8] mb-1">Coming Soon</p>
+              <p className="text-sm text-[#C5C0B8] mb-4">New domain expert</p>
+              <div className="flex flex-wrap justify-center gap-2 mb-5">
+                <span className="text-xs px-3 py-1 rounded-full bg-[#F5F3EF] text-[#C5C0B8]">???</span>
+                <span className="text-xs px-3 py-1 rounded-full bg-[#F5F3EF] text-[#C5C0B8]">???</span>
+                <span className="text-xs px-3 py-1 rounded-full bg-[#F5F3EF] text-[#C5C0B8]">???</span>
+              </div>
+              <Link href="/for-mentors" className="text-sm text-amber hover:text-[#c9a87c] transition font-medium">Apply to mentor →</Link>
+            </div>
+
+            {/* Colin - featured center card */}
+            <Link href="/mentors/colin-chapman" className="group flex flex-col items-center rounded-2xl border-2 border-amber/30 bg-white p-10 text-center shadow-sm hover:shadow-md hover:border-amber/50 transition relative">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">Available Now</span>
+              <Image
+                src="/mentors/colin-chapman.png"
+                alt="Colin Chapman"
+                width={80}
+                height={80}
+                className="rounded-full object-cover group-hover:opacity-90 transition mb-5"
+              />
+              <p className="text-xl font-bold text-[#1A1A1A] mb-0.5">Colin Chapman</p>
+              <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-3">B2B Sales & GTM</p>
+              <p className="text-sm text-[#666] leading-relaxed mb-4">Helps first-time founders build repeatable sales processes from zero.</p>
+              <p className="text-[12px] text-[#999] mb-5">26 yrs · IBM, Siemens, BMW · 4.92★ GrowthMentor</p>
+              <div className="flex flex-wrap justify-center gap-2 mb-6">
+                <span className="text-xs px-3 py-1.5 rounded-full border border-[#E5E2DC] text-[#666] font-medium">Cold Outreach</span>
+                <span className="text-xs px-3 py-1.5 rounded-full border border-[#E5E2DC] text-[#666] font-medium">Discovery Calls</span>
+                <span className="text-xs px-3 py-1.5 rounded-full border border-[#E5E2DC] text-[#666] font-medium">Pipeline</span>
+                <span className="text-xs px-3 py-1.5 rounded-full border border-[#E5E2DC] text-[#666] font-medium">Objection Handling</span>
+                <span className="text-xs px-3 py-1.5 rounded-full border border-[#E5E2DC] text-[#666] font-medium">Founder-Led Sales</span>
+              </div>
+              <span className="inline-block bg-amber text-white px-6 py-2.5 rounded-xl text-sm font-semibold group-hover:opacity-90 transition w-full">Talk to Colin →</span>
+            </Link>
+
+            {/* Ghost card 2 - right */}
+            <div className="hidden md:flex flex-col items-center rounded-2xl border border-dashed border-[#E0DDD8] bg-white/60 p-10 text-center opacity-50">
+              <div className="w-20 h-20 rounded-full bg-[#F0EDE8] mb-5 flex items-center justify-center">
+                <svg className="w-8 h-8 text-[#C5C0B8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+              </div>
+              <p className="text-lg font-bold text-[#C5C0B8] mb-1">Coming Soon</p>
+              <p className="text-sm text-[#C5C0B8] mb-4">New domain expert</p>
+              <div className="flex flex-wrap justify-center gap-2 mb-5">
+                <span className="text-xs px-3 py-1 rounded-full bg-[#F5F3EF] text-[#C5C0B8]">???</span>
+                <span className="text-xs px-3 py-1 rounded-full bg-[#F5F3EF] text-[#C5C0B8]">???</span>
+                <span className="text-xs px-3 py-1 rounded-full bg-[#F5F3EF] text-[#C5C0B8]">???</span>
+              </div>
+              <Link href="/for-mentors" className="text-sm text-amber hover:text-[#c9a87c] transition font-medium">Apply to mentor →</Link>
+            </div>
+
+          </div>
         </div>
       </section>
 
