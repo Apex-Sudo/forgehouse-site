@@ -26,7 +26,7 @@ export function extractLimiter() {
   if (!_extractLimiter) {
     _extractLimiter = new Ratelimit({
       redis: createRedis(),
-      limiter: Ratelimit.slidingWindow(30, "1 h"),
+      limiter: Ratelimit.slidingWindow(100, "1 h"),
       prefix: "fh:extract",
     });
   }
