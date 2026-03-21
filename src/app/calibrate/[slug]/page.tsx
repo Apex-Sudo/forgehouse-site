@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 
-const CONTRIBUTE_ACCESS_CODE = "fh-extract-2026";
+const CONTRIBUTE_ACCESS_CODE = "HYNXmhPKruI";
 
 interface Message {
   role: "user" | "assistant";
