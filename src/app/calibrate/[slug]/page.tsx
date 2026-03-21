@@ -1,7 +1,9 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
+
+const CONTRIBUTE_ACCESS_CODE = "fh-extract-2026";
 
 interface Message {
   role: "user" | "assistant";
@@ -10,12 +12,53 @@ interface Message {
 
 export default function CalibrationPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = params.slug as string;
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [started, setStarted] = useState(false);
+  const [accessCode, setAccessCode] = useState("");
+  const [authorized, setAuthorized] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const code = searchParams.get("code");
+    if (code === CONTRIBUTE_ACCESS_CODE) {
+      setAuthorized(true);
+    }
+  }, [searchParams]);
+
+  if (!authorized) {
+    return (
+      <div className="min-h-screen bg-[#0e1117] flex items-center justify-center p-4">
+        <div className="max-w-sm w-full text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">Access Required</h1>
+          <p className="text-white/40 mb-6 text-sm">This page is invite-only. Enter your access code or use the link provided to you.</p>
+          <input
+            type="text"
+            value={accessCode}
+            onChange={(e) => setAccessCode(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && accessCode === CONTRIBUTE_ACCESS_CODE) {
+                setAuthorized(true);
+              }
+            }}
+            placeholder="Access code"
+            className="w-full bg-[#1a1b2e] border border-white/10 rounded-lg px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#fbbf24] mb-4"
+          />
+          <button
+            onClick={() => {
+              if (accessCode === CONTRIBUTE_ACCESS_CODE) setAuthorized(true);
+            }}
+            className="w-full bg-[#fbbf24] text-[#0e1117] font-bold py-3 rounded-lg hover:opacity-90 transition"
+          >
+            Enter
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const scrollToBottom = useCallback(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
