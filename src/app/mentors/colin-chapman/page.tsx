@@ -5,7 +5,7 @@ import { ChatCircleDots, Lightning, Target, Star, LinkedinLogo, Globe } from "@p
 const highlights = [
   { icon: Target, label: "26 years in B2B sales" },
   { icon: Globe, label: "15 years in business development" },
-  { icon: Lightning, label: "Trained on real session transcripts" },
+  { icon: Lightning, label: "Built from real session transcripts" },
   { icon: Star, label: "4.92 on GrowthMentor" },
 ];
 
@@ -94,7 +94,7 @@ export default function ColinChapmanPage() {
                 GTM & Outbound for B2B Tech Founders
               </p>
               <p className="text-muted text-base leading-relaxed mb-6">
-                An AI agent trained on 26 years of B2B deal-making. It diagnoses your outbound,
+                An AI agent built from 26 years of B2B deal-making. It diagnoses your outbound,
                 maps your buyer psychology, and builds the playbook. Available now, not in 3 weeks
                 when a calendar slot opens.
               </p>

@@ -6,7 +6,7 @@ const highlights = [
   { icon: Target, label: "10 years in short-term rentals" },
   { icon: Globe, label: "Luxury villas in Vietnam" },
   { icon: Bed, label: "350+ five-star reviews" },
-  { icon: Lightning, label: "Trained on real operator experience" },
+  { icon: Lightning, label: "Built from real operator experience" },
 ];
 
 const sessions = [

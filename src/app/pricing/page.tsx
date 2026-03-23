@@ -46,7 +46,7 @@ const faq = [
   },
   {
     q: "How accurate is the agent?",
-    a: "Colin reviews and approves the agent himself. It's trained on how he actually thinks, and he personally calibrates every response pattern.",
+    a: "Built in two steps. First, we extracted Colin's thinking through hours of structured conversation. Then, Colin personally calibrated the agent, correcting responses until it matched how he actually operates.",
   },
 ];
 
