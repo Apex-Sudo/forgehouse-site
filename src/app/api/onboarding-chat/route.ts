@@ -1,6 +1,8 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { AIMessageChunk } from "@langchain/core/messages";
 import { ONBOARDING_SYSTEM_PROMPT } from "@/lib/onboarding-system-prompt";
 import { auth } from "@/lib/auth";
+import { agentGraph } from "@/lib/agent/graph";
+import { toLangChainMessages } from "@/lib/agent/messages";
 
 export async function POST(req: Request) {
   try {
@@ -15,25 +17,34 @@ export async function POST(req: Request) {
       return Response.json({ error: "No messages provided" }, { status: 400 });
     }
 
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-    const stream = await client.messages.stream({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1024,
-      system: ONBOARDING_SYSTEM_PROMPT,
-      messages,
-    });
+    const langchainMessages = toLangChainMessages(messages);
 
     const encoder = new TextEncoder();
     const readable = new ReadableStream({
       async start(controller) {
         try {
-          for await (const event of stream) {
+          const stream = await agentGraph.stream(
+            {
+              messages: langchainMessages,
+              systemPrompt: ONBOARDING_SYSTEM_PROMPT,
+              agentType: "onboarding" as const,
+              blocked: false,
+              blockReason: "",
+            },
+            { streamMode: "messages" }
+          );
+
+          for await (const [chunk, metadata] of stream) {
+            const isAgentToken = metadata.langgraph_node === "agent";
+            const isGuardrailRefusal = metadata.langgraph_node === "inputGuardrail";
+
             if (
-              event.type === "content_block_delta" &&
-              event.delta.type === "text_delta"
+              (isAgentToken || isGuardrailRefusal) &&
+              chunk instanceof AIMessageChunk &&
+              typeof chunk.content === "string" &&
+              chunk.content
             ) {
-              controller.enqueue(encoder.encode(event.delta.text));
+              controller.enqueue(encoder.encode(chunk.content));
             }
           }
         } catch (err) {
@@ -46,7 +57,11 @@ export async function POST(req: Request) {
     });
 
     return new Response(readable, {
-      headers: { "Content-Type": "text/plain; charset=utf-8" },
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        "X-Accel-Buffering": "no",
+      },
     });
   } catch (err) {
     console.error("Onboarding chat error:", err);

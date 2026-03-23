@@ -1,13 +1,15 @@
 import { after } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { AIMessageChunk } from "@langchain/core/messages";
 import { COLIN_SYSTEM_PROMPT } from "@/lib/colin-system-prompt";
 import { LEON_SYSTEM_PROMPT } from "@/lib/leon-system-prompt";
 import { chatLimiter } from "@/lib/rate-limit";
 import { auth } from "@/lib/auth";
 import { getContextMessages, appendMessages } from "@/lib/conversations";
-import { getScenario } from "@/lib/scenarios";
 import { canAccess, incrementAnonymousMessages, incrementAuthenticatedMessages } from "@/lib/subscription";
 import { captureServerEvent } from "@/lib/posthog";
+import { agentGraph } from "@/lib/agent/graph";
+import { buildEnrichedPrompt } from "@/lib/agent/prompt-builder";
+import { toLangChainMessages } from "@/lib/agent/messages";
 
 const MENTOR_PROMPTS: Record<string, string> = {
   "colin-chapman": COLIN_SYSTEM_PROMPT,
@@ -60,8 +62,6 @@ export async function POST(req: Request) {
     const user = session?.user as { id?: string; email?: string } | undefined;
 
     // --- Tiered message gating (Redis-based) ---
-    // 3 anonymous → login_required → 2 more authenticated → paywall
-    // Invite codes bypass all gates
     const effectiveEmail = user?.email || undefined;
     if (!isInvited) {
       const access = await canAccess(ip, effectiveEmail);
@@ -75,7 +75,7 @@ export async function POST(req: Request) {
 
     const lastUserMessage = messages[messages.length - 1];
 
-    // Detect return behavior (user comes back to an existing conversation after a meaningful gap)
+    // Detect return behavior
     let hoursSinceLastUserMessage: number | null = null;
     let isReturningConversation = false;
     if (user?.id && conversation_id) {
@@ -109,65 +109,36 @@ export async function POST(req: Request) {
       }
     }
 
-    // Build system prompt with context
-    let enrichedSystemPrompt = systemPrompt;
-
-    // Inject user profile if available
+    // Build enriched system prompt
+    let profile = null;
     if (user?.id) {
       try {
-        const { data: profile } = await (await import("@/lib/supabase")).supabase
+        const { supabase } = await import("@/lib/supabase");
+        const { data } = await supabase
           .from("user_profiles")
           .select("*")
           .eq("user_id", user.id)
           .eq("profile_complete", true)
           .single();
-
-        if (profile) {
-          const userName = session?.user?.name || "Unknown";
-          enrichedSystemPrompt += `\n\n--- User Profile ---
-Name: ${userName}
-Company: ${profile.company_description || "Unknown"}
-Target Audience: ${profile.target_audience || "Unknown"}
-Stage: ${profile.company_stage || "Unknown"}
-Team Size: ${profile.team_size || "Unknown"}
-Revenue: ${profile.revenue_range || "Unknown"}
-Biggest Challenge: ${profile.biggest_challenge || "Unknown"}
-Sales Process: ${profile.sales_process || "Unknown"}
---- End Profile ---
-Use the user's first name naturally in conversation. Don't overdo it.`;
-        }
+        profile = data;
       } catch {
         // Profile not found, continue without it
       }
     }
-    if (contextMessages.length > 0) {
-      const contextSummary = contextMessages
-        .map((m) => `${m.role}: ${m.content}`)
-        .join("\n");
-      enrichedSystemPrompt = `${systemPrompt}\n\n--- Previous conversation context ---\n${contextSummary}\n--- End of context ---`;
-    }
 
-    // Add scenario-specific system prompt if in scenario mode
-    if (scenario_id) {
-      const scenario = getScenario(scenario_id);
-      if (scenario) {
-        const userAnswerCount = messages.filter((m) => m.role === "user").length;
-        const totalQuestions = scenario.questions.length;
-        const isLastQuestion = userAnswerCount >= totalQuestions;
+    const userMessageCount = messages.filter((m) => m.role === "user").length;
 
-        enrichedSystemPrompt += `\n\n--- SCENARIO MODE ---\n${scenario.systemPromptAddition}\n\nThe user is on answer ${userAnswerCount} of ${totalQuestions} questions.`;
-
-        if (isLastQuestion) {
-          enrichedSystemPrompt += `\nAll questions have been answered. Deliver the structured output NOW. Do not ask more questions.`;
-        } else {
-          const nextQuestion = scenario.questions[userAnswerCount];
-          enrichedSystemPrompt += `\nAcknowledge their answer briefly, then ask this next question:\n"${nextQuestion}"\nDo NOT deliver the final structured output yet.`;
-        }
-      }
-    }
+    const enrichedSystemPrompt = buildEnrichedPrompt({
+      basePrompt: systemPrompt,
+      userName: session?.user?.name ?? undefined,
+      profile,
+      contextMessages,
+      scenarioId: scenario_id,
+      userMessageCount,
+    });
 
     const distinctId = user?.email || `anon:${ip}`;
-    const messageNumber = messages.filter((m) => m.role === "user").length;
+    const messageNumber = userMessageCount;
 
     after(async () => {
       await captureServerEvent(distinctId, "message_sent", {
@@ -188,33 +159,40 @@ Use the user's first name naturally in conversation. Don't overdo it.`;
       }
     });
 
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-    const stream = await client.messages.stream({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1024,
-      system: enrichedSystemPrompt,
-      messages,
-    });
-
-    // Collect the full response for saving
+    // --- LangGraph ReAct agent streaming ---
+    const langchainMessages = toLangChainMessages(messages);
     let fullResponse = "";
 
     const encoder = new TextEncoder();
     const readable = new ReadableStream({
       async start(controller) {
         try {
-          for await (const event of stream) {
+          const stream = await agentGraph.stream(
+            {
+              messages: langchainMessages,
+              systemPrompt: enrichedSystemPrompt,
+              agentType: "mentor" as const,
+              blocked: false,
+              blockReason: "",
+            },
+            { streamMode: "messages" }
+          );
+
+          for await (const [chunk, metadata] of stream) {
+            const isAgentToken = metadata.langgraph_node === "agent";
+            const isGuardrailRefusal = metadata.langgraph_node === "inputGuardrail";
+
             if (
-              event.type === "content_block_delta" &&
-              event.delta.type === "text_delta"
+              (isAgentToken || isGuardrailRefusal) &&
+              chunk instanceof AIMessageChunk &&
+              typeof chunk.content === "string" &&
+              chunk.content
             ) {
-              fullResponse += event.delta.text;
-              controller.enqueue(encoder.encode(event.delta.text));
+              fullResponse += chunk.content;
+              controller.enqueue(encoder.encode(chunk.content));
             }
           }
 
-          // Use after() for analytics so Vercel doesn't kill the function before capture completes
           after(async () => {
             await captureServerEvent(distinctId, "message_received", {
               mentor_slug: mentor,
