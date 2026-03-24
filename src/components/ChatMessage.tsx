@@ -2,14 +2,17 @@
 import ReactMarkdown from "react-markdown";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import type { Artifact } from "@/lib/agent/stream";
+import ArtifactCard from "./ArtifactCard";
 
 interface ChatMessageProps {
   role: "user" | "assistant";
   content: string;
   mentorSlug?: string;
   isSubscribed?: boolean;
-  context?: string; // the user message that prompted this response
+  context?: string;
   isStreaming?: boolean;
+  artifacts?: Artifact[];
 }
 
 function BookmarkButton({
@@ -71,7 +74,7 @@ function BookmarkButton({
   );
 }
 
-export default function ChatMessage({ role, content, mentorSlug, isSubscribed: isSubProp, context, isStreaming }: ChatMessageProps) {
+export default function ChatMessage({ role, content, mentorSlug, isSubscribed: isSubProp, context, isStreaming, artifacts }: ChatMessageProps) {
   const { data: session } = useSession();
 
   if (role === "user") {
@@ -86,35 +89,44 @@ export default function ChatMessage({ role, content, mentorSlug, isSubscribed: i
 
   return (
     <div className="flex justify-start group">
-      <div className="max-w-[80%] px-4 py-3 text-sm leading-relaxed bg-[#F5F3F0] text-foreground rounded-2xl prose-chat">
-        <ReactMarkdown
-          components={{
-            p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
-            strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
-            em: ({ children }) => <em className="italic text-foreground/80">{children}</em>,
-            ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
-            ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
-            li: ({ children }) => (
-              <li className="flex items-start gap-2">
-                <span className="text-amber mt-0.5 shrink-0">▸</span>
-                <span>{children}</span>
-              </li>
-            ),
-            code: ({ children }) => (
-              <code className="bg-foreground/[0.06] px-1.5 py-0.5 rounded text-xs font-mono">{children}</code>
-            ),
-            h1: ({ children }) => <h3 className="font-bold text-foreground mb-2 text-base">{children}</h3>,
-            h2: ({ children }) => <h3 className="font-bold text-foreground mb-2 text-base">{children}</h3>,
-            h3: ({ children }) => <h3 className="font-semibold text-foreground mb-1.5 text-sm">{children}</h3>,
-            blockquote: ({ children }) => (
-              <blockquote className="border-l-2 border-amber/40 pl-3 my-2 text-muted italic">{children}</blockquote>
-            ),
-          }}
-        >
-          {content}
-        </ReactMarkdown>
-        {isStreaming && (
-          <span className="inline-block w-1.5 h-4 bg-amber/70 rounded-sm animate-pulse ml-0.5 align-text-bottom" />
+      <div className="max-w-[80%]">
+        <div className="px-4 py-3 text-sm leading-relaxed bg-[#F5F3F0] text-foreground rounded-2xl prose-chat">
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+              strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
+              em: ({ children }) => <em className="italic text-foreground/80">{children}</em>,
+              ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
+              ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
+              li: ({ children }) => (
+                <li className="flex items-start gap-2">
+                  <span className="text-amber mt-0.5 shrink-0">▸</span>
+                  <span>{children}</span>
+                </li>
+              ),
+              code: ({ children }) => (
+                <code className="bg-foreground/[0.06] px-1.5 py-0.5 rounded text-xs font-mono">{children}</code>
+              ),
+              h1: ({ children }) => <h3 className="font-bold text-foreground mb-2 text-base">{children}</h3>,
+              h2: ({ children }) => <h3 className="font-bold text-foreground mb-2 text-base">{children}</h3>,
+              h3: ({ children }) => <h3 className="font-semibold text-foreground mb-1.5 text-sm">{children}</h3>,
+              blockquote: ({ children }) => (
+                <blockquote className="border-l-2 border-amber/40 pl-3 my-2 text-muted italic">{children}</blockquote>
+              ),
+            }}
+          >
+            {content}
+          </ReactMarkdown>
+          {isStreaming && (
+            <span className="inline-block w-1.5 h-4 bg-amber/70 rounded-sm animate-pulse ml-0.5 align-text-bottom" />
+          )}
+        </div>
+        {artifacts && artifacts.length > 0 && (
+          <div className="mt-1">
+            {artifacts.map((a) => (
+              <ArtifactCard key={a.id} artifact={a} />
+            ))}
+          </div>
         )}
       </div>
       {session && mentorSlug && (

@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { IconUserCircle, IconArrowRight } from "@tabler/icons-react";
+import { parseStreamChunk } from "@/lib/agent/stream";
 
 interface Message {
   role: "user" | "assistant";
@@ -83,13 +84,26 @@ function OnboardingContent() {
 
       const decoder = new TextDecoder();
       let assistantContent = "";
+      let ndjsonBuffer = "";
 
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        assistantContent += decoder.decode(value, { stream: true });
+
+        const raw = decoder.decode(value, { stream: true });
+        const { events, remaining } = parseStreamChunk(raw, ndjsonBuffer);
+        ndjsonBuffer = remaining;
+
+        for (const event of events) {
+          if (event.type === "text") {
+            assistantContent += event.content;
+          } else if (event.type === "error") {
+            assistantContent += `\n[Error: ${event.message}]`;
+          }
+        }
+
         const snapshot = assistantContent;
         setMessages((prev) => {
           const copy = [...prev];
@@ -98,9 +112,7 @@ function OnboardingContent() {
         });
       }
 
-      // Check for [PROFILE_COMPLETE] marker
       if (assistantContent.includes("[PROFILE_COMPLETE]")) {
-        // Clean the marker from the displayed message
         const cleanContent = assistantContent.replace("[PROFILE_COMPLETE]", "").trim();
         const finalMessages = [...updated, { role: "assistant" as const, content: cleanContent }];
         setMessages((prev) => {

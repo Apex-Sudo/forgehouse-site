@@ -10,6 +10,8 @@ import { captureServerEvent } from "@/lib/posthog";
 import { agentGraph } from "@/lib/agent/graph";
 import { buildEnrichedPrompt } from "@/lib/agent/prompt-builder";
 import { toLangChainMessages } from "@/lib/agent/messages";
+import { encodeEvent } from "@/lib/agent/stream";
+import { retrieveKnowledge } from "@/lib/agent/retrieval";
 
 const MENTOR_PROMPTS: Record<string, string> = {
   "colin-chapman": COLIN_SYSTEM_PROMPT,
@@ -128,11 +130,22 @@ export async function POST(req: Request) {
 
     const userMessageCount = messages.filter((m) => m.role === "user").length;
 
+    let knowledgeChunks: string[] = [];
+    try {
+      const latestUserMsg = lastUserMessage?.content;
+      if (latestUserMsg) {
+        knowledgeChunks = await retrieveKnowledge(latestUserMsg, mentor);
+      }
+    } catch (err) {
+      console.error("Knowledge retrieval failed (non-blocking):", err);
+    }
+
     const enrichedSystemPrompt = buildEnrichedPrompt({
       basePrompt: systemPrompt,
       userName: session?.user?.name ?? undefined,
       profile,
       contextMessages,
+      knowledgeChunks,
       scenarioId: scenario_id,
       userMessageCount,
     });
@@ -159,11 +172,10 @@ export async function POST(req: Request) {
       }
     });
 
-    // --- LangGraph ReAct agent streaming ---
+    // --- LangGraph ReAct agent streaming (NDJSON) ---
     const langchainMessages = toLangChainMessages(messages);
     let fullResponse = "";
 
-    const encoder = new TextEncoder();
     const readable = new ReadableStream({
       async start(controller) {
         try {
@@ -181,15 +193,32 @@ export async function POST(req: Request) {
           for await (const [chunk, metadata] of stream) {
             const isAgentToken = metadata.langgraph_node === "agent";
             const isGuardrailRefusal = metadata.langgraph_node === "inputGuardrail";
+            const isToolResult = metadata.langgraph_node === "tools";
 
-            if (
-              (isAgentToken || isGuardrailRefusal) &&
-              chunk instanceof AIMessageChunk &&
-              typeof chunk.content === "string" &&
-              chunk.content
-            ) {
-              fullResponse += chunk.content;
-              controller.enqueue(encoder.encode(chunk.content));
+            if ((isAgentToken || isGuardrailRefusal) && chunk instanceof AIMessageChunk) {
+              let text = "";
+              if (typeof chunk.content === "string") {
+                text = chunk.content;
+              } else if (Array.isArray(chunk.content)) {
+                for (const block of chunk.content) {
+                  if (block.type === "text" && block.text) text += block.text;
+                }
+              }
+              if (text) {
+                fullResponse += text;
+                controller.enqueue(encodeEvent({ type: "text", content: text }));
+              }
+            }
+
+            if (isToolResult && typeof chunk.content === "string" && chunk.content) {
+              try {
+                const toolResult = JSON.parse(chunk.content);
+                if (toolResult.artifact) {
+                  controller.enqueue(encodeEvent({ type: "artifact", artifact: toolResult.artifact }));
+                }
+              } catch {
+                // tool result isn't artifact JSON
+              }
             }
           }
 
@@ -202,7 +231,6 @@ export async function POST(req: Request) {
             });
           });
 
-          // Save messages to conversation if authenticated
           if (user?.id && user?.email && conversation_id) {
             try {
               await appendMessages(conversation_id, user.id, user.email, [
@@ -214,7 +242,6 @@ export async function POST(req: Request) {
             }
           }
 
-          // Increment message count after successful completion
           if (effectiveEmail) {
             await incrementAuthenticatedMessages(effectiveEmail);
           } else {
@@ -222,7 +249,7 @@ export async function POST(req: Request) {
           }
         } catch (err) {
           const msg = err instanceof Error ? err.message : "Unknown error";
-          controller.enqueue(encoder.encode(`\n[Error: ${msg}]`));
+          controller.enqueue(encodeEvent({ type: "error", message: msg }));
         } finally {
           controller.close();
         }

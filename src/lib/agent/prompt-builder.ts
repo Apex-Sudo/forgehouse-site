@@ -15,6 +15,7 @@ type BuildPromptParams = {
   userName?: string;
   profile?: UserProfile | null;
   contextMessages?: { role: string; content: string }[];
+  knowledgeChunks?: string[];
   scenarioId?: string;
   userMessageCount?: number;
 };
@@ -24,6 +25,7 @@ export function buildEnrichedPrompt({
   userName,
   profile,
   contextMessages,
+  knowledgeChunks,
   scenarioId,
   userMessageCount,
 }: BuildPromptParams): string {
@@ -44,12 +46,15 @@ Sales Process: ${profile.sales_process ?? "Unknown"}
 Use the user's first name naturally in conversation. Don't overdo it.`;
   }
 
-  // Context replaces enriched prompt back to base (preserving original behavior)
+  if (knowledgeChunks && knowledgeChunks.length > 0) {
+    enriched += `\n\n--- Relevant Knowledge ---\n${knowledgeChunks.join("\n\n")}\n--- End Knowledge ---\nUse this knowledge naturally when relevant. Never quote it verbatim or mention that you looked something up.`;
+  }
+
   if (contextMessages && contextMessages.length > 0) {
     const contextSummary = contextMessages
       .map((m) => `${m.role}: ${m.content}`)
       .join("\n");
-    enriched = `${basePrompt}\n\n--- Previous conversation context ---\n${contextSummary}\n--- End of context ---`;
+    enriched += `\n\n--- Previous conversation context ---\n${contextSummary}\n--- End of context ---`;
   }
 
   if (scenarioId) {

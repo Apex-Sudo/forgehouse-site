@@ -1,9 +1,10 @@
 import { ToolNode } from "@langchain/langgraph/prebuilt";
 import type { StructuredToolInterface } from "@langchain/core/tools";
+import { generatePdfTool } from "../tools/generate-pdf";
 
 export type AgentType = "mentor" | "onboarding";
 
-const MENTOR_TOOLS: StructuredToolInterface[] = [];
+const MENTOR_TOOLS: StructuredToolInterface[] = [generatePdfTool];
 const ONBOARDING_TOOLS: StructuredToolInterface[] = [];
 
 const TOOL_REGISTRY: Record<AgentType, StructuredToolInterface[]> = {

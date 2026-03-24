@@ -6,10 +6,10 @@ import { useSession, signIn } from "next-auth/react";
 import Image from "next/image";
 import ChatMessage from "@/components/ChatMessage";
 import MemoryBanner from "@/components/MemoryBanner";
-// SignInNudge no longer needed — Colin requires auth
 import UpgradePrompt from "@/components/UpgradePrompt";
 import { SCENARIOS } from "@/lib/scenarios";
 import { IconSearch, IconMail, IconTarget } from "@tabler/icons-react";
+import { parseStreamChunk, type Artifact } from "@/lib/agent/stream";
 
 const SCENARIO_ICONS: Record<string, React.ReactNode> = {
   search: <IconSearch size={20} />,
@@ -27,6 +27,7 @@ const DEFAULT_STARTERS = [
 interface Message {
   role: "user" | "assistant";
   content: string;
+  artifacts?: Artifact[];
 }
 
 const FREE_MESSAGE_LIMIT = 5;
@@ -281,17 +282,34 @@ function ChatContent() {
 
       const decoder = new TextDecoder();
       let assistantContent = "";
+      let ndjsonBuffer = "";
+      const messageArtifacts: Artifact[] = [];
 
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        assistantContent += decoder.decode(value, { stream: true });
-        const snapshot = assistantContent;
+
+        const raw = decoder.decode(value, { stream: true });
+        const { events, remaining } = parseStreamChunk(raw, ndjsonBuffer);
+        ndjsonBuffer = remaining;
+
+        for (const event of events) {
+          if (event.type === "text") {
+            assistantContent += event.content;
+          } else if (event.type === "artifact") {
+            messageArtifacts.push(event.artifact);
+          } else if (event.type === "error") {
+            assistantContent += `\n[Error: ${event.message}]`;
+          }
+        }
+
+        const contentSnapshot = assistantContent;
+        const artifactsSnapshot = [...messageArtifacts];
         setMessages((prev) => {
           const copy = [...prev];
-          copy[copy.length - 1] = { role: "assistant", content: snapshot };
+          copy[copy.length - 1] = { role: "assistant", content: contentSnapshot, artifacts: artifactsSnapshot };
           return copy;
         });
       }
@@ -443,6 +461,7 @@ function ChatContent() {
                   isSubscribed={isSubscribed}
                   context={context}
                   isStreaming={streaming && i === messages.length - 1 && m.role === "assistant"}
+                  artifacts={m.artifacts}
                 />
               );
             })}

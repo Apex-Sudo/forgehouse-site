@@ -3,6 +3,7 @@ import { ONBOARDING_SYSTEM_PROMPT } from "@/lib/onboarding-system-prompt";
 import { auth } from "@/lib/auth";
 import { agentGraph } from "@/lib/agent/graph";
 import { toLangChainMessages } from "@/lib/agent/messages";
+import { encodeEvent } from "@/lib/agent/stream";
 
 export async function POST(req: Request) {
   try {
@@ -19,7 +20,6 @@ export async function POST(req: Request) {
 
     const langchainMessages = toLangChainMessages(messages);
 
-    const encoder = new TextEncoder();
     const readable = new ReadableStream({
       async start(controller) {
         try {
@@ -38,18 +38,23 @@ export async function POST(req: Request) {
             const isAgentToken = metadata.langgraph_node === "agent";
             const isGuardrailRefusal = metadata.langgraph_node === "inputGuardrail";
 
-            if (
-              (isAgentToken || isGuardrailRefusal) &&
-              chunk instanceof AIMessageChunk &&
-              typeof chunk.content === "string" &&
-              chunk.content
-            ) {
-              controller.enqueue(encoder.encode(chunk.content));
+            if ((isAgentToken || isGuardrailRefusal) && chunk instanceof AIMessageChunk) {
+              let text = "";
+              if (typeof chunk.content === "string") {
+                text = chunk.content;
+              } else if (Array.isArray(chunk.content)) {
+                for (const block of chunk.content) {
+                  if (block.type === "text" && block.text) text += block.text;
+                }
+              }
+              if (text) {
+                controller.enqueue(encodeEvent({ type: "text", content: text }));
+              }
             }
           }
         } catch (err) {
           const msg = err instanceof Error ? err.message : "Unknown error";
-          controller.enqueue(encoder.encode(`\n[Error: ${msg}]`));
+          controller.enqueue(encodeEvent({ type: "error", message: msg }));
         } finally {
           controller.close();
         }
