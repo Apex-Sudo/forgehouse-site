@@ -12,6 +12,7 @@ import { buildEnrichedPrompt } from "@/lib/agent/prompt-builder";
 import { toLangChainMessages } from "@/lib/agent/messages";
 import { encodeEvent } from "@/lib/agent/stream";
 import { retrieveKnowledge } from "@/lib/agent/retrieval";
+import { toolLog } from "@/lib/tool-logger";
 
 const MENTOR_PROMPTS: Record<string, string> = {
   "colin-chapman": COLIN_SYSTEM_PROMPT,
@@ -25,6 +26,7 @@ export async function POST(req: Request) {
       req.headers.get("x-real-ip") ||
       "unknown";
 
+    //Rate limiting disabled during development
     let rateLimited = false;
     try {
       const { success } = await chatLimiter().limit(ip);
@@ -32,7 +34,6 @@ export async function POST(req: Request) {
     } catch (err) {
       console.error("Rate limit error:", err);
     }
-
     if (rateLimited) {
       return Response.json({ error: "Rate limit exceeded. Try again later." }, { status: 429 });
     }
@@ -178,6 +179,27 @@ export async function POST(req: Request) {
 
     const readable = new ReadableStream({
       async start(controller) {
+        let closed = false;
+
+        const enqueue = (data: Uint8Array) => {
+          if (closed) return;
+          try {
+            controller.enqueue(data);
+          } catch {
+            closed = true;
+          }
+        };
+
+        const close = () => {
+          if (closed) return;
+          try {
+            controller.close();
+          } catch {
+            // already closed
+          }
+          closed = true;
+        };
+
         try {
           const stream = await agentGraph.stream(
             {
@@ -190,10 +212,27 @@ export async function POST(req: Request) {
             { streamMode: "messages" }
           );
 
+          let streamChunkCount = 0;
+          let toolCallCount = 0;
+          toolLog("route", "Starting LangGraph stream...");
+
           for await (const [chunk, metadata] of stream) {
+            streamChunkCount++;
             const isAgentToken = metadata.langgraph_node === "agent";
             const isGuardrailRefusal = metadata.langgraph_node === "inputGuardrail";
             const isToolResult = metadata.langgraph_node === "tools";
+
+            if (isToolResult) {
+              toolCallCount++;
+              toolLog("route", `Tool result #${toolCallCount} from node "${metadata.langgraph_node}":`, typeof chunk.content === "string" ? chunk.content.slice(0, 500) : JSON.stringify(chunk.content).slice(0, 500));
+            }
+
+            if (isAgentToken && chunk instanceof AIMessageChunk) {
+              const hasToolCalls = chunk.tool_calls && chunk.tool_calls.length > 0;
+              if (hasToolCalls) {
+                toolLog("route", "Agent requesting tool call:", JSON.stringify(chunk.tool_calls).slice(0, 500));
+              }
+            }
 
             if ((isAgentToken || isGuardrailRefusal) && chunk instanceof AIMessageChunk) {
               let text = "";
@@ -206,7 +245,7 @@ export async function POST(req: Request) {
               }
               if (text) {
                 fullResponse += text;
-                controller.enqueue(encodeEvent({ type: "text", content: text }));
+                enqueue(encodeEvent({ type: "text", content: text }));
               }
             }
 
@@ -214,13 +253,19 @@ export async function POST(req: Request) {
               try {
                 const toolResult = JSON.parse(chunk.content);
                 if (toolResult.artifact) {
-                  controller.enqueue(encodeEvent({ type: "artifact", artifact: toolResult.artifact }));
+                  toolLog("route", "Artifact detected, streaming to client:", toolResult.artifact.id);
+                  enqueue(encodeEvent({ type: "artifact", artifact: toolResult.artifact }));
+                }
+                if (toolResult.error) {
+                  toolLog("route", "Tool returned error:", toolResult.error);
                 }
               } catch {
                 // tool result isn't artifact JSON
               }
             }
           }
+
+          toolLog("route", `Stream finished. Total chunks: ${streamChunkCount}, tool results: ${toolCallCount}`);
 
           after(async () => {
             await captureServerEvent(distinctId, "message_received", {
@@ -249,9 +294,10 @@ export async function POST(req: Request) {
           }
         } catch (err) {
           const msg = err instanceof Error ? err.message : "Unknown error";
-          controller.enqueue(encodeEvent({ type: "error", message: msg }));
+          toolLog("route", "STREAM ERROR:", msg);
+          enqueue(encodeEvent({ type: "error", message: msg }));
         } finally {
-          controller.close();
+          close();
         }
       },
     });

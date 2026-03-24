@@ -8,7 +8,8 @@ import {
   StyleSheet,
   renderToBuffer,
 } from "@react-pdf/renderer";
-import { renderChart } from "./chart-renderer";
+import { renderChart, buildVegaLiteSpec } from "./chart-renderer";
+import { toolLog } from "@/lib/tool-logger";
 
 export type TextBlock = {
   type: "text";
@@ -16,10 +17,19 @@ export type TextBlock = {
   content: string;
 };
 
+export type ChartDataPoint = {
+  label: string;
+  value: number;
+  series?: string;
+};
+
 export type ChartBlock = {
   type: "chart";
   title: string;
-  vegaLiteSpec: Record<string, unknown>;
+  chartType: "bar" | "line" | "area" | "point" | "arc";
+  data: ChartDataPoint[];
+  xLabel?: string;
+  yLabel?: string;
 };
 
 export type TableBlock = {
@@ -171,12 +181,23 @@ function TableBlockView({ block }: { block: TableBlock }) {
 
 export async function renderPdf(spec: DocumentSpec): Promise<Buffer> {
   const chartPngs = new Map<number, Buffer>();
+  const failedCharts = new Set<number>();
+
+  toolLog("pdf-renderer", "Rendering PDF:", spec.title, "—", spec.blocks.length, "blocks");
 
   for (let i = 0; i < spec.blocks.length; i++) {
     const block = spec.blocks[i];
     if (block.type === "chart") {
-      const png = await renderChart(block.vegaLiteSpec);
-      chartPngs.set(i, png);
+      toolLog("pdf-renderer", `Rendering chart block ${i}: "${block.title}" (${block.chartType})`);
+      const vegaLiteSpec = buildVegaLiteSpec(block);
+      toolLog("pdf-renderer", `Built Vega-Lite spec for block ${i}:`, JSON.stringify(vegaLiteSpec).slice(0, 500));
+      const png = await renderChart(vegaLiteSpec);
+      if (png) {
+        chartPngs.set(i, png);
+      } else {
+        failedCharts.add(i);
+        toolLog("pdf-renderer", `Chart block ${i} ("${block.title}") failed — will show placeholder text`);
+      }
     }
   }
 
@@ -199,6 +220,15 @@ export async function renderPdf(spec: DocumentSpec): Promise<Buffer> {
             case "text":
               return <TextBlockView key={i} block={block} />;
             case "chart": {
+              if (failedCharts.has(i)) {
+                return (
+                  <View key={i} style={{ marginTop: 12, marginBottom: 16, padding: 12, backgroundColor: "#F5F5F5", borderRadius: 4 }}>
+                    <Text style={{ fontSize: 10, color: "#888", fontStyle: "italic" }}>
+                      [Chart: {block.title} — could not be rendered]
+                    </Text>
+                  </View>
+                );
+              }
               const png = chartPngs.get(i);
               if (!png) return null;
               return <ChartBlockView key={i} block={block} chartPng={png} />;
@@ -213,5 +243,8 @@ export async function renderPdf(spec: DocumentSpec): Promise<Buffer> {
     </Document>
   );
 
-  return renderToBuffer(doc);
+  toolLog("pdf-renderer", "Rendering final PDF buffer...");
+  const buffer = await renderToBuffer(doc);
+  toolLog("pdf-renderer", "PDF rendered:", buffer.length, "bytes");
+  return buffer;
 }

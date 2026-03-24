@@ -56,6 +56,7 @@ function ChatContent() {
   const [gateCodeSent, setGateCodeSent] = useState(false);
   const [gateSending, setGateSending] = useState(false);
   const [gateError, setGateError] = useState("");
+  const [generatingArtifact, setGeneratingArtifact] = useState(false);
   const [starters, setStarters] = useState<string[]>(DEFAULT_STARTERS);
   const [showWelcome, setShowWelcome] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
@@ -284,8 +285,16 @@ function ChatContent() {
       let assistantContent = "";
       let ndjsonBuffer = "";
       const messageArtifacts: Artifact[] = [];
+      let lastTextEventTime = Date.now();
 
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+
+      const idleTimer = setInterval(() => {
+        const idleMs = Date.now() - lastTextEventTime;
+        if (idleMs > 3000 && assistantContent.length > 0) {
+          setGeneratingArtifact(true);
+        }
+      }, 1000);
 
       while (true) {
         const { done, value } = await reader.read();
@@ -298,8 +307,11 @@ function ChatContent() {
         for (const event of events) {
           if (event.type === "text") {
             assistantContent += event.content;
+            lastTextEventTime = Date.now();
+            setGeneratingArtifact(false);
           } else if (event.type === "artifact") {
             messageArtifacts.push(event.artifact);
+            setGeneratingArtifact(false);
           } else if (event.type === "error") {
             assistantContent += `\n[Error: ${event.message}]`;
           }
@@ -313,6 +325,9 @@ function ChatContent() {
           return copy;
         });
       }
+
+      clearInterval(idleTimer);
+      setGeneratingArtifact(false);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -470,11 +485,23 @@ function ChatContent() {
               messages.length > 0 &&
               messages[messages.length - 1].content === "" && (
                 <div className="flex justify-start">
-                  <div className="bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm rounded-2xl">
+                  <div className="bg-[#F5F3F0] px-4 py-3 text-sm rounded-2xl">
                     <span className="animate-pulse text-muted">●●●</span>
                   </div>
                 </div>
               )}
+
+            {generatingArtifact && (
+              <div className="flex justify-start">
+                <div className="flex items-center gap-2 bg-[#F5F3F0] border border-[#E5E2DC] px-4 py-2.5 text-sm rounded-xl">
+                  <svg className="animate-spin h-4 w-4 text-[#B8916A]" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  <span className="text-muted text-xs">Generating document...</span>
+                </div>
+              </div>
+            )}
 
             <div ref={bottomRef} />
           </div>
