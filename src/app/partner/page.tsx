@@ -5,9 +5,9 @@ import { IconMicrophone, IconEyeCheck, IconShare, IconCash, IconCpu, IconCode, I
 import "./partner.css";
 
 const steps = [
-  { num: "01", title: "We talk.", desc: "2-3 conversations. You explain how you think. We capture the patterns." },
-  { num: "02", title: "We build.", desc: "Your thinking becomes an AI agent. Tested until you'd trust it with a client." },
-  { num: "03", title: "It works.", desc: "Available 24/7. You get reach, revenue, and leads you didn't chase." },
+  { num: "01", title: "You teach.", desc: "Few conversations, nothing formal. Share how you approach problems, what you've learned. We're listening for your frameworks, not taking notes." },
+  { num: "02", title: "We translate.", desc: "Your expertise becomes something that scales. We build it, you test it, we refine it until it sounds like you would handle the conversation." },
+  { num: "03", title: "You scale.", desc: "Founders get your thinking when they need it. You get inquiries from people who've already experienced your approach and want the real thing." },
 ];
 
 function RevenueCalculator() {
@@ -71,89 +71,54 @@ export default function PartnerPage() {
   return (
     <div className="partner-light pt-16">
       {/* 1. The Shift */}
-      <section className="partner-hero px-6 py-28 md:py-40 max-w-4xl mx-auto text-center">
+      <section className="partner-hero px-6 pt-28 md:pt-40 pb-16 md:pb-20 max-w-4xl mx-auto text-center">
         <p className="partner-accent font-mono text-sm tracking-widest uppercase mb-8">The Opportunity</p>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-8">
           A generation that won&apos;t book a call
           <br />
           <span className="partner-accent">still needs your expertise.</span>
         </h1>
-        <p className="text-muted text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed">
-          They&apos;ll text at 2 AM before they&apos;ll schedule a meeting. Your delivery model changed. Your value didn&apos;t.
-        </p>
+
       </section>
 
-      {/* 1b. The Evidence */}
-      <section className="px-6 py-16">
-        <div className="max-w-3xl mx-auto">
-          <div className="partner-card p-10 space-y-6">
-            <p className="partner-accent font-mono text-sm tracking-widest uppercase">The Data</p>
-            <div className="space-y-4 text-lg text-muted leading-relaxed">
-              <p><span className="font-bold text-foreground">9 out of 10</span> Gen Zers would rather text than pick up the phone. <span className="text-sm text-muted/50">(CommBank, 2023)</span></p>
-              <p><span className="font-bold text-foreground">70%</span> of 18-34 year olds prefer text over calls. 23% never answer their phone at all. <span className="text-sm text-muted/50">(BBC/Uswitch, 2024)</span></p>
-              <p><span className="font-bold text-foreground">A UK college launched a class</span> to teach young people how to make phone calls. <span className="text-sm text-muted/50">(Fortune, 2025)</span></p>
-            </div>
-            <p className="text-xl font-semibold pt-4 border-t border-foreground/[0.08]">
-              This is the generation starting companies right now. They need mentorship. They won&apos;t book a Calendly link to get it.
-            </p>
+      {/* 1b. The Evidence — no card, flows from hero */}
+      <section className="px-6 pb-20">
+        <div className="max-w-3xl mx-auto space-y-8">
+          <p className="partner-accent font-mono text-sm tracking-widest uppercase text-center">The Data</p>
+          <div className="space-y-4 text-base md:text-lg leading-relaxed text-center">
+            <p><span className="font-bold text-foreground">9 out of 10</span> <span className="text-muted">Gen Zers would rather text than pick up the phone.</span> <span className="text-sm text-muted/40">(CommBank, 2023)</span></p>
+            <p><span className="font-bold text-foreground">70%</span> <span className="text-muted">of 18-34 year olds prefer text over calls. 23% never answer their phone at all.</span> <span className="text-sm text-muted/40">(BBC/Uswitch, 2024)</span></p>
           </div>
-        </div>
-      </section>
-
-      {/* 1c. Privacy & Revenue — Upfront */}
-      <section className="px-6 py-16">
-        <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-6">
-          <div className="partner-card p-8 text-center">
-            <p className="partner-accent text-4xl font-bold mb-2">75%</p>
-            <p className="text-lg font-semibold mb-2">Revenue is yours</p>
-            <p className="text-muted text-sm">You set the price. You keep 75% of every subscriber. We handle billing, tech, and support.</p>
-          </div>
-          <div className="partner-card p-8 text-center">
-            <p className="partner-accent text-4xl font-bold mb-2">100%</p>
-            <p className="text-lg font-semibold mb-2">Your IP stays yours</p>
-            <p className="text-muted text-sm">We license, never own. You can pull your agent anytime. Delaware LLC. Formal contract.</p>
-          </div>
+          <p className="text-lg md:text-xl text-center text-muted pt-4">
+            This is the generation starting companies right now. They need mentorship. They <span className="partner-accent">won&apos;t book a Calendly link</span> to get it.
+          </p>
         </div>
       </section>
 
       {/* 2. How it works */}
-      <section className="px-6 py-20">
+      <section className="px-6 py-20 partner-dark" style={{ background: "#1A1A1A" }}>
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center">Three steps. Then it runs.</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-white">Here&apos;s what we do together.</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {steps.map((s) => (
               <div key={s.num} className="text-center">
                 <span className="partner-accent font-mono text-sm">{s.num}</span>
-                <h3 className="text-2xl font-bold mt-3 mb-3">{s.title}</h3>
-                <p className="text-muted text-lg leading-relaxed">{s.desc}</p>
+                <h3 className="text-2xl font-bold mt-3 mb-3 text-white">{s.title}</h3>
+                <p className="text-[#999] text-lg leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 3. Proof */}
-      <section className="px-6 py-20">
-        <div className="max-w-3xl mx-auto space-y-8">
-          <div className="partner-card p-10">
-            <p className="text-lg text-muted/80 leading-relaxed italic mb-6">&ldquo;It forced me to articulate things I&apos;d been doing on autopilot for decades. The output captured my thinking better than I anticipated. I&apos;m happy to put my name on it.&rdquo;</p>
-            <div className="flex items-center gap-3">
-              <Image src="/mentors/colin-chapman.png" alt="Colin Chapman" width={44} height={44} className="rounded-full object-cover" />
-              <div>
-                <p className="font-semibold">Colin Chapman</p>
-                <p className="text-sm text-muted">GTM &amp; Outbound Sales · 26 years</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="py-10 text-center">
-            <p className="text-2xl font-bold mb-2">Headspace replaced the therapist&apos;s office. BetterHelp made therapy text-first.</p>
-            <p className="text-muted text-lg">Same pattern: expert knowledge delivered in the format the generation actually uses.</p>
-          </div>
+      {/* IP protection — moved up per Colin feedback */}
+      <section className="px-6 py-12">
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="text-lg text-muted">Your frameworks stay yours. We license, never own. You can pull your agent anytime. <span className="font-semibold text-foreground">Delaware LLC. Formal contract.</span></p>
         </div>
       </section>
 
-      {/* 4. Your part / Our part */}
+      {/* 2b. Your part / Our part */}
       <section className="px-6 py-20">
         <div className="max-w-4xl mx-auto">
           <div className="partner-card grid md:grid-cols-2 gap-0 overflow-hidden">
@@ -179,25 +144,58 @@ export default function PartnerPage() {
         </div>
       </section>
 
-      {/* 5. The Math — Calculator */}
+      {/* The Math — Calculator */}
       <section className="px-6 py-24">
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">The math</h2>
-        <p className="text-muted text-lg mb-12 text-center">Your price. Your revenue.</p>
+        <p className="text-muted text-lg mb-12 text-center">You set your own monthly subscription fee. Founders pay to access your expertise. You keep 75%.</p>
         <RevenueCalculator />
       </section>
 
-      {/* 6. Next Step */}
-      <section className="px-6 py-24 pb-32">
+      {/* Privacy & Revenue — inline */}
+      <section className="px-6 py-12">
+        <div className="max-w-3xl mx-auto text-center space-y-3">
+          <p className="text-lg text-muted"><span className="partner-accent font-bold">75% revenue</span> is yours. You set the price. We handle billing, tech, and support.</p>
+          <p className="text-lg text-muted"><span className="partner-accent font-bold">100% IP</span> stays yours. Full ownership. Pull your agent anytime. No lock-in.</p>
+        </div>
+      </section>
+
+      {/* Next Step */}
+      <section className="px-6 py-24 partner-dark" style={{ background: "#1A1A1A" }}>
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Next step</h2>
-          <p className="text-muted text-xl leading-relaxed mb-4">
-            2-3 conversations over the next two weeks. Your agent is live within days of your final review.
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">Ready to start?</h2>
+          <p className="text-[#999] text-xl leading-relaxed mb-8">
+            Book a quick call. We&apos;ll map your expertise, set your boundaries, and get your agent live within the week.
           </p>
-          <p className="text-muted/50 text-sm">
-            Your frameworks stay yours. You can pull it anytime.
+          <p className="text-[#555] text-sm italic">
+            Your frameworks, your rules. Walk away anytime.
           </p>
         </div>
       </section>
+
+      {/* ═══════════════════════════════════════════════
+          LEARN MORE — proof sections for cold traffic
+          ═══════════════════════════════════════════════ */}
+      <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-foreground/[0.08] to-transparent" />
+
+      {/* Colin testimonial */}
+      <section className="px-6 py-20">
+        <div className="max-w-3xl mx-auto">
+          <div className="partner-card p-10">
+            <p className="text-lg text-muted/80 leading-relaxed italic mb-6">&ldquo;It forced me to articulate things I&apos;d been doing on autopilot for decades. The output captured my thinking better than I anticipated. I&apos;m happy to put my name on it.&rdquo;</p>
+            <div className="flex items-center gap-3">
+              <Image src="/mentors/colin-chapman.png" alt="Colin Chapman" width={44} height={44} className="rounded-full object-cover" />
+              <div>
+                <p className="font-semibold">Colin Chapman</p>
+                <p className="text-sm text-muted">GTM &amp; Outbound Sales · 26 years</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
     </div>
   );
 }

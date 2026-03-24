@@ -31,3 +31,9 @@
 .partner-light h3 {
   color: #1A1A1A;
 }
+
+/* Dark sections override */
+.partner-dark h2,
+.partner-dark h3 {
+  color: #FFFFFF !important;
+}
