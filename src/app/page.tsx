@@ -538,14 +538,13 @@ function HowItWorks() {
                 }}
               />
               {/* Mockup card */}
-              <div className="relative z-10 transition-all duration-500">
+              <div className="relative z-10 w-full min-h-[400px]">
                 {STEPS.map((step, i) => (
                   <div
                     key={step.num}
-                    className={`transition-all duration-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${
-                      i === activeStep ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                    className={`transition-all duration-500 absolute inset-0 flex items-center justify-center ${
+                      i === activeStep ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
                     }`}
-                    style={{ position: i === activeStep ? "relative" : "absolute" }}
                   >
                     {step.mockup}
                   </div>
