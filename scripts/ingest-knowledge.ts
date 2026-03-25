@@ -58,7 +58,7 @@ function parseExtractionFile(text: string): {
         content.includes("[Uploaded file:") &&
         content.includes("Career Highlights")
       ) {
-        pdfContent = content.replace(/^\[Uploaded file:.*?\]\s*/s, "").trim();
+        pdfContent = content.replace(/^\[Uploaded file:[\s\S]*?\]\s*/, "").trim();
       } else {
         exchanges.push({ role: "user", content });
       }

@@ -2,7 +2,7 @@ import { after } from "next/server";
 import { COLIN_SYSTEM_PROMPT } from "@/lib/agent/prompts/colin-system-prompt";
 import { LEON_SYSTEM_PROMPT } from "@/lib/leon-system-prompt";
 import { auth } from "@/lib/auth";
-import { getContextMessages } from "@/lib/conversations";
+import { getContextMessages, getConversationMessages } from "@/lib/conversations";
 import { canAccess, incrementAnonymousMessages, incrementAuthenticatedMessages } from "@/lib/subscription";
 import { captureServerEvent } from "@/lib/posthog";
 import { MentorAgentNode } from "@/lib/agent/nodes/MentorAgentNode";
@@ -12,6 +12,8 @@ const MENTOR_PROMPTS: Record<string, string> = {
   "leon-freier": LEON_SYSTEM_PROMPT,
 };
 
+type RawMessage = { role: "user" | "assistant"; content: string };
+
 export async function POST(req: Request) {
   try {
     const ip =
@@ -20,8 +22,16 @@ export async function POST(req: Request) {
       "unknown";
 
     const body = await req.json();
-    const { messages, mentor, conversation_id, scenario_id, invite } = body as {
-      messages: { role: "user" | "assistant"; content: string }[];
+    const {
+      message,
+      messages: clientMessages,
+      mentor,
+      conversation_id,
+      scenario_id,
+      invite,
+    } = body as {
+      message: string;
+      messages?: RawMessage[];
       mentor: string;
       conversation_id?: string;
       scenario_id?: string;
@@ -31,8 +41,8 @@ export async function POST(req: Request) {
     const VALID_INVITE_CODES = new Set(["alexw", "steve", "ray", "colin", "amber", "mark", "test"]);
     const isInvited = invite ? VALID_INVITE_CODES.has(invite) : false;
 
-    if (!messages?.length) {
-      return Response.json({ error: "No messages provided" }, { status: 400 });
+    if (!message?.trim()) {
+      return Response.json({ error: "No message provided" }, { status: 400 });
     }
 
     const systemPrompt = MENTOR_PROMPTS[mentor];
@@ -54,7 +64,18 @@ export async function POST(req: Request) {
       }
     }
 
-    const lastUserMessage = messages[messages.length - 1];
+    const lastUserMessage: RawMessage = { role: "user", content: message };
+
+    // Rehydrate conversation history: DB for authenticated, client array for anonymous
+    let messages: RawMessage[];
+    if (conversation_id) {
+      const history = await getConversationMessages(conversation_id);
+      messages = [...history, lastUserMessage];
+    } else if (clientMessages?.length) {
+      messages = clientMessages;
+    } else {
+      messages = [lastUserMessage];
+    }
 
     let hoursSinceLastUserMessage: number | null = null;
     let isReturningConversation = false;
@@ -83,7 +104,7 @@ export async function POST(req: Request) {
     let contextMessages: { role: string; content: string }[] = [];
     if (user?.id && user?.email) {
       try {
-        contextMessages = await getContextMessages(user.id, mentor, user.email);
+        contextMessages = await getContextMessages(user.id, mentor, user.email, 30, conversation_id);
       } catch (err) {
         console.error("Context fetch error:", err);
       }
@@ -114,7 +135,7 @@ export async function POST(req: Request) {
         conversation_id: conversation_id || null,
         is_authenticated: Boolean(user?.email),
         is_invited: isInvited,
-        message_length: typeof lastUserMessage?.content === "string" ? lastUserMessage.content.length : null,
+        message_length: message.length,
         message_number: userMessageCount,
       });
 

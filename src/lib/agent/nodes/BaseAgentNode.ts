@@ -275,7 +275,10 @@ export abstract class BaseAgentNode<TParams extends AgentRunParams = AgentRunPar
         `Agent requested ${toolCalls.length} tool call(s):`,
         toolCalls.map((tc) => tc.name).join(", "),
       );
-      this.emitStatus("Generating document...");
+
+      if (toolCalls.some((tc) => tc.name === "generatePdf")) {
+        this.emitStatus("Generating document...");
+      }
 
       conversationMessages.push(response);
 

@@ -55,7 +55,10 @@ export async function isFreeTrialActive(userId: string): Promise<boolean> {
   return daysSinceStart <= 7;
 }
 
-// Get messages for a conversation from the normalized messages table
+export async function getConversationMessages(conversationId: string): Promise<Message[]> {
+  return getMessages(conversationId);
+}
+
 async function getMessages(conversationId: string, limit?: number): Promise<Message[]> {
   let query = supabase
     .from("messages")
@@ -79,12 +82,15 @@ async function getMessages(conversationId: string, limit?: number): Promise<Mess
   return (data as Message[]) || [];
 }
 
-// Get recent context messages from the most recent conversation with a mentor
+// Get recent context from a *different* conversation with the same mentor
+// (cross-conversation memory). Excludes excludeConversationId so we don't
+// duplicate messages that are already in the active conversation turns.
 export async function getContextMessages(
   userId: string,
   mentorSlug: string,
   email: string,
-  limit = 30
+  limit = 30,
+  excludeConversationId?: string,
 ): Promise<Message[]> {
   const table = await getTable(email);
 
@@ -96,7 +102,10 @@ export async function getContextMessages(
     .order("created_at", { ascending: false })
     .limit(1);
 
-  // For free tier, only return non-expired conversations
+  if (excludeConversationId) {
+    query = query.neq("id", excludeConversationId);
+  }
+
   if (table === "free_tier_conversations") {
     query = query.gt("expires_at", new Date().toISOString());
   }

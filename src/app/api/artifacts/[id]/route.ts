@@ -14,7 +14,7 @@ export async function GET(
     const filename = `${id}.pdf`;
     const { buffer, contentType } = await getArtifactBuffer(filename);
 
-    return new Response(buffer, {
+    return new Response(new Uint8Array(buffer), {
       headers: {
         "Content-Type": contentType,
         "Content-Disposition": `inline; filename="${filename}"`,

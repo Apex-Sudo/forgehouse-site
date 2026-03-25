@@ -1,9 +1,28 @@
 "use client";
+import React, { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import { useState } from "react";
 import { useSession } from "next-auth/react";
 import type { Artifact } from "@/lib/agent/helper/stream";
 import ArtifactCard from "./ArtifactCard";
+
+function StreamingText({ content }: { content: string }) {
+  const shownLenRef = useRef(0);
+
+  const already = content.slice(0, shownLenRef.current);
+  const fresh = content.slice(shownLenRef.current);
+
+  useEffect(() => {
+    shownLenRef.current = content.length;
+  });
+
+  return (
+    <div className="whitespace-pre-wrap">
+      {already}
+      <span key={content.length} className="stream-fade">{fresh}</span>
+      <span className="inline-block w-1.5 h-4 bg-amber/70 rounded-sm animate-pulse ml-0.5 align-text-bottom" />
+    </div>
+  );
+}
 
 interface ChatMessageProps {
   role: "user" | "assistant";
@@ -12,6 +31,7 @@ interface ChatMessageProps {
   isSubscribed?: boolean;
   context?: string;
   isStreaming?: boolean;
+  statusText?: string;
   artifacts?: Artifact[];
 }
 
@@ -74,7 +94,7 @@ function BookmarkButton({
   );
 }
 
-export default function ChatMessage({ role, content, mentorSlug, isSubscribed: isSubProp, context, isStreaming, artifacts }: ChatMessageProps) {
+const ChatMessage = React.memo(function ChatMessage({ role, content, mentorSlug, isSubscribed: isSubProp, context, isStreaming, statusText, artifacts }: ChatMessageProps) {
   const { data: session } = useSession();
 
   if (role === "user") {
@@ -91,34 +111,44 @@ export default function ChatMessage({ role, content, mentorSlug, isSubscribed: i
     <div className="flex justify-start group">
       <div className="max-w-[80%]">
         <div className="px-4 py-3 text-sm leading-relaxed bg-[#F5F3F0] text-foreground rounded-2xl prose-chat">
-          <ReactMarkdown
-            components={{
-              p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
-              strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
-              em: ({ children }) => <em className="italic text-foreground/80">{children}</em>,
-              ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
-              ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
-              li: ({ children }) => (
-                <li className="flex items-start gap-2">
-                  <span className="text-amber mt-0.5 shrink-0">▸</span>
-                  <span>{children}</span>
-                </li>
-              ),
-              code: ({ children }) => (
-                <code className="bg-foreground/[0.06] px-1.5 py-0.5 rounded text-xs font-mono">{children}</code>
-              ),
-              h1: ({ children }) => <h3 className="font-bold text-foreground mb-2 text-base">{children}</h3>,
-              h2: ({ children }) => <h3 className="font-bold text-foreground mb-2 text-base">{children}</h3>,
-              h3: ({ children }) => <h3 className="font-semibold text-foreground mb-1.5 text-sm">{children}</h3>,
-              blockquote: ({ children }) => (
-                <blockquote className="border-l-2 border-amber/40 pl-3 my-2 text-muted italic">{children}</blockquote>
-              ),
-            }}
-          >
-            {content}
-          </ReactMarkdown>
-          {isStreaming && (
-            <span className="inline-block w-1.5 h-4 bg-amber/70 rounded-sm animate-pulse ml-0.5 align-text-bottom" />
+          {isStreaming && !content ? (
+            <div className="flex items-center gap-2.5">
+              <span className="flex gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B8916A] animate-bounce [animation-delay:0ms]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B8916A] animate-bounce [animation-delay:150ms]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B8916A] animate-bounce [animation-delay:300ms]" />
+              </span>
+              <span className="text-muted text-xs">{statusText ?? "Thinking..."}</span>
+            </div>
+          ) : isStreaming ? (
+            <StreamingText content={content} />
+          ) : (
+            <ReactMarkdown
+              components={{
+                p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
+                em: ({ children }) => <em className="italic text-foreground/80">{children}</em>,
+                ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
+                ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
+                li: ({ children }) => (
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber mt-0.5 shrink-0">▸</span>
+                    <span>{children}</span>
+                  </li>
+                ),
+                code: ({ children }) => (
+                  <code className="bg-foreground/[0.06] px-1.5 py-0.5 rounded text-xs font-mono">{children}</code>
+                ),
+                h1: ({ children }) => <h3 className="font-bold text-foreground mb-2 text-base">{children}</h3>,
+                h2: ({ children }) => <h3 className="font-bold text-foreground mb-2 text-base">{children}</h3>,
+                h3: ({ children }) => <h3 className="font-semibold text-foreground mb-1.5 text-sm">{children}</h3>,
+                blockquote: ({ children }) => (
+                  <blockquote className="border-l-2 border-amber/40 pl-3 my-2 text-muted italic">{children}</blockquote>
+                ),
+              }}
+            >
+              {content}
+            </ReactMarkdown>
           )}
         </div>
         {artifacts && artifacts.length > 0 && (
@@ -139,4 +169,6 @@ export default function ChatMessage({ role, content, mentorSlug, isSubscribed: i
       )}
     </div>
   );
-}
+});
+
+export default ChatMessage;

@@ -10,6 +10,7 @@ import UpgradePrompt from "@/components/UpgradePrompt";
 import { SCENARIOS } from "@/lib/scenarios";
 import { IconSearch, IconMail, IconTarget } from "@tabler/icons-react";
 import { parseStreamChunk, extractArtifacts, type Artifact } from "@/lib/agent/helper/stream";
+import { useTokenBuffer } from "@/hooks/useTokenBuffer";
 
 const SCENARIO_ICONS: Record<string, React.ReactNode> = {
   search: <IconSearch size={20} />,
@@ -56,13 +57,23 @@ function ChatContent() {
   const [gateCodeSent, setGateCodeSent] = useState(false);
   const [gateSending, setGateSending] = useState(false);
   const [gateError, setGateError] = useState("");
-  const [generatingArtifact, setGeneratingArtifact] = useState(false);
+  const [statusText, setStatusText] = useState<string | null>(null);
   const [starters, setStarters] = useState<string[]>(DEFAULT_STARTERS);
   const [showWelcome, setShowWelcome] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
   const [activeScenario, setActiveScenario] = useState<string | null>(null);
   const summaryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const artifactsRef = useRef<Artifact[]>([]);
+
+  const tokenBuffer = useTokenBuffer((content) => {
+    const artifacts = [...artifactsRef.current];
+    setMessages((prev) => {
+      const copy = [...prev];
+      copy[copy.length - 1] = { role: "assistant", content, artifacts };
+      return copy;
+    });
+  });
 
   const userMessageCount = messages.filter((m) => m.role === "user").length;
   const isLocked = !isInvited && !isSubscribed && userMessageCount >= FREE_MESSAGE_LIMIT;
@@ -236,7 +247,7 @@ function ChatContent() {
 
     const userMsg: Message = { role: "user", content: text };
     const updated = [...messages, userMsg];
-    setMessages(updated);
+    setMessages([...updated, { role: "assistant", content: "" }]);
     setInput("");
     setStreaming(true);
 
@@ -250,26 +261,26 @@ function ChatContent() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: updated,
+          message: text,
           mentor: "colin-chapman",
           ...(convId ? { conversation_id: convId } : {}),
+          ...(!convId ? { messages: updated } : {}),
           ...(activeScenario ? { scenario_id: activeScenario } : {}),
           ...(isInvited ? { invite: inviteCode } : {}),
         }),
       });
 
       if (res.status === 403) {
-        // Login required — keep user's message visible, show gate below
         setStreaming(false);
+        setMessages(updated);
         setShowLoginGate(true);
         window.posthog?.capture("gate_hit", { mentor: "colin-chapman", trigger: "message_blocked" });
         return;
       }
 
       if (res.status === 402) {
-        // Paywall
         setHitPaywall(true);
-        setMessages((prev) => prev.slice(0, -1));
+        setMessages((prev) => prev.slice(0, -2));
         setStreaming(false);
         window.posthog?.capture("paywall_hit", { mentor: "colin-chapman", trigger: "message_blocked" });
         return;
@@ -277,10 +288,11 @@ function ChatContent() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Request failed" }));
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: err.error || "Something went wrong." },
-        ]);
+        setMessages((prev) => {
+          const copy = [...prev];
+          copy[copy.length - 1] = { role: "assistant", content: err.error || "Something went wrong." };
+          return copy;
+        });
         setStreaming(false);
         return;
       }
@@ -289,11 +301,9 @@ function ChatContent() {
       if (!reader) return;
 
       const decoder = new TextDecoder();
-      let assistantContent = "";
       let ndjsonBuffer = "";
-      const messageArtifacts: Artifact[] = [];
-
-      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+      tokenBuffer.reset();
+      artifactsRef.current = [];
 
       while (true) {
         const { done, value } = await reader.read();
@@ -305,28 +315,27 @@ function ChatContent() {
 
         for (const event of events) {
           if (event.type === "text") {
-            assistantContent += event.content;
-            setGeneratingArtifact(false);
+            tokenBuffer.push(event.content);
+            setStatusText(null);
           } else if (event.type === "artifact") {
-            messageArtifacts.push(event.artifact);
-            setGeneratingArtifact(false);
+            artifactsRef.current.push(event.artifact);
+            setStatusText(null);
           } else if (event.type === "status") {
-            setGeneratingArtifact(true);
+            setStatusText(event.message);
           } else if (event.type === "error") {
-            assistantContent += `\n[Error: ${event.message}]`;
+            tokenBuffer.push(`\n[Error: ${event.message}]`);
           }
         }
-
-        const contentSnapshot = assistantContent;
-        const artifactsSnapshot = [...messageArtifacts];
-        setMessages((prev) => {
-          const copy = [...prev];
-          copy[copy.length - 1] = { role: "assistant", content: contentSnapshot, artifacts: artifactsSnapshot };
-          return copy;
-        });
       }
 
-      setGeneratingArtifact(false);
+      const finalContent = tokenBuffer.flush();
+      const finalArtifacts = [...artifactsRef.current];
+      setMessages((prev) => {
+        const copy = [...prev];
+        copy[copy.length - 1] = { role: "assistant", content: finalContent, artifacts: finalArtifacts };
+        return copy;
+      });
+      setStatusText(null);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -475,32 +484,11 @@ function ChatContent() {
                   isSubscribed={isSubscribed}
                   context={context}
                   isStreaming={streaming && i === messages.length - 1 && m.role === "assistant"}
+                  statusText={streaming && i === messages.length - 1 && m.role === "assistant" && statusText ? statusText : undefined}
                   artifacts={m.artifacts}
                 />
               );
             })}
-
-            {streaming &&
-              messages.length > 0 &&
-              messages[messages.length - 1].content === "" && (
-                <div className="flex justify-start">
-                  <div className="bg-[#F5F3F0] px-4 py-3 text-sm rounded-2xl">
-                    <span className="animate-pulse text-muted">●●●</span>
-                  </div>
-                </div>
-              )}
-
-            {generatingArtifact && (
-              <div className="flex justify-start">
-                <div className="flex items-center gap-2 bg-[#F5F3F0] border border-[#E5E2DC] px-4 py-2.5 text-sm rounded-xl">
-                  <svg className="animate-spin h-4 w-4 text-[#B8916A]" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  <span className="text-muted text-xs">Generating document...</span>
-                </div>
-              </div>
-            )}
 
             <div ref={bottomRef} />
           </div>

@@ -37,11 +37,11 @@ export function parseMarkdownToBlocks(content: string): DocumentBlock[] {
       }
     }
 
-    if (line.startsWith("## ")) {
-      const heading = line.replace(/^##\s+/, "").trim();
+    if (/^#{1,6}\s/.test(line)) {
+      const heading = line.replace(/^#{1,6}\s+/, "").trim();
       const paragraphLines: string[] = [];
       i++;
-      while (i < lines.length && !lines[i].startsWith("## ") && !lines[i].startsWith(":::chart") && !(lines[i].startsWith("|") && lines[i + 1]?.match(/^\|[\s-|]+\|$/))) {
+      while (i < lines.length && !/^#{1,6}\s/.test(lines[i]) && !lines[i].startsWith(":::chart") && !(lines[i].startsWith("|") && lines[i + 1]?.match(/^\|[\s-|]+\|$/))) {
         paragraphLines.push(lines[i]);
         i++;
       }
@@ -58,7 +58,7 @@ export function parseMarkdownToBlocks(content: string): DocumentBlock[] {
     }
 
     const paragraphLines: string[] = [];
-    while (i < lines.length && !lines[i].startsWith("## ") && !lines[i].startsWith(":::chart") && !(lines[i].startsWith("|") && lines[i + 1]?.match(/^\|[\s-|]+\|$/)) && lines[i].trim() !== "") {
+    while (i < lines.length && !/^#{1,6}\s/.test(lines[i]) && !lines[i].startsWith(":::chart") && !(lines[i].startsWith("|") && lines[i + 1]?.match(/^\|[\s-|]+\|$/)) && lines[i].trim() !== "") {
       paragraphLines.push(lines[i]);
       i++;
     }

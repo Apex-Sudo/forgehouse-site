@@ -6,10 +6,10 @@ import { useSession, signIn } from "next-auth/react";
 import Image from "next/image";
 import ChatMessage from "@/components/ChatMessage";
 import MemoryBanner from "@/components/MemoryBanner";
-// SignInNudge no longer needed — Leon requires auth
 import UpgradePrompt from "@/components/UpgradePrompt";
 import { SCENARIOS } from "@/lib/scenarios";
 import { IconSearch, IconMail, IconTarget } from "@tabler/icons-react";
+import { useTokenBuffer } from "@/hooks/useTokenBuffer";
 
 const SCENARIO_ICONS: Record<string, React.ReactNode> = {
   search: <IconSearch size={20} />,
@@ -61,6 +61,14 @@ function ChatContent() {
   const [activeScenario, setActiveScenario] = useState<string | null>(null);
   const summaryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const tokenBuffer = useTokenBuffer((content) => {
+    setMessages((prev) => {
+      const copy = [...prev];
+      copy[copy.length - 1] = { role: "assistant", content };
+      return copy;
+    });
+  });
 
   const userMessageCount = messages.filter((m) => m.role === "user").length;
   const isLocked = !isInvited && !isSubscribed && userMessageCount >= FREE_MESSAGE_LIMIT;
@@ -227,7 +235,7 @@ function ChatContent() {
 
     const userMsg: Message = { role: "user", content: text };
     const updated = [...messages, userMsg];
-    setMessages(updated);
+    setMessages([...updated, { role: "assistant", content: "" }]);
     setInput("");
     setStreaming(true);
 
@@ -241,26 +249,26 @@ function ChatContent() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: updated,
+          message: text,
           mentor: "leon-freier",
           ...(convId ? { conversation_id: convId } : {}),
+          ...(!convId ? { messages: updated } : {}),
           ...(activeScenario ? { scenario_id: activeScenario } : {}),
           ...(isInvited ? { invite: inviteCode } : {}),
         }),
       });
 
       if (res.status === 403) {
-        // Login required — keep user's message visible, show gate below
         setStreaming(false);
+        setMessages(updated);
         setShowLoginGate(true);
         window.posthog?.capture("gate_hit", { mentor: "leon-freier", trigger: "message_blocked" });
         return;
       }
 
       if (res.status === 402) {
-        // Paywall
         setHitPaywall(true);
-        setMessages((prev) => prev.slice(0, -1));
+        setMessages((prev) => prev.slice(0, -2));
         setStreaming(false);
         window.posthog?.capture("paywall_hit", { mentor: "leon-freier", trigger: "message_blocked" });
         return;
@@ -268,10 +276,11 @@ function ChatContent() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Request failed" }));
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: err.error || "Something went wrong." },
-        ]);
+        setMessages((prev) => {
+          const copy = [...prev];
+          copy[copy.length - 1] = { role: "assistant", content: err.error || "Something went wrong." };
+          return copy;
+        });
         setStreaming(false);
         return;
       }
@@ -280,21 +289,20 @@ function ChatContent() {
       if (!reader) return;
 
       const decoder = new TextDecoder();
-      let assistantContent = "";
-
-      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+      tokenBuffer.reset();
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        assistantContent += decoder.decode(value, { stream: true });
-        const snapshot = assistantContent;
-        setMessages((prev) => {
-          const copy = [...prev];
-          copy[copy.length - 1] = { role: "assistant", content: snapshot };
-          return copy;
-        });
+        tokenBuffer.push(decoder.decode(value, { stream: true }));
       }
+
+      const finalContent = tokenBuffer.flush();
+      setMessages((prev) => {
+        const copy = [...prev];
+        copy[copy.length - 1] = { role: "assistant", content: finalContent };
+        return copy;
+      });
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -446,16 +454,6 @@ function ChatContent() {
                 />
               );
             })}
-
-            {streaming &&
-              messages.length > 0 &&
-              messages[messages.length - 1].content === "" && (
-                <div className="flex justify-start">
-                  <div className="bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm rounded-2xl">
-                    <span className="animate-pulse text-muted">●●●</span>
-                  </div>
-                </div>
-              )}
 
             <div ref={bottomRef} />
           </div>

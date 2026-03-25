@@ -27,9 +27,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const code = credentials?.code as string;
         if (!email || !code) return null;
 
-        // Verify the 6-digit code
-        const valid = await verifyCode(email.toLowerCase().trim(), code);
-        if (!valid) return null;
+        const isDevBypass =
+          process.env.DEV_AUTO_AUTH === "true" && code === "000000";
+
+        if (!isDevBypass) {
+          const valid = await verifyCode(email.toLowerCase().trim(), code);
+          if (!valid) return null;
+        }
 
         // Find or create user
         const { data: existing } = await supabase

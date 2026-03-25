@@ -114,3 +114,13 @@ body {
   font-size: 0.75rem;
   font-style: normal;
 }
+
+/* Each new chunk of streamed text fades in */
+@keyframes streamFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.stream-fade {
+  animation: streamFade 250ms ease-out both;
+}

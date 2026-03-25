@@ -141,11 +141,105 @@ const styles = StyleSheet.create({
   },
 });
 
+function renderInlineMarkdown(text: string): React.ReactNode[] {
+  const parts: React.ReactNode[] = [];
+  const regex = /\*\*(.+?)\*\*|\*(.+?)\*/g;
+  let lastIndex = 0;
+  let match;
+  let key = 0;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    if (match[1]) {
+      parts.push(
+        <Text key={key++} style={{ fontFamily: "Helvetica-Bold" }}>{match[1]}</Text>
+      );
+    } else if (match[2]) {
+      parts.push(
+        <Text key={key++} style={{ fontStyle: "italic" }}>{match[2]}</Text>
+      );
+    }
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : [text];
+}
+
 function TextBlockView({ block }: { block: TextBlock }) {
+  if (!block.content) {
+    return (
+      <View>
+        {block.heading && <Text style={styles.sectionHeading}>{block.heading}</Text>}
+      </View>
+    );
+  }
+
+  const lines = block.content.split("\n");
+  const elements: React.ReactNode[] = [];
+  let paragraphBuffer: string[] = [];
+  let key = 0;
+
+  const flushParagraph = () => {
+    if (paragraphBuffer.length === 0) return;
+    const text = paragraphBuffer.join(" ");
+    elements.push(
+      <Text key={key++} style={styles.paragraph}>{renderInlineMarkdown(text)}</Text>
+    );
+    paragraphBuffer = [];
+  };
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    if (/^[-*]\s+\[[ x]\]\s/.test(trimmed)) {
+      flushParagraph();
+      const checked = /^[-*]\s+\[x\]/i.test(trimmed);
+      const itemText = trimmed.replace(/^[-*]\s+\[[ x]\]\s+/, "");
+      elements.push(
+        <View key={key++} style={{ flexDirection: "row", marginBottom: 3, paddingLeft: 8 }}>
+          <Text style={{ width: 16, fontSize: 11 }}>{checked ? "☑" : "☐"}</Text>
+          <Text style={{ flex: 1 }}>{renderInlineMarkdown(itemText)}</Text>
+        </View>
+      );
+    } else if (/^[-*]\s/.test(trimmed)) {
+      flushParagraph();
+      const itemText = trimmed.replace(/^[-*]\s+/, "");
+      elements.push(
+        <View key={key++} style={{ flexDirection: "row", marginBottom: 3, paddingLeft: 8 }}>
+          <Text style={{ width: 12, fontSize: 11 }}>•</Text>
+          <Text style={{ flex: 1 }}>{renderInlineMarkdown(itemText)}</Text>
+        </View>
+      );
+    } else if (/^\d+\.\s/.test(trimmed)) {
+      flushParagraph();
+      const numMatch = trimmed.match(/^(\d+)\.\s+(.*)/);
+      if (numMatch) {
+        elements.push(
+          <View key={key++} style={{ flexDirection: "row", marginBottom: 3, paddingLeft: 8 }}>
+            <Text style={{ width: 18, fontSize: 11 }}>{numMatch[1]}.</Text>
+            <Text style={{ flex: 1 }}>{renderInlineMarkdown(numMatch[2])}</Text>
+          </View>
+        );
+      }
+    } else if (trimmed === "") {
+      flushParagraph();
+    } else {
+      paragraphBuffer.push(trimmed);
+    }
+  }
+
+  flushParagraph();
+
   return (
     <View>
       {block.heading && <Text style={styles.sectionHeading}>{block.heading}</Text>}
-      <Text style={styles.paragraph}>{block.content}</Text>
+      {elements}
     </View>
   );
 }

@@ -5,23 +5,38 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { IconUserCircle, IconArrowRight } from "@tabler/icons-react";
 import { parseStreamChunk } from "@/lib/agent/helper/stream";
+import ChatMessage from "@/components/ChatMessage";
+import { useTokenBuffer } from "@/hooks/useTokenBuffer";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
+const WELCOME_MESSAGE: Message = {
+  role: "assistant",
+  content: "Hey! I'd love to learn about your business so our mentors can give you the most relevant advice. Let's start simple: what does your company do?",
+};
+
 function OnboardingContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/chat/colin-chapman";
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [profileComplete, setProfileComplete] = useState(false);
   const [extracting, setExtracting] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const tokenBuffer = useTokenBuffer((content) => {
+    setMessages((prev) => {
+      const copy = [...prev];
+      copy[copy.length - 1] = { role: "assistant", content };
+      return copy;
+    });
+  });
 
   const scrollToBottom = useCallback(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -57,7 +72,7 @@ function OnboardingContent() {
     if (!text || streaming || profileComplete) return;
 
     const userMsg: Message = { role: "user", content: text };
-    const updated = [...messages, userMsg];
+    const updated = [...messages, userMsg, { role: "assistant" as const, content: "" }];
     setMessages(updated);
     setInput("");
     setStreaming(true);
@@ -66,15 +81,16 @@ function OnboardingContent() {
       const res = await fetch("/api/onboarding-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: updated }),
+        body: JSON.stringify({ messages: updated.slice(0, -1) }),
       });
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Request failed" }));
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: err.error || "Something went wrong." },
-        ]);
+        setMessages((prev) => {
+          const copy = [...prev];
+          copy[copy.length - 1] = { role: "assistant", content: err.error || "Something went wrong." };
+          return copy;
+        });
         setStreaming(false);
         return;
       }
@@ -83,10 +99,8 @@ function OnboardingContent() {
       if (!reader) return;
 
       const decoder = new TextDecoder();
-      let assistantContent = "";
       let ndjsonBuffer = "";
-
-      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+      tokenBuffer.reset();
 
       while (true) {
         const { done, value } = await reader.read();
@@ -98,35 +112,38 @@ function OnboardingContent() {
 
         for (const event of events) {
           if (event.type === "text") {
-            assistantContent += event.content;
+            tokenBuffer.push(event.content);
           } else if (event.type === "error") {
-            assistantContent += `\n[Error: ${event.message}]`;
+            tokenBuffer.push(`\n[Error: ${event.message}]`);
           }
         }
-
-        const snapshot = assistantContent;
-        setMessages((prev) => {
-          const copy = [...prev];
-          copy[copy.length - 1] = { role: "assistant", content: snapshot };
-          return copy;
-        });
       }
 
-      if (assistantContent.includes("[PROFILE_COMPLETE]")) {
-        const cleanContent = assistantContent.replace("[PROFILE_COMPLETE]", "").trim();
-        const finalMessages = [...updated, { role: "assistant" as const, content: cleanContent }];
+      const finalContent = tokenBuffer.flush();
+
+      if (finalContent.includes("[PROFILE_COMPLETE]")) {
+        const cleanContent = finalContent.replace("[PROFILE_COMPLETE]", "").trim();
+        const apiMessages = updated.slice(0, -1);
+        const finalMessages = [...apiMessages, { role: "assistant" as const, content: cleanContent }];
         setMessages((prev) => {
           const copy = [...prev];
           copy[copy.length - 1] = { role: "assistant", content: cleanContent };
           return copy;
         });
         await extractProfile(finalMessages);
+      } else {
+        setMessages((prev) => {
+          const copy = [...prev];
+          copy[copy.length - 1] = { role: "assistant", content: finalContent };
+          return copy;
+        });
       }
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Connection error. Please try again." },
-      ]);
+      setMessages((prev) => {
+        const copy = [...prev];
+        copy[copy.length - 1] = { role: "assistant", content: "Connection error. Please try again." };
+        return copy;
+      });
     } finally {
       setStreaming(false);
     }
@@ -152,7 +169,7 @@ function OnboardingContent() {
       <div className="flex-1 flex justify-center min-h-0">
         <div className="w-full max-w-5xl glass-card flex flex-col overflow-hidden shadow-[0_0_24px_rgba(184,145,106,0.12)] border-[rgba(184,145,106,0.2)] h-full">
           {/* Header */}
-          <div className="flex items-center gap-3 px-6 py-4 border-b border-white/[0.06]">
+          <div className="flex items-center gap-3 px-6 py-4 border-b border-foreground/[0.08]">
             <IconUserCircle size={24} className="text-amber shrink-0" />
             <div className="flex-1">
               <h1 className="font-bold text-sm">Set Up Your Profile</h1>
@@ -162,33 +179,14 @@ function OnboardingContent() {
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
-            <div className="flex justify-start">
-              <div className="max-w-[80%] bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm leading-relaxed rounded-2xl">
-                Hey! I&apos;d love to learn about your business so our mentors can give you the most relevant advice. Let&apos;s start simple: what does your company do?
-              </div>
-            </div>
-
             {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div
-                  className={`max-w-[80%] px-4 py-3 text-sm leading-relaxed rounded-2xl ${
-                    m.role === "user"
-                      ? "bg-amber/10 border border-amber/20 text-foreground"
-                      : "bg-white/[0.04] border border-white/[0.06]"
-                  }`}
-                >
-                  {m.content}
-                </div>
-              </div>
+              <ChatMessage
+                key={i}
+                role={m.role}
+                content={m.content}
+                isStreaming={streaming && i === messages.length - 1 && m.role === "assistant"}
+              />
             ))}
-
-            {streaming && messages.length > 0 && messages[messages.length - 1].content === "" && (
-              <div className="flex justify-start">
-                <div className="bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm rounded-2xl">
-                  <span className="animate-pulse text-muted">●●●</span>
-                </div>
-              </div>
-            )}
 
             {extracting && (
               <div className="flex justify-center">
@@ -200,9 +198,9 @@ function OnboardingContent() {
 
             {profileComplete && (
               <div className="flex justify-center">
-                <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl px-8 py-6 text-center max-w-md">
-                  <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-green-400 text-xl">✓</span>
+                <div className="bg-[#F5F3F0] border border-foreground/[0.08] rounded-2xl px-8 py-6 text-center max-w-md">
+                  <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
+                    <span className="text-green-600 text-xl">✓</span>
                   </div>
                   <p className="text-foreground font-medium mb-1">You&apos;re all set.</p>
                   <p className="text-sm text-muted mb-5">Colin now knows your business and can give you tailored advice.</p>
@@ -221,7 +219,7 @@ function OnboardingContent() {
 
           {/* Input */}
           {!profileComplete && (
-            <div className="border-t border-white/[0.06] px-6 py-4">
+            <div className="border-t border-foreground/[0.08] px-6 py-4">
               <div className="flex gap-3">
                 <textarea
                   value={input}
@@ -229,7 +227,7 @@ function OnboardingContent() {
                   onKeyDown={handleKeyDown}
                   placeholder="Tell us about your business..."
                   rows={1}
-                  className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-amber/40 transition resize-none"
+                  className="flex-1 bg-[#F5F3F0] border border-foreground/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-amber/40 transition resize-none"
                 />
                 <button
                   onClick={() => send()}
