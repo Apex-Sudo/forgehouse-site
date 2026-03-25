@@ -37,10 +37,61 @@
   border-color: rgba(184, 145, 106, 0.22);
 }
 
+.mentors-card-elevated {
+  background: #FFFFFF;
+  border: 1px solid rgba(184, 145, 106, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mentors-card-elevated:hover {
+  border-color: rgba(184, 145, 106, 0.22);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
 .mentors-module {
   background: rgba(184, 145, 106, 0.04);
   border: 1px solid rgba(184, 145, 106, 0.10);
   border-radius: 20px;
+}
+
+/* Dark sections */
+.mentors-dark-section {
+  background: #1A2332;
+  color: #FFFFFF;
+}
+
+.mentors-dark-section h2,
+.mentors-dark-section h3,
+.mentors-dark-section p,
+.mentors-dark-section span,
+.mentors-dark-section li {
+  color: inherit;
+}
+
+.mentors-dark-section .mentors-muted {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.mentors-dark-section .mentors-accent {
+  color: #B8916A;
+}
+
+.mentors-dark-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.mentors-dark-card:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Cream section */
+.mentors-cream-section {
+  background: #F8F5F0;
 }
 
 .mentors-cta {
@@ -54,6 +105,26 @@
 
 .mentors-icon {
   color: #B8916A;
+}
+
+.mentors-dark-section .mentors-icon {
+  color: #B8916A;
+}
+
+/* Contained CTA card */
+.mentors-cta-card {
+  background: #1A2332;
+  border-radius: 24px;
+  color: #FFFFFF;
+}
+
+.mentors-cta-card h2,
+.mentors-cta-card p {
+  color: inherit;
+}
+
+.mentors-cta-card .mentors-muted {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* Override any dark theme leaking from parent layout */
@@ -86,4 +157,10 @@
 
 .mentors-light .mentors-fg {
   color: #1A1A1A;
+}
+
+/* Checkmark accent */
+.mentors-check {
+  color: #B8916A;
+  flex-shrink: 0;
 }
