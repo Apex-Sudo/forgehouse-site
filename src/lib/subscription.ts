@@ -19,6 +19,11 @@ const AUTH_FREE_PREFIX = "fh:free:auth:";
 const ANONYMOUS_FREE_MESSAGES = 3;
 const AUTHENTICATED_FREE_MESSAGES = 2; // 2 more after login (5 total)
 
+// Whitelisted IPs bypass all gating
+const WHITELISTED_IPS = new Set(
+  (process.env.WHITELISTED_IPS || "").split(",").map((ip) => ip.trim()).filter(Boolean)
+);
+
 // --- Subscription management ---
 
 export async function setSubscriptionActive(email: string, stripeCustomerId: string) {
@@ -79,6 +84,9 @@ export async function canAccess(
   ip: string,
   email?: string
 ): Promise<{ allowed: boolean; reason: "free" | "subscribed" | "login_required" | "paywall" }> {
+  // Whitelisted IPs bypass all gating
+  if (WHITELISTED_IPS.has(ip)) return { allowed: true, reason: "free" };
+
   // If subscribed, always allow
   if (email) {
     const active = await isSubscribed(email);
