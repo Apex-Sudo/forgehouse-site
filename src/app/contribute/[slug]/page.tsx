@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { Suspense, useState, useRef, useEffect, useCallback } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 
@@ -10,7 +10,15 @@ interface Message {
   content: string;
 }
 
-export default function ExtractionPage() {
+export default function ExtractionPageWrapper() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0e1117] flex items-center justify-center"><span className="text-white/40 text-sm">Loading...</span></div>}>
+      <ExtractionPage />
+    </Suspense>
+  );
+}
+
+function ExtractionPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const slug = params.slug as string;
