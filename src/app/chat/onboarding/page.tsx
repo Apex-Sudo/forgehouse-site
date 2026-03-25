@@ -1,21 +1,21 @@
 "use client";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 import { IconUserCircle, IconArrowRight } from "@tabler/icons-react";
 import { parseStreamChunk } from "@/lib/agent/helper/stream";
-import ChatMessage from "@/components/ChatMessage";
 import { useTokenBuffer } from "@/hooks/useTokenBuffer";
+import ChatMessage from "@/components/ChatMessage";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-const WELCOME_MESSAGE: Message = {
+const INITIAL_MESSAGE: Message = {
   role: "assistant",
-  content: "Hey! I'd love to learn about your business so our mentors can give you the most relevant advice. Let's start simple: what does your company do?",
+  content:
+    "Hey! I'd love to learn about your business so our mentors can give you the most relevant advice. Let's start simple: what does your company do?",
 };
 
 function OnboardingContent() {
@@ -23,7 +23,7 @@ function OnboardingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/chat/colin-chapman";
-  const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
+  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [profileComplete, setProfileComplete] = useState(false);
@@ -81,7 +81,7 @@ function OnboardingContent() {
       const res = await fetch("/api/onboarding-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: updated.slice(0, -1) }),
+        body: JSON.stringify({ messages: [...messages, userMsg] }),
       });
 
       if (!res.ok) {
@@ -120,23 +120,21 @@ function OnboardingContent() {
       }
 
       const finalContent = tokenBuffer.flush();
+      setMessages((prev) => {
+        const copy = [...prev];
+        copy[copy.length - 1] = { role: "assistant", content: finalContent };
+        return copy;
+      });
 
       if (finalContent.includes("[PROFILE_COMPLETE]")) {
         const cleanContent = finalContent.replace("[PROFILE_COMPLETE]", "").trim();
-        const apiMessages = updated.slice(0, -1);
-        const finalMessages = [...apiMessages, { role: "assistant" as const, content: cleanContent }];
+        const finalMessages = [...messages, userMsg, { role: "assistant" as const, content: cleanContent }];
         setMessages((prev) => {
           const copy = [...prev];
           copy[copy.length - 1] = { role: "assistant", content: cleanContent };
           return copy;
         });
         await extractProfile(finalMessages);
-      } else {
-        setMessages((prev) => {
-          const copy = [...prev];
-          copy[copy.length - 1] = { role: "assistant", content: finalContent };
-          return copy;
-        });
       }
     } catch {
       setMessages((prev) => {
@@ -169,7 +167,7 @@ function OnboardingContent() {
       <div className="flex-1 flex justify-center min-h-0">
         <div className="w-full max-w-5xl glass-card flex flex-col overflow-hidden shadow-[0_0_24px_rgba(184,145,106,0.12)] border-[rgba(184,145,106,0.2)] h-full">
           {/* Header */}
-          <div className="flex items-center gap-3 px-6 py-4 border-b border-foreground/[0.08]">
+          <div className="flex items-center gap-3 px-6 py-4 border-b border-white/[0.06]">
             <IconUserCircle size={24} className="text-amber shrink-0" />
             <div className="flex-1">
               <h1 className="font-bold text-sm">Set Up Your Profile</h1>
@@ -190,23 +188,27 @@ function OnboardingContent() {
 
             {extracting && (
               <div className="flex justify-center">
-                <div className="bg-amber/10 border border-amber/20 rounded-xl px-5 py-3 text-sm text-amber animate-pulse">
-                  Saving your profile...
+                <div className="flex items-center gap-2 bg-[#F5F3F0] border border-[#E5E2DC] rounded-xl px-5 py-3 text-sm">
+                  <svg className="animate-spin h-4 w-4 text-[#B8916A]" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  <span className="text-muted text-xs">Saving your profile...</span>
                 </div>
               </div>
             )}
 
             {profileComplete && (
               <div className="flex justify-center">
-                <div className="bg-[#F5F3F0] border border-foreground/[0.08] rounded-2xl px-8 py-6 text-center max-w-md">
-                  <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
+                <div className="bg-[#F5F3F0] border border-[#E5E2DC] rounded-2xl px-8 py-6 text-center max-w-md">
+                  <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                     <span className="text-green-600 text-xl">✓</span>
                   </div>
                   <p className="text-foreground font-medium mb-1">You&apos;re all set.</p>
                   <p className="text-sm text-muted mb-5">Colin now knows your business and can give you tailored advice.</p>
                   <button
                     onClick={() => router.push(redirectTo)}
-                    className="inline-flex items-center gap-2 bg-amber text-black px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-amber/90 transition cursor-pointer"
+                    className="inline-flex items-center gap-2 bg-[#B8916A] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#A07D5A] transition cursor-pointer"
                   >
                     Continue <IconArrowRight size={16} />
                   </button>
@@ -219,7 +221,7 @@ function OnboardingContent() {
 
           {/* Input */}
           {!profileComplete && (
-            <div className="border-t border-foreground/[0.08] px-6 py-4">
+            <div className="border-t border-[#E5E2DC] px-6 py-4">
               <div className="flex gap-3">
                 <textarea
                   value={input}
@@ -227,12 +229,12 @@ function OnboardingContent() {
                   onKeyDown={handleKeyDown}
                   placeholder="Tell us about your business..."
                   rows={1}
-                  className="flex-1 bg-[#F5F3F0] border border-foreground/[0.08] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-amber/40 transition resize-none"
+                  className="flex-1 bg-[#F5F3F0] border border-[#E5E2DC] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#B8916A]/40 transition resize-none"
                 />
                 <button
                   onClick={() => send()}
                   disabled={streaming}
-                  className="bg-amber text-black px-6 py-3 rounded-xl font-semibold text-sm hover:bg-amber/90 transition disabled:opacity-50 cursor-pointer"
+                  className="bg-[#B8916A] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#A07D5A] transition disabled:opacity-50 cursor-pointer"
                 >
                   Send
                 </button>

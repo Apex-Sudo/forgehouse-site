@@ -4,20 +4,53 @@ import type { DocumentBlock } from "./renderer";
  * Parses markdown-like content into DocumentBlocks for PDF rendering.
  *
  * Supported:
- *   ## Heading        → text block with heading
- *   Regular text      → text block (paragraphs)
- *   | H1 | H2 |      → table block (markdown tables)
+ *   # - ###### Heading  -> text block with heading
+ *   ---                 -> hr block (horizontal rule)
+ *   Regular text        -> text block (paragraphs)
+ *   | H1 | H2 |        -> table block (markdown tables)
  *   :::chart bar "Title"
- *   Label: 100        → chart block
+ *   Label: 100          -> chart block
  *   :::
  */
-export function parseMarkdownToBlocks(content: string): DocumentBlock[] {
+
+function sanitizeContent(content: string): string {
+  return content
+    .replace(/\u2192/g, "->")   // → arrow
+    .replace(/\u2190/g, "<-")   // ← arrow
+    .replace(/\u2194/g, "<->")  // ↔ arrow
+    .replace(/\u2013/g, "-")    // – en-dash
+    .replace(/\u2014/g, "--")   // — em-dash
+    .replace(/\u2018/g, "'")    // ' left single quote
+    .replace(/\u2019/g, "'")    // ' right single quote
+    .replace(/\u201C/g, "\"")   // " left double quote
+    .replace(/\u201D/g, "\"");  // " right double quote
+}
+
+function isHr(line: string): boolean {
+  return /^-{3,}\s*$/.test(line.trim()) || /^\*{3,}\s*$/.test(line.trim());
+}
+
+function isBlockBoundary(line: string, nextLine?: string): boolean {
+  return /^#{1,6}\s/.test(line)
+    || line.startsWith(":::chart")
+    || (line.startsWith("|") && !!nextLine?.match(/^\|[\s-|]+\|$/))
+    || isHr(line);
+}
+
+export function parseMarkdownToBlocks(rawContent: string): DocumentBlock[] {
+  const content = sanitizeContent(rawContent);
   const blocks: DocumentBlock[] = [];
   const lines = content.split("\n");
   let i = 0;
 
   while (i < lines.length) {
     const line = lines[i];
+
+    if (isHr(line)) {
+      blocks.push({ type: "hr" });
+      i++;
+      continue;
+    }
 
     if (line.startsWith(":::chart")) {
       const chartBlock = parseChartBlock(lines, i);
@@ -41,7 +74,7 @@ export function parseMarkdownToBlocks(content: string): DocumentBlock[] {
       const heading = line.replace(/^#{1,6}\s+/, "").trim();
       const paragraphLines: string[] = [];
       i++;
-      while (i < lines.length && !/^#{1,6}\s/.test(lines[i]) && !lines[i].startsWith(":::chart") && !(lines[i].startsWith("|") && lines[i + 1]?.match(/^\|[\s-|]+\|$/))) {
+      while (i < lines.length && !isBlockBoundary(lines[i], lines[i + 1])) {
         paragraphLines.push(lines[i]);
         i++;
       }
@@ -58,7 +91,7 @@ export function parseMarkdownToBlocks(content: string): DocumentBlock[] {
     }
 
     const paragraphLines: string[] = [];
-    while (i < lines.length && !/^#{1,6}\s/.test(lines[i]) && !lines[i].startsWith(":::chart") && !(lines[i].startsWith("|") && lines[i + 1]?.match(/^\|[\s-|]+\|$/)) && lines[i].trim() !== "") {
+    while (i < lines.length && !isBlockBoundary(lines[i], lines[i + 1]) && lines[i].trim() !== "") {
       paragraphLines.push(lines[i]);
       i++;
     }

@@ -38,7 +38,11 @@ export type TableBlock = {
   rows: string[][];
 };
 
-export type DocumentBlock = TextBlock | ChartBlock | TableBlock;
+export type HrBlock = {
+  type: "hr";
+};
+
+export type DocumentBlock = TextBlock | ChartBlock | TableBlock | HrBlock;
 
 export type DocumentSpec = {
   title: string;
@@ -254,18 +258,24 @@ function ChartBlockView({ block, chartPng }: { block: ChartBlock; chartPng: Buff
   );
 }
 
+function HrBlockView() {
+  return (
+    <View style={{ marginVertical: 14, borderBottomWidth: 1, borderBottomColor: "#E5E2DC" }} />
+  );
+}
+
 function TableBlockView({ block }: { block: TableBlock }) {
   return (
     <View style={styles.table}>
       <View style={styles.tableHeaderRow}>
         {block.headers.map((h, i) => (
-          <Text key={i} style={styles.tableHeaderCell}>{h}</Text>
+          <Text key={i} style={styles.tableHeaderCell}>{renderInlineMarkdown(h)}</Text>
         ))}
       </View>
       {block.rows.map((row, ri) => (
         <View key={ri} style={styles.tableRow}>
           {row.map((cell, ci) => (
-            <Text key={ci} style={styles.tableCell}>{cell}</Text>
+            <Text key={ci} style={styles.tableCell}>{renderInlineMarkdown(cell)}</Text>
           ))}
         </View>
       ))}
@@ -329,6 +339,8 @@ export async function renderPdf(spec: DocumentSpec): Promise<Buffer> {
             }
             case "table":
               return <TableBlockView key={i} block={block} />;
+            case "hr":
+              return <HrBlockView key={i} />;
           }
         })}
 

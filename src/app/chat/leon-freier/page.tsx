@@ -81,30 +81,33 @@ function ChatContent() {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Fetch dynamic starters based on user profile
+  const userEmail = session?.user?.email;
+  const subscribedParam = searchParams.get("subscribed");
+  const newParam = searchParams.get("new");
+  const scenarioParam = searchParams.get("scenario");
+  const convParam = searchParams.get("conv");
+  const qParam = searchParams.get("q");
+
   useEffect(() => {
-    if (!session?.user) return;
+    if (!userEmail) return;
     fetch("/api/starters?mentor=leon-freier")
       .then((r) => r.json())
       .then((data) => {
         if (data.starters?.length >= 4) setStarters(data.starters);
       })
       .catch(() => {});
-  }, [session]);
+  }, [userEmail]);
 
-  // Show welcome banner after successful subscription
   useEffect(() => {
-    if (searchParams.get("subscribed") === "true") {
+    if (subscribedParam === "true") {
       setShowWelcome(true);
       setIsSubscribed(true);
       const timer = setTimeout(() => setShowWelcome(false), 8000);
-      // Clean URL
       window.history.replaceState({}, "", "/chat/leon-freier");
       return () => clearTimeout(timer);
     }
-  }, [searchParams]);
+  }, [subscribedParam]);
 
-  // Check gate status on load (preemptive, no hostage-taking)
   useEffect(() => {
     if (isInvited) return;
     fetch("/api/gate-check")
@@ -122,13 +125,10 @@ function ChatContent() {
         }
       })
       .catch(() => {});
-  }, [isInvited, session]);
+  }, [isInvited, userEmail]);
 
-  // No longer redirect anonymous users — first 3 messages are free without login
-
-  // Force onboarding if profile not complete (only for signed-in users)
   useEffect(() => {
-    if (!session?.user) return;
+    if (!userEmail) return;
     fetch("/api/profile")
       .then(async (r) => {
         if (r.ok) {
@@ -139,10 +139,10 @@ function ChatContent() {
         }
       })
       .catch(() => {});
-  }, [session]);
+  }, [userEmail]);
 
   useEffect(() => {
-    if (!session?.user) return;
+    if (!userEmail) return;
     fetch("/api/insights?mentor=leon-freier")
       .then(async (r) => {
         if (r.ok) {
@@ -155,11 +155,10 @@ function ChatContent() {
         }
       })
       .catch(() => {});
-  }, [session]);
+  }, [userEmail]);
 
-  // Handle ?new=true to start fresh conversation
   useEffect(() => {
-    if (searchParams.get("new") === "true") {
+    if (newParam === "true") {
       setConversationId(null);
       setMessages([]);
       setSummary(null);
@@ -167,12 +166,10 @@ function ChatContent() {
       if (summaryTimerRef.current) clearTimeout(summaryTimerRef.current);
       window.history.replaceState({}, "", "/chat/leon-freier");
     }
-  }, [searchParams]);
+  }, [newParam]);
 
-  // Launch scenario from sidebar link
   useEffect(() => {
-    const scenarioParam = searchParams.get("scenario");
-    if (!scenarioParam || !session?.user) return;
+    if (!scenarioParam || !userEmail) return;
     const scenario = SCENARIOS.find((s) => s.id === scenarioParam);
     if (scenario && messages.length === 0) {
       setActiveScenario(scenario.id);
@@ -180,12 +177,10 @@ function ChatContent() {
       window.history.replaceState({}, "", "/chat/leon-freier");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, session]);
+  }, [scenarioParam, userEmail]);
 
-  // Load conversation from sidebar link
   useEffect(() => {
-    const convParam = searchParams.get("conv");
-    if (!convParam || !session?.user) return;
+    if (!convParam || !userEmail) return;
     setConversationId(convParam);
     fetch(`/api/conversations/${convParam}`)
       .then((r) => r.ok ? r.json() : null)
@@ -201,17 +196,16 @@ function ChatContent() {
       .catch(() => {});
     window.history.replaceState({}, "", "/chat/leon-freier");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, session]);
+  }, [convParam, userEmail]);
 
   useEffect(() => {
     if (seeded) return;
-    const q = searchParams.get("q");
-    if (q) {
+    if (qParam) {
       setSeeded(true);
-      setTimeout(() => send(q), 100);
+      setTimeout(() => send(qParam), 100);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, seeded]);
+  }, [qParam, seeded]);
 
   const createConversation = async (scenarioType?: string): Promise<string | null> => {
     try {
