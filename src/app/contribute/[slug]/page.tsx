@@ -28,6 +28,7 @@ function ExtractionPage() {
   const [started, setStarted] = useState(false);
   const [accessCode, setAccessCode] = useState("");
   const [authorized, setAuthorized] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Check access code from URL param or prompt
@@ -36,7 +37,16 @@ function ExtractionPage() {
     if (code === CONTRIBUTE_ACCESS_CODE) {
       setAuthorized(true);
     }
+    setAuthChecked(true);
   }, [searchParams]);
+
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen bg-[#0e1117] flex items-center justify-center p-4">
+        <span className="text-white/40 text-sm">Loading...</span>
+      </div>
+    );
+  }
 
   if (!authorized) {
     return (
