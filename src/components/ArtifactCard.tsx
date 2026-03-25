@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import type { Artifact } from "@/lib/agent/stream";
+import type { Artifact } from "@/lib/agent/helper/stream";
 import ArtifactViewer from "./ArtifactViewer";
 
 export default function ArtifactCard({ artifact }: { artifact: Artifact }) {

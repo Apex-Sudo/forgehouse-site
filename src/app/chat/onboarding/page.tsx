@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { IconUserCircle, IconArrowRight } from "@tabler/icons-react";
-import { parseStreamChunk } from "@/lib/agent/stream";
+import { parseStreamChunk } from "@/lib/agent/helper/stream";
 
 interface Message {
   role: "user" | "assistant";

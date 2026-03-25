@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import type { Artifact } from "@/lib/agent/stream";
+import type { Artifact } from "@/lib/agent/helper/stream";
 
 interface ArtifactViewerProps {
   artifact: Artifact;

@@ -60,10 +60,10 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   title: {
-    fontSize: 22,
+    fontSize: 18,
     fontFamily: "Helvetica-Bold",
     color: "#1A1A1A",
-    marginBottom: 4,
+    marginBottom: 8,
   },
   subtitle: {
     fontSize: 9,

@@ -2,7 +2,7 @@
 import ReactMarkdown from "react-markdown";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import type { Artifact } from "@/lib/agent/stream";
+import type { Artifact } from "@/lib/agent/helper/stream";
 import ArtifactCard from "./ArtifactCard";
 
 interface ChatMessageProps {

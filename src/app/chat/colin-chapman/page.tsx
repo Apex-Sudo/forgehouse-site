@@ -9,7 +9,7 @@ import MemoryBanner from "@/components/MemoryBanner";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import { SCENARIOS } from "@/lib/scenarios";
 import { IconSearch, IconMail, IconTarget } from "@tabler/icons-react";
-import { parseStreamChunk, type Artifact } from "@/lib/agent/stream";
+import { parseStreamChunk, extractArtifacts, type Artifact } from "@/lib/agent/helper/stream";
 
 const SCENARIO_ICONS: Record<string, React.ReactNode> = {
   search: <IconSearch size={20} />,
@@ -185,10 +185,17 @@ function ChatContent() {
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
         if (data?.messages?.length) {
-          setMessages(data.messages.map((m: { role: string; content: string }) => ({
-            role: m.role as "user" | "assistant",
-            content: m.content,
-          })));
+          setMessages(data.messages.map((m: { role: string; content: string }) => {
+            if (m.role === "assistant") {
+              const extracted = extractArtifacts(m.content);
+              return {
+                role: m.role as "user" | "assistant",
+                content: extracted.content,
+                artifacts: extracted.artifacts.length > 0 ? extracted.artifacts : undefined,
+              };
+            }
+            return { role: m.role as "user" | "assistant", content: m.content };
+          }));
         }
         if (data?.summary) setSummary(data.summary);
       })
@@ -285,16 +292,8 @@ function ChatContent() {
       let assistantContent = "";
       let ndjsonBuffer = "";
       const messageArtifacts: Artifact[] = [];
-      let lastTextEventTime = Date.now();
 
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
-
-      const idleTimer = setInterval(() => {
-        const idleMs = Date.now() - lastTextEventTime;
-        if (idleMs > 3000 && assistantContent.length > 0) {
-          setGeneratingArtifact(true);
-        }
-      }, 1000);
 
       while (true) {
         const { done, value } = await reader.read();
@@ -307,11 +306,12 @@ function ChatContent() {
         for (const event of events) {
           if (event.type === "text") {
             assistantContent += event.content;
-            lastTextEventTime = Date.now();
             setGeneratingArtifact(false);
           } else if (event.type === "artifact") {
             messageArtifacts.push(event.artifact);
             setGeneratingArtifact(false);
+          } else if (event.type === "status") {
+            setGeneratingArtifact(true);
           } else if (event.type === "error") {
             assistantContent += `\n[Error: ${event.message}]`;
           }
@@ -326,7 +326,6 @@ function ChatContent() {
         });
       }
 
-      clearInterval(idleTimer);
       setGeneratingArtifact(false);
     } catch {
       setMessages((prev) => [

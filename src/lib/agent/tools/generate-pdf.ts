@@ -1,91 +1,53 @@
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
-import { renderPdf, type DocumentSpec, type DocumentBlock } from "@/lib/pdf/renderer";
+import { renderPdf, type DocumentSpec } from "@/lib/pdf/renderer";
 import { uploadArtifact } from "@/lib/storage";
-import type { Artifact } from "@/lib/agent/stream";
+import type { Artifact } from "@/lib/agent/helper/stream";
 import { toolLog } from "@/lib/tool-logger";
-
-const blockSchema = z.object({
-  type: z.enum(["text", "chart", "table"]).describe("Block type"),
-  heading: z.string().optional().describe("Section heading (for text blocks)"),
-  content: z.string().optional().describe("Paragraph text (required for text blocks)"),
-  title: z.string().optional().describe("Chart title (required for chart blocks)"),
-  chartType: z
-    .enum(["bar", "line", "area", "point", "arc"])
-    .optional()
-    .describe("Chart type (required for chart blocks): 'bar', 'line', 'area', 'point', 'arc'"),
-  data: z
-    .array(z.object({
-      label: z.string(),
-      value: z.number(),
-      series: z.string().optional(),
-    }))
-    .optional()
-    .describe("Data points (required for chart blocks): [{label, value, series?}]"),
-  xLabel: z.string().optional().describe("X-axis label (chart blocks)"),
-  yLabel: z.string().optional().describe("Y-axis label (chart blocks)"),
-  headers: z.array(z.string()).optional().describe("Column headers (required for table blocks)"),
-  rows: z.array(z.array(z.string())).optional().describe("Table rows (required for table blocks)"),
-});
+import { parseMarkdownToBlocks } from "@/lib/pdf/markdown-parser";
 
 const documentSchema = z.object({
   title: z.string().describe("Title of the PDF document"),
-  blocks: z
-    .array(blockSchema)
-    .describe("Ordered content blocks. Each block has a 'type' field ('text', 'chart', or 'table') and the fields relevant to that type."),
+  content: z.string().describe(
+    "The full document content as formatted text. " +
+    "Use '## Heading' for section headings. " +
+    "Use markdown tables (| Col1 | Col2 |) for tabular data. " +
+    "For charts use: :::chart bar \"Chart Title\"\\nLabel1: 100\\nLabel2: 200\\n::: " +
+    "(supported chart types: bar, line, area, point, arc)"
+  ),
 });
-
-function validateAndConvertBlocks(rawBlocks: z.infer<typeof blockSchema>[]): DocumentBlock[] {
-  return rawBlocks.map((b, i) => {
-    switch (b.type) {
-      case "text":
-        return { type: "text" as const, heading: b.heading, content: b.content ?? "" };
-      case "chart":
-        return {
-          type: "chart" as const,
-          title: b.title ?? `Chart ${i + 1}`,
-          chartType: b.chartType ?? "bar",
-          data: b.data ?? [],
-          xLabel: b.xLabel,
-          yLabel: b.yLabel,
-        };
-      case "table":
-        return {
-          type: "table" as const,
-          headers: b.headers ?? [],
-          rows: b.rows ?? [],
-        };
-    }
-  });
-}
 
 export const generatePdfTool = new DynamicStructuredTool({
   name: "generatePdf",
   description:
-    "Generate a PDF document with text sections, tables, and charts. " +
-    "Use when the user asks for a downloadable document, report, action plan, or analysis. " +
-    "For charts: set type='chart' and provide chartType + data (array of {label, value} objects). " +
-    "For text: set type='text' and provide content (and optional heading). " +
-    "For tables: set type='table' and provide headers + rows. " +
-    "Returns a link the user can click to download the PDF.",
+    "Generate a PDF document. Use when the user asks for a downloadable report, plan, or analysis. " +
+    "Write the document content as formatted text with ## headings, markdown tables, and :::chart blocks. " +
+    "Returns a download link.",
   schema: documentSchema,
   func: async (input) => {
     toolLog("generatePdf", "Tool invoked. Title:", input.title);
-    toolLog("generatePdf", "Blocks:", input.blocks.length, "types:", input.blocks.map(b => b.type).join(", "));
-    toolLog("generatePdf", "Full input:", JSON.stringify(input).slice(0, 2000));
+    toolLog("generatePdf", "Content length:", input.content?.length ?? 0);
+    toolLog("generatePdf", "Content preview:", input.content?.slice(0, 500));
+
+    if (!input.content || input.content.trim().length === 0) {
+      toolLog("generatePdf", "EMPTY CONTENT");
+      return JSON.stringify({
+        error: "You must provide 'content' — the document body text with ## headings, tables, and optional :::chart blocks.",
+      });
+    }
 
     try {
-      const blocks = validateAndConvertBlocks(input.blocks);
-      toolLog("generatePdf", "Validated blocks:", blocks.length);
+      const blocks = parseMarkdownToBlocks(input.content);
+      toolLog("generatePdf", "Parsed blocks:", blocks.length, "types:", blocks.map(b => b.type).join(", "));
 
-      const spec: DocumentSpec = {
-        title: input.title,
-        blocks,
-      };
+      if (blocks.length === 0) {
+        blocks.push({ type: "text", content: input.content });
+      }
 
+      const spec: DocumentSpec = { title: input.title, blocks };
       const pdfBuffer = await renderPdf(spec);
 
-      toolLog("generatePdf", "PDF rendered, uploading to storage...");
+      toolLog("generatePdf", "PDF rendered, uploading...");
       const id = crypto.randomUUID();
       const filename = `${id}.pdf`;
       await uploadArtifact(pdfBuffer, filename);
@@ -99,17 +61,16 @@ export const generatePdfTool = new DynamicStructuredTool({
         createdAt: new Date().toISOString(),
       };
 
-      toolLog("generatePdf", "SUCCESS — returning artifact:", id);
+      toolLog("generatePdf", "SUCCESS:", id);
       return JSON.stringify({ artifact });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      const stack = err instanceof Error ? err.stack : "";
       toolLog("generatePdf", "FAILED:", message);
-      toolLog("generatePdf", "Stack:", stack);
+      toolLog("generatePdf", "Stack:", err instanceof Error ? err.stack : "");
 
       return JSON.stringify({
         error: `PDF generation failed: ${message}`,
-        suggestion: "Tell the user: the document could not be generated due to a technical issue. Offer to try again with simpler content (tables instead of charts, fewer sections).",
+        suggestion: "Tell the user the document could not be generated. Offer to try with simpler content.",
       });
     }
   },

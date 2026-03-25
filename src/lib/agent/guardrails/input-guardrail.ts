@@ -1,6 +1,6 @@
 import { AIMessage, HumanMessage } from "@langchain/core/messages";
 import type { AgentStateType } from "../state";
-import { checkInjection } from "../guardrails/injection-patterns";
+import { checkInjection } from "./injection-patterns";
 
 const REFUSAL =
   "I can't help with that, but I'm happy to assist with your sales question.";
