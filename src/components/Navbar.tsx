@@ -24,12 +24,12 @@ function UserMenu() {
 
   if (!session) {
     return (
-      <button
-        onClick={() => signIn("linkedin")}
+      <a
+        href="/sign-in"
         className="text-muted hover:text-foreground transition text-sm cursor-pointer"
       >
         Sign In
-      </button>
+      </a>
     );
   }
 
