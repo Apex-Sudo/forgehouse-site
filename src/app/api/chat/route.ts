@@ -2,7 +2,9 @@ import Anthropic from "@anthropic-ai/sdk";
 import { APEX_SYSTEM_PROMPT } from "@/lib/apex-system-prompt";
 import { chatLimiter } from "@/lib/rate-limit";
 import { auth } from "@/lib/auth";
-import { getContextMessages, appendMessages } from "@/lib/conversations";
+import { getContextMessages, getConversationMessages, appendMessages } from "@/lib/conversations";
+
+type RawMessage = { role: "user" | "assistant"; content: string };
 
 export async function POST(req: Request) {
   try {
@@ -24,23 +26,40 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { messages, conversation_id } = body as {
-      messages: { role: "user" | "assistant"; content: string }[];
+    const {
+      message,
+      messages: clientMessages,
+      conversation_id,
+    } = body as {
+      message: string;
+      messages?: RawMessage[];
       conversation_id?: string;
     };
 
-    if (!messages?.length) {
-      return Response.json({ error: "No messages provided" }, { status: 400 });
+    if (!message?.trim()) {
+      return Response.json({ error: "No message provided" }, { status: 400 });
     }
 
-    // Check auth for context injection
+    const lastUserMessage: RawMessage = { role: "user", content: message };
+
+    // Rehydrate conversation history: DB for authenticated, client array for anonymous
+    let messages: RawMessage[];
+    if (conversation_id) {
+      const history = await getConversationMessages(conversation_id);
+      messages = [...history, lastUserMessage];
+    } else if (clientMessages?.length) {
+      messages = clientMessages;
+    } else {
+      messages = [lastUserMessage];
+    }
+
     const session = await auth();
     const user = session?.user as { id?: string; email?: string } | undefined;
 
-    let contextMessages: { role: "user" | "assistant"; content: string }[] = [];
+    let contextMessages: RawMessage[] = [];
     if (user?.id && user?.email) {
       try {
-        contextMessages = await getContextMessages(user.id, "apex", user.email);
+        contextMessages = await getContextMessages(user.id, "apex", user.email, 30, conversation_id);
       } catch (err) {
         console.error("Context fetch error:", err);
       }
@@ -48,7 +67,6 @@ export async function POST(req: Request) {
 
     let enrichedSystemPrompt = APEX_SYSTEM_PROMPT;
 
-    // Inject user profile if available
     if (user?.id) {
       try {
         const { data: profile } = await (await import("@/lib/supabase")).supabase
@@ -109,9 +127,7 @@ Use the user's first name naturally in conversation. Don't overdo it.`;
             }
           }
 
-          // Save messages to conversation if authenticated
           if (user?.id && user?.email && conversation_id) {
-            const lastUserMessage = messages[messages.length - 1];
             try {
               await appendMessages(conversation_id, user.id, user.email, [
                 lastUserMessage,

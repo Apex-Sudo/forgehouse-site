@@ -226,3 +226,13 @@ body {
 @keyframes hiw-blink-grey {
   50% { border-color: transparent; }
 }
+
+/* Each new chunk of streamed text fades in */
+@keyframes streamFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.stream-fade {
+  animation: streamFade 250ms ease-out both;
+}

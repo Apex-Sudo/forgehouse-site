@@ -1,6 +1,6 @@
 import { after } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { COLIN_SYSTEM_PROMPT } from "@/lib/colin-system-prompt";
+import { COLIN_SYSTEM_PROMPT } from "@/lib/agent/prompts/colin-system-prompt";
 import { validateApiKey } from "@/lib/api-keys";
 import { isSubscribed } from "@/lib/subscription";
 import { captureServerEvent } from "@/lib/posthog";

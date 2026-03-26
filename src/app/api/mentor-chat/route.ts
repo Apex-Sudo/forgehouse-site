@@ -1,18 +1,18 @@
 import { after } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
-import { COLIN_SYSTEM_PROMPT } from "@/lib/colin-system-prompt";
+import { COLIN_SYSTEM_PROMPT } from "@/lib/agent/prompts/colin-system-prompt";
 import { LEON_SYSTEM_PROMPT } from "@/lib/leon-system-prompt";
-import { chatLimiter } from "@/lib/rate-limit";
 import { auth } from "@/lib/auth";
-import { getContextMessages, appendMessages } from "@/lib/conversations";
-import { getScenario } from "@/lib/scenarios";
+import { getContextMessages, getConversationMessages } from "@/lib/conversations";
 import { canAccess, incrementAnonymousMessages, incrementAuthenticatedMessages } from "@/lib/subscription";
 import { captureServerEvent } from "@/lib/posthog";
+import { MentorAgentNode } from "@/lib/agent/nodes/MentorAgentNode";
 
 const MENTOR_PROMPTS: Record<string, string> = {
   "colin-chapman": COLIN_SYSTEM_PROMPT,
   "leon-freier": LEON_SYSTEM_PROMPT,
 };
+
+type RawMessage = { role: "user" | "assistant"; content: string };
 
 export async function POST(req: Request) {
   try {
@@ -21,33 +21,28 @@ export async function POST(req: Request) {
       req.headers.get("x-real-ip") ||
       "unknown";
 
-    let rateLimited = false;
-    try {
-      const { success } = await chatLimiter().limit(ip);
-      rateLimited = !success;
-    } catch (err) {
-      console.error("Rate limit error:", err);
-    }
-
-    if (rateLimited) {
-      return Response.json({ error: "Rate limit exceeded. Try again later." }, { status: 429 });
-    }
-
     const body = await req.json();
-    const { messages, mentor, conversation_id, scenario_id, invite } = body as {
-      messages: { role: "user" | "assistant"; content: string }[];
+    const {
+      message,
+      messages: clientMessages,
+      mentor,
+      conversation_id,
+      scenario_id,
+      invite,
+    } = body as {
+      message: string;
+      messages?: RawMessage[];
       mentor: string;
       conversation_id?: string;
       scenario_id?: string;
       invite?: string;
     };
 
-    // Valid invite codes bypass all gating (login + paywall)
     const VALID_INVITE_CODES = new Set(["alexw", "steve", "ray", "colin", "amber", "mark", "test"]);
     const isInvited = invite ? VALID_INVITE_CODES.has(invite) : false;
 
-    if (!messages?.length) {
-      return Response.json({ error: "No messages provided" }, { status: 400 });
+    if (!message?.trim()) {
+      return Response.json({ error: "No message provided" }, { status: 400 });
     }
 
     const systemPrompt = MENTOR_PROMPTS[mentor];
@@ -55,13 +50,9 @@ export async function POST(req: Request) {
       return Response.json({ error: "Unknown mentor" }, { status: 404 });
     }
 
-    // Check auth for context injection
     const session = await auth();
     const user = session?.user as { id?: string; email?: string } | undefined;
 
-    // --- Tiered message gating (Redis-based) ---
-    // 3 anonymous → login_required → 2 more authenticated → paywall
-    // Invite codes bypass all gates
     const effectiveEmail = user?.email || undefined;
     if (!isInvited) {
       const access = await canAccess(ip, effectiveEmail);
@@ -73,9 +64,19 @@ export async function POST(req: Request) {
       }
     }
 
-    const lastUserMessage = messages[messages.length - 1];
+    const lastUserMessage: RawMessage = { role: "user", content: message };
 
-    // Detect return behavior (user comes back to an existing conversation after a meaningful gap)
+    // Rehydrate conversation history: DB for authenticated, client array for anonymous
+    let messages: RawMessage[];
+    if (conversation_id) {
+      const history = await getConversationMessages(conversation_id);
+      messages = [...history, lastUserMessage];
+    } else if (clientMessages?.length) {
+      messages = clientMessages;
+    } else {
+      messages = [lastUserMessage];
+    }
+
     let hoursSinceLastUserMessage: number | null = null;
     let isReturningConversation = false;
     if (user?.id && conversation_id) {
@@ -100,74 +101,33 @@ export async function POST(req: Request) {
       }
     }
 
-    let contextMessages: { role: "user" | "assistant"; content: string }[] = [];
+    let contextMessages: { role: string; content: string }[] = [];
     if (user?.id && user?.email) {
       try {
-        contextMessages = await getContextMessages(user.id, mentor, user.email);
+        contextMessages = await getContextMessages(user.id, mentor, user.email, 30, conversation_id);
       } catch (err) {
         console.error("Context fetch error:", err);
       }
     }
 
-    // Build system prompt with context
-    let enrichedSystemPrompt = systemPrompt;
-
-    // Inject user profile if available
+    let profile = null;
     if (user?.id) {
       try {
-        const { data: profile } = await (await import("@/lib/supabase")).supabase
+        const { supabase } = await import("@/lib/supabase");
+        const { data } = await supabase
           .from("user_profiles")
           .select("*")
           .eq("user_id", user.id)
           .eq("profile_complete", true)
           .single();
-
-        if (profile) {
-          const userName = session?.user?.name || "Unknown";
-          enrichedSystemPrompt += `\n\n--- User Profile ---
-Name: ${userName}
-Company: ${profile.company_description || "Unknown"}
-Target Audience: ${profile.target_audience || "Unknown"}
-Stage: ${profile.company_stage || "Unknown"}
-Team Size: ${profile.team_size || "Unknown"}
-Revenue: ${profile.revenue_range || "Unknown"}
-Biggest Challenge: ${profile.biggest_challenge || "Unknown"}
-Sales Process: ${profile.sales_process || "Unknown"}
---- End Profile ---
-Use the user's first name naturally in conversation. Don't overdo it.`;
-        }
+        profile = data;
       } catch {
-        // Profile not found, continue without it
-      }
-    }
-    if (contextMessages.length > 0) {
-      const contextSummary = contextMessages
-        .map((m) => `${m.role}: ${m.content}`)
-        .join("\n");
-      enrichedSystemPrompt = `${systemPrompt}\n\n--- Previous conversation context ---\n${contextSummary}\n--- End of context ---`;
-    }
-
-    // Add scenario-specific system prompt if in scenario mode
-    if (scenario_id) {
-      const scenario = getScenario(scenario_id);
-      if (scenario) {
-        const userAnswerCount = messages.filter((m) => m.role === "user").length;
-        const totalQuestions = scenario.questions.length;
-        const isLastQuestion = userAnswerCount >= totalQuestions;
-
-        enrichedSystemPrompt += `\n\n--- SCENARIO MODE ---\n${scenario.systemPromptAddition}\n\nThe user is on answer ${userAnswerCount} of ${totalQuestions} questions.`;
-
-        if (isLastQuestion) {
-          enrichedSystemPrompt += `\nAll questions have been answered. Deliver the structured output NOW. Do not ask more questions.`;
-        } else {
-          const nextQuestion = scenario.questions[userAnswerCount];
-          enrichedSystemPrompt += `\nAcknowledge their answer briefly, then ask this next question:\n"${nextQuestion}"\nDo NOT deliver the final structured output yet.`;
-        }
+        // Profile not found
       }
     }
 
+    const userMessageCount = messages.filter((m) => m.role === "user").length;
     const distinctId = user?.email || `anon:${ip}`;
-    const messageNumber = messages.filter((m) => m.role === "user").length;
 
     after(async () => {
       await captureServerEvent(distinctId, "message_sent", {
@@ -175,8 +135,8 @@ Use the user's first name naturally in conversation. Don't overdo it.`;
         conversation_id: conversation_id || null,
         is_authenticated: Boolean(user?.email),
         is_invited: isInvited,
-        message_length: typeof lastUserMessage?.content === "string" ? lastUserMessage.content.length : null,
-        message_number: messageNumber,
+        message_length: message.length,
+        message_number: userMessageCount,
       });
 
       if (isReturningConversation) {
@@ -188,70 +148,37 @@ Use the user's first name naturally in conversation. Don't overdo it.`;
       }
     });
 
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-    const stream = await client.messages.stream({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1024,
-      system: enrichedSystemPrompt,
+    const node = new MentorAgentNode();
+    const stream = node.run({
       messages,
+      systemPrompt,
+      mentorSlug: mentor,
+      conversationId: conversation_id,
+      userId: user?.id,
+      userEmail: user?.email,
+      userName: session?.user?.name ?? undefined,
+      profile,
+      contextMessages,
+      scenarioId: scenario_id,
+      userMessageCount,
+      lastUserMessage,
     });
 
-    // Collect the full response for saving
-    let fullResponse = "";
+    after(async () => {
+      await captureServerEvent(distinctId, "message_received", {
+        mentor_slug: mentor,
+        conversation_id: conversation_id || null,
+        message_number: userMessageCount,
+      });
 
-    const encoder = new TextEncoder();
-    const readable = new ReadableStream({
-      async start(controller) {
-        try {
-          for await (const event of stream) {
-            if (
-              event.type === "content_block_delta" &&
-              event.delta.type === "text_delta"
-            ) {
-              fullResponse += event.delta.text;
-              controller.enqueue(encoder.encode(event.delta.text));
-            }
-          }
-
-          // Use after() for analytics so Vercel doesn't kill the function before capture completes
-          after(async () => {
-            await captureServerEvent(distinctId, "message_received", {
-              mentor_slug: mentor,
-              conversation_id: conversation_id || null,
-              response_length: fullResponse.length,
-              message_number: messageNumber,
-            });
-          });
-
-          // Save messages to conversation if authenticated
-          if (user?.id && user?.email && conversation_id) {
-            try {
-              await appendMessages(conversation_id, user.id, user.email, [
-                lastUserMessage,
-                { role: "assistant", content: fullResponse },
-              ]);
-            } catch (err) {
-              console.error("Failed to save messages:", err);
-            }
-          }
-
-          // Increment message count after successful completion
-          if (effectiveEmail) {
-            await incrementAuthenticatedMessages(effectiveEmail);
-          } else {
-            await incrementAnonymousMessages(ip);
-          }
-        } catch (err) {
-          const msg = err instanceof Error ? err.message : "Unknown error";
-          controller.enqueue(encoder.encode(`\n[Error: ${msg}]`));
-        } finally {
-          controller.close();
-        }
-      },
+      if (effectiveEmail) {
+        await incrementAuthenticatedMessages(effectiveEmail);
+      } else {
+        await incrementAnonymousMessages(ip);
+      }
     });
 
-    return new Response(readable, {
+    return new Response(stream, {
       headers: {
         "Content-Type": "text/plain; charset=utf-8",
         "Cache-Control": "no-cache, no-transform",
@@ -262,7 +189,7 @@ Use the user's first name naturally in conversation. Don't overdo it.`;
     console.error("Mentor chat error:", err);
     return Response.json(
       { error: "Internal error", detail: err instanceof Error ? err.message : String(err) },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

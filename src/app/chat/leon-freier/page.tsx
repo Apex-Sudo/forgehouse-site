@@ -6,10 +6,10 @@ import { useSession, signIn } from "next-auth/react";
 import Image from "next/image";
 import ChatMessage from "@/components/ChatMessage";
 import MemoryBanner from "@/components/MemoryBanner";
-// SignInNudge no longer needed — Leon requires auth
 import UpgradePrompt from "@/components/UpgradePrompt";
 import { SCENARIOS } from "@/lib/scenarios";
 import { IconSearch, IconMail, IconTarget } from "@tabler/icons-react";
+import { useTokenBuffer } from "@/hooks/useTokenBuffer";
 
 const SCENARIO_ICONS: Record<string, React.ReactNode> = {
   search: <IconSearch size={20} />,
@@ -62,6 +62,14 @@ function ChatContent() {
   const summaryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  const tokenBuffer = useTokenBuffer((content) => {
+    setMessages((prev) => {
+      const copy = [...prev];
+      copy[copy.length - 1] = { role: "assistant", content };
+      return copy;
+    });
+  });
+
   const userMessageCount = messages.filter((m) => m.role === "user").length;
   const isLocked = !isInvited && !isSubscribed && userMessageCount >= FREE_MESSAGE_LIMIT;
 
@@ -73,30 +81,33 @@ function ChatContent() {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Fetch dynamic starters based on user profile
+  const userEmail = session?.user?.email;
+  const subscribedParam = searchParams.get("subscribed");
+  const newParam = searchParams.get("new");
+  const scenarioParam = searchParams.get("scenario");
+  const convParam = searchParams.get("conv");
+  const qParam = searchParams.get("q");
+
   useEffect(() => {
-    if (!session?.user) return;
+    if (!userEmail) return;
     fetch("/api/starters?mentor=leon-freier")
       .then((r) => r.json())
       .then((data) => {
         if (data.starters?.length >= 4) setStarters(data.starters);
       })
       .catch(() => {});
-  }, [session]);
+  }, [userEmail]);
 
-  // Show welcome banner after successful subscription
   useEffect(() => {
-    if (searchParams.get("subscribed") === "true") {
+    if (subscribedParam === "true") {
       setShowWelcome(true);
       setIsSubscribed(true);
       const timer = setTimeout(() => setShowWelcome(false), 8000);
-      // Clean URL
       window.history.replaceState({}, "", "/chat/leon-freier");
       return () => clearTimeout(timer);
     }
-  }, [searchParams]);
+  }, [subscribedParam]);
 
-  // Check gate status on load (preemptive, no hostage-taking)
   useEffect(() => {
     if (isInvited) return;
     fetch("/api/gate-check")
@@ -114,13 +125,10 @@ function ChatContent() {
         }
       })
       .catch(() => {});
-  }, [isInvited, session]);
+  }, [isInvited, userEmail]);
 
-  // No longer redirect anonymous users — first 3 messages are free without login
-
-  // Force onboarding if profile not complete (only for signed-in users)
   useEffect(() => {
-    if (!session?.user) return;
+    if (!userEmail) return;
     fetch("/api/profile")
       .then(async (r) => {
         if (r.ok) {
@@ -131,10 +139,10 @@ function ChatContent() {
         }
       })
       .catch(() => {});
-  }, [session]);
+  }, [userEmail]);
 
   useEffect(() => {
-    if (!session?.user) return;
+    if (!userEmail) return;
     fetch("/api/insights?mentor=leon-freier")
       .then(async (r) => {
         if (r.ok) {
@@ -147,11 +155,10 @@ function ChatContent() {
         }
       })
       .catch(() => {});
-  }, [session]);
+  }, [userEmail]);
 
-  // Handle ?new=true to start fresh conversation
   useEffect(() => {
-    if (searchParams.get("new") === "true") {
+    if (newParam === "true") {
       setConversationId(null);
       setMessages([]);
       setSummary(null);
@@ -159,12 +166,10 @@ function ChatContent() {
       if (summaryTimerRef.current) clearTimeout(summaryTimerRef.current);
       window.history.replaceState({}, "", "/chat/leon-freier");
     }
-  }, [searchParams]);
+  }, [newParam]);
 
-  // Launch scenario from sidebar link
   useEffect(() => {
-    const scenarioParam = searchParams.get("scenario");
-    if (!scenarioParam || !session?.user) return;
+    if (!scenarioParam || !userEmail) return;
     const scenario = SCENARIOS.find((s) => s.id === scenarioParam);
     if (scenario && messages.length === 0) {
       setActiveScenario(scenario.id);
@@ -172,12 +177,10 @@ function ChatContent() {
       window.history.replaceState({}, "", "/chat/leon-freier");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, session]);
+  }, [scenarioParam, userEmail]);
 
-  // Load conversation from sidebar link
   useEffect(() => {
-    const convParam = searchParams.get("conv");
-    if (!convParam || !session?.user) return;
+    if (!convParam || !userEmail) return;
     setConversationId(convParam);
     fetch(`/api/conversations/${convParam}`)
       .then((r) => r.ok ? r.json() : null)
@@ -193,17 +196,16 @@ function ChatContent() {
       .catch(() => {});
     window.history.replaceState({}, "", "/chat/leon-freier");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, session]);
+  }, [convParam, userEmail]);
 
   useEffect(() => {
     if (seeded) return;
-    const q = searchParams.get("q");
-    if (q) {
+    if (qParam) {
       setSeeded(true);
-      setTimeout(() => send(q), 100);
+      setTimeout(() => send(qParam), 100);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, seeded]);
+  }, [qParam, seeded]);
 
   const createConversation = async (scenarioType?: string): Promise<string | null> => {
     try {
@@ -227,7 +229,7 @@ function ChatContent() {
 
     const userMsg: Message = { role: "user", content: text };
     const updated = [...messages, userMsg];
-    setMessages(updated);
+    setMessages([...updated, { role: "assistant", content: "" }]);
     setInput("");
     setStreaming(true);
 
@@ -241,26 +243,26 @@ function ChatContent() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: updated,
+          message: text,
           mentor: "leon-freier",
           ...(convId ? { conversation_id: convId } : {}),
+          ...(!convId ? { messages: updated } : {}),
           ...(activeScenario ? { scenario_id: activeScenario } : {}),
           ...(isInvited ? { invite: inviteCode } : {}),
         }),
       });
 
       if (res.status === 403) {
-        // Login required — keep user's message visible, show gate below
         setStreaming(false);
+        setMessages(updated);
         setShowLoginGate(true);
         window.posthog?.capture("gate_hit", { mentor: "leon-freier", trigger: "message_blocked" });
         return;
       }
 
       if (res.status === 402) {
-        // Paywall
         setHitPaywall(true);
-        setMessages((prev) => prev.slice(0, -1));
+        setMessages((prev) => prev.slice(0, -2));
         setStreaming(false);
         window.posthog?.capture("paywall_hit", { mentor: "leon-freier", trigger: "message_blocked" });
         return;
@@ -268,10 +270,11 @@ function ChatContent() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Request failed" }));
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: err.error || "Something went wrong." },
-        ]);
+        setMessages((prev) => {
+          const copy = [...prev];
+          copy[copy.length - 1] = { role: "assistant", content: err.error || "Something went wrong." };
+          return copy;
+        });
         setStreaming(false);
         return;
       }
@@ -280,21 +283,20 @@ function ChatContent() {
       if (!reader) return;
 
       const decoder = new TextDecoder();
-      let assistantContent = "";
-
-      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+      tokenBuffer.reset();
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        assistantContent += decoder.decode(value, { stream: true });
-        const snapshot = assistantContent;
-        setMessages((prev) => {
-          const copy = [...prev];
-          copy[copy.length - 1] = { role: "assistant", content: snapshot };
-          return copy;
-        });
+        tokenBuffer.push(decoder.decode(value, { stream: true }));
       }
+
+      const finalContent = tokenBuffer.flush();
+      setMessages((prev) => {
+        const copy = [...prev];
+        copy[copy.length - 1] = { role: "assistant", content: finalContent };
+        return copy;
+      });
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -446,16 +448,6 @@ function ChatContent() {
                 />
               );
             })}
-
-            {streaming &&
-              messages.length > 0 &&
-              messages[messages.length - 1].content === "" && (
-                <div className="flex justify-start">
-                  <div className="bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm rounded-2xl">
-                    <span className="animate-pulse text-muted">●●●</span>
-                  </div>
-                </div>
-              )}
 
             <div ref={bottomRef} />
           </div>

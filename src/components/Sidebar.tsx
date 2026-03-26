@@ -50,10 +50,10 @@ export default function Sidebar() {
   const [loadingConvos, setLoadingConvos] = useState(false);
   const [convsExpanded, setConvsExpanded] = useState(true);
   const [profileComplete, setProfileComplete] = useState<boolean | null>(null);
+  const userEmail = session?.user?.email;
 
-  // Load conversations for all mentors
   useEffect(() => {
-    if (!session?.user) return;
+    if (!userEmail) return;
     const load = async () => {
       setLoadingConvos(true);
       try {
@@ -64,7 +64,6 @@ export default function Sidebar() {
           .map((c: Conversation) => ({ ...c, mentor_slug: "colin-chapman" }))
           .sort((a: Conversation, b: Conversation) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-        // Load previews for recent ones (top 10)
         const withPreviews = await Promise.all(
           all.slice(0, 10).map(async (c: Conversation) => {
             try {
@@ -82,11 +81,10 @@ export default function Sidebar() {
       setLoadingConvos(false);
     };
     load();
-  }, [session, refreshConversations]);
+  }, [userEmail, refreshConversations]);
 
-  // Check profile status
   useEffect(() => {
-    if (!session?.user) return;
+    if (!userEmail) return;
     fetch("/api/profile")
       .then(async (r) => {
         if (r.ok) {
@@ -95,11 +93,10 @@ export default function Sidebar() {
         }
       })
       .catch(() => {});
-  }, [session]);
+  }, [userEmail]);
 
-  // Load insight count
   useEffect(() => {
-    if (!session?.user) return;
+    if (!userEmail) return;
     fetch("/api/insights?mentor=colin-chapman")
       .then(async (r) => {
         if (r.ok) {
@@ -109,7 +106,7 @@ export default function Sidebar() {
         }
       })
       .catch(() => {});
-  }, [session]);
+  }, [userEmail]);
 
   const getPreview = (c: Conversation) => {
     if (c.summary) {
