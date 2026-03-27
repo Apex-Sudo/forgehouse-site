@@ -1,5 +1,3 @@
-import { getScenario } from "@/lib/scenarios";
-
 type UserProfile = {
   company_description?: string | null;
   target_audience?: string | null;
@@ -10,12 +8,17 @@ type UserProfile = {
   sales_process?: string | null;
 };
 
+export type ScenarioData = {
+  questions: string[];
+  system_prompt_addition: string;
+};
+
 type BuildPromptParams = {
   basePrompt: string;
   userName?: string;
   profile?: UserProfile | null;
   contextMessages?: { role: string; content: string }[];
-  scenarioId?: string;
+  scenario?: ScenarioData | null;
   userMessageCount?: number;
 };
 
@@ -24,7 +27,7 @@ export function buildEnrichedPrompt({
   userName,
   profile,
   contextMessages,
-  scenarioId,
+  scenario,
   userMessageCount,
 }: BuildPromptParams): string {
   let enriched = basePrompt;
@@ -51,20 +54,17 @@ Use the user's first name naturally in conversation. Don't overdo it.`;
     enriched += `\n\n--- Previous conversation context ---\n${contextSummary}\n--- End of context ---`;
   }
 
-  if (scenarioId) {
-    const scenario = getScenario(scenarioId);
-    if (scenario && userMessageCount !== undefined) {
-      const totalQuestions = scenario.questions.length;
-      const isLastQuestion = userMessageCount >= totalQuestions;
+  if (scenario && userMessageCount !== undefined) {
+    const totalQuestions = scenario.questions.length;
+    const isLastQuestion = userMessageCount >= totalQuestions;
 
-      enriched += `\n\n--- SCENARIO MODE ---\n${scenario.systemPromptAddition}\n\nThe user is on answer ${userMessageCount} of ${totalQuestions} questions.`;
+    enriched += `\n\n--- SCENARIO MODE ---\n${scenario.system_prompt_addition}\n\nThe user is on answer ${userMessageCount} of ${totalQuestions} questions.`;
 
-      if (isLastQuestion) {
-        enriched += `\nAll questions have been answered. Deliver the structured output NOW. Do not ask more questions.`;
-      } else {
-        const nextQuestion = scenario.questions[userMessageCount];
-        enriched += `\nAcknowledge their answer briefly, then ask this next question:\n"${nextQuestion}"\nDo NOT deliver the final structured output yet.`;
-      }
+    if (isLastQuestion) {
+      enriched += `\nAll questions have been answered. Deliver the structured output NOW. Do not ask more questions.`;
+    } else {
+      const nextQuestion = scenario.questions[userMessageCount];
+      enriched += `\nAcknowledge their answer briefly, then ask this next question:\n"${nextQuestion}"\nDo NOT deliver the final structured output yet.`;
     }
   }
 

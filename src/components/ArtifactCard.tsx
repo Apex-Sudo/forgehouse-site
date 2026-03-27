@@ -32,7 +32,7 @@ export default function ArtifactCard({ artifact }: { artifact: Artifact }) {
           <span className="text-[#DDD]">|</span>
           <a
             href={artifact.url}
-            download
+            download={`${artifact.title}.pdf`}
             className="text-xs text-[#B8916A] hover:text-[#A07B56] font-medium transition"
           >
             Download

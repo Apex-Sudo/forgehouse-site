@@ -129,12 +129,14 @@ export async function listConversations(
     ? "id, mentor_slug, created_at, updated_at"
     : "id, mentor_slug, created_at";
 
+  const orderCol = table === "conversations" ? "updated_at" : "created_at";
+
   let query = supabase
     .from(table)
     .select(selectFields)
     .eq("user_id", userId)
     .eq("mentor_slug", mentorSlug)
-    .order("created_at", { ascending: false });
+    .order(orderCol, { ascending: false });
 
   if (table === "free_tier_conversations") {
     query = query.gt("expires_at", new Date().toISOString());
@@ -213,6 +215,50 @@ export async function createConversation(
 
   if (error) throw error;
   return data;
+}
+
+export async function deleteConversation(
+  conversationId: string,
+  userId: string,
+  email: string
+) {
+  const table = await getTable(email);
+
+  const { data: conv } = await supabase
+    .from(table)
+    .select("id")
+    .eq("id", conversationId)
+    .eq("user_id", userId)
+    .single();
+
+  if (!conv) throw new Error("Conversation not found");
+
+  await supabase.from("messages").delete().eq("conversation_id", conversationId);
+
+  const { error } = await supabase
+    .from(table)
+    .delete()
+    .eq("id", conversationId)
+    .eq("user_id", userId);
+
+  if (error) throw error;
+}
+
+export async function renameConversation(
+  conversationId: string,
+  userId: string,
+  email: string,
+  title: string
+) {
+  const table = await getTable(email);
+
+  const { error } = await supabase
+    .from(table)
+    .update({ summary: title })
+    .eq("id", conversationId)
+    .eq("user_id", userId);
+
+  if (error) throw error;
 }
 
 // Append messages to a conversation (writes to normalized messages table)

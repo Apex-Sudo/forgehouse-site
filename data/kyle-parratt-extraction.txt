@@ -1,0 +1,713 @@
+[USER]
+[Uploaded file: CV-AI_compressed_compressed.pdf]
+
+CV Kyle Mark Parratt
+Senior Applied AI Engineer 🤖
+📍 Remote, EU-based
+☎ 359 895 46 5906
+✉ kyleparratt.biz@gmail.com
+🌐 https://www.linkedin.com/in/kyle-parratt-619a09b7/
+EXECUTIVE SUMMARY 😃
+9-year Software Architect specialized in building production-grade Autonomous Agent systems
+and high-scale Data Ingestion pipelines. Proven track record of taking complex AI products from 0
+to 1 in under 8 weeks. I bridge the gap between experimental LLM capabilities and deterministic,
+enterprise-ready software.
+Core Impact Areas:
+● Autonomous Agent Orchestration: Architected a modular multi-agent platform using
+LangGraph and Gemini 3.0, moving beyond simple chat into self-contained workflows for
+UI generation, automated analytics, and asset creation.
+● E2E RAG & Ingestion Infrastructure: Engineered high-throughput multimodal ingestion
+pipelines Text/Image) with hybrid Vector/Graph retrieval. Expertise in eliminating
+hallucinations through rigorous Benchmarking and Evaluation Evals.
+● Product Entrepreneurship: Founded and scaled RouteLinks, a solo-built SaaS for logistics
+optimization, demonstrating a rare blend of deep technical execution and business-centric
+decision making.
+● Engineering Velocity: Expert in "Rule-Breaker" development environments; I build lean,
+high-performance systems that prioritize ROI and speed-to-market without compromising
+code integrity.
+Languages+
+Frameworks
+Databases +
+ORMs
+DevOps +
+Tools
+➔ Langchain 1 year)
+➔ Node.js 8 years)
+➔ TypeScript 8 years)
+➔ GraphQL 4 years)
+➔ Angular 5 years)
+➔ PostgreSQL & PGVector
+➔ MySQL
+➔ NoSQL
+➔ Prisma
+➔ Redis
+➔ Langsmith 1 year)
+➔ Docker
+➔ Git
+➔ CI/CD
+Case Study: AI Agent Orchestration Platform 🤖
+Role:
+Lead Applied AI Architect
+Objective:
+Transform a complex CRM/Gamification system into a "Conversational Operating System"
+where back-office tasks are handled by autonomous AI agents.
+The Challenge:
+Standard CRM interfaces require high cognitive load and manual configuration. The goal
+was to build a system where users could describe complex outcomes (e.g., "Build a
+high-converting popup for a weekend promo") and have AI agents execute the
+end-to-end workflow, including asset generation, data querying, and UI assembly.
+The Solution:
+A Modular Multi-Agent Framework. I architected and built a production-grade AI platform
+from the ground up, utilizing LangGraph for state-machine orchestration and Next.js
+15/React 19 for a real-time streaming interface.
+Key Architectural Pillars:
+● Agentic State Machines LangGraph): Moved beyond simple prompting to
+directed acyclic graph DAG workflows. Each agent Popup, Analytics,
+Gamification) operates as a state machine with dedicated planning, execution, and
+validation nodes.
+● Handler Registry Pattern: Developed a generic AgentHandlerRegistry allowing for
+modular "plug-and-play" agent deployment. This architecture separates generic
+infrastructure (streaming, auth) from agent-specific domain logic.
+● Autonomous Analytics Text-to-SQL: Engineered a Transactions Agent that
+autonomously explores BigQuery schemas, generates optimized SQL, and
+visualizes results via Vega-Lite, enabling non-technical users to perform complex
+data science tasks.
+● Multi-Modal Asset Creation: Integrated Google Imagen API within agent
+workflows to generate game assets (icons, backgrounds, badges) dynamically
+based on the specific context of the userʼs gamification strategy.
+Technical Excellence & Innovation:
+● Real-time Observability: Implemented SSE Server-Sent Events) streaming with
+"Thinking" transparency, showing the AIʼs step-by-step reasoning and progress
+checklists to increase user trust and system reliability.
+● Token Lifecycle Management: Developed a granular tracking system for input,
+output, and "thinking" tokens, including per-label quotas and usage tracking to
+ensure cost-efficiency across 30 brands.
+● Feedback Loops: Integrated a "Message Rating" system and draft-loading
+mechanics, allowing for iterative refinement of AI-generated content.
+The Tech Stack:
+● AI/Backend: LangGraph, LangChain, Google Gemini, PostgreSQL, BigQuery.
+● Frontend: Next.js 15, React 19, @assistant-ui/react, Zustand, Tailwind 4.
+● Infrastructure: AWS S3/CloudFront/ALB, SSE Streaming, JWT Jose.
+Real Life Impact:
+● Reduced Time-to-Live: Cut the time to create complex CRM popups and
+gamification skins from hours of manual work to under 60 seconds of
+conversation.
+● Democratized Data: Removed the SQL bottleneck by allowing back-office staff to
+query 1M row datasets through natural language.
+● Extensibility: The modular architecture allows for new specialized agents to be
+deployed in days rather than months.
+Explanation Screenshot
+The UI where the user selects which mode
+they would like to proceed with.
+A screenshot of a a chat with the
+Text-to-SQL agent, seen here rendering
+the returned data with VegaLite charts.
+The thought signatures showing the thinking
+process of an LLM to help better understand
+how it arrived at a conclusion and to debug
+issues.
+This illustrates our Text-to-Code agent, here
+the agent was tasked with creating a popup
+for the user. This can then be saved directly
+into the CRM for usage in campaigns.
+Experience 😎
+Junior Software Engineer
+Retro Rabbit | On-Site
+October 2016 – June 2018
+● Contributed to the full development lifecycle of various projects, utilizing Node.js, React
+and TypeScript to build robust and scalable applications.
+● Collaborated with cross-functional teams on-site at client offices, seamlessly integrating
+into their existing development workflows and contributing to project goals.
+● Participated in code reviews and team meetings, ensuring adherence to best practices
+and contributing to a high-quality codebase.
+● Adapted quickly to new technologies and client environments, demonstrating a strong
+ability to learn and apply new skills in a professional setting.
+Company Owner / Software Developer
+ThriveIT Solutions | Hybrid
+June 2018 – September 2018
+● Founded and operated a self-employed venture, successfully delivering two distinct
+software applications for external clients using Node.js, TypeScript and PostgreSql.
+● Designed and developed a content management portal for a professional football club,
+creating a platform for managing and publishing content.
+● Engineered a route optimization platform for a logistics company, providing a solution to
+enhance efficiency and streamline trucking operations.
+● Managed all aspects of the software development lifecycle, including client
+communication, requirements gathering, design, development, and deployment.
+●
+Full Stack Engineer
+The Fire Agency | On-Site
+September 2018 – August 2021
+● Spearheaded the entire software development lifecycle as a Full Stack Engineer and
+Product Manager for a web development studio.
+● Architected and developed custom full-stack solutions using React, Vue.js, Node.js with
+Express and Typescript, PostgreSQL, MySQL, and MongoDB for a diverse range of
+clients, including fintech companies and logistics providers.
+● Served as the primary client liaison, translating business needs into detailed technical
+specifications and managing expectations from initial consultation through final delivery.
+● Led end-to-end project development, coordinating with cross-functional teams
+(designers, developers, and QA to ensure on-time and on-budget project completion.
+● Implemented and enforced best practices in architectural design, code quality, security,
+and performance, contributing to the development of scalable and maintainable
+applications.
+Back End Developer
+TROOP | Remote
+July 2021 – Sept 2025
+● Pioneered the transformation of a monolithic API into a scalable Node.js and Typescript
+microservice architecture, utilizing GraphQL for efficient interservice communication. For
+the DB we used PostgreSql and Prisma as the ORM
+● Led the design, development, and maintenance of all travel-related backend services,
+ensuring high performance and reliability for a data-driven travel platform.
+● Collaborated cross-functionally with Product and Design teams to define technical
+specifications and deliver new product modules.
+● Managed and led complex projects, guiding junior developers and providing technical
+mentorship to ensure timely delivery and a high-quality codebase.
+● Thrived in a fully remote environment, demonstrating a high level of autonomy,
+ownership, and strong time management skills.
+● Built customer facing Langchain application for processing booking and travel
+documents.
+Senior Applied AI Engineer
+Smartico.AI | Hybrid
+Oct 2025 – present
+● Independently Designed and Deployed a sophisticated End-to-End E2E RAG application
+from scratch, successfully leading the full lifecycle from design requirements to production
+deployment.
+● Architected and Managed Dedicated Infrastructure, overseeing the provisioning and
+configuration of all required cloud resources and vector database components to ensure
+system reliability and scalability.
+● Engineered Multimodal Retrieval: Successfully implemented advanced retrieval
+capabilities utilizing both text and image data sources to enrich context and improve the
+quality of generated output.
+● Delivered Dual, Mission Critical Functions: Provided two core solutions, enabling
+real-time, grounded internal support for staff operations and delivering highly accurate,
+cited FAQ responses for clients.
+● Continuous RAG Optimization & R&D Conduct ongoing research and testing of cutting
+edge embedding models and retrieval strategies (e.g., hybrid search, re-ranking) to
+achieve latency reduction and accuracy improvements in the production pipeline.
+● Performance Monitoring and Benchmarking: Established LangSmith environments for
+continuous monitoring, tracing and systematic benchmarking of RAG pipeline performance,
+evaluating metrics like correctness and context fragmentation to drive quality
+improvements.
+OTHER PROJECTS 🤓
+These solo developed projects showcase my ability to take an idea from concept to
+completion, demonstrating a comprehensive skill set across the full stack. They highlight
+my passion for building solutions that solve real-world problems and my proficiency in
+applying modern technologies to achieve tangible results.
+RouteLinks
+A solo-developed SaaS platform for truck logistics route optimization.
+Designed, developed and launched a full-stack logistics platform to reduce empty transport miles
+for companies. The platform is capable of identifying synergies and providing a comprehensive
+pipeline to facilitate work between clients.
+The project was a success and it was only due to a diligent juggling of multiple different roles and
+dealing with stakeholders. The experience taught me an immense amount not only about project
+management but also my finer technical knowledge.
+● Engineered a proprietary algorithm to identify route overlaps and potential synergies
+between companies, enabling significant financial savings and a lower environmental
+impact.
+● Built the back-end services using Node.js, Typescript, PostgreSQL, and AWS for data
+management and scalable performance.
+● Developed the front-end user interface with Angular, providing clients with 24/7 live
+reporting and route optimization insights.
+Explainer Video https://youtu.be/KfDUkO5Fis?si=IAkrjXuKySGtKd-n
+AI Data Annotation Service
+Full-Stack Engineer & Project Lead
+Designed and implemented a comprehensive full-stack data annotation platform to streamline the
+preparation of machine learning datasets. This project showcased expertise in both backend
+scripting and front-end development.
+● Backend Development: Engineered a core Python script to perform programmatic
+annotation of diverse datasets, including images, videos, and transcripts. I also created a
+fully fledged Node.js API using Express and Typescript
+● Front-End Development: Built an intuitive user interface for real-time monitoring of
+annotation jobs, providing functionality to view, edit, and export annotated data. The
+frontend was built using React.
+● Project Outcome: The service delivered a robust solution for a common bottleneck in the
+ML lifecycle, providing a verifiable and auditable way to manage and export high-quality
+labeled data.
+---
+[ASSISTANT]
+I can see you're a Senior Applied AI Engineer who's built some impressive systems - that multi-agent platform you architected is particularly interesting, turning CRM tasks into conversational workflows. I notice you've gone from traditional full-stack work to specializing in production-grade AI systems over the past few years.
+
+What's the specific problem you solve that makes companies seek you out?
+---
+[USER]
+poeple seek me out when they need a highly independent, decoupled 10x engineer to rapidly and reliably build AI driven solutions. From training custom models to building robust fault tolerant production pipelines
+---
+[ASSISTANT]
+Got it - you're the person they call when they need AI systems that actually work in production, not just demos.
+
+When a company comes to you with an AI project, what's the first thing you look for to figure out if it's actually viable?
+---
+[USER]
+I have a good sense of what is possible. What works what doesnt work. I like to imagine what the MVP would look like, does it solve a real issue, is it purely a vanity project to be able you say you use AI. Will this provide results and solve your pain point withoin your budget? is there a tool that already does this?
+---
+[ASSISTANT]
+So you're filtering out the AI theater projects from the real business problems. 
+
+When you're evaluating that MVP in your head, what are the specific signals that tell you "this is going to be a waste of their money" versus "this will actually move the needle"?
+---
+[USER]
+if it solves a real business use case. Is there an existing technology or product that already does this? How long would it take to create a MVP? if it solves a real problem and doesn't blow your financial and resource  budget then ure go for it.
+
+But spending 100,000 USD to build a basic chatbot that trties to predict stock prices? waste of time
+---
+[ASSISTANT]
+That stock price chatbot example is perfect - sounds like you see a lot of those fantasy projects.
+
+When someone comes to you with what seems like a real use case, how do you tell the difference between something that looks legitimate on the surface but will actually fail versus something that has genuine potential?
+---
+[USER]
+in discussion? you can generally tell how informaed the person is. If they're an expert they will have clear and well defined metrics, milestones, deliverables and a good idea of what the procudt should look like and what it should do.
+
+If the specs is blurry and poorly defined the person likely hasn't thought it through or validated the idea yet. Here there be dragons
+---
+[ASSISTANT]
+"Here there be dragons" - I like that. So the clarity of their specs is your early warning system.
+
+What's a specific example of blurry specs that seemed reasonable at first but turned into a problem project?
+---
+[USER]
+"create a jira ticket agent to ingest historical tickets and use that knowledge to look at new tickets and curate resolution steps and possible assignees" pretty straight forward until you start getting into the semantic woods. Do you include the comments of a guven ticket when deducing the semantic meaning of the ticket? Dunno the client never specified and now suddenly its a bug issue during the MVP demo meeting.
+---
+[ASSISTANT]
+That's a perfect example - the client thought they'd defined it clearly, but you hit semantic edge cases they never considered.
+
+What do you do when you spot those gaps during the initial scoping? Do you push them to define everything upfront or handle it differently?
+---
+[USER]
+Scope and specs are unfornatluely always changing in the real world. yes preferabbly yes hould have full scope and spec waterfall style but thats where realisty does NOT meet theory. Real life is messy and unorganized. 
+
+Itterate. Got a broad spec? Them use your better judment and do what you can. Then sit down with a stakeholder and go through it and not changes and rinse and repeat until the client is happy
+---
+[ASSISTANT]
+So you build something concrete to react to rather than trying to nail down perfect specs in theory. Makes sense.
+
+When you're using your "better judgment" on those ambiguous parts, what's your default approach? Do you tend to go simpler, more complex, or follow some other principle?
+---
+[USER]
+go simple. less is more. I've built all these systems before I know the gist of what to expect for any basic MVP. think about what it is the client is actually trying to active and what that looks like. Does your solution get close to these? then your on the right track
+---
+[ASSISTANT]
+Simple makes sense - you can always add complexity later.
+
+When you say you "know the gist of what to expect for any basic MVP" - what are the common patterns you see? Like, do most AI projects fall into a handful of categories that you recognize immediately?
+---
+[USER]
+Yeah, all apps are some sorta variation of a CRM or customer facing tool with auth and the tool ui or a chat app for ai agents or basic. The same SWE patterns
+---
+[ASSISTANT]
+Right - at the end of the day it's still CRUD operations, auth, and UI, just with AI components mixed in.
+
+When you're architecting these systems, what's the thing that most people get wrong about building production AI versus just getting a prototype working?
+---
+[USER]
+they only consider the happy path. They dont have code to handle errors, timeouts, server overlaods, no fallback models.
+
+bad security and guardrails for the agents which makes them vulnerable to prompt injections etc.
+
+Also ton of duplicate code, random non-coherent repo folder structure. overall bad BE arch, innecifient and random oddities like a fucntion polling the login status every 5 seconds and burning a ton of tokens
+---
+[ASSISTANT]
+That polling example is painful - death by a thousand inefficient API calls.
+
+When you're building these systems to handle the unhappy paths, what's your go-to architecture for making AI components fault-tolerant? Like, what does your error handling and fallback strategy typically look like?
+---
+[USER]
+centralize yoru code, mad eit modular and re-usable. Create base classes that handle the basic pluimbing of a class so you dont need to recreate the wheel whenever you create a new agent, just xtend the base class instead. Clear and sensible folder structures and clear silos of responseabilities for example a single file for db ineractions, another soley for analystics etc.
+
+handling both happy and sad paths, everything can break and it should be handled gracefully. Tons of observability as well, YOU WILL have bugs and the ogs make these so much easier to debug.
+
+use retries and fault tolerant orchestration frameworks like temporal or something.
+
+Dont vibe code the whole thing either, or if you do, go through the code yourself and LEARN it. AI makes mistakes and knowing the code can help mitigate these mistakes before they affect your code
+---
+[ASSISTANT]
+That base class approach makes a lot of sense - avoid reinventing agent plumbing every time.
+
+When you mention "vibe coding" with AI - what are the specific mistakes you see AI make that developers miss if they don't actually understand the generated code?
+---
+[USER]
+duplicated and scattered code, tons of functions all over doing similar things. Lack of understanding of how things work also not good, the AI make a mistake now your app polls your API eveyrhing 2 seconds and you have no clue. Secrets in the FE, terrible folder structure.
+
+You need to also CAREFULLY review the AIs code, dont just say okay and commit, it makes miatakes sometimes too. Question its approaches, it often takes the easiest solution over the most production ready one
+---
+[ASSISTANT]
+So AI tends to go for the quick fix over the maintainable solution. That makes sense - it's optimizing for "works now" not "works at scale."
+
+When you're reviewing AI-generated code, what are the red flags that immediately tell you "this is going to cause problems later" even if it runs fine in the moment?
+---
+[USER]
+the first red flag is a ton of changes for a simple request, you know immediately the AI overcomplicated things and tocubhed things it should not have.
+
+it also prodcues convoluted solutions so again you need to read and understand the code and if something is funny you will immediately notic e it and think "but what didint you just do it this way?"
+---
+[ASSISTANT]
+That's a great heuristic - if a simple request touches 20 files, something went wrong.
+
+When you catch those convoluted solutions, do you typically refactor them yourself or use that as a teaching moment to get the AI to produce a cleaner approach?
+---
+[USER]
+i genearlly inform the agent of it mistake and ask it to correct itself and then review again
+---
+[ASSISTANT]
+Makes sense - let it learn from the correction rather than just fixing it yourself.
+
+Speaking of agents, I noticed in your CV you built that multi-agent orchestration platform with LangGraph. When you're designing agent workflows, how do you decide what should be one agent versus breaking it into multiple specialized agents?
+---
+[USER]
+generally frontier models can handle any taks pretty good bc they're generalised AI. for 90% of cases these will be fine and multiple specialized agents is overkill.
+
+if you're looking to optimize costs and accuracy you can break your flow into multiple specialized agents. Domain specific models are smaller and cheaper and can often be run on your own infra. 
+
+Also if you have an extermely niche and long multi ste workflow that touches multiple domains then again you can look at multiple specialized agents. For example a agent workflow that scans and analyeses trends then creates a infographioc based on the data and then creates a post and posts the infographioc on linkein. That migh  jstify the use of an analytics SLM, a creative model and a generic SLM to create the final linkein post copy
+---
+[ASSISTANT]
+That LinkedIn workflow example is a good one - each step has a different specialty so it makes sense to optimize each part.
+
+In that multi-agent platform you built, what was the decision that made you go with LangGraph for orchestration instead of just chaining API calls or using something simpler?
+---
+[USER]
+state management, premade class wrappers, built in tools for chunking, streaming, tools etc. All stuff you woul need to make yourself wihtout langraph.
+---
+[ASSISTANT]
+Got it - LangGraph gave you the orchestration primitives without having to build your own state machine from scratch.
+
+When you're building these multi-step workflows, what's the thing that usually breaks first when you move from development to production with real user load?
+---
+[USER]
+When you test a solution you genearlly test it with the same 1-2 test cases which works, then you deploy and soemone tries another cause and immediately exposes issue bc you did not test eveuything!
+
+its generally also gurardrails, setup specific hallucinations etc. Its hard to build a gurardrail for hallucinations unless you know what the hallucanitaions usually look like
+---
+[ASSISTANT]
+So you're optimizing for your test cases but real users find all the edge cases you didn't think of.
+
+When you do discover those hallucination patterns in production, how do you typically build guardrails for them? Is it mostly prompt engineering or do you use other techniques?
+---
+[USER]
+for most of the issues it a lack of the correct prompt instructions, but this is an itterative appraoch. You build a mvp prompt then you add and remve from it Iterably. thats your go to, if that doesnt work consider slitting the workload into multiple steps the agent can action more managely in the form of tool calls
+---
+[ASSISTANT]
+So it's MVP prompt first, then iteratively refine based on what breaks, and if that hits a wall, break it into smaller, more manageable tool calls.
+
+When you're doing those iterative prompt improvements, how do you track whether you're actually making progress or just moving the problems around?
+---
+[USER]
+you benchmark the results using langmsith or some kinda LLM benchmark tool. Over each itteration you benchmark and if the results are improved keep the changes else discard
+---
+[ASSISTANT]
+That systematic benchmarking approach makes sense - data beats intuition.
+
+What metrics do you typically track in those benchmarks? Is it accuracy, specific task completion rates, or something else depending on the use case?
+---
+[USER]
+accuracy from an LLM as a judge, token usage, latency, cost
+---
+[ASSISTANT]
+Those four metrics give you a good balance of quality versus efficiency.
+
+When you're using LLM-as-a-judge for accuracy, what do you do when the judge itself starts giving inconsistent evaluations? Do you have techniques for making those judgments more reliable?
+---
+[USER]
+You should run an experiemtn 2-3 times to get an avg for the above metrics
+---
+[ASSISTANT]
+Right, multiple runs smooth out the variance in LLM judgments.
+
+Shifting gears - you mentioned earlier that people come to you when they need a "10x engineer" for AI projects. What's the thing that makes the difference between someone who can build AI demos versus someone who can ship production systems that actually scale?
+---
+[USER]
+experience. You have no idea what can break until you've been though the e2e process a few times. 
+
+You need someone who is capable of maintaining a consistent vision for the product through its long lifecylce, its easy to get overwhelmed and lose sight of a specific aspect of the app and neglect it. How would this change affect code you wrote 6 months ago? need to be sharp and high independence.
+
+if you've built a e2e production app once you've done it a millions times
+---
+[ASSISTANT]
+That consistency of vision through the lifecycle is huge - keeping all the pieces in your head while you're adding new ones.
+
+When you say "if you've built a e2e production app once you've done it a millions times" - what's the thing that's fundamentally the same across all these projects, regardless of the specific AI use case?
+---
+[USER]
+code patterns/ anti patterns. The right tools to use and for what. What do build from scratch and where to leverage existing solutions.
+
+Knowing how to securely implement JWT without relying on an agent to do it for you bc if it does something worng you would never know until a client has auth issues.
+
+All apps are a FE securely communicating with a BE with some sort of persetince/storage
+---
+[ASSISTANT]
+That JWT example is perfect - the AI might implement it in a way that seems to work but has subtle security flaws you'd never catch without experience.
+
+When you're deciding what to build from scratch versus leverage existing solutions, what's your decision-making framework? Is it mostly about control, cost, or something else?
+---
+[USER]
+its a simple cost to benefit calulation, more intuitive than concrete data based. If it would take you a week to build it yourself with the real possibility of spending another week improving and debugging that feature. 
+
+For example i can write my own wrappers for claude and gemini models but it wont be as effiecient and fucntional a the standard wrappers that come with langgragh.
+
+And for that week your engineers havernt even touched the actual task they busy building the tools to use when doing the actual task
+---
+[ASSISTANT]
+That opportunity cost framing is smart - you're not just measuring the time to build, but the time you're not spending on the actual business problem.
+
+When you're making those build-versus-buy decisions, are there certain categories of functionality where you almost always go one way or the other?
+---
+[USER]
+yeah for auth and wrappers or even pdf libraries or loggers, just use the existing solutions/frameworks.
+
+the rest you can build yourself
+---
+[ASSISTANT]
+Makes sense - use battle-tested solutions for the infrastructure plumbing, build the business logic yourself.
+
+You mentioned earlier that you can spot when someone is informed versus not during discussions. When you're talking to a potential client, what specific questions do you ask that immediately reveal whether they actually understand their problem?
+---
+[USER]
+whats your biggest pain point? what does the perfecet solution look like to you? can you go into more detail? Can you maybe even suggest a stack? avoids using iffy buzzwords and is specifc and not vage
+---
+[ASSISTANT]
+So you're listening for concrete specifics versus abstract buzzwords.
+
+When someone gives you a vague answer to "what does the perfect solution look like" - something like "we want AI to make our processes more efficient" - how do you drill down to figure out if there's a real problem underneath or if it's just AI hype?
+---
+[USER]
+okay but what does the end result look like? What is the problem? how many users? expected repsoinse time? budget?
+---
+[ASSISTANT]
+You're forcing them to get concrete about the actual requirements and constraints.
+
+What's the most common disconnect you see between what clients think they need versus what they actually need when you dig into those details?
+---
+[USER]
+they often think its as simple as just throwing everything at the LLM all at once and showing its response
+---
+[ASSISTANT]
+Right - they think it's just "dump data in, get magic out." 
+
+When you encounter that expectation, how do you explain to them why that approach won't work without getting too technical?
+---
+[USER]
+because it would cause hallucinations, it loses the context of what its trying to solve. You need systems that semantically feed the right context to the agent, you need guardrails, you need validation and a scalabale, modular foundation for future proofing your solution.
+---
+[ASSISTANT]
+That makes sense - too much context becomes no context, and you lose the signal in the noise.
+
+When you're building those systems that "semantically feed the right context," what's your approach? Is it mostly about smart chunking and retrieval, or are there other techniques you use to make sure the agent gets the right information?
+---
+[USER]
+it's mostly about smart chunking and retrieval. the common misconception is that the implementation (agent) will do the hard lifting and provide the value. An LLM is just an inference engine, its stupid. The real secret sauce is good data to provide your agent to accomplish a given task. No amount of fanbcy loops are agentic patterns can overcome bad data
+---
+[ASSISTANT]
+That's a great insight - the LLM is just the interface, the real value is in the data pipeline feeding it.
+
+When you say "good data," what makes data good versus bad for these systems? Is it about format, freshness, relevance, or something else entirely?
+---
+[USER]
+Some data is better than no data and most people dont have any data. Then if you do have data, is it relevant and helpful? What is the noise to signal ratio? Are there any areas the data is not covering that it should? Is it dense or sparse? It it validated and relaible? How often does it change, do you capture those chnages?
+---
+[ASSISTANT]
+So it's a hierarchy - having data beats no data, but then you need to audit quality, coverage, and maintenance.
+
+When you're evaluating a client's existing data for an AI project, what's the fastest way you can tell if their data is going to be a blocker versus actually useful for what they want to build?
+---
+[USER]
+well if they have data they will give it to you and you can evaluate it as i described above. If no data is there its now a partial blocker, you can scaffold the agent infra but it wont be accurate until you have good data which can take some time. Also the format, will the data provided be extremely hard to clean and process?
+---
+[ASSISTANT]
+Right - if the data exists but is in some nightmare format, that can be worse than no data because now you're spending weeks just on data wrangling.
+
+Let me step back and summarize what I'm hearing so far. Your core approach seems to be: filter out vanity AI projects by pushing for concrete specs and real pain points, build simple MVPs that handle both happy and sad paths using proven architectural patterns, and recognize that the LLM is just the interface while the real value is in the data pipeline feeding it. You prioritize practical experience over theoretical solutions and use systematic benchmarking to validate improvements.
+
+Am I capturing this right, or is there something key I'm missing?
+---
+[USER]
+yes
+---
+[ASSISTANT]
+Got it. Let me dig into something else - you mentioned you're often brought in as a highly independent engineer. When you're working with a team versus solo, how does your approach change? Do you have to adapt your decision-making process when there are other stakeholders involved?
+---
+[USER]
+of course, if you have a team you can make the tasks more granular and spread the work out more amongst others. You approach would be modularity, getting people to develop solutions in silo that you then stick together yourself. This requires a great deal of communication and people/project management skills. Your focus is on facilattaing the work rather than doing it. Its the exact opposite when your solo
+---
+[ASSISTANT]
+That's a big shift - from executing to orchestrating. When you're in that facilitating role, how do you make sure the modular pieces the team builds will actually fit together? Do you define strict interfaces upfront or handle integration differently?
+---
+[USER]
+define strict interfaces and constant alignment with teammembers
+---
+[ASSISTANT]
+Makes sense - clear contracts between modules and regular check-ins to catch drift early.
+
+When you're defining those interfaces, what level of detail do you typically specify? Are you giving them exact API schemas, or more high-level data flow requirements?
+---
+[USER]
+high-level data flow requirements that get refined during the process. exact API schemas are extremely rare in the real world
+---
+[ASSISTANT]
+That tracks with what you said earlier about specs always changing. You give enough direction to prevent chaos but leave room for iteration.
+
+When you're working solo versus with a team, does the technology stack you choose change? Or do you stick with the same tools regardless?
+---
+[USER]
+my stack stays the same unless it is required to use something specific. be flexible
+---
+[ASSISTANT]
+Consistency makes sense when you're trying to move fast. 
+
+You mentioned earlier that real life is messy compared to theory. What's something you used to believe about building AI systems that you've completely changed your mind on after doing this work in production?
+---
+[USER]
+The definition of done is clear, then i realized its a contonueally eveolving thing. There is no finish line for a product, only where it is now relative to where it was and where we want it to be after the latest itteration
+---
+[ASSISTANT]
+That's a shift from thinking in terms of final deliverables to thinking in terms of continuous evolution. 
+
+Given that mindset, how do you handle client expectations around timelines and "completion"? Do you structure contracts differently or set different milestones?
+---
+[USER]
+I try set milestones for deliverables and rough timelines, often in weeks not days.
+---
+[ASSISTANT]
+Weeks give you buffer for the inevitable curveballs. 
+
+If you could only give one piece of advice to every client before starting an AI project, what would it be?
+---
+[USER]
+This is going to be messy, there will be ups and downs, periods of high and low productivity depending on the complexity of the current task. 
+
+Pick the right people and trust their input but validate it first. Its easy for a project to get sidetracked so focus on small milestones. Have a clear idea of what success looks like for your solution. 
+
+Also dont be afraid to take risks, AI is in its wild west era and innovations are plenty. Dont get hung up things that dont matter like the tone and the model, good data can make even a bad model loook good. 
+
+And for the love of god please remeber that classic computer science adage, garbage-in-garbage-out (GIGO)
+---
+[ASSISTANT]
+That's solid advice - especially the GIGO reminder. It sounds like you spend a lot of time managing expectations around the messy reality of building these systems.
+
+What's something you're still figuring out in AI development? Something where you don't have a clear framework yet?
+---
+[USER]
+How to review AI code and handle QA for an agent that can ship code faster than you can think
+---
+[ASSISTANT]
+That's a fascinating problem - the tooling is moving faster than our ability to validate it safely.
+
+I think I have a really strong picture of how you think and operate. You bridge the gap between AI hype and production reality through systematic evaluation, modular architecture, and relentless focus on data quality over model complexity. Your approach is pragmatic iteration with clear interfaces and continuous benchmarking, while managing the messy human side of evolving requirements.
+
+Want to keep going or should I summarize what I've captured?
+---
+[USER]
+summarize
+---
+[ASSISTANT]
+# Kyle Parratt: AI Systems Architect
+
+## Core Value Proposition
+Kyle is the engineer companies call when they need production-grade AI systems that actually work, not demos. He's a "10x engineer" who can rapidly build fault-tolerant AI solutions from 0 to 1, specializing in taking experimental AI capabilities and turning them into deterministic, enterprise-ready software.
+
+## Diagnostic Framework
+
+### Initial Client Assessment
+**Key Questions:**
+- "What's your biggest pain point?"
+- "What does the perfect solution look like to you?"
+- "Can you go into more detail?"
+- "How many users? Expected response time? Budget?"
+
+**Red Flags (Project Will Fail):**
+- Blurry, poorly defined specs
+- Vanity projects just to say they use AI
+- Unrealistic expectations (like $100K chatbot for stock predictions)
+- Client can't articulate clear metrics, milestones, or deliverables
+- "Dump everything into LLM and get magic out" mentality
+
+**Green Flags (Project Will Succeed):**
+- Clear pain point solving real business problem
+- Well-informed client with specific requirements
+- Realistic budget and timeline expectations
+- Understanding that AI is a tool, not magic
+
+### Technical Viability Assessment
+**Core Questions:**
+- Does this solve a real business use case?
+- Is there an existing tool that already does this?
+- How long for MVP development?
+- Does it fit within financial and resource constraints?
+
+## Core Methodology
+
+### Architecture Philosophy
+1. **Start Simple:** "Less is more" - build MVP first, add complexity later
+2. **Modular Design:** Create reusable base classes, clear separation of concerns
+3. **Handle Unhappy Paths:** Everything can break and should be handled gracefully
+4. **Extensive Observability:** "YOU WILL have bugs and logs make these easier to debug"
+
+### The "GIGO" Principle
+- LLMs are "just inference engines" - they're stupid
+- Real value is in the data pipeline feeding the agent
+- Good data can make even a bad model look good
+- No amount of fancy loops or agentic patterns can overcome bad data
+
+### Data Quality Framework
+**Data Hierarchy:**
+1. Some data > no data
+2. Relevant and helpful > irrelevant
+3. Good signal-to-noise ratio
+4. Comprehensive coverage
+5. Dense > sparse
+6. Validated and reliable
+7. Change tracking implemented
+
+### Production Readiness Checklist
+- Centralized, modular, reusable code
+- Base classes for common functionality
+- Clear folder structures and separation of concerns
+- Error handling for both happy and sad paths
+- Retries and fault-tolerant orchestration (like Temporal)
+- Security and guardrails against prompt injection
+- Systematic benchmarking and monitoring
+
+### Build vs. Buy Decision Framework
+**Always Buy:** Auth, API wrappers, PDF libraries, loggers - use battle-tested solutions
+**Build Yourself:** Business logic and domain-specific functionality
+**Cost Calculation:** Week to build + week to debug vs. using existing solution means engineers aren't working on actual business problems
+
+## Quality Assurance Approach
+
+### Code Review Red Flags
+- Tons of changes for simple requests (AI overcomplicated)
+- Convoluted solutions when simpler approaches exist
+- Duplicated/scattered code
+- Functions polling APIs every few seconds
+- Secrets in frontend
+- Terrible folder structure
+
+### AI Code Management
+1. Carefully review all AI-generated code
+2. Question AI's approaches - it takes easiest solution, not most production-ready
+3. Inform AI of mistakes and ask for corrections
+4. Never just commit without understanding
+
+### Benchmarking Strategy
+**Metrics to Track:**
+- Accuracy (using LLM-as-judge)
+- Token usage
+- Latency
+- Cost
+
+**Process:** Run experiments 2-3 times for averages, keep improvements, discard regressions
+
+### Prompt Engineering Process
+1. Build MVP prompt
+2. Iterative refinement based on production issues
+3. If prompt engineering hits limits, split workload into manageable tool calls
+4. Use LangSmith or similar for systematic benchmarking
+
+## Team vs. Solo Approach
+
+### Solo Work
+- Focus on execution
+- Use consistent tech stack (Node.js, TypeScript, React, PostgreSQL)
+- Rapid iteration and direct implementation
+
+### Team Leadership
+- Focus shifts to facilitation over execution
+- Create modular architecture with strict interfaces

@@ -6,15 +6,28 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const mentor = searchParams.get("mentor") || "colin-chapman";
 
+  const { data: mentorRow } = await supabase
+    .from("mentors")
+    .select("default_starters, starters_hint, name")
+    .eq("slug", mentor)
+    .eq("active", true)
+    .single();
+
+  const defaultStarters: string[] = mentorRow?.default_starters ?? [
+    "What should I focus on first?",
+    "Help me think through my current situation",
+    "What questions should I be asking myself?",
+    "I have a specific problem I need help with",
+  ];
+
   const session = await auth();
   const user = session?.user as { id?: string } | undefined;
 
   if (!user?.id) {
-    return Response.json({ starters: getDefaultStarters(mentor) });
+    return Response.json({ starters: defaultStarters });
   }
 
   try {
-    // Get user profile
     const { data: profile } = await supabase
       .from("user_profiles")
       .select("*")
@@ -23,10 +36,9 @@ export async function GET(req: Request) {
       .single();
 
     if (!profile) {
-      return Response.json({ starters: getDefaultStarters(mentor) });
+      return Response.json({ starters: defaultStarters });
     }
 
-    // Get recent conversation topics to avoid repeats
     const { data: recentConvos } = await supabase
       .from("conversations")
       .select("summary")
@@ -40,12 +52,14 @@ export async function GET(req: Request) {
       .map((c) => c.summary)
       .join("\n") || "None yet";
 
+    const hint = mentorRow?.starters_hint ?? `a mentor named ${mentorRow?.name ?? mentor}`;
+
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
     const response = await client.messages.create({
       model: "claude-sonnet-4-20250514",
       max_tokens: 300,
-      system: `Generate 4 conversation starter questions for a user talking to a GTM & outbound sales mentor. Each starter should be specific to the user's business and current challenges. Make them actionable and varied. Do NOT repeat topics from their recent conversations. Output ONLY a JSON array of 4 strings, nothing else.`,
+      system: `Generate 4 conversation starter questions for a user talking to ${hint}. Each starter should be specific to the user's business and current challenges. Make them actionable and varied. Do NOT repeat topics from their recent conversations. Output ONLY a JSON array of 4 strings, nothing else.`,
       messages: [
         {
           role: "user",
@@ -81,22 +95,5 @@ Generate 4 fresh, specific conversation starters.`,
     console.error("Starters generation error:", err);
   }
 
-  return Response.json({ starters: getDefaultStarters(mentor) });
-}
-
-function getDefaultStarters(mentor: string): string[] {
-  if (mentor === "colin-chapman") {
-    return [
-      "Tear apart my last cold email",
-      "Tell me who I should actually be selling to",
-      "My last deal died after the first call. Diagnose it",
-      "Give me a 5-day outbound plan for this week",
-    ];
-  }
-  return [
-    "I'm stuck between two GTM approaches and keep going in circles",
-    "I need to set pricing but I have no idea what this is worth",
-    "We have traction but I can't tell what's actually driving it",
-    "One wrong decision here could cost me 6 months",
-  ];
+  return Response.json({ starters: defaultStarters });
 }

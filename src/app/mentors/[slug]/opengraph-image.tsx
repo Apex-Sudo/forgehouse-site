@@ -1,22 +1,56 @@
 import { ImageResponse } from "next/og";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { supabase } from "@/lib/supabase";
 
 export const runtime = "nodejs";
-export const alt =
-  "Colin Chapman – GTM & Outbound for B2B Tech Founders | ForgeHouse";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default async function Image() {
-  // Read Colin's photo and convert to base64 data URI
-  const imgPath = join(process.cwd(), "public", "mentors", "colin-chapman.png");
+export async function generateImageMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const { data: mentor } = await supabase
+    .from("mentors")
+    .select("name, tagline")
+    .eq("slug", params.slug)
+    .single();
+
+  return [
+    {
+      id: "og",
+      alt: mentor
+        ? `${mentor.name} - ${mentor.tagline} | ForgeHouse`
+        : "ForgeHouse Mentor",
+      size,
+      contentType,
+    },
+  ];
+}
+
+export default async function OGImage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const { data: mentor } = await supabase
+    .from("mentors")
+    .select("name, tagline, avatar_url, bio")
+    .eq("slug", params.slug)
+    .single();
+
+  const name = mentor?.name ?? "ForgeHouse Mentor";
+  const tagline = mentor?.tagline ?? "";
+  const avatarFile = mentor?.avatar_url?.replace("/mentors/", "") ?? "";
+
   let photoDataUri: string | null = null;
   try {
-    const buf = readFileSync(imgPath);
+    const buf = readFileSync(join(process.cwd(), "public", "mentors", avatarFile));
     photoDataUri = `data:image/png;base64,${buf.toString("base64")}`;
   } catch {
-    // photo not available, skip
+    // photo not available
   }
 
   return new ImageResponse(
@@ -32,7 +66,6 @@ export default async function Image() {
           position: "relative",
         }}
       >
-        {/* Left content */}
         <div
           style={{
             display: "flex",
@@ -51,7 +84,7 @@ export default async function Image() {
               marginBottom: "16px",
             }}
           >
-            Colin Chapman
+            {name}
           </div>
           <div
             style={{
@@ -62,18 +95,15 @@ export default async function Image() {
               marginBottom: "32px",
             }}
           >
-            GTM & Outbound for B2B Tech Founders
+            {tagline}
           </div>
-          <div
-            style={{
-              fontSize: 18,
-              color: "#888888",
-              lineHeight: 1.5,
-            }}
-          >
-            25+ years B2B sales • 66% win rate • IBM, Siemens, BMW
-          </div>
-          {/* ForgeHouse branding */}
+          {mentor?.bio && (
+            <div style={{ fontSize: 18, color: "#888888", lineHeight: 1.5 }}>
+              {mentor.bio.length > 120
+                ? mentor.bio.slice(0, 120) + "..."
+                : mentor.bio}
+            </div>
+          )}
           <div
             style={{
               position: "absolute",
@@ -89,7 +119,6 @@ export default async function Image() {
           </div>
         </div>
 
-        {/* Right side – photo */}
         {photoDataUri && (
           <div
             style={{

@@ -114,8 +114,10 @@ function SubscribeButton() {
 }
 
 export default function PricingPage() {
+  const { data: session } = useSession();
+
   return (
-    <div className="pt-16">
+    <div className={session?.user ? "h-full overflow-y-auto" : "pt-16"}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}

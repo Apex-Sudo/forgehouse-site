@@ -11,16 +11,31 @@ interface Insight {
   created_at: string;
 }
 
-const MENTOR_LABELS: Record<string, { name: string; icon: string }> = {
-  "colin-chapman": { name: "Colin Chapman", icon: "🎯" },
-  apex: { name: "Apex", icon: "🔺" },
-};
+interface MentorInfo {
+  slug: string;
+  name: string;
+  avatar_url: string;
+}
 
 export default function InsightsPage() {
   const { data: session, status } = useSession();
   const [insights, setInsights] = useState<Insight[]>([]);
+  const [mentors, setMentors] = useState<Record<string, MentorInfo>>({});
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetch("/api/mentors")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.mentors) {
+          const map: Record<string, MentorInfo> = {};
+          for (const m of data.mentors) map[m.slug] = m;
+          setMentors(map);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -32,14 +47,9 @@ export default function InsightsPage() {
     const load = async () => {
       setLoading(true);
       try {
-        // Fetch from both mentors
-        const [colinRes, apexRes] = await Promise.all([
-          fetch("/api/insights?mentor=colin-chapman"),
-          fetch("/api/insights?mentor=apex"),
-        ]);
-        const colinData = colinRes.ok ? await colinRes.json() : { insights: [] };
-        const apexData = apexRes.ok ? await apexRes.json() : { insights: [] };
-        const all = [...(colinData.insights || []), ...(apexData.insights || [])];
+        const res = await fetch("/api/insights");
+        const data = res.ok ? await res.json() : { insights: [] };
+        const all = data.insights || [];
         all.sort((a: Insight, b: Insight) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         setInsights(all);
       } catch { /* ignore */ }
@@ -130,11 +140,16 @@ export default function InsightsPage() {
           </div>
         ) : (
           Object.entries(grouped).map(([slug, items]) => {
-            const mentor = MENTOR_LABELS[slug] || { name: slug, icon: "💬" };
+            const mentor = mentors[slug];
             return (
               <div key={slug} className="mb-8">
                 <h2 className="text-sm font-semibold text-muted flex items-center gap-2 mb-4">
-                  <span>{mentor.icon}</span> {mentor.name}
+                  {mentor?.avatar_url ? (
+                    <img src={mentor.avatar_url} alt="" className="w-5 h-5 rounded-full" />
+                  ) : (
+                    <span>💬</span>
+                  )}
+                  {mentor?.name ?? slug}
                 </h2>
                 <div className="space-y-3">
                   {items.map((insight) => (

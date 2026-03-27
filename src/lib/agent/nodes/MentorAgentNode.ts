@@ -1,7 +1,7 @@
 import { BaseAgentNode, type AgentRunParams } from "./BaseAgentNode";
 import { generatePdfTool } from "../tools/generate-pdf";
 import { createRetrieveKnowledgeTool } from "../tools/retrieve-knowledge";
-import { buildEnrichedPrompt } from "../helper/prompt-builder";
+import { buildEnrichedPrompt, type ScenarioData } from "../helper/prompt-builder";
 import { appendMessages } from "@/lib/conversations";
 import { embedArtifacts } from "../helper/stream";
 
@@ -23,7 +23,7 @@ export interface MentorRunParams extends AgentRunParams {
   userName?: string;
   profile?: UserProfile | null;
   contextMessages?: { role: string; content: string }[];
-  scenarioId?: string;
+  scenario?: ScenarioData | null;
   userMessageCount?: number;
   lastUserMessage: { role: "user" | "assistant"; content: string };
 }
@@ -43,7 +43,7 @@ export class MentorAgentNode extends BaseAgentNode<MentorRunParams> {
       userName,
       profile,
       contextMessages,
-      scenarioId,
+      scenario,
       userMessageCount,
       lastUserMessage,
     } = params;
@@ -60,7 +60,7 @@ export class MentorAgentNode extends BaseAgentNode<MentorRunParams> {
       userName,
       profile,
       contextMessages,
-      scenarioId,
+      scenario,
       userMessageCount,
     });
 

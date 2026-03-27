@@ -7,6 +7,8 @@ interface AppShellContextType {
   toggleSidebar: () => void;
   refreshConversations: number;
   triggerConversationRefresh: () => void;
+  activeConversationId: string | null;
+  setActiveConversationId: (id: string | null) => void;
 }
 
 const AppShellContext = createContext<AppShellContextType>({
@@ -15,6 +17,8 @@ const AppShellContext = createContext<AppShellContextType>({
   toggleSidebar: () => {},
   refreshConversations: 0,
   triggerConversationRefresh: () => {},
+  activeConversationId: null,
+  setActiveConversationId: () => {},
 });
 
 export function useAppShell() {
@@ -24,6 +28,7 @@ export function useAppShell() {
 export function AppShellProvider({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [refreshConversations, setRefreshConversations] = useState(0);
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
 
   const toggleSidebar = useCallback(() => setSidebarOpen((o) => !o), []);
   const triggerConversationRefresh = useCallback(
@@ -33,7 +38,7 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AppShellContext.Provider
-      value={{ sidebarOpen, setSidebarOpen, toggleSidebar, refreshConversations, triggerConversationRefresh }}
+      value={{ sidebarOpen, setSidebarOpen, toggleSidebar, refreshConversations, triggerConversationRefresh, activeConversationId, setActiveConversationId }}
     >
       {children}
     </AppShellContext.Provider>

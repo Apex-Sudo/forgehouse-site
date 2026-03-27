@@ -57,7 +57,7 @@ export const generatePdfTool = new DynamicStructuredTool({
         id,
         type: "pdf",
         title: input.title,
-        url: `/api/artifacts/${id}`,
+        url: `/api/artifacts/${id}?title=${encodeURIComponent(input.title)}`,
         createdAt: new Date().toISOString(),
       };
 
