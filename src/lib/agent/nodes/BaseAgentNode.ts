@@ -18,10 +18,18 @@ type StreamableModel = Runnable<BaseMessage[], AIMessageChunk>;
 
 const REFUSAL = "I can't help with that, but I'm happy to assist with your question.";
 
+const PRIMARY_MODEL = "claude-sonnet-4-20250514";
+const FALLBACK_MODEL = "claude-sonnet-4-5-20250929";
+
 const DEFAULT_MAX_ITERATIONS = 5;
 const DEFAULT_ITERATION_TIMEOUT_MS = 120_000;
 const DEFAULT_MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 2_000;
+
+function isOverloadedError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return msg.includes("overloaded") || msg.includes("529") || msg.includes("Overloaded");
+}
 
 export interface StreamWriter {
   enqueue(data: Uint8Array): void;
@@ -84,9 +92,10 @@ export abstract class BaseAgentNode<TParams extends AgentRunParams = AgentRunPar
 
   protected createModel(config?: {
     maxTokens?: number;
+    model?: string;
   }): ChatAnthropic {
     return new ChatAnthropic({
-      model: "claude-sonnet-4-20250514",
+      model: config?.model ?? PRIMARY_MODEL,
       maxTokens: config?.maxTokens ?? 16384,
       anthropicApiKey: process.env.ANTHROPIC_API_KEY,
     });
@@ -120,22 +129,32 @@ export abstract class BaseAgentNode<TParams extends AgentRunParams = AgentRunPar
 
   /**
    * Invoke the model with retry logic. Returns the full AIMessage (not chunked).
+   * Falls back to a secondary model on overloaded errors.
    */
   private async invokeWithRetry(
     model: StreamableModel,
     messages: BaseMessage[],
+    fallbackModel?: StreamableModel,
   ): Promise<AIMessage> {
     let lastError: unknown;
+    let activeModel = model;
 
     for (let attempt = 1; attempt <= DEFAULT_MAX_RETRIES; attempt++) {
       try {
         this.log(`Invoking model (attempt ${attempt}/${DEFAULT_MAX_RETRIES})`);
-        const response = await model.invoke(messages);
+        const response = await activeModel.invoke(messages);
         return response as AIMessage;
       } catch (err) {
         lastError = err;
         const msg = err instanceof Error ? err.message : String(err);
         this.logError(`Invoke failed (attempt ${attempt}):`, msg);
+
+        if (isOverloadedError(err) && fallbackModel && activeModel !== fallbackModel) {
+          this.log(`Primary model overloaded, switching to fallback (${FALLBACK_MODEL})`);
+          this.emitStatus("Switching to backup model...");
+          activeModel = fallbackModel;
+        }
+
         if (attempt < DEFAULT_MAX_RETRIES) {
           await sleep(RETRY_DELAY_MS);
         }
@@ -148,17 +167,20 @@ export abstract class BaseAgentNode<TParams extends AgentRunParams = AgentRunPar
   /**
    * Stream model response with retry. Accumulates chunks and returns full AIMessage.
    * Streams text tokens to the client in real time.
+   * Falls back to a secondary model on overloaded errors.
    */
   private async streamWithRetry(
     model: StreamableModel,
     messages: BaseMessage[],
+    fallbackModel?: StreamableModel,
   ): Promise<AIMessage> {
     let lastError: unknown;
+    let activeModel = model;
 
     for (let attempt = 1; attempt <= DEFAULT_MAX_RETRIES; attempt++) {
       try {
         this.log(`Streaming model (attempt ${attempt}/${DEFAULT_MAX_RETRIES})`);
-        const stream = await model.stream(messages);
+        const stream = await activeModel.stream(messages);
         let aggregated: AIMessageChunk | undefined;
 
         for await (const chunk of stream) {
@@ -201,6 +223,13 @@ export abstract class BaseAgentNode<TParams extends AgentRunParams = AgentRunPar
         lastError = err;
         const msg = err instanceof Error ? err.message : String(err);
         this.logError(`Stream failed (attempt ${attempt}):`, msg);
+
+        if (isOverloadedError(err) && fallbackModel && activeModel !== fallbackModel) {
+          this.log(`Primary model overloaded, switching to fallback (${FALLBACK_MODEL})`);
+          this.emitStatus("Switching to backup model...");
+          activeModel = fallbackModel;
+        }
+
         if (attempt < DEFAULT_MAX_RETRIES) {
           await sleep(RETRY_DELAY_MS);
         }
@@ -231,6 +260,10 @@ export abstract class BaseAgentNode<TParams extends AgentRunParams = AgentRunPar
     const boundModel: StreamableModel =
       tools.length > 0 ? model.bindTools(tools) : model;
 
+    const fallback = this.createModel({ model: FALLBACK_MODEL });
+    const boundFallback: StreamableModel =
+      tools.length > 0 ? fallback.bindTools(tools) : fallback;
+
     const toolMap = new Map<string, StructuredToolInterface>();
     for (const tool of tools) {
       toolMap.set(tool.name, tool);
@@ -254,7 +287,7 @@ export abstract class BaseAgentNode<TParams extends AgentRunParams = AgentRunPar
       let response: AIMessage;
       try {
         response = await Promise.race([
-          this.streamWithRetry(boundModel, conversationMessages),
+          this.streamWithRetry(boundModel, conversationMessages, boundFallback),
           timeoutPromise,
         ]);
       } catch (err) {

@@ -1,16 +1,10 @@
 import { after } from "next/server";
-import { COLIN_SYSTEM_PROMPT } from "@/lib/agent/prompts/colin-system-prompt";
-import { LEON_SYSTEM_PROMPT } from "@/lib/leon-system-prompt";
 import { auth } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 import { getContextMessages, getConversationMessages } from "@/lib/conversations";
 import { canAccess, incrementAnonymousMessages, incrementAuthenticatedMessages } from "@/lib/subscription";
 import { captureServerEvent } from "@/lib/posthog";
 import { MentorAgentNode } from "@/lib/agent/nodes/MentorAgentNode";
-
-const MENTOR_PROMPTS: Record<string, string> = {
-  "colin-chapman": COLIN_SYSTEM_PROMPT,
-  "leon-freier": LEON_SYSTEM_PROMPT,
-};
 
 type RawMessage = { role: "user" | "assistant"; content: string };
 
@@ -45,10 +39,16 @@ export async function POST(req: Request) {
       return Response.json({ error: "No message provided" }, { status: 400 });
     }
 
-    const systemPrompt = MENTOR_PROMPTS[mentor];
-    if (!systemPrompt) {
+    const { data: mentorRow } = await supabase
+      .from("mentors")
+      .select("system_prompt")
+      .eq("slug", mentor)
+      .eq("active", true)
+      .single();
+    if (!mentorRow) {
       return Response.json({ error: "Unknown mentor" }, { status: 404 });
     }
+    const systemPrompt = mentorRow.system_prompt;
 
     const session = await auth();
     const user = session?.user as { id?: string; email?: string } | undefined;
@@ -148,6 +148,18 @@ export async function POST(req: Request) {
       }
     });
 
+    let scenario = null;
+    if (scenario_id) {
+      const { data: scenarioRow } = await supabase
+        .from("mentor_scenarios")
+        .select("questions, system_prompt_addition")
+        .eq("id", scenario_id)
+        .single();
+      if (scenarioRow) {
+        scenario = scenarioRow;
+      }
+    }
+
     const node = new MentorAgentNode();
     const stream = node.run({
       messages,
@@ -159,7 +171,7 @@ export async function POST(req: Request) {
       userName: session?.user?.name ?? undefined,
       profile,
       contextMessages,
-      scenarioId: scenario_id,
+      scenario,
       userMessageCount,
       lastUserMessage,
     });

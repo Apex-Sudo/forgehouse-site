@@ -1,15 +1,9 @@
 import { after } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { COLIN_SYSTEM_PROMPT } from "@/lib/agent/prompts/colin-system-prompt";
+import { supabase } from "@/lib/supabase";
 import { validateApiKey } from "@/lib/api-keys";
 import { isSubscribed } from "@/lib/subscription";
 import { captureServerEvent } from "@/lib/posthog";
-
-const MENTOR_PROMPTS: Record<string, string> = {
-  "colin-chapman": COLIN_SYSTEM_PROMPT,
-};
-
-const AVAILABLE_MENTORS = Object.keys(MENTOR_PROMPTS);
 
 export async function POST(req: Request) {
   try {
@@ -46,18 +40,24 @@ export async function POST(req: Request) {
 
     if (!mentor) {
       return Response.json(
-        { error: "Missing 'mentor' field", available_mentors: AVAILABLE_MENTORS },
+        { error: "Missing 'mentor' field" },
         { status: 400 }
       );
     }
 
-    const systemPrompt = MENTOR_PROMPTS[mentor];
-    if (!systemPrompt) {
+    const { data: mentorRow } = await supabase
+      .from("mentors")
+      .select("system_prompt")
+      .eq("slug", mentor)
+      .eq("active", true)
+      .single();
+    if (!mentorRow) {
       return Response.json(
-        { error: `Unknown mentor: ${mentor}`, available_mentors: AVAILABLE_MENTORS },
+        { error: `Unknown mentor: ${mentor}` },
         { status: 404 }
       );
     }
+    const systemPrompt = mentorRow.system_prompt;
 
     // Accept either a single message string or a messages array
     let chatMessages: { role: "user" | "assistant"; content: string }[];
@@ -184,10 +184,11 @@ export async function GET(req: Request) {
     return Response.json({ error: "Invalid API key" }, { status: 401 });
   }
 
-  return Response.json({
-    mentors: AVAILABLE_MENTORS.map((slug) => ({
-      slug,
-      name: slug.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" "),
-    })),
-  });
+  const { data: mentors } = await supabase
+    .from("mentors")
+    .select("slug, name")
+    .eq("active", true)
+    .order("sort_order");
+
+  return Response.json({ mentors: mentors ?? [] });
 }

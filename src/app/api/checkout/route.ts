@@ -14,7 +14,7 @@ export async function POST(req: Request) {
       return Response.json({ error: "mentorSlug required" }, { status: 400 });
     }
 
-    const mentor = getMentorPricing(mentorSlug);
+    const mentor = await getMentorPricing(mentorSlug);
     if (!mentor) {
       return Response.json({ error: "Unknown mentor" }, { status: 400 });
     }

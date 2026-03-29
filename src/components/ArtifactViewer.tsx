@@ -49,7 +49,7 @@ export default function ArtifactViewer({ artifact, onClose }: ArtifactViewerProp
           <div className="flex items-center gap-3">
             <a
               href={artifact.url}
-              download
+              download={`${artifact.title}.pdf`}
               className="text-sm text-[#B8916A] hover:text-[#A07B56] font-medium transition"
             >
               Download
@@ -91,7 +91,7 @@ export default function ArtifactViewer({ artifact, onClose }: ArtifactViewerProp
                 </a>
                 <a
                   href={artifact.url}
-                  download
+                  download={`${artifact.title}.pdf`}
                   className="bg-white text-[#1A1A1A] border border-[#E5E2DC] px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#F5F3F0] transition text-center"
                 >
                   Download PDF

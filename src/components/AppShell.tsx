@@ -5,7 +5,7 @@ import { AppShellProvider, useAppShell } from "./AppShellContext";
 import Sidebar from "./Sidebar";
 import { IconMenu2 } from "@tabler/icons-react";
 
-const APP_ROUTES = ["/chat", "/insights", "/scenarios", "/account"];
+const APP_ROUTES = ["/chat", "/insights", "/scenarios", "/account", "/pricing"];
 
 function isAppRoute(pathname: string) {
   return APP_ROUTES.some((r) => pathname.startsWith(r));
