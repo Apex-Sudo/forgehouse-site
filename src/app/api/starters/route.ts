@@ -59,7 +59,7 @@ export async function GET(req: Request) {
     const response = await client.messages.create({
       model: "claude-sonnet-4-20250514",
       max_tokens: 300,
-      system: `Generate 4 conversation starter questions for a user talking to ${hint}. Each starter should be specific to the user's business and current challenges. Make them actionable and varied. Do NOT repeat topics from their recent conversations. Output ONLY a JSON array of 4 strings, nothing else.`,
+      system: `Generate 3 conversation starter questions for a user talking to ${hint}. Each starter should be specific to the user's business and current challenges. Make them actionable and varied. Do NOT repeat topics from their recent conversations. Output ONLY a JSON array of 3 strings, nothing else.`,
       messages: [
         {
           role: "user",
@@ -75,7 +75,7 @@ export async function GET(req: Request) {
 Recent conversation topics:
 ${recentTopics}
 
-Generate 4 fresh, specific conversation starters.`,
+Generate 3 fresh, specific conversation starters.`,
         },
       ],
     });
@@ -85,8 +85,8 @@ Generate 4 fresh, specific conversation starters.`,
 
     try {
       const starters = JSON.parse(text);
-      if (Array.isArray(starters) && starters.length >= 4) {
-        return Response.json({ starters: starters.slice(0, 4), personalized: true });
+      if (Array.isArray(starters) && starters.length >= 3) {
+        return Response.json({ starters: starters.slice(0, 3), personalized: true });
       }
     } catch {
       // Parse failed, fall through to defaults

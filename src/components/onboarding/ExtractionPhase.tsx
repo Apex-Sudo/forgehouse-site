@@ -1,7 +1,4 @@
-"use client";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import ChatMessage from "@/components/ChatMessage";
 
 interface Message {
@@ -9,13 +6,30 @@ interface Message {
   content: string;
 }
 
-export default function ExtractionPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const [messages, setMessages] = useState<Message[]>([]);
+interface OnboardingSession {
+  id: string;
+  mentorName: string;
+  email: string;
+  currentPhase: "extraction" | "calibration" | "ingestion";
+  extractionData: any;
+  calibrationData: any;
+  ingestionData: any;
+  createdAt: string;
+  updatedAt: string;
+  expiresAt: string;
+}
+
+interface ExtractionPhaseProps {
+  session: OnboardingSession;
+  onUpdate: (updates: Partial<OnboardingSession>) => Promise<void>;
+  onAdvance: () => void;
+}
+
+export default function ExtractionPhase({ session, onUpdate, onAdvance }: ExtractionPhaseProps) {
+  const [messages, setMessages] = useState<Message[]>(session.extractionData?.messages || []);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
-  const [uploadedCV, setUploadedCV] = useState<{ filename: string; content: string } | null>(null);
+  const [uploadedCV, setUploadedCV] = useState<{ filename: string; content: string } | null>(session.extractionData?.cv || null);
   const [isUploading, setIsUploading] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -29,40 +43,6 @@ export default function ExtractionPage() {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Load saved extraction session
-  useEffect(() => {
-    if (status === "authenticated") {
-      const saved = localStorage.getItem("fh-extraction-session");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved) as Message[];
-          setMessages(parsed);
-          
-          // Check if extraction was completed
-          const exchangeCount = parsed.filter((m) => m.role === "user").length;
-          if (exchangeCount >= 60) {
-            setShowCompletion(true);
-          }
-        } catch (e) {
-          console.error("Failed to parse saved extraction session", e);
-        }
-      }
-    }
-  }, [status]);
-
-  // Save on every update
-  useEffect(() => {
-    if (messages.length > 0) {
-      localStorage.setItem("fh-extraction-session", JSON.stringify(messages));
-    }
-  }, [messages]);
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/sign-in?callbackUrl=/extraction");
-    }
-  }, [status, router]);
-
   // Check if extraction is complete (based on exchange count)
   useEffect(() => {
     const exchangeCount = messages.filter((m) => m.role === "user").length;
@@ -70,6 +50,25 @@ export default function ExtractionPage() {
       setShowCompletion(true);
     }
   }, [messages]);
+
+  // Save progress to session
+  useEffect(() => {
+    const saveProgress = async () => {
+      if (messages.length > 0 || uploadedCV) {
+        await onUpdate({
+          extractionData: {
+            messages,
+            cv: uploadedCV,
+            updatedAt: new Date().toISOString()
+          }
+        });
+      }
+    };
+    
+    // Debounce the save to avoid too many requests
+    const timer = setTimeout(saveProgress, 1000);
+    return () => clearTimeout(timer);
+  }, [messages, uploadedCV, onUpdate]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -200,30 +199,10 @@ export default function ExtractionPage() {
 
   const exchangeCount = messages.filter((m) => m.role === "user").length;
 
-  if (status === "loading") {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-[#999]">Loading...</p>
-      </div>
-    );
-  }
-
   // Show completion screen when extraction is finished
   if (showCompletion) {
     return (
-      <div className="flex flex-col h-screen bg-[#FAFAF8]">
-        {/* Header */}
-        <div className="border-b border-[#E5E2DC] bg-white px-6 py-4">
-          <div className="max-w-3xl mx-auto flex items-center justify-between">
-            <div>
-              <h1 className="text-lg font-bold text-[#1A1A1A]">Mentor Extraction Complete</h1>
-              <p className="text-sm text-[#999]">
-                {session?.user?.name ? `Session with ${session.user.name}` : "Building your mentor agent"}
-              </p>
-            </div>
-          </div>
-        </div>
-
+      <div className="flex flex-col bg-[#FAFAF8]">
         {/* Completion Screen */}
         <div className="flex-1 overflow-y-auto px-6 py-8">
           <div className="max-w-3xl mx-auto space-y-6">
@@ -245,16 +224,15 @@ export default function ExtractionPage() {
               </div>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <button
-                  onClick={() => router.push("/mentors")}
+                  onClick={onAdvance}
                   className="bg-amber text-white px-6 py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition"
                 >
-                  View My Mentors
+                  Continue to Calibration →
                 </button>
                 <button
                   onClick={() => {
                     setMessages([]);
                     setShowCompletion(false);
-                    localStorage.removeItem("fh-extraction-session");
                   }}
                   className="border border-[#E5E2DC] text-[#1A1A1A] px-6 py-3 rounded-xl text-sm font-semibold hover:bg-[#F5F5F5] transition"
                 >
@@ -269,33 +247,7 @@ export default function ExtractionPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[#FAFAF8]">
-      {/* Header */}
-      <div className="border-b border-[#E5E2DC] bg-white px-6 py-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-bold text-[#1A1A1A]">Mentor Extraction</h1>
-            <p className="text-sm text-[#999]">
-              {session?.user?.name ? `Session with ${session.user.name}` : "Building your mentor agent"}
-              {exchangeCount > 0 && ` · ${exchangeCount} exchanges`}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs px-3 py-1.5 rounded-full bg-amber/10 text-amber font-medium">
-              {exchangeCount < 15
-                ? "Phase 1: Foundation"
-                : exchangeCount < 30
-                ? "Phase 2: Frameworks"
-                : exchangeCount < 45
-                ? "Phase 3: Patterns"
-                : exchangeCount < 60
-                ? "Phase 4: Pressure Testing"
-                : "Phase 5: Voice & Nuance"}
-            </span>
-          </div>
-        </div>
-      </div>
-
+    <div className="flex flex-col bg-[#FAFAF8]">
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-6 py-8">
         <div className="max-w-3xl mx-auto space-y-6">

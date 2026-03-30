@@ -1,64 +1,36 @@
-"use client";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useParams, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
-
-const CONTRIBUTE_ACCESS_CODE = "HYNXmhPKruI";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-export default function CalibrationPage() {
-  const params = useParams();
-  const searchParams = useSearchParams();
-  const slug = params.slug as string;
-  const [messages, setMessages] = useState<Message[]>([]);
+interface OnboardingSession {
+  id: string;
+  mentorName: string;
+  email: string;
+  currentPhase: "extraction" | "calibration" | "ingestion";
+  extractionData: any;
+  calibrationData: any;
+  ingestionData: any;
+  createdAt: string;
+  updatedAt: string;
+  expiresAt: string;
+}
+
+interface CalibrationPhaseProps {
+  session: OnboardingSession;
+  onUpdate: (updates: Partial<OnboardingSession>) => Promise<void>;
+  onAdvance: () => void;
+}
+
+export default function CalibrationPhase({ session, onUpdate, onAdvance }: CalibrationPhaseProps) {
+  const [messages, setMessages] = useState<Message[]>(session.calibrationData?.messages || []);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
-  const [started, setStarted] = useState(false);
-  const [accessCode, setAccessCode] = useState("");
-  const [authorized, setAuthorized] = useState(false);
+  const [started, setStarted] = useState(messages.length > 0);
   const bottomRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const code = searchParams.get("code");
-    if (code === CONTRIBUTE_ACCESS_CODE) {
-      setAuthorized(true);
-    }
-  }, [searchParams]);
-
-  if (!authorized) {
-    return (
-      <div className="min-h-screen bg-[#0e1117] flex items-center justify-center p-4">
-        <div className="max-w-sm w-full text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Access Required</h1>
-          <p className="text-white/40 mb-6 text-sm">This page is invite-only. Enter your access code or use the link provided to you.</p>
-          <input
-            type="text"
-            value={accessCode}
-            onChange={(e) => setAccessCode(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && accessCode === CONTRIBUTE_ACCESS_CODE) {
-                setAuthorized(true);
-              }
-            }}
-            placeholder="Access code"
-            className="w-full bg-[#1a1b2e] border border-white/10 rounded-lg px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#fbbf24] mb-4"
-          />
-          <button
-            onClick={() => {
-              if (accessCode === CONTRIBUTE_ACCESS_CODE) setAuthorized(true);
-            }}
-            className="w-full bg-[#fbbf24] text-[#0e1117] font-bold py-3 rounded-lg hover:opacity-90 transition"
-          >
-            Enter
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   const scrollToBottom = useCallback(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -68,50 +40,33 @@ export default function CalibrationPage() {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Load saved calibration session
+  // Save progress to session
   useEffect(() => {
-    const saved = localStorage.getItem(`fh-calibrate-${slug}`);
-    if (saved) {
-      const parsed = JSON.parse(saved) as Message[];
-      setMessages(parsed);
-      setStarted(true);
-    }
-  }, [slug]);
-
-  // Save on every update (localStorage + Supabase)
-  useEffect(() => {
-    if (messages.length > 0) {
-      localStorage.setItem(`fh-calibrate-${slug}`, JSON.stringify(messages));
-      fetch("/api/calibrate-save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug, messages }),
-      }).catch(() => {});
-    }
-  }, [messages, slug]);
-
-  const [remoteContext, setRemoteContext] = useState<string | undefined>(undefined);
-
-  // Load extraction context from localStorage or Supabase fallback
-  useEffect(() => {
-    const local = localStorage.getItem(`fh-contribute-${slug}`);
-    if (local) return;
-    fetch(`/api/extraction-context?slug=${slug}`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data?.context) setRemoteContext(data.context); })
-      .catch(() => {});
-  }, [slug]);
+    const saveProgress = async () => {
+      if (messages.length > 0) {
+        await onUpdate({
+          calibrationData: {
+            messages,
+            updatedAt: new Date().toISOString()
+          }
+        });
+      }
+    };
+    
+    // Debounce the save to avoid too many requests
+    const timer = setTimeout(saveProgress, 1000);
+    return () => clearTimeout(timer);
+  }, [messages, onUpdate]);
 
   const getExtractionContext = (): string | undefined => {
-    const extraction = localStorage.getItem(`fh-contribute-${slug}`);
-    if (extraction) {
-      const msgs = JSON.parse(extraction) as Message[];
+    if (session.extractionData?.messages) {
+      const msgs = session.extractionData.messages as Message[];
       return msgs
         .map((m) => `[${m.role}]: ${m.content}`)
         .join("\n\n")
         .slice(0, 8000);
     }
-    return remoteContext;
+    return undefined;
   };
 
   const send = async (override?: string) => {
@@ -131,10 +86,10 @@ export default function CalibrationPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: [
-    { role: "assistant", content: "🎯 Let's build your coaching style!\n\nThis first step will take ~1.5-2 hours. You can pause anytime.\n[INFOGRAPHIC PLACEHOLDER]\n\n1. Start with your CV upload\n2. Answer key domain questions\n3. Review system prompts for tone" },
+            { role: "assistant", content: "🎯 Let's build your coaching style!\n\nThis first step will take ~1.5-2 hours. You can pause anytime.\n[INFOGRAPHIC PLACEHOLDER]\n\n1. Start with your CV upload\n2. Answer key domain questions\n3. Review system prompts for tone" },
             ...updated
           ],
-          mentorSlug: slug,
+          mentorSlug: session.id,
           extractionContext: getExtractionContext(),
         }),
       });
@@ -193,7 +148,7 @@ export default function CalibrationPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `calibration-${slug}-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.download = `calibration-${session.id}-${new Date().toISOString().slice(0, 10)}.txt`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -202,16 +157,16 @@ export default function CalibrationPage() {
   const phases = corrections < 5 ? "Voice" : corrections < 15 ? "Frameworks" : corrections < 20 ? "Edge Cases" : "Final";
 
   return (
-    <div className="pt-20 flex flex-col h-screen">
+    <div className="pt-8 flex flex-col h-full">
       <div className="flex-1 flex justify-center px-4 py-6">
-        <div className="w-full max-w-3xl glass-card flex flex-col overflow-hidden">
+        <div className="w-full max-w-3xl glass-card flex flex-col overflow-hidden bg-white border border-[#E5E2DC] rounded-xl">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E2DC]">
             <div className="flex items-center gap-3">
               <span className="text-2xl">🎯</span>
               <div>
                 <h1 className="font-bold text-sm">Calibration Session</h1>
-                <p className="text-xs text-[#999]">{slug} &middot; Phase: {phases}</p>
+                <p className="text-xs text-[#999]">{session.mentorName} &middot; Phase: {phases}</p>
               </div>
             </div>
             {messages.length > 0 && (
@@ -219,9 +174,14 @@ export default function CalibrationPage() {
                 <button
                   onClick={() => {
                     if (confirm("Start over? This will clear the conversation.")) {
-                      localStorage.removeItem(`fh-calibrate-${slug}`);
                       setMessages([]);
                       setStarted(false);
+                      onUpdate({
+                        calibrationData: {
+                          messages: [],
+                          updatedAt: new Date().toISOString()
+                        }
+                      });
                     }
                   }}
                   className="text-xs text-[#999] hover:text-red-500 border border-[#E5E2DC] px-3 py-1.5 rounded-lg hover:border-red-400/30 transition"
@@ -342,6 +302,24 @@ export default function CalibrationPage() {
               </button>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <div className="px-6 py-4 border-t border-[#E5E2DC] bg-white">
+        <div className="max-w-4xl mx-auto flex justify-between">
+          <button
+            onClick={() => onUpdate({ currentPhase: "extraction" })}
+            className="text-[#999] hover:text-[#1A1A1A] border border-[#E5E2DC] px-4 py-2 rounded-lg transition"
+          >
+            ← Back to Extraction
+          </button>
+          <button
+            onClick={onAdvance}
+            className="bg-amber text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition"
+          >
+            Continue to Ingestion →
+          </button>
         </div>
       </div>
     </div>
