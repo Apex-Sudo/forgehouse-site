@@ -3,13 +3,18 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams, useParams } from "next/navigation";
 import { Suspense } from "react";
 import { useSession, signIn } from "next-auth/react";
-import Image from "next/image";
 import ChatMessage from "@/components/ChatMessage";
 import MemoryBanner from "@/components/MemoryBanner";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import { parseStreamChunk, extractArtifacts, type Artifact } from "@/lib/agent/helper/stream";
 import { useTokenBuffer } from "@/hooks/useTokenBuffer";
 import { useAppShell } from "@/components/AppShellContext";
+
+const FALLBACK_AVATAR = "/mentors/default-avatar.svg";
+function safeAvatar(url: string | undefined | null): string {
+  if (!url || url.includes("default-avatar.png")) return FALLBACK_AVATAR;
+  return url;
+}
 
 interface MentorConfig {
   slug: string;
@@ -115,6 +120,7 @@ function ChatContent() {
   const [gateError, setGateError] = useState("");
   const [statusText, setStatusText] = useState<string | null>(null);
   const [starters, setStarters] = useState<string[]>([]);
+  const [startersReady, setStartersReady] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
   const [activeScenario, setActiveScenario] = useState<string | null>(null);
@@ -156,8 +162,6 @@ function ChatContent() {
       .then((data) => {
         if (data?.mentor) {
           setMentorConfig(data.mentor);
-          const raw = data.mentor.default_starters;
-          setStarters(Array.isArray(raw) ? raw : JSON.parse(raw));
           if (data.scenarios) setScenarios(data.scenarios);
         }
       })
@@ -171,15 +175,19 @@ function ChatContent() {
   const convParam = searchParams.get("conv");
   const qParam = searchParams.get("q");
 
+  // Single source of truth for starters — waits for auth to resolve
   useEffect(() => {
-    if (!userEmail || !mentorSlug) return;
-    fetch(`/api/starters?mentor=${mentorSlug}`)
+    if (status === "loading" || !mentorSlug) return;
+    const controller = new AbortController();
+    fetch(`/api/starters?mentor=${mentorSlug}`, { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => {
-        if (data.starters?.length >= 4) setStarters(data.starters);
+        if (data.starters?.length >= 3) setStarters(data.starters);
       })
-      .catch(() => {});
-  }, [userEmail, mentorSlug]);
+      .catch(() => {})
+      .finally(() => setStartersReady(true));
+    return () => controller.abort();
+  }, [status, mentorSlug]);
 
   useEffect(() => {
     if (subscribedParam === "true") {
@@ -476,7 +484,7 @@ function ChatContent() {
       <div className="flex-1 flex justify-center min-h-0">
         <div className="w-full max-w-5xl bg-white flex flex-col overflow-hidden shadow-[0_0_24px_rgba(0,0,0,0.06)] border border-foreground/[0.08] rounded-2xl h-full">
           <div className="flex items-center gap-3 px-6 py-4 border-b border-foreground/[0.08]">
-            <Image src={mc.avatar_url} alt={mc.name} width={36} height={36} className="rounded-full object-cover shrink-0" />
+            <img src={safeAvatar(mc.avatar_url)} alt={mc.name} width={36} height={36} className="rounded-full object-cover shrink-0" onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }} />
             <div className="flex-1 min-w-0">
               <h1 className="font-bold text-sm">{mc.name}</h1>
               <p className="text-xs text-muted">{mc.tagline}</p>
@@ -530,7 +538,16 @@ function ChatContent() {
               </div>
             )}
 
-            {!loadingConversation && messages.length === 0 && starters.length > 0 && (
+            {!loadingConversation && messages.length === 0 && !startersReady && (
+              <div className="flex justify-center pt-8">
+                <div className="flex items-center gap-2 text-muted text-sm">
+                  <div className="w-4 h-4 border-2 border-amber/30 border-t-amber rounded-full animate-spin" />
+                  {status === "authenticated" ? "Loading customized starter prompts..." : "Loading starter prompts..."}
+                </div>
+              </div>
+            )}
+
+            {!loadingConversation && messages.length === 0 && starters.length > 0 && startersReady && (
               <div className="flex flex-wrap gap-2 justify-center max-w-xl mx-auto pt-4">
                 {starters.map((s) => (
                   <button

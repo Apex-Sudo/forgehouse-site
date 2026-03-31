@@ -16,6 +16,12 @@ import {
   IconMessage,
 } from "@tabler/icons-react";
 
+const FALLBACK_AVATAR = "/mentors/default-avatar.svg";
+function safeAvatar(url: string | undefined | null): string {
+  if (!url || url.includes("default-avatar.png")) return FALLBACK_AVATAR;
+  return url;
+}
+
 interface MentorListItem {
   slug: string;
   name: string;
@@ -98,7 +104,7 @@ function ConversationRow({
         }`}
       >
         {mentor && (
-          <Image src={mentor.avatar_url} alt="" width={22} height={22} className="rounded-full shrink-0" />
+          <img src={safeAvatar(mentor.avatar_url)} alt="" width={22} height={22} className="rounded-full shrink-0" onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }} />
         )}
         <div className="flex-1 min-w-0 pr-4">
           <p className="text-xs font-medium truncate leading-snug">{getTitle()}</p>
@@ -145,7 +151,7 @@ export default function Sidebar() {
   const [insightCount, setInsightCount] = useState<InsightCount>({ total: 0 });
   const [loadingConvos, setLoadingConvos] = useState(false);
   const [profileComplete, setProfileComplete] = useState<boolean | null>(null);
-  const [mentorsExpanded, setMentorsExpanded] = useState(true);
+  const [mentorsExpanded, setMentorsExpanded] = useState(false);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const userEmail = session?.user?.email;
@@ -188,12 +194,12 @@ export default function Sidebar() {
                 const full = await r.json();
                 return { ...c, messages: full.messages, summary: full.summary ?? null };
               }
-            } catch { /* ignore */ }
+            } catch (err) { console.error("[Sidebar] preview fetch failed:", err); }
             return c;
           })
         );
         setConversations([...withPreviews, ...allConvos.slice(10)]);
-      } catch { /* ignore */ }
+      } catch (err) { console.error("[Sidebar] conversation load failed:", err); }
       setLoadingConvos(false);
     };
     load();
@@ -287,7 +293,7 @@ export default function Sidebar() {
             >
               <div className="flex items-center gap-2">
                 <IconPlus size={15} className="text-amber" />
-                <span>New Chat</span>
+                <span>Select an Expert</span>
               </div>
               <IconChevronDown size={14} className={`text-muted transition-transform ${mentorsExpanded ? "rotate-180" : ""}`} />
             </button>
@@ -295,7 +301,7 @@ export default function Sidebar() {
               <div className="mt-1 border border-[#E5E2DC] rounded-lg bg-white overflow-hidden">
                 {mentors.map((m) => (
                   <div key={m.slug} className="flex items-center gap-2.5 px-3 py-2.5 hover:bg-[#F5F3F0] transition">
-                    <Image src={m.avatar_url} alt={m.name} width={28} height={28} className="rounded-full shrink-0" />
+                    <img src={safeAvatar(m.avatar_url)} alt={m.name} width={28} height={28} className="rounded-full shrink-0" onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }} />
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-medium text-[#1A1A1A] leading-tight">{m.name}</p>
                       <p className="text-[10px] text-[#999] truncate">{m.tagline}</p>

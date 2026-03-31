@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const HIDDEN_ROUTES = ["/contribute", "/calibrate", "/chat", "/insights", "/account"];
+const HIDDEN_ROUTES = ["/contribute", "/calibrate", "/chat", "/insights", "/account", "/onboard"];
 
 export default function Footer() {
   const pathname = usePathname();

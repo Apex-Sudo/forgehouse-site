@@ -13,12 +13,19 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { messages } = body as {
+    const { messages, cvContent } = body as {
       messages: { role: "user" | "assistant"; content: string }[];
+      cvContent?: string;
     };
 
     if (!messages?.length) {
       return Response.json({ error: "No messages provided" }, { status: 400 });
+    }
+
+    // If CV content is provided, prepend it to the system prompt
+    let systemPrompt = EXTRACTION_SYSTEM_PROMPT;
+    if (cvContent) {
+      systemPrompt += `\n\nThe mentor has uploaded a CV/resume with the following content:\n\n${cvContent}`;
     }
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -26,7 +33,7 @@ export async function POST(req: Request) {
     const stream = await client.messages.stream({
       model: "claude-sonnet-4-20250514",
       max_tokens: 1024,
-      system: EXTRACTION_SYSTEM_PROMPT,
+      system: systemPrompt,
       messages,
     });
 

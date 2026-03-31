@@ -29,3 +29,49 @@ export async function GET(
 
   return Response.json({ mentor, scenarios: scenarios ?? [] });
 }
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const { slug } = await params;
+
+  if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
+    return Response.json({ error: "Invalid slug" }, { status: 400 });
+  }
+
+  try {
+    const updates = await req.json();
+    const allowedFields = [
+      "active",
+      "tagline",
+      "bio",
+      "welcome_message",
+      "avatar_url",
+      "default_starters",
+    ];
+    const filtered: Record<string, unknown> = {};
+    for (const key of allowedFields) {
+      if (key in updates) filtered[key] = updates[key];
+    }
+
+    if (Object.keys(filtered).length === 0) {
+      return Response.json({ error: "No valid fields to update" }, { status: 400 });
+    }
+
+    const { data, error } = await supabase
+      .from("mentors")
+      .update(filtered)
+      .eq("slug", slug)
+      .select()
+      .single();
+
+    if (error) {
+      return Response.json({ error: error.message }, { status: 500 });
+    }
+
+    return Response.json({ mentor: data });
+  } catch {
+    return Response.json({ error: "Invalid request" }, { status: 400 });
+  }
+}

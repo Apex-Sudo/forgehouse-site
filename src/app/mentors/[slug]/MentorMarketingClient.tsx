@@ -2,6 +2,12 @@
 import Link from "next/link";
 import { ChatCircleDots, Star, LinkedinLogo } from "@phosphor-icons/react";
 
+const FALLBACK_AVATAR = "/mentors/default-avatar.svg";
+function safeAvatar(url: string | undefined | null): string {
+  if (!url || url.includes("default-avatar.png")) return FALLBACK_AVATAR;
+  return url;
+}
+
 interface MentorRow {
   slug: string;
   name: string;
@@ -294,9 +300,10 @@ export default function MentorMarketingClient({
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start">
             <img
-              src={mentor.avatar_url}
+              src={safeAvatar(mentor.avatar_url)}
               alt={mentor.name}
               className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border border-border-light shrink-0"
+              onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }}
             />
             <div className="flex-1">
               <p className="text-amber text-sm font-semibold mb-2 tracking-wide uppercase">
