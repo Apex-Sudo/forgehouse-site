@@ -341,16 +341,16 @@ export default function ExtractionPhase({ session, onUpdate, onAdvance }: Extrac
             <div>
               <div className="mb-1 flex justify-between text-xs text-[#999]">
                 <span>Progress</span>
-                <span>{Math.min(100, Math.round((exchangeCount / 3) * 100))}%</span>
+                <span>{Math.min(100, Math.round((exchangeCount / 40) * 100))}%</span>
               </div>
               <div className="h-2 w-full rounded-full bg-[#F5F5F5]">
                 <div
                   className="h-2 rounded-full bg-amber transition-all duration-300"
-                  style={{ width: `${Math.min(100, (exchangeCount / 3) * 100)}%` }}
+                  style={{ width: `${Math.min(100, (exchangeCount / 40) * 100)}%` }}
                 />
               </div>
               <div className="mt-1 text-xs text-[#999]">
-                {exchangeCount} of ~3 exchanges completed
+                {exchangeCount} of ~40 exchanges completed
               </div>
             </div>
 
