@@ -1,6 +1,15 @@
 import { supabase } from "@/lib/supabase";
 import { NextResponse } from "next/server";
 
+// Function to generate a URL-friendly slug from mentor name
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .substring(0, 50); // Limit length
+}
+
 export async function POST(req: Request) {
   try {
     const { mentorName, email } = await req.json();
@@ -12,6 +21,9 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+    // Generate slug from mentor name
+    const slug = generateSlug(mentorName);
 
     // Create a new onboarding session
     const { data, error } = await supabase
@@ -45,7 +57,8 @@ export async function POST(req: Request) {
       sessionId: data.id,
       onboardingLink,
       mentorName,
-      email
+      email,
+      slug
     });
   } catch (error) {
     console.error("Error generating onboarding link:", error);

@@ -89,7 +89,7 @@ export default function AdminOnboardingPage() {
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={() => copyToClipboard(generatedLink)}
-                    className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition"
+                    className="flex-1 bg-blue-500 border border-[#E5E2DC] px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition"
                   >
                     Copy Link
                   </button>

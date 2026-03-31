@@ -3,6 +3,12 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import ReactMarkdown from "react-markdown";
 
+const FALLBACK_AVATAR = "/mentors/default-avatar.svg";
+function safeAvatar(url: string | undefined | null): string {
+  if (!url || url.includes("default-avatar.png")) return FALLBACK_AVATAR;
+  return url;
+}
+
 interface Insight {
   id: string;
   content: string;
@@ -144,11 +150,7 @@ export default function InsightsPage() {
             return (
               <div key={slug} className="mb-8">
                 <h2 className="text-sm font-semibold text-muted flex items-center gap-2 mb-4">
-                  {mentor?.avatar_url ? (
-                    <img src={mentor.avatar_url} alt="" className="w-5 h-5 rounded-full" />
-                  ) : (
-                    <span>💬</span>
-                  )}
+                  <img src={safeAvatar(mentor?.avatar_url)} alt="" className="w-5 h-5 rounded-full" onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }} />
                   {mentor?.name ?? slug}
                 </h2>
                 <div className="space-y-3">

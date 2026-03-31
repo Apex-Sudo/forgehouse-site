@@ -3,13 +3,18 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams, useParams } from "next/navigation";
 import { Suspense } from "react";
 import { useSession, signIn } from "next-auth/react";
-import Image from "next/image";
 import ChatMessage from "@/components/ChatMessage";
 import MemoryBanner from "@/components/MemoryBanner";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import { parseStreamChunk, extractArtifacts, type Artifact } from "@/lib/agent/helper/stream";
 import { useTokenBuffer } from "@/hooks/useTokenBuffer";
 import { useAppShell } from "@/components/AppShellContext";
+
+const FALLBACK_AVATAR = "/mentors/default-avatar.svg";
+function safeAvatar(url: string | undefined | null): string {
+  if (!url || url.includes("default-avatar.png")) return FALLBACK_AVATAR;
+  return url;
+}
 
 interface MentorConfig {
   slug: string;
@@ -479,7 +484,7 @@ function ChatContent() {
       <div className="flex-1 flex justify-center min-h-0">
         <div className="w-full max-w-5xl bg-white flex flex-col overflow-hidden shadow-[0_0_24px_rgba(0,0,0,0.06)] border border-foreground/[0.08] rounded-2xl h-full">
           <div className="flex items-center gap-3 px-6 py-4 border-b border-foreground/[0.08]">
-            <Image src={mc.avatar_url} alt={mc.name} width={36} height={36} className="rounded-full object-cover shrink-0" />
+            <img src={safeAvatar(mc.avatar_url)} alt={mc.name} width={36} height={36} className="rounded-full object-cover shrink-0" onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }} />
             <div className="flex-1 min-w-0">
               <h1 className="font-bold text-sm">{mc.name}</h1>
               <p className="text-xs text-muted">{mc.tagline}</p>

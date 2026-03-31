@@ -44,14 +44,14 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentPhase, onPhaseChange }
               <div className={`
                 w-10 h-10 rounded-full flex items-center justify-center mb-2
                 ${status === "completed" ? "bg-green-500 text-white" : ""}
-                ${status === "active" ? "bg-amber text-white" : ""}
-                ${status === "pending" ? "bg-[#F5F5F5] text-[#999]" : ""}
+                ${status === "active" ? "border border-[#E5E2DC] text-[#1A1A1A]" : ""}
+                ${status === "pending" ? "bg-[#E5E2DC] text-[#999]" : ""}
               `}>
                 {status === "completed" ? "✓" : phase.icon}
               </div>
               <span className={`
                 text-xs font-medium text-center
-                ${status === "active" ? "text-amber" : ""}
+                ${status === "active" ? "text-[#1A1A1A]" : ""}
                 ${status === "pending" ? "text-[#999]" : ""}
               `}>
                 {phase.label}

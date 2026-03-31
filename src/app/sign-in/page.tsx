@@ -39,10 +39,10 @@ function SignInContent() {
 
           {/* Heading */}
           <h1 className="text-2xl font-semibold text-foreground text-center mb-2">
-            Save your conversation history
+            Expertise on Demand
           </h1>
           <p className="text-muted text-center text-sm leading-relaxed mb-8">
-            Sign in to keep your chat history, save insights, and pick up right where you left off.
+            Sign in to get real expertise, delivered by real experts.
           </p>
 
           {/* Buttons */}

@@ -236,9 +236,8 @@ export default function ExtractionPage() {
                 Your expertise has been successfully captured. Your mentor agent is now being trained with this knowledge.
               </p>
               <div className="bg-amber/10 rounded-xl p-6 mb-8 text-left">
-                <h3 className="font-bold text-[#1A1A1A] mb-2">What happens next:</h3>
                 <ul className="list-disc pl-5 space-y-2 text-[#737373]">
-                  <li>Your mentor agent will be trained with this knowledge (24-48 hours)</li>
+                  <li>Your mentor agent will be trained with this knowledge</li>
                   <li>You'll receive an email notification when your agent is ready</li>
                   <li>You can refine your agent further through additional conversations</li>
                 </ul>

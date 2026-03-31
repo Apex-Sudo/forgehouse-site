@@ -2,11 +2,12 @@
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 
 function UserMenu() {
   const { data: session, status } = useSession();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -23,13 +24,14 @@ function UserMenu() {
   if (status === "loading") return null;
 
   if (!session) {
+    const callbackUrl = pathname || "/";
     return (
-      <button
-        onClick={() => signIn("linkedin")}
+      <Link
+        href={`/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
         className="text-muted hover:text-foreground transition text-sm cursor-pointer"
       >
         Sign In
-      </button>
+      </Link>
     );
   }
 

@@ -1,4 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+"use client";
+
+import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 
 interface Message {
@@ -10,7 +12,7 @@ interface OnboardingSession {
   id: string;
   mentorName: string;
   email: string;
-  currentPhase: "extraction" | "calibration" | "ingestion";
+  currentPhase: "extraction" | "calibration" | "ingestion" | "complete";
   extractionData: any;
   calibrationData: any;
   ingestionData: any;
@@ -30,15 +32,15 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [started, setStarted] = useState(messages.length > 0);
-  const bottomRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = useCallback(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
+  const messagesScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
+    const el = messagesScrollRef.current;
+    if (!el) return;
+    requestAnimationFrame(() => {
+      el.scrollTop = el.scrollHeight;
+    });
+  }, [messages, streaming]);
 
   // Save progress to session
   useEffect(() => {
@@ -157,169 +159,166 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
   const phases = corrections < 5 ? "Voice" : corrections < 15 ? "Frameworks" : corrections < 20 ? "Edge Cases" : "Final";
 
   return (
-    <div className="pt-8 flex flex-col h-full">
-      <div className="flex-1 flex justify-center px-4 py-6">
-        <div className="w-full max-w-3xl glass-card flex flex-col overflow-hidden bg-white border border-[#E5E2DC] rounded-xl">
-          {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E2DC]">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">🎯</span>
-              <div>
-                <h1 className="font-bold text-sm">Calibration Session</h1>
-                <p className="text-xs text-[#999]">{session.mentorName} &middot; Phase: {phases}</p>
-              </div>
-            </div>
-            {messages.length > 0 && (
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    if (confirm("Start over? This will clear the conversation.")) {
-                      setMessages([]);
-                      setStarted(false);
-                      onUpdate({
-                        calibrationData: {
-                          messages: [],
-                          updatedAt: new Date().toISOString()
-                        }
-                      });
-                    }
-                  }}
-                  className="text-xs text-[#999] hover:text-red-500 border border-[#E5E2DC] px-3 py-1.5 rounded-lg hover:border-red-400/30 transition"
-                >
-                  Reset
-                </button>
-                <button
-                  onClick={exportCorrections}
-                  className="text-xs text-[#999] hover:text-[#1A1A1A] border border-[#E5E2DC] px-3 py-1.5 rounded-lg hover:border-[#B8916A]/30 transition"
-                >
-                  Export
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
-            {!started && (
-              <div className="flex justify-start">
-                <div className="max-w-[80%] bg-[#F5F3F0] border border-[#E5E2DC] px-5 py-3.5 text-sm leading-relaxed text-[#1A1A1A] rounded-2xl rounded-bl-md shadow-sm">
-                  Welcome back! Your agent is built and ready for you to put it through its paces. I&apos;m going to show you how it handles different situations, and you tell me where it nails it and where it&apos;s off. Think of it like training a new team member who&apos;s read all your playbooks but hasn&apos;t sat in the room with you yet. Let&apos;s start with something simple.
-                </div>
-              </div>
-            )}
-
-            {messages.map((m, i) => (
-              <div
-                key={i}
-                className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                {m.role === "user" ? (
-                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap bg-[#B8916A] text-white rounded-2xl rounded-br-md shadow-sm">
-                    {m.content}
-                  </div>
-                ) : (
-                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed bg-[#F5F3F0] border border-[#E5E2DC] text-[#1A1A1A] rounded-2xl rounded-bl-md shadow-sm">
-                    <ReactMarkdown
-                      components={{
-                        p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
-                        strong: ({ children }) => <strong className="font-semibold text-[#1A1A1A]">{children}</strong>,
-                        em: ({ children }) => <em className="italic text-[#555]">{children}</em>,
-                        ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
-                        ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
-                        li: ({ children }) => (
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#B8916A] mt-0.5 shrink-0">▸</span>
-                            <span>{children}</span>
-                          </li>
-                        ),
-                        h1: ({ children }) => <h3 className="font-bold text-[#1A1A1A] mb-2 text-base">{children}</h3>,
-                        h2: ({ children }) => <h3 className="font-bold text-[#1A1A1A] mb-2 text-base">{children}</h3>,
-                        h3: ({ children }) => <h3 className="font-semibold text-[#1A1A1A] mb-1.5 text-sm">{children}</h3>,
-                        blockquote: ({ children }) => (
-                          <blockquote className="border-l-2 border-[#B8916A]/40 pl-3 my-2 text-[#737373] italic">{children}</blockquote>
-                        ),
-                      }}
-                    >
-                      {m.content}
-                    </ReactMarkdown>
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {streaming &&
-              messages.length > 0 &&
-              messages[messages.length - 1].content === "" && (
-                <div className="flex justify-start">
-                  <div className="bg-[#F5F3F0] border border-[#E5E2DC] px-5 py-3.5 text-sm rounded-2xl rounded-bl-md shadow-sm">
-                    <span className="animate-pulse text-[#999]">●●●</span>
-                  </div>
-                </div>
-              )}
-
-            <div ref={bottomRef} />
-          </div>
-
-          {/* Phase indicator */}
-          <div className="px-6 py-2 border-t border-[#E5E2DC]">
-            <div className="flex items-center gap-3">
-              <div className="flex gap-1">
-                {["Voice", "Frameworks", "Edge Cases", "Final"].map((p) => (
-                  <div
-                    key={p}
-                    className={`h-1.5 w-12 rounded-full transition-all duration-500 ${
-                      phases === p ? "bg-[#B8916A]" : corrections > ["Voice", "Frameworks", "Edge Cases", "Final"].indexOf(p) * 5 ? "bg-[#B8916A]/40" : "bg-[#E5E2DC]"
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-xs text-[#999]">{phases} phase</span>
-            </div>
-          </div>
-
-          {/* Input */}
-          <div className="border-t border-[#E5E2DC] px-6 py-4">
-            <div className="flex gap-3">
-              <textarea
-                value={input}
-                onChange={(e) => {
-                  setInput(e.target.value);
-                  e.target.style.height = "auto";
-                  e.target.style.height = Math.min(e.target.scrollHeight, 200) + "px";
-                }}
-                onKeyDown={handleKeyDown}
-                placeholder="Tell me what's right and what's off..."
-                rows={1}
-                className="flex-1 bg-white border border-[#E5E2DC] rounded-xl px-4 py-3 text-sm text-[#1A1A1A] placeholder:text-[#C5C0B8] focus:outline-none focus:border-[#B8916A]/50 focus:ring-1 focus:ring-[#B8916A]/20 transition resize-none overflow-y-auto"
-                style={{ maxHeight: 200 }}
-              />
-              <button
-                onClick={() => send()}
-                disabled={streaming}
-                className="bg-[#B8916A] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#A07B56] transition disabled:opacity-50"
-              >
-                Send
-              </button>
-            </div>
+    <div className="flex flex-col flex-1 min-h-0 w-full bg-[#FAFAF8]">
+      {/* Header */}
+      <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-[#E5E2DC] bg-white">
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">🎯</span>
+          <div>
+            <h1 className="font-bold text-sm">Calibration Session</h1>
+            <p className="text-xs text-[#999]">{session.mentorName} · Phase: {phases}</p>
           </div>
         </div>
+        {messages.length > 0 && (
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                if (confirm("Start over? This will clear the conversation.")) {
+                  setMessages([]);
+                  setStarted(false);
+                  onUpdate({
+                    calibrationData: {
+                      messages: [],
+                      updatedAt: new Date().toISOString()
+                    }
+                  });
+                }
+              }}
+              className="text-xs text-[#999] hover:text-red-500 border border-[#E5E2DC] px-3 py-1.5 rounded-lg hover:border-red-400/30 transition"
+            >
+              Reset
+            </button>
+            <button
+              onClick={exportCorrections}
+              className="text-xs text-[#999] hover:text-[#1A1A1A] border border-[#E5E2DC] px-3 py-1.5 rounded-lg hover:border-[#B8916A]/30 transition"
+            >
+              Export
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Navigation */}
-      <div className="px-6 py-4 border-t border-[#E5E2DC] bg-white">
-        <div className="max-w-4xl mx-auto flex justify-between">
-          <button
-            onClick={() => onUpdate({ currentPhase: "extraction" })}
-            className="text-[#999] hover:text-[#1A1A1A] border border-[#E5E2DC] px-4 py-2 rounded-lg transition"
+      <div
+        ref={messagesScrollRef}
+        className="min-h-0 flex-1 space-y-5 overflow-x-hidden overflow-y-auto overscroll-y-contain px-6 py-4 [overflow-anchor:none]"
+      >
+        {!started && (
+          <div className="flex justify-start">
+            <div className="max-w-[80%] bg-[#F5F3F0] border border-[#E5E2DC] px-5 py-3.5 text-sm leading-relaxed text-[#1A1A1A] rounded-2xl rounded-bl-md shadow-sm">
+              Welcome back! Your agent is built and ready for you to put it through its paces. I&apos;m going to show you how it handles different situations, and you tell me where it nails it and where it&apos;s off. Think of it like training a new team member who&apos;s read all your playbooks but hasn&apos;t sat in the room with you yet. Let&apos;s start with something simple.
+            </div>
+          </div>
+        )}
+
+        {messages.map((m, i) => (
+          <div
+            key={i}
+            className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
           >
-            ← Back to Extraction
-          </button>
-          <button
-            onClick={onAdvance}
-            className="bg-amber text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition"
-          >
-            Continue to Ingestion →
-          </button>
+            {m.role === "user" ? (
+              <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap bg-[#B8916A] text-white rounded-2xl rounded-br-md shadow-sm">
+                {m.content}
+              </div>
+            ) : (
+              <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed bg-[#F5F3F0] border border-[#E5E2DC] text-[#1A1A1A] rounded-2xl rounded-bl-md shadow-sm">
+                <ReactMarkdown
+                  components={{
+                    p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                    strong: ({ children }) => <strong className="font-semibold text-[#1A1A1A]">{children}</strong>,
+                    em: ({ children }) => <em className="italic text-[#555]">{children}</em>,
+                    ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
+                    ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
+                    li: ({ children }) => (
+                      <li className="flex items-start gap-2">
+                        <span className="text-[#B8916A] mt-0.5 shrink-0">▸</span>
+                        <span>{children}</span>
+                      </li>
+                    ),
+                    h1: ({ children }) => <h3 className="font-bold text-[#1A1A1A] mb-2 text-base">{children}</h3>,
+                    h2: ({ children }) => <h3 className="font-bold text-[#1A1A1A] mb-2 text-base">{children}</h3>,
+                    h3: ({ children }) => <h3 className="font-semibold text-[#1A1A1A] mb-1.5 text-sm">{children}</h3>,
+                    blockquote: ({ children }) => (
+                      <blockquote className="border-l-2 border-[#B8916A]/40 pl-3 my-2 text-[#737373] italic">{children}</blockquote>
+                    ),
+                  }}
+                >
+                  {m.content}
+                </ReactMarkdown>
+              </div>
+            )}
+          </div>
+        ))}
+
+        {streaming &&
+          messages.length > 0 &&
+          messages[messages.length - 1].content === "" && (
+            <div className="flex justify-start">
+              <div className="bg-[#F5F3F0] border border-[#E5E2DC] px-5 py-3.5 text-sm rounded-2xl rounded-bl-md shadow-sm">
+                <span className="animate-pulse text-[#999]">●●●</span>
+              </div>
+            </div>
+          )}
+
+      </div>
+
+      <div
+        className="shrink-0 border-t border-[#E5E2DC] bg-white py-3 shadow-[0_-6px_24px_rgba(0,0,0,0.06)]"
+        style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
+      >
+        <div className="mx-auto max-w-4xl space-y-3 px-6">
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1">
+              {["Voice", "Frameworks", "Final"].map((p) => (
+                <div
+                  key={p}
+                  className={`h-1.5 w-12 rounded-full transition-all duration-500 ${
+                    phases === p ? "bg-[#B8916A]" : corrections > ["Voice", "Frameworks", "Final"].indexOf(p) ? "bg-[#B8916A]/40" : "bg-[#E5E2DC]"
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-xs text-[#999]">{phases} phase</span>
+          </div>
+
+          <div className="flex gap-3">
+            <textarea
+              value={input}
+              onChange={(e) => {
+                setInput(e.target.value);
+                e.target.style.height = "auto";
+                e.target.style.height = Math.min(e.target.scrollHeight, 200) + "px";
+              }}
+              onKeyDown={handleKeyDown}
+              placeholder="Tell me what's right and what's off..."
+              rows={1}
+              className="max-h-[200px] flex-1 resize-none overflow-y-auto rounded-xl border border-[#E5E2DC] bg-white px-4 py-3 text-sm text-[#1A1A1A] transition placeholder:text-[#C5C0B8] focus:border-[#B8916A]/50 focus:outline-none focus:ring-1 focus:ring-[#B8916A]/20"
+            />
+            <button
+              type="button"
+              onClick={() => send()}
+              disabled={streaming}
+              className="rounded-xl bg-[#B8916A] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#A07B56] disabled:opacity-50"
+            >
+              Send
+            </button>
+          </div>
+
+          <div className="flex justify-between gap-3 border-t border-[#E5E2DC]/80 pt-1">
+            <button
+              type="button"
+              onClick={() => onUpdate({ currentPhase: "extraction" })}
+              className="rounded-lg border border-[#E5E2DC] px-4 py-2 text-sm text-[#999] transition hover:text-[#1A1A1A]"
+            >
+              ← Back to Extraction
+            </button>
+            <button
+              type="button"
+              onClick={onAdvance}
+              className="rounded-lg bg-amber px-6 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+            >
+              Finish and Submit →
+            </button>
+          </div>
         </div>
       </div>
     </div>

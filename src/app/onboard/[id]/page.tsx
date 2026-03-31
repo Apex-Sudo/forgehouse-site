@@ -11,7 +11,7 @@ interface OnboardingSession {
   id: string;
   mentorName: string;
   email: string;
-  currentPhase: "extraction" | "calibration" | "ingestion";
+  currentPhase: "extraction" | "calibration" | "ingestion" | "complete";
   extractionData: any;
   calibrationData: any;
   ingestionData: any;
@@ -88,7 +88,9 @@ export default function OnboardingPage() {
       "ingestion"
     ];
 
-    const currentIndex = phaseOrder.indexOf(session.currentPhase);
+    const phaseKey =
+      session.currentPhase === "complete" ? "ingestion" : session.currentPhase;
+    const currentIndex = phaseOrder.indexOf(phaseKey);
     if (currentIndex < phaseOrder.length - 1) {
       const nextPhase = phaseOrder[currentIndex + 1];
       await updateSession({ currentPhase: nextPhase });
@@ -138,18 +140,17 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8]">
+    <div className="flex flex-col h-dvh pt-16 overflow-hidden bg-[#FAFAF8]">
       {/* Header */}
-      <div className="border-b border-[#E5E2DC] bg-white px-6 py-4">
+      <div className="shrink-0 border-b border-[#E5E2DC] bg-white px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-bold text-[#1A1A1A]">Mentor Onboarding</h1>
-            <p className="text-sm text-[#999]">
-              Welcome, {session.mentorName}! Let's build your mentor agent.
-            </p>
+            <h1 className="text-lg font-bold text-[#1A1A1A]">Welcome, {session.mentorName.split(' ')[0]?.[0]?.toUpperCase() + session.mentorName.split(' ')[0]?.slice(1) + ' ' + session.mentorName.split(' ')[1]?.[0]?.toUpperCase() + session.mentorName.split(' ')[1]?.slice(1) + '!'}</h1>
+            <h3 className="text-[#999]">
+            Let's build your AI expert.
+            </h3>
           </div>
           <div className="text-right">
-            <p className="text-xs text-[#999]">Session ID: {session.id.substring(0, 8)}...</p>
             <p className="text-xs text-[#999]">
               Expires: {new Date(session.expiresAt).toLocaleDateString()}
             </p>
@@ -158,18 +159,20 @@ export default function OnboardingPage() {
       </div>
 
       {/* Progress Bar */}
-      <div className="bg-white border-b border-[#E5E2DC] px-6 py-3">
+      <div className="shrink-0 bg-white border-b border-[#E5E2DC] px-6 py-3">
         <div className="max-w-4xl mx-auto">
           <ProgressBar 
-            currentPhase={session.currentPhase} 
+            currentPhase={
+              session.currentPhase === "complete" ? "ingestion" : session.currentPhase
+            }
             onPhaseChange={(phase) => updateSession({ currentPhase: phase })}
           />
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="py-8">
-        <div className="max-w-4xl mx-auto">
+      {/* overflow-hidden here + min-h-0: phase panes get a definite height so the composer row stays on-screen */}
+      <div className="flex-1 min-h-0 flex flex-col overflow-hidden px-6 pb-2 pt-2">
+        <div className="flex-1 min-h-0 flex flex-col overflow-hidden max-w-4xl mx-auto w-full">
           {session.currentPhase === "extraction" && (
             <ExtractionPhase 
               session={session} 
@@ -186,7 +189,7 @@ export default function OnboardingPage() {
             />
           )}
           
-          {session.currentPhase === "ingestion" && (
+          {(session.currentPhase === "ingestion" || session.currentPhase === "complete") && (
             <IngestionPhase 
               session={session} 
               onUpdate={updateSession}

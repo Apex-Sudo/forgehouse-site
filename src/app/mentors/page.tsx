@@ -1,13 +1,22 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PlugsConnected, ChatCircleDots } from "@phosphor-icons/react";
+
+type Mentor = {
+  slug: string;
+  name: string;
+  tagline: string;
+  avatar_url: string;
+};
 
 export default function ModulesPage() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [mentors, setMentors] = useState<Mentor[]>([]);
+  const [loadingMentors, setLoadingMentors] = useState(true);
 
   const handleWaitlist = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +35,22 @@ export default function ModulesPage() {
     setSubmitting(false);
   };
 
+  useEffect(() => {
+    const loadMentors = async () => {
+      try {
+        const res = await fetch("/api/mentors");
+        if (res.ok) {
+          const data = await res.json();
+          setMentors(data?.mentors ?? []);
+        }
+      } catch {
+        // silent
+      }
+      setLoadingMentors(false);
+    };
+    loadMentors();
+  }, []);
+
   return (
     <div className="pt-16">
       {/* Hero */}
@@ -38,58 +63,76 @@ export default function ModulesPage() {
         </p>
       </section>
 
-      {/* Colin Module */}
+      {/* Active mentors grid */}
       <section className="px-6 pb-24">
-        <div className="max-w-2xl mx-auto">
-          <div className="glass-card p-8 md:p-10">
-            {/* Header */}
-            <div className="flex items-start gap-5 mb-6">
-              <Image
-                src="/mentors/colin-chapman.png"
-                alt="Colin Chapman"
-                width={64}
-                height={64}
-                className="rounded-2xl object-cover shrink-0"
-              />
-              <div>
-                <p className="text-xs text-amber font-semibold uppercase tracking-wider mb-1">Sales Module</p>
-                <h2 className="text-2xl font-bold mb-1">Colin Chapman</h2>
-                <p className="text-muted text-sm">GTM & Outbound Sales · 26 years</p>
-              </div>
-            </div>
-
-            {/* What the module does */}
-            <p className="text-foreground/80 text-[15px] leading-relaxed mb-6">
-              26 years of closing deals, diagnosing pipelines, and building outbound systems. Cold email sequences, ICP definition, deal strategy, messaging review. Available as a chat or an MCP module for your agent.
-            </p>
-
-            {/* Capabilities */}
-            <div className="grid grid-cols-2 gap-3 mb-8">
-              {["Cold outbound strategy", "Pipeline diagnosis", "ICP definition", "Deal stage coaching", "Messaging review", "GTM planning"].map((cap) => (
-                <div key={cap} className="flex items-center gap-2 text-sm text-muted">
-                  <span className="text-amber text-xs">→</span> {cap}
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {loadingMentors && (
+              <div className="glass-card p-8 md:p-10 animate-pulse space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-2xl bg-foreground/5" />
+                  <div className="space-y-2 flex-1">
+                    <div className="h-3 w-32 bg-foreground/5 rounded" />
+                    <div className="h-3 w-40 bg-foreground/5 rounded" />
+                  </div>
                 </div>
-              ))}
-            </div>
+                <div className="h-3 w-full bg-foreground/5 rounded" />
+                <div className="h-3 w-3/4 bg-foreground/5 rounded" />
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <div className="h-9 bg-foreground/5 rounded" />
+                  <div className="h-9 bg-foreground/5 rounded" />
+                </div>
+              </div>
+            )}
 
-            {/* Two paths */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-              <Link
-                href="/chat/colin-chapman"
-                className="flex items-center justify-center gap-2 bg-amber text-background py-3.5 rounded-xl font-semibold hover:opacity-90 transition cursor-pointer"
-              >
-                <ChatCircleDots size={18} weight="bold" />
-                Chat with Colin&apos;s agent
-              </Link>
-              <Link
-                href="/mentors/colin-chapman"
-                className="flex items-center justify-center gap-2 border border-foreground/[0.1] text-muted py-3.5 rounded-xl font-medium hover:text-foreground hover:border-foreground/[0.2] transition cursor-pointer"
-              >
-                Learn more
-              </Link>
-            </div>
+            {!loadingMentors && mentors.length === 0 && (
+              <div className="glass-card p-8 md:p-10 text-center">
+                <p className="text-lg font-semibold mb-2">No mentors available yet</p>
+                <p className="text-muted text-sm mb-4">We&apos;re onboarding new experts. Join the waitlist to be notified.</p>
+                <Link href="/pricing" className="text-amber font-semibold hover:opacity-80">See plans</Link>
+              </div>
+            )}
 
-            <p className="text-xs text-muted text-center">5 free messages. No card required.</p>
+            {mentors.map((m) => (
+              <div key={m.slug} className="glass-card p-8 md:p-10 flex flex-col gap-5">
+                <div className="flex items-start gap-5">
+                  <Image
+                    src={m.avatar_url || "/mentors/default-avatar.svg"}
+                    alt={m.name}
+                    width={64}
+                    height={64}
+                    className="rounded-2xl object-cover shrink-0"
+                  />
+                  <div>
+                    <p className="text-xs text-amber font-semibold uppercase tracking-wider mb-1">Expert Module</p>
+                    <h2 className="text-2xl font-bold mb-1">{m.name}</h2>
+                    <p className="text-muted text-sm">{m.tagline}</p>
+                  </div>
+                </div>
+
+                <p className="text-foreground/80 text-[15px] leading-relaxed">
+                  Real-world expertise distilled into an AI mentor. Chat live or plug this module into your agent workflows.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Link
+                    href={`/chat/${m.slug}`}
+                    className="flex items-center justify-center gap-2 bg-amber text-background py-3.5 rounded-xl font-semibold hover:opacity-90 transition cursor-pointer"
+                  >
+                    <ChatCircleDots size={18} weight="bold" />
+                    Chat with {m.name.split(" ")[0]}
+                  </Link>
+                  <Link
+                    href={`/mentors/${m.slug}`}
+                    className="flex items-center justify-center gap-2 border border-foreground/[0.1] text-muted py-3.5 rounded-xl font-medium hover:text-foreground hover:border-foreground/[0.2] transition cursor-pointer"
+                  >
+                    Learn more
+                  </Link>
+                </div>
+
+                <p className="text-xs text-muted text-center">5 free messages. No card required.</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

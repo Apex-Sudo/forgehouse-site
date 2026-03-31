@@ -79,11 +79,19 @@ export async function PUT(
       );
     }
 
+    // Map camelCase keys to snake_case for database
+    const dbUpdates: Record<string, any> = {};
+    for (const [key, value] of Object.entries(updates)) {
+      // Convert camelCase to snake_case
+      const snakeCaseKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      dbUpdates[snakeCaseKey] = value;
+    }
+
     // Update the onboarding session
     const { data, error } = await supabase
       .from("onboarding_sessions")
       .update({
-        ...updates,
+        ...dbUpdates,
         updated_at: new Date().toISOString()
       })
       .eq("id", id)
