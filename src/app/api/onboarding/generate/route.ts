@@ -50,7 +50,7 @@ export async function POST(req: Request) {
     }
 
     // Generate the unique link
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://forgehouse.io";
     const onboardingLink = `${baseUrl}/onboard/${data.id}`;
 
     return NextResponse.json({

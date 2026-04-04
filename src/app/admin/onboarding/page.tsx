@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { IconCircleCheck } from "@tabler/icons-react";
 
 export default function AdminOnboardingPage() {
   const { data: session } = useSession();
@@ -76,20 +77,25 @@ export default function AdminOnboardingPage() {
 
           {generatedLink ? (
             <div className="space-y-6">
-              <div className="p-6 bg-green-100 rounded-lg">
-                <h2 className="text-lg font-bold text-[#1A1A1A] mb-2">✅ Link Generated Successfully!</h2>
-                <p className="text-[#737373] mb-4">
-                  Share this link with {mentorName} to begin their onboarding process.
-                </p>
-                
+              <div className="p-6 bg-amber/10 rounded-lg border border-amber/20">
+                <div className="flex items-start gap-3 mb-4">
+                  <IconCircleCheck size={28} stroke={1.5} className="text-amber shrink-0 mt-0.5" aria-hidden />
+                  <div>
+                    <h2 className="text-lg font-bold text-[#1A1A1A] mb-2">Link generated successfully</h2>
+                    <p className="text-[#737373]">
+                      Share this link with {mentorName} to begin their onboarding process.
+                    </p>
+                  </div>
+                </div>
+
                 <div className="bg-white border border-[#E5E2DC] rounded-lg p-4 mb-4">
                   <p className="text-sm text-[#737373] break-all">{generatedLink}</p>
                 </div>
-                
+
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={() => copyToClipboard(generatedLink)}
-                    className="flex-1 bg-blue-500 border border-[#E5E2DC] px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition"
+                    className="flex-1 bg-amber text-white border border-transparent px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition"
                   >
                     Copy Link
                   </button>
@@ -105,8 +111,8 @@ export default function AdminOnboardingPage() {
                   </button>
                 </div>
               </div>
-              
-              <div className="p-4 bg-blue-50 rounded-lg">
+
+              <div className="p-4 bg-[#F5F3F0] rounded-lg border border-[#E5E2DC]">
                 <h3 className="font-bold text-[#1A1A1A] mb-2">Next Steps:</h3>
                 <ul className="list-disc pl-5 space-y-1 text-[#737373]">
                   <li>Send the link to the mentor via email</li>
@@ -128,11 +134,11 @@ export default function AdminOnboardingPage() {
                   value={mentorName}
                   onChange={(e) => setMentorName(e.target.value)}
                   required
-                  className="w-full px-4 py-3 border border-[#E5E2DC] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-4 py-3 border border-[#E5E2DC] rounded-lg focus:outline-none focus:ring-2 focus:ring-amber/20 focus:border-amber"
                   placeholder="Enter mentor's full name"
                 />
               </div>
-              
+
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-[#1A1A1A] mb-2">
                   Mentor Email
@@ -143,28 +149,28 @@ export default function AdminOnboardingPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full px-4 py-3 border border-[#E5E2DC] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-4 py-3 border border-[#E5E2DC] rounded-lg focus:outline-none focus:ring-2 focus:ring-amber/20 focus:border-amber"
                   placeholder="Enter mentor's email address"
                 />
               </div>
-              
-              <div className="bg-blue-50 rounded-lg p-4">
+
+              <div className="bg-[#F5F3F0] rounded-lg p-4 border border-[#E5E2DC]">
                 <h3 className="font-bold text-[#1A1A1A] mb-2">Onboarding Process</h3>
                 <ul className="list-disc pl-5 space-y-1 text-[#737373] text-sm">
-                  <li>Mentor completes expertise extraction (~1-2 hours)</li>
-                  <li>Mentor calibrates their agent's voice and responses</li>
-                  <li>System ingests all data to create knowledge base</li>
+                  <li>Mentor completes contribution (~1-2 hours)</li>
+                  <li>Mentor calibrates their agent&apos;s voice and responses</li>
+                  <li>System builds the knowledge base and goes live</li>
                   <li>Mentor agent becomes available for coaching</li>
                 </ul>
               </div>
-              
+
               <button
                 type="submit"
                 disabled={isLoading}
                 className={`w-full py-3 px-4 rounded-lg font-semibold transition ${
                   isLoading
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
+                    : "bg-amber text-white hover:opacity-90"
                 }`}
               >
                 {isLoading ? "Generating Link..." : "Generate Onboarding Link"}
