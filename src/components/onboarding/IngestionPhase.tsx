@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { IconConfetti, IconRocket } from "@tabler/icons-react";
 import { ONBOARDING_DEFAULT_STARTERS } from "@/lib/onboarding-mentor-defaults";
 
 interface OnboardingSession {
@@ -129,8 +130,8 @@ export default function IngestionPhase({ session, onUpdate }: IngestionPhaseProp
         <div className="flex-1 min-h-0 flex items-center justify-center p-8">
           <div className="max-w-2xl w-full bg-white rounded-xl border border-[#E5E2DC] p-8 shadow-sm">
             <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">🎉</span>
+              <div className="w-16 h-16 rounded-full bg-amber/10 flex items-center justify-center mx-auto mb-6 text-amber">
+                <IconConfetti size={36} stroke={1.5} aria-hidden />
               </div>
               <h2 className="text-2xl font-bold text-[#1A1A1A] mb-2">Onboarding Complete!</h2>
               <p className="text-[#737373] mb-8">
@@ -166,23 +167,23 @@ export default function IngestionPhase({ session, onUpdate }: IngestionPhaseProp
       <div className="flex-1 min-h-0 flex items-center justify-center p-8">
         <div className="max-w-2xl w-full bg-white rounded-xl border border-[#E5E2DC] p-8 shadow-sm">
           <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-6">
-              <span className="text-2xl">📚</span>
+            <div className="w-16 h-16 rounded-full bg-amber/10 flex items-center justify-center mx-auto mb-6 text-amber">
+              <IconRocket size={36} stroke={1.5} aria-hidden />
             </div>
 
             {status === "idle" && (
               <>
                 <h2 className="text-2xl font-bold text-[#1A1A1A] mb-2">
-                  Ready to build your knowledge base
+                  Ready to go live
                 </h2>
                 <p className="text-[#737373] mb-8">
-                  We'll chunk, embed, and store your expertise so your mentor agent can retrieve it during conversations.
+                  We&apos;ll chunk, embed, and store your expertise so your mentor agent can use it in conversations.
                 </p>
                 <button
                   onClick={runIngestion}
                   className="px-8 py-3 rounded-xl font-semibold transition bg-amber text-white hover:opacity-90"
                 >
-                  Start Ingestion
+                  Start launch
                 </button>
               </>
             )}
@@ -190,7 +191,7 @@ export default function IngestionPhase({ session, onUpdate }: IngestionPhaseProp
             {status === "processing" && (
               <>
                 <h2 className="text-2xl font-bold text-[#1A1A1A] mb-2">
-                  Building your knowledge base...
+                  Preparing your launch...
                 </h2>
                 <p className="text-[#737373] mb-6">{statusMessage}</p>
                 <div className="mb-4">
@@ -210,7 +211,7 @@ export default function IngestionPhase({ session, onUpdate }: IngestionPhaseProp
 
             {status === "error" && (
               <>
-                <h2 className="text-2xl font-bold text-red-600 mb-2">Ingestion Failed</h2>
+                <h2 className="text-2xl font-bold text-red-600 mb-2">Launch failed</h2>
                 <p className="text-[#737373] mb-4">{errorMessage}</p>
                 <button
                   onClick={runIngestion}

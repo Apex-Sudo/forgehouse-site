@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { IconTarget } from "@tabler/icons-react";
 import ReactMarkdown from "react-markdown";
 
 interface Message {
@@ -88,7 +89,7 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: [
-            { role: "assistant", content: "🎯 Let's build your coaching style!\n\nThis first step will take ~1.5-2 hours. You can pause anytime.\n[INFOGRAPHIC PLACEHOLDER]\n\n1. Start with your CV upload\n2. Answer key domain questions\n3. Review system prompts for tone" },
+            { role: "assistant", content: "Let's build your coaching style!\n\nThis first step will take ~1.5-2 hours. You can pause anytime.\n[INFOGRAPHIC PLACEHOLDER]\n\n1. Start with your CV upload\n2. Answer key domain questions\n3. Review system prompts for tone" },
             ...updated
           ],
           mentorSlug: session.id,
@@ -163,7 +164,7 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
       {/* Header */}
       <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-[#E5E2DC] bg-white">
         <div className="flex items-center gap-3">
-          <span className="text-2xl">🎯</span>
+          <IconTarget size={28} stroke={1.5} className="text-amber shrink-0" aria-hidden />
           <div>
             <h1 className="font-bold text-sm">Calibration Session</h1>
             <p className="text-xs text-[#999]">{session.mentorName} · Phase: {phases}</p>
@@ -309,7 +310,7 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
               onClick={() => onUpdate({ currentPhase: "extraction" })}
               className="rounded-lg border border-[#E5E2DC] px-4 py-2 text-sm text-[#999] transition hover:text-[#1A1A1A]"
             >
-              ← Back to Extraction
+              ← Back to Contribution
             </button>
             <button
               type="button"

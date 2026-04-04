@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { IconAlertCircle } from "@tabler/icons-react";
 import ExtractionPhase from "@/components/onboarding/ExtractionPhase";
 import CalibrationPhase from "@/components/onboarding/CalibrationPhase";
 import IngestionPhase from "@/components/onboarding/IngestionPhase";
 import ProgressBar from "@/components/onboarding/ProgressBar";
+import { formatExpiryOrdinal } from "@/lib/format-expiry";
 
 interface OnboardingSession {
   id: string;
@@ -24,10 +26,13 @@ export default function OnboardingPage() {
   const params = useParams();
   const router = useRouter();
   const { id } = params as { id: string };
-  
+
   const [session, setSession] = useState<OnboardingSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [contributionLive, setContributionLive] = useState(false);
+  const [stepperUserExpanded, setStepperUserExpanded] = useState(false);
+  const contributionCommencePendingRef = useRef(false);
 
   useEffect(() => {
     if (id) {
@@ -35,16 +40,36 @@ export default function OnboardingPage() {
     }
   }, [id]);
 
+  useEffect(() => {
+    if (!session) return;
+    if (session.currentPhase !== "extraction") {
+      contributionCommencePendingRef.current = false;
+      setContributionLive(false);
+      setStepperUserExpanded(false);
+      return;
+    }
+    const n = session.extractionData?.messages?.length ?? 0;
+    if (n > 0) {
+      contributionCommencePendingRef.current = false;
+      setContributionLive(true);
+      return;
+    }
+    if (contributionCommencePendingRef.current) {
+      return;
+    }
+    setContributionLive(false);
+  }, [session?.currentPhase, session?.extractionData?.messages?.length]);
+
   const fetchSessionData = async () => {
     try {
       setLoading(true);
       const res = await fetch(`/api/onboarding/${id}`);
-      
+
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Failed to fetch session data");
       }
-      
+
       const data = await res.json();
       setSession(data);
     } catch (err) {
@@ -85,7 +110,7 @@ export default function OnboardingPage() {
     const phaseOrder: Array<"extraction" | "calibration" | "ingestion"> = [
       "extraction",
       "calibration",
-      "ingestion"
+      "ingestion",
     ];
 
     const phaseKey =
@@ -96,6 +121,13 @@ export default function OnboardingPage() {
       await updateSession({ currentPhase: nextPhase });
     }
   };
+
+  const phaseForBar =
+    session && (session.currentPhase === "complete" ? "ingestion" : session.currentPhase);
+  const showCompactStepper =
+    session?.currentPhase === "extraction" &&
+    contributionLive &&
+    !stepperUserExpanded;
 
   if (loading) {
     return (
@@ -112,8 +144,8 @@ export default function OnboardingPage() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#FAFAF8]">
         <div className="text-center max-w-md p-6 bg-white rounded-xl shadow-sm">
-          <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl">❌</span>
+          <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4 text-red-600">
+            <IconAlertCircle size={36} stroke={1.5} aria-hidden />
           </div>
           <h2 className="text-xl font-bold text-[#1A1A1A] mb-2">Session Error</h2>
           <p className="text-[#737373] mb-6">{error}</p>
@@ -141,57 +173,70 @@ export default function OnboardingPage() {
 
   return (
     <div className="flex flex-col h-dvh pt-16 overflow-hidden bg-[#FAFAF8]">
-      {/* Header */}
       <div className="shrink-0 border-b border-[#E5E2DC] bg-white px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-lg font-bold text-[#1A1A1A]">Welcome, {session.mentorName.split(' ')[0]?.[0]?.toUpperCase() + session.mentorName.split(' ')[0]?.slice(1) + ' ' + session.mentorName.split(' ')[1]?.[0]?.toUpperCase() + session.mentorName.split(' ')[1]?.slice(1) + '!'}</h1>
-            <h3 className="text-[#999]">
-            Let's build your AI expert.
-            </h3>
+            <h3 className="text-[#999]">Let&apos;s get your expertise live.</h3>
           </div>
           <div className="text-right">
             <p className="text-xs text-[#999]">
-              Expires: {new Date(session.expiresAt).toLocaleDateString()}
+              Expires: {formatExpiryOrdinal(session.expiresAt)}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Progress Bar */}
       <div className="shrink-0 bg-white border-b border-[#E5E2DC] px-6 py-3">
         <div className="max-w-4xl mx-auto">
-          <ProgressBar 
-            currentPhase={
-              session.currentPhase === "complete" ? "ingestion" : session.currentPhase
-            }
+          <ProgressBar
+            currentPhase={phaseForBar as "extraction" | "calibration" | "ingestion"}
             onPhaseChange={(phase) => updateSession({ currentPhase: phase })}
+            variant={showCompactStepper ? "compact" : "full"}
+            onExpand={
+              showCompactStepper ? () => setStepperUserExpanded(true) : undefined
+            }
+            onCollapse={
+              session.currentPhase === "extraction" &&
+              contributionLive &&
+              stepperUserExpanded
+                ? () => setStepperUserExpanded(false)
+                : undefined
+            }
           />
         </div>
       </div>
 
-      {/* overflow-hidden here + min-h-0: phase panes get a definite height so the composer row stays on-screen */}
       <div className="flex-1 min-h-0 flex flex-col overflow-hidden px-6 pb-2 pt-2">
         <div className="flex-1 min-h-0 flex flex-col overflow-hidden max-w-4xl mx-auto w-full">
           {session.currentPhase === "extraction" && (
-            <ExtractionPhase 
-              session={session} 
+            <ExtractionPhase
+              session={session}
               onUpdate={updateSession}
               onAdvance={advanceToNextPhase}
+              onContributionCommenced={() => {
+                contributionCommencePendingRef.current = true;
+                setContributionLive(true);
+              }}
+              onContributionRestart={() => {
+                contributionCommencePendingRef.current = false;
+                setContributionLive(false);
+                setStepperUserExpanded(false);
+              }}
             />
           )}
-          
+
           {session.currentPhase === "calibration" && (
-            <CalibrationPhase 
-              session={session} 
+            <CalibrationPhase
+              session={session}
               onUpdate={updateSession}
               onAdvance={advanceToNextPhase}
             />
           )}
-          
+
           {(session.currentPhase === "ingestion" || session.currentPhase === "complete") && (
-            <IngestionPhase 
-              session={session} 
+            <IngestionPhase
+              session={session}
               onUpdate={updateSession}
               onAdvance={advanceToNextPhase}
             />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { IconCheck, IconClock } from "@tabler/icons-react";
 import ChatMessage from "@/components/ChatMessage";
 
 interface Message {
@@ -25,9 +26,17 @@ interface ExtractionPhaseProps {
   session: OnboardingSession;
   onUpdate: (updates: Partial<OnboardingSession>) => Promise<void>;
   onAdvance: () => void;
+  onContributionCommenced?: () => void;
+  onContributionRestart?: () => void;
 }
 
-export default function ExtractionPhase({ session, onUpdate, onAdvance }: ExtractionPhaseProps) {
+export default function ExtractionPhase({
+  session,
+  onUpdate,
+  onAdvance,
+  onContributionCommenced,
+  onContributionRestart,
+}: ExtractionPhaseProps) {
   const [messages, setMessages] = useState<Message[]>(session.extractionData?.messages || []);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
@@ -110,6 +119,9 @@ export default function ExtractionPhase({ session, onUpdate, onAdvance }: Extrac
         content: `I've uploaded my CV/resume: ${data.filename}. Please use this information to inform our conversation.` 
       };
       const updated = [...messages, cvMsg];
+      if (messages.length === 0) {
+        onContributionCommenced?.();
+      }
       setMessages(updated);
       setStreaming(true);
 
@@ -161,6 +173,9 @@ export default function ExtractionPhase({ session, onUpdate, onAdvance }: Extrac
 
     const userMsg: Message = { role: "user", content: text.trim() };
     const updated = [...messages, userMsg];
+    if (messages.length === 0) {
+      onContributionCommenced?.();
+    }
     setMessages(updated);
     setInput("");
     setStreaming(true);
@@ -218,9 +233,9 @@ export default function ExtractionPhase({ session, onUpdate, onAdvance }: Extrac
         <div className="flex-1 min-h-0 overflow-y-auto px-6 py-8">
           <div className="max-w-3xl mx-auto space-y-6">
             <div className="text-center">
-              <h2 className="text-xl font-bold text-[#1A1A1A] mb-2">Extraction Complete!</h2>
+              <h2 className="text-xl font-bold text-[#1A1A1A] mb-2">Contribution complete</h2>
               <p className="text-[#737373] max-w-md mx-auto mb-8">
-                Your expertise has been successfully captured. Now you will refine your agent further through additional conversations.
+                Your expertise has been captured. Next you&apos;ll refine how your agent communicates in calibration.
               </p>
               <div className="bg-amber/10 rounded-xl p-6 mb-8 text-left">
                 <h3 className="font-bold text-[#1A1A1A] mb-2">What happens next:</h3>
@@ -240,10 +255,11 @@ export default function ExtractionPhase({ session, onUpdate, onAdvance }: Extrac
                   onClick={() => {
                     setMessages([]);
                     setShowCompletion(false);
+                    onContributionRestart?.();
                   }}
                   className="border border-[#E5E2DC] text-[#1A1A1A] px-6 py-3 rounded-xl text-sm font-semibold hover:bg-[#F5F5F5] transition"
                 >
-                  Restart Extraction
+                  Restart contribution
                 </button>
               </div>
             </div>
@@ -265,11 +281,11 @@ export default function ExtractionPhase({ session, onUpdate, onAdvance }: Extrac
           {messages.length === 0 && (
             <div className="text-center">
               {/* Time estimate */}
-              <div className="bg-blue-50 rounded-xl p-4 mb-6 max-w-md mx-auto">
-                <div className="flex items-start">
-                  <span className="text-blue-500 mr-2">⏱️</span>
-                  <p className="text-[#737373] text-sm">
-                    <span className="font-semibold">Time estimate:</span> 1-2 hours to complete thoroughly. Your progress is automatically saved.
+              <div className="rounded-xl bg-amber/5 p-4 mb-6 max-w-md mx-auto border border-amber/15">
+                <div className="flex items-start gap-3">
+                  <IconClock size={22} stroke={1.75} className="mt-0.5 shrink-0 text-amber" />
+                  <p className="text-[#737373] text-sm text-left">
+                    <span className="font-semibold text-[#1A1A1A]">Time estimate:</span> 1-2 hours to complete thoroughly. Your progress is automatically saved.
                   </p>
                 </div>
               </div>
@@ -304,8 +320,9 @@ export default function ExtractionPhase({ session, onUpdate, onAdvance }: Extrac
                   </button>
                   
                   {uploadedCV && (
-                    <div className="mt-3 text-xs text-green-600 flex items-center justify-center">
-                      <span>✓ Uploaded: {uploadedCV.filename}</span>
+                    <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-amber">
+                      <IconCheck size={16} stroke={2} aria-hidden />
+                      <span>Uploaded: {uploadedCV.filename}</span>
                     </div>
                   )}
                 </div>
@@ -321,7 +338,7 @@ export default function ExtractionPhase({ session, onUpdate, onAdvance }: Extrac
                 }
                 className="bg-amber text-white px-6 py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition"
               >
-                Start Extraction →
+                Start contribution →
               </button>
             </div>
           )}
