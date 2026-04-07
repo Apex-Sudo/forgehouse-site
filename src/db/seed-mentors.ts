@@ -1,6 +1,6 @@
 /**
  * Seed script: populates the mentors and mentor_scenarios tables with
- * existing Colin Chapman and Leon Freier data.
+ * Colin Chapman, Leon Freier, and Kyle Parratt data.
  *
  * Run: npx tsx src/db/seed-mentors.ts
  *
@@ -290,6 +290,35 @@ async function seed() {
     console.error("Leon insert failed:", leonErr);
   } else {
     console.log("Leon Freier inserted");
+  }
+
+  const { error: kyleErr } = await supabase.from("mentors").upsert({
+    slug: "kyle-parratt",
+    name: "Kyle Parratt",
+    tagline: "Production AI & Systems Mentor",
+    avatar_url: "/mentors/kyle-parratt.png",
+    system_prompt: '',
+    welcome_message:
+      "Before I can help, I need context. What are you trying to ship or fix, what have you already tried, and what does \"done\" look like for you?",
+    default_starters: [
+      "We want to add AI but I don't know if we're solving the right problem. Where do I start?",
+      "Our AI project scope keeps growing. How do I cut an MVP that we can actually ship?",
+      "Our RAG system returns garbage. How do I figure out if it's data, chunking, or the model?",
+      "We're building agents in production. What should we instrument first so we don't fly blind?",
+    ],
+    starters_hint:
+      "a production AI mentor specializing in AI fit, architecture, RAG, agents, MVP scoping, and shipping observable systems",
+    bio: "9+ years in software engineering, focused on production AI: agents, RAG, ingestion, and evals. Founded RouteLinks. Helps teams validate ideas before over-investing and ship deterministic systems, not demos.",
+    stripe_price_id: process.env.STRIPE_KYLE_PRICE_ID ?? null,
+    monthly_price: 1,
+    active: true,
+    sort_order: 2,
+  });
+
+  if (kyleErr) {
+    console.error("Kyle insert failed:", kyleErr);
+  } else {
+    console.log("Kyle Parratt inserted");
   }
 
   console.log("Seeding scenarios...");
