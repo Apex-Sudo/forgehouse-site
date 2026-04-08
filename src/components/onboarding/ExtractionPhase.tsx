@@ -130,7 +130,11 @@ export default function ExtractionPhase({
         const res = await fetch("/api/extraction-chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: updated, cvContent: data.content }),
+          body: JSON.stringify({
+            messages: updated,
+            cvContent: data.content,
+            onboardingSessionId: session.id,
+          }),
         });
 
         if (!res.ok || !res.body) {
@@ -184,9 +188,10 @@ export default function ExtractionPhase({
       const res = await fetch("/api/extraction-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           messages: updated,
-          cvContent: uploadedCV?.content 
+          cvContent: uploadedCV?.content,
+          onboardingSessionId: session.id,
         }),
       });
 
