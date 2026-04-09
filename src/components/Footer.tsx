@@ -14,7 +14,9 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto flex flex-col items-center gap-6 text-sm text-center">
         <img src="/logo.svg" alt="ForgeHouse" className="h-5 brightness-0 invert" />
         <div className="flex gap-6 text-[#666]">
+          <Link href="/the-forge" className="hover:text-white transition">The Forge</Link>
           <Link href="/for-mentors" className="hover:text-white transition">For Experts</Link>
+          <Link href="/security" className="hover:text-white transition">Security</Link>
           <Link href="/privacy" className="hover:text-white transition">Privacy</Link>
         </div>
         <p className="text-xs text-[#444]">&copy; {new Date().getFullYear()} ForgeHouse</p>
