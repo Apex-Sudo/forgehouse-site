@@ -3,6 +3,11 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import ChatMessage from "@/components/ChatMessage";
+import {
+  EXTRACTION_EXCHANGE_ESCAPE_HATCH,
+  parseExtractionAssistantPayload,
+  stripExtractionMetaForDisplay,
+} from "@/lib/extraction-meta";
 
 interface Message {
   role: "user" | "assistant";
@@ -17,7 +22,7 @@ export default function ExtractionPage() {
   const [streaming, setStreaming] = useState(false);
   const [uploadedCV, setUploadedCV] = useState<{ filename: string; content: string } | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [showCompletion, setShowCompletion] = useState(false);
+  const [llmMarkedComplete, setLlmMarkedComplete] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -35,13 +40,21 @@ export default function ExtractionPage() {
       const saved = localStorage.getItem("fh-extraction-session");
       if (saved) {
         try {
-          const parsed = JSON.parse(saved) as Message[];
-          setMessages(parsed);
-          
-          // Check if extraction was completed
-          const exchangeCount = parsed.filter((m) => m.role === "user").length;
-          if (exchangeCount >= 60) {
-            setShowCompletion(true);
+          const parsed = JSON.parse(saved) as unknown;
+          if (Array.isArray(parsed)) {
+            setMessages(parsed as Message[]);
+          } else if (
+            parsed &&
+            typeof parsed === "object" &&
+            "messages" in parsed &&
+            Array.isArray((parsed as { messages: Message[] }).messages)
+          ) {
+            const { messages: savedMsgs, llmMarkedComplete: savedLlm } = parsed as {
+              messages: Message[];
+              llmMarkedComplete?: boolean;
+            };
+            setMessages(savedMsgs);
+            setLlmMarkedComplete(Boolean(savedLlm));
           }
         } catch (e) {
           console.error("Failed to parse saved extraction session", e);
@@ -53,23 +66,18 @@ export default function ExtractionPage() {
   // Save on every update
   useEffect(() => {
     if (messages.length > 0) {
-      localStorage.setItem("fh-extraction-session", JSON.stringify(messages));
+      localStorage.setItem(
+        "fh-extraction-session",
+        JSON.stringify({ messages, llmMarkedComplete }),
+      );
     }
-  }, [messages]);
+  }, [messages, llmMarkedComplete]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/sign-in?callbackUrl=/extraction");
     }
   }, [status, router]);
-
-  // Check if extraction is complete (based on exchange count)
-  useEffect(() => {
-    const exchangeCount = messages.filter((m) => m.role === "user").length;
-    if (exchangeCount >= 60) {
-      setShowCompletion(true);
-    }
-  }, [messages]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -128,7 +136,13 @@ export default function ExtractionPage() {
           const { done, value } = await reader.read();
           if (done) break;
           assistantContent += decoder.decode(value, { stream: true });
-          setMessages([...updated, { role: "assistant", content: assistantContent }]);
+          const visible = stripExtractionMetaForDisplay(assistantContent);
+          setMessages([...updated, { role: "assistant", content: visible }]);
+        }
+        const parsed = parseExtractionAssistantPayload(assistantContent);
+        setMessages([...updated, { role: "assistant", content: parsed.display }]);
+        if (parsed.complete) {
+          setLlmMarkedComplete(true);
         }
       } catch {
         setMessages([...updated, { role: "assistant", content: "Error: Connection failed. Please try again." }]);
@@ -182,7 +196,13 @@ export default function ExtractionPage() {
         const { done, value } = await reader.read();
         if (done) break;
         assistantContent += decoder.decode(value, { stream: true });
-        setMessages([...updated, { role: "assistant", content: assistantContent }]);
+        const visible = stripExtractionMetaForDisplay(assistantContent);
+        setMessages([...updated, { role: "assistant", content: visible }]);
+      }
+      const parsed = parseExtractionAssistantPayload(assistantContent);
+      setMessages([...updated, { role: "assistant", content: parsed.display }]);
+      if (parsed.complete) {
+        setLlmMarkedComplete(true);
       }
     } catch {
       setMessages([...updated, { role: "assistant", content: "Error: Connection failed. Please try again." }]);
@@ -199,6 +219,15 @@ export default function ExtractionPage() {
   };
 
   const exchangeCount = messages.filter((m) => m.role === "user").length;
+  const hitExchangeEscapeHatch =
+    exchangeCount >= EXTRACTION_EXCHANGE_ESCAPE_HATCH && !streaming;
+  const showCompletion = llmMarkedComplete || hitExchangeEscapeHatch;
+
+  const completionSubtext = llmMarkedComplete
+    ? hitExchangeEscapeHatch
+      ? "The guide signaled you are ready, and you have also reached the depth where you can move on whenever you like."
+      : "The guide signaled your expertise is captured well enough to proceed."
+    : "You have reached the minimum conversation depth—you can finish here or restart to add more.";
 
   if (status === "loading") {
     return (
@@ -231,9 +260,9 @@ export default function ExtractionPage() {
               <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
                 <span className="text-2xl">✅</span>
               </div>
-              <h2 className="text-xl font-bold text-[#1A1A1A] mb-2">Extraction Complete!</h2>
+              <h2 className="text-xl font-bold text-[#1A1A1A] mb-2">Extraction complete</h2>
               <p className="text-[#737373] max-w-md mx-auto mb-8">
-                Your expertise has been successfully captured. Your mentor agent is now being trained with this knowledge.
+                {completionSubtext}
               </p>
               <div className="bg-amber/10 rounded-xl p-6 mb-8 text-left">
                 <ul className="list-disc pl-5 space-y-2 text-[#737373]">
@@ -247,12 +276,12 @@ export default function ExtractionPage() {
                   onClick={() => router.push("/mentors")}
                   className="bg-amber text-white px-6 py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition"
                 >
-                  View My Mentors
+                  {llmMarkedComplete ? "Continue when ready" : "I have said enough — done"}
                 </button>
                 <button
                   onClick={() => {
                     setMessages([]);
-                    setShowCompletion(false);
+                    setLlmMarkedComplete(false);
                     localStorage.removeItem("fh-extraction-session");
                   }}
                   className="border border-[#E5E2DC] text-[#1A1A1A] px-6 py-3 rounded-xl text-sm font-semibold hover:bg-[#F5F5F5] transition"
@@ -281,15 +310,15 @@ export default function ExtractionPage() {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs px-3 py-1.5 rounded-full bg-amber/10 text-amber font-medium">
-              {exchangeCount < 15
+              {exchangeCount < 10
                 ? "Phase 1: Foundation"
-                : exchangeCount < 30
+                : exchangeCount < 20
                 ? "Phase 2: Frameworks"
-                : exchangeCount < 45
+                : exchangeCount < 30
                 ? "Phase 3: Patterns"
-                : exchangeCount < 60
-                ? "Phase 4: Pressure Testing"
-                : "Phase 5: Voice & Nuance"}
+                : exchangeCount < EXTRACTION_EXCHANGE_ESCAPE_HATCH
+                ? "Phase 4: Pressure testing"
+                : "Depth target met"}
             </span>
           </div>
         </div>
@@ -381,16 +410,16 @@ export default function ExtractionPage() {
           <div className="max-w-3xl mx-auto">
             <div className="flex justify-between text-xs text-[#999] mb-1">
               <span>Progress</span>
-              <span>{Math.min(100, Math.round((exchangeCount / 60) * 100))}%</span>
+              <span>{Math.min(100, Math.round((exchangeCount / EXTRACTION_EXCHANGE_ESCAPE_HATCH) * 100))}%</span>
             </div>
             <div className="w-full bg-[#F5F5F5] rounded-full h-2">
               <div 
                 className="bg-amber h-2 rounded-full transition-all duration-300" 
-                style={{ width: `${Math.min(100, (exchangeCount / 60) * 100)}%` }}
+                style={{ width: `${Math.min(100, (exchangeCount / EXTRACTION_EXCHANGE_ESCAPE_HATCH) * 100)}%` }}
               ></div>
             </div>
             <div className="text-xs text-[#999] mt-1">
-              {exchangeCount} of ~60 exchanges completed
+              {exchangeCount} of ~{EXTRACTION_EXCHANGE_ESCAPE_HATCH} exchanges (finish earlier if the guide marks you ready)
             </div>
           </div>
         </div>
