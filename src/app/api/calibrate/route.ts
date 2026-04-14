@@ -1,7 +1,6 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { CALIBRATION_SYSTEM_PROMPT } from "@/lib/calibration-system-prompt";
 import { extractLimiter } from "@/lib/rate-limit";
-import { supabase } from "@/lib/supabase";
+import { CalibrationAgentNode } from "@/lib/agent/nodes/CalibrationAgentNode";
 
 export async function POST(req: Request) {
   const ip =
@@ -30,8 +29,6 @@ export async function POST(req: Request) {
     });
   }
 
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
   let systemPrompt = CALIBRATION_SYSTEM_PROMPT;
   if (mentorSlug) {
     systemPrompt += `\n\nYou are calibrating the agent for mentor: ${mentorSlug}.`;
@@ -40,63 +37,10 @@ export async function POST(req: Request) {
     systemPrompt += `\n\n## Extraction Summary\nHere is what was captured during the extraction sessions. Use this to simulate agent responses and create relevant scenarios:\n\n${extractionContext}`;
   }
 
-  const stream = await client.messages.stream({
-    model: "claude-sonnet-4-20250514",
-    max_tokens: 1024,
-    system: systemPrompt,
-    messages,
-  });
+  const node = new CalibrationAgentNode();
+  const stream = node.run({ messages, systemPrompt, mentorSlug });
 
-  const encoder = new TextEncoder();
-  let fullAssistantResponse = "";
-
-  const readable = new ReadableStream({
-    async start(controller) {
-      try {
-        for await (const event of stream) {
-          if (
-            event.type === "content_block_delta" &&
-            event.delta.type === "text_delta"
-          ) {
-            fullAssistantResponse += event.delta.text;
-            controller.enqueue(encoder.encode(event.delta.text));
-          }
-        }
-
-        // After streaming completes, upsert to Supabase
-        if (mentorSlug && fullAssistantResponse) {
-          const allMessages = [
-            ...messages,
-            { role: "assistant" as const, content: fullAssistantResponse },
-          ];
-          const exchangeCount = allMessages.filter((m) => m.role === "user").length;
-
-          supabase
-            .from("fh_sessions")
-            .upsert(
-              {
-                slug: mentorSlug,
-                type: "calibration",
-                messages: allMessages,
-                exchange_count: exchangeCount,
-                updated_at: new Date().toISOString(),
-              },
-              { onConflict: "slug,type" }
-            )
-            .then(({ error }) => {
-              if (error) console.error("Supabase upsert error:", error);
-            });
-        }
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : "Unknown error";
-        controller.enqueue(encoder.encode(`\n[Error: ${msg}]`));
-      } finally {
-        controller.close();
-      }
-    },
-  });
-
-  return new Response(readable, {
+  return new Response(stream, {
     headers: { "Content-Type": "text/plain; charset=utf-8" },
   });
 }

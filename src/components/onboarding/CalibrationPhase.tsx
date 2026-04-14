@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { IconTarget } from "@tabler/icons-react";
 import ReactMarkdown from "react-markdown";
+import { readNdjsonStream } from "@/lib/agent/helper/stream";
 
 interface Message {
   role: "user" | "assistant";
@@ -107,25 +108,17 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
         return;
       }
 
-      const reader = res.body?.getReader();
-      if (!reader) return;
-
-      const decoder = new TextDecoder();
-      let assistantContent = "";
+      if (!res.body) return;
 
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        assistantContent += decoder.decode(value, { stream: true });
-        const snapshot = assistantContent;
+      await readNdjsonStream(res.body, (accumulated) => {
         setMessages((prev) => {
           const copy = [...prev];
-          copy[copy.length - 1] = { role: "assistant", content: snapshot };
+          copy[copy.length - 1] = { role: "assistant", content: accumulated };
           return copy;
         });
-      }
+      });
     } catch {
       setMessages((prev) => [
         ...prev,

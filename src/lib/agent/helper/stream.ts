@@ -49,6 +49,43 @@ export function parseStreamChunk(
   return { events, remaining };
 }
 
+/**
+ * Reads an NDJSON event stream, accumulates text content, and calls back
+ * on each chunk so the caller can update UI progressively.
+ * Returns the fully accumulated assistant text.
+ */
+export async function readNdjsonStream(
+  body: ReadableStream<Uint8Array>,
+  onText: (accumulated: string) => void,
+): Promise<string> {
+  const reader = body.getReader();
+  const decoder = new TextDecoder();
+  let ndjsonBuffer = "";
+  let accumulated = "";
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    const raw = decoder.decode(value, { stream: true });
+    const { events, remaining } = parseStreamChunk(raw, ndjsonBuffer);
+    ndjsonBuffer = remaining;
+
+    for (const event of events) {
+      if (event.type === "text") {
+        accumulated += event.content;
+      } else if (event.type === "error") {
+        accumulated += `\n[Error: ${event.message}]`;
+      }
+    }
+
+    onText(accumulated);
+  }
+
+  return accumulated;
+}
+
 const ARTIFACT_MARKER = "<!--artifacts:";
 const ARTIFACT_MARKER_END = "-->";
 

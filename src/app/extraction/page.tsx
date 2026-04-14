@@ -8,6 +8,7 @@ import {
   parseExtractionAssistantPayload,
   stripExtractionMetaForDisplay,
 } from "@/lib/extraction-meta";
+import { readNdjsonStream } from "@/lib/agent/helper/stream";
 
 interface Message {
   role: "user" | "assistant";
@@ -126,19 +127,12 @@ export default function ExtractionPage() {
           return;
         }
 
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let assistantContent = "";
-
         setMessages([...updated, { role: "assistant", content: "" }]);
 
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          assistantContent += decoder.decode(value, { stream: true });
-          const visible = stripExtractionMetaForDisplay(assistantContent);
+        const assistantContent = await readNdjsonStream(res.body, (accumulated) => {
+          const visible = stripExtractionMetaForDisplay(accumulated);
           setMessages([...updated, { role: "assistant", content: visible }]);
-        }
+        });
         const parsed = parseExtractionAssistantPayload(assistantContent);
         setMessages([...updated, { role: "assistant", content: parsed.display }]);
         if (parsed.complete) {
@@ -186,19 +180,12 @@ export default function ExtractionPage() {
         return;
       }
 
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let assistantContent = "";
-
       setMessages([...updated, { role: "assistant", content: "" }]);
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        assistantContent += decoder.decode(value, { stream: true });
-        const visible = stripExtractionMetaForDisplay(assistantContent);
+      const assistantContent = await readNdjsonStream(res.body, (accumulated) => {
+        const visible = stripExtractionMetaForDisplay(accumulated);
         setMessages([...updated, { role: "assistant", content: visible }]);
-      }
+      });
       const parsed = parseExtractionAssistantPayload(assistantContent);
       setMessages([...updated, { role: "assistant", content: parsed.display }]);
       if (parsed.complete) {

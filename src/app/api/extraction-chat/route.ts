@@ -1,8 +1,8 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { EXTRACTION_SYSTEM_PROMPT } from "@/lib/extraction-system-prompt";
 import { auth } from "@/lib/auth";
 import { extractLimiter } from "@/lib/rate-limit";
 import { supabase } from "@/lib/supabase";
+import { ExtractionAgentNode } from "@/lib/agent/nodes/ExtractionAgentNode";
 
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -63,37 +63,10 @@ export async function POST(req: Request) {
       systemPrompt += `\n\nThe mentor has uploaded a CV/resume with the following content:\n\n${cvContent}`;
     }
 
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const node = new ExtractionAgentNode();
+    const stream = node.run({ messages, systemPrompt });
 
-    const stream = await client.messages.stream({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 2048,
-      system: systemPrompt,
-      messages,
-    });
-
-    const encoder = new TextEncoder();
-    const readable = new ReadableStream({
-      async start(controller) {
-        try {
-          for await (const event of stream) {
-            if (
-              event.type === "content_block_delta" &&
-              event.delta.type === "text_delta"
-            ) {
-              controller.enqueue(encoder.encode(event.delta.text));
-            }
-          }
-        } catch (err) {
-          const msg = err instanceof Error ? err.message : "Unknown error";
-          controller.enqueue(encoder.encode(`\n[Error: ${msg}]`));
-        } finally {
-          controller.close();
-        }
-      },
-    });
-
-    return new Response(readable, {
+    return new Response(stream, {
       headers: {
         "Content-Type": "text/plain; charset=utf-8",
         "Cache-Control": "no-cache, no-transform",
