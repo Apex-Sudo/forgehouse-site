@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { synthesizeMentorProfile, type SynthesizedProfile } from "@/lib/system-prompt-synthesis";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!.trim();
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY!.trim();
@@ -92,6 +93,30 @@ function buildExtractionText(extractionData: any, calibrationData: any): string 
   return text;
 }
 
+function buildFullTranscript(extractionData: any, calibrationData: any): string {
+  let text = "";
+
+  if (extractionData?.messages) {
+    text += "## Extraction Session (Full Transcript)\n\n";
+    const msgs = extractionData.messages as { role: string; content: string }[];
+    for (const m of msgs) {
+      const label = m.role === "user" ? "Expert" : "Interviewer";
+      text += `[${label}]: ${m.content}\n\n`;
+    }
+  }
+
+  if (calibrationData?.messages) {
+    text += "\n## Calibration Session (Full Transcript)\n\n";
+    const msgs = calibrationData.messages as { role: string; content: string }[];
+    for (const m of msgs) {
+      const label = m.role === "user" ? "Expert" : "Calibrator";
+      text += `[${label}]: ${m.content}\n\n`;
+    }
+  }
+
+  return text;
+}
+
 async function chunkWithLLM(extractionText: string): Promise<KnowledgeChunk[]> {
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -105,6 +130,7 @@ async function chunkWithLLM(extractionText: string): Promise<KnowledgeChunk[]> {
       max_tokens: 16384,
       messages: [
         { role: "user", content: `${CHUNKING_PROMPT}\n\n---\n\n${extractionText}` },
+        { role: "assistant", content: "[" },
       ],
     }),
   });
@@ -115,9 +141,16 @@ async function chunkWithLLM(extractionText: string): Promise<KnowledgeChunk[]> {
   }
 
   const data = await response.json();
-  const text = data.content[0].text;
-  const cleaned = text.replace(/^```json?\s*/m, "").replace(/```\s*$/m, "").trim();
-  return JSON.parse(cleaned);
+  const raw: string = data.content[0].text;
+  const withPrefix = "[" + raw;
+  const cleaned = withPrefix.replace(/^```json?\s*/m, "").replace(/```\s*$/m, "").trim();
+
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    console.error("[chunkWithLLM] Failed to parse JSON. Raw response:", raw.slice(0, 500));
+    throw new Error(`Chunking LLM returned invalid JSON. Start of response: "${raw.slice(0, 100)}"`);
+  }
 }
 
 async function embedTexts(texts: string[]): Promise<number[][]> {
@@ -182,6 +215,25 @@ async function storeChunks(
   }
 }
 
+async function updateMentorProfile(
+  mentorSlug: string,
+  profile: SynthesizedProfile,
+): Promise<void> {
+  await supabaseRequest(
+    "PATCH",
+    `/rest/v1/mentors?slug=eq.${encodeURIComponent(mentorSlug)}`,
+    {
+      system_prompt: profile.system_prompt,
+      tagline: profile.tagline,
+      bio: profile.bio,
+      welcome_message: profile.welcome_message,
+      default_starters: profile.default_starters,
+      starters_hint: profile.starters_hint,
+      active: true,
+    },
+  );
+}
+
 export async function POST(req: Request) {
   try {
     const { sessionId, mentorName, extractionData, calibrationData } = await req.json();
@@ -209,10 +261,15 @@ export async function POST(req: Request) {
       );
     }
 
-    // Step 2: Chunk with LLM
-    console.log(`[ingest] Chunking ${extractionText.length} chars for ${slug}...`);
-    const chunks = await chunkWithLLM(extractionText);
-    console.log(`[ingest] Got ${chunks.length} chunks from LLM`);
+    // Step 2: Chunk knowledge AND synthesize system prompt in parallel
+    const fullTranscript = buildFullTranscript(extractionData, calibrationData);
+
+    console.log(`[ingest] Starting parallel: chunking + system prompt synthesis for ${slug}...`);
+    const [chunks, profile] = await Promise.all([
+      chunkWithLLM(extractionText),
+      synthesizeMentorProfile(fullTranscript, mentorName, ANTHROPIC_KEY),
+    ]);
+    console.log(`[ingest] Got ${chunks.length} chunks + synthesized profile`);
 
     if (chunks.length === 0) {
       return NextResponse.json(
@@ -227,16 +284,21 @@ export async function POST(req: Request) {
     const embeddings = await embedTexts(texts);
     console.log(`[ingest] Got ${embeddings.length} embeddings`);
 
-    // Step 4: Store in mentor_knowledge table
+    // Step 4: Store knowledge chunks
     console.log(`[ingest] Storing chunks in Supabase...`);
     await storeChunks(slug, chunks, embeddings);
-    console.log(`[ingest] Done! ${chunks.length} chunks stored for ${slug}`);
+    console.log(`[ingest] ${chunks.length} chunks stored for ${slug}`);
+
+    // Step 5: Update mentor record with synthesized profile
+    console.log(`[ingest] Updating mentor profile for ${slug}...`);
+    await updateMentorProfile(slug, profile);
+    console.log(`[ingest] Done! Mentor ${slug} fully configured`);
 
     return NextResponse.json({
       success: true,
       chunksCreated: chunks.length,
       mentorSlug: slug,
-      message: `Knowledge base created: ${chunks.length} chunks embedded and stored`,
+      message: `Knowledge base created: ${chunks.length} chunks embedded and stored. System prompt synthesized.`,
     });
   } catch (error) {
     console.error("[ingest] Error:", error);

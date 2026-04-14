@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { NextResponse } from "next/server";
+import { sendOnboardingInvitation } from "@/lib/emails";
 
 // Function to generate a URL-friendly slug from mentor name
 function generateSlug(name: string): string {
@@ -49,9 +50,14 @@ export async function POST(req: Request) {
       );
     }
 
-    // Generate the unique link
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://forgehouse.io";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://forgehouse.io";
     const onboardingLink = `${baseUrl}/onboard/${data.id}`;
+
+    await sendOnboardingInvitation({
+      to: email,
+      mentorName,
+      onboardingLink,
+    });
 
     return NextResponse.json({
       sessionId: data.id,

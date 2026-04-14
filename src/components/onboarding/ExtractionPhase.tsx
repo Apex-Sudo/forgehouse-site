@@ -9,23 +9,11 @@ import {
   stripExtractionMetaForDisplay,
 } from "@/lib/extraction-meta";
 import { readNdjsonStream } from "@/lib/agent/helper/stream";
+import type { OnboardingSession } from "@/types/onboarding";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
-}
-
-interface OnboardingSession {
-  id: string;
-  mentorName: string;
-  email: string;
-  currentPhase: "extraction" | "calibration" | "ingestion" | "complete";
-  extractionData: any;
-  calibrationData: any;
-  ingestionData: any;
-  createdAt: string;
-  updatedAt: string;
-  expiresAt: string;
 }
 
 interface ExtractionPhaseProps {

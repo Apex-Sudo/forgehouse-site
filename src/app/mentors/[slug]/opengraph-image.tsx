@@ -16,6 +16,7 @@ export async function generateImageMetadata({
     .from("mentors")
     .select("name, tagline")
     .eq("slug", params.slug)
+    .eq("is_active", true)
     .single();
 
   return [
@@ -39,6 +40,7 @@ export default async function OGImage({
     .from("mentors")
     .select("name, tagline, avatar_url, bio")
     .eq("slug", params.slug)
+    .eq("is_active", true)
     .single();
 
   const name = mentor?.name ?? "ForgeHouse Mentor";

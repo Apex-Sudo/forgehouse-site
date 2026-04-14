@@ -16,7 +16,7 @@ export async function generateStaticParams() {
   const { data } = await supabase
     .from("mentors")
     .select("slug")
-    .eq("active", true);
+    .eq("is_active", true);
 
   return (data ?? []).map((m) => ({ slug: m.slug }));
 }
@@ -31,7 +31,7 @@ export async function generateMetadata({
     .from("mentors")
     .select("name, tagline, bio")
     .eq("slug", slug)
-    .eq("active", true)
+    .eq("is_active", true)
     .single();
 
   if (!mentor) {
@@ -69,7 +69,7 @@ export default async function MentorMarketingPage({
     .from("mentors")
     .select("slug, name, tagline, avatar_url, bio, default_starters")
     .eq("slug", slug)
-    .eq("active", true)
+    .eq("is_active", true)
     .single();
 
   if (!mentor) {

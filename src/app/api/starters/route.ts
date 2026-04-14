@@ -10,7 +10,7 @@ export async function GET(req: Request) {
     .from("mentors")
     .select("default_starters, starters_hint, name")
     .eq("slug", mentor)
-    .eq("active", true)
+    .eq("is_active", true)
     .single();
 
   const defaultStarters: string[] = mentorRow?.default_starters ?? [

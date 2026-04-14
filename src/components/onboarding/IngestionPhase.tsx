@@ -1,19 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { IconConfetti, IconRocket } from "@tabler/icons-react";
-import { ONBOARDING_DEFAULT_STARTERS } from "@/lib/onboarding-mentor-defaults";
-
-interface OnboardingSession {
-  id: string;
-  mentorName: string;
-  email: string;
-  currentPhase: "extraction" | "calibration" | "ingestion" | "complete";
-  extractionData: any;
-  calibrationData: any;
-  ingestionData: any;
-  createdAt: string;
-  updatedAt: string;
-  expiresAt: string;
-}
+import type { OnboardingSession } from "@/types/onboarding";
 
 interface IngestionPhaseProps {
   session: OnboardingSession;
@@ -47,7 +34,6 @@ export default function IngestionPhase({ session, onUpdate }: IngestionPhaseProp
       setStatusMessage("Preparing knowledge base...");
       setProgress(5);
 
-      // Step 1: Ensure mentor exists in DB
       setStatusMessage("Creating mentor record...");
       setProgress(10);
       const mentorRes = await fetch("/api/mentors", {
@@ -62,9 +48,7 @@ export default function IngestionPhase({ session, onUpdate }: IngestionPhaseProp
       }
 
       setProgress(15);
-
-      // Step 2: Run the real ingestion pipeline (chunking + embedding + storage)
-      setStatusMessage("Chunking and embedding your knowledge base (this may take 1-2 minutes)...");
+      setStatusMessage("Synthesizing system prompt and building knowledge base (this may take 1-2 minutes)...");
       setProgress(20);
 
       const ingestRes = await fetch("/api/onboarding/ingest", {
@@ -84,27 +68,9 @@ export default function IngestionPhase({ session, onUpdate }: IngestionPhaseProp
       }
 
       const ingestData = await ingestRes.json();
-      setProgress(90);
-      setStatusMessage("Activating mentor...");
-
-      // Step 3: Activate the mentor
-      const slug = session.mentorName
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .substring(0, 50);
-
-      await fetch(`/api/mentors/${slug}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          active: true,
-          default_starters: [...ONBOARDING_DEFAULT_STARTERS],
-        }),
-      }).catch(() => {});
 
       setProgress(100);
-      setStatusMessage("Knowledge base created successfully!");
+      setStatusMessage("Mentor fully configured and activated!");
       setStatus("complete");
 
       await onUpdate({

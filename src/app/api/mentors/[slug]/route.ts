@@ -14,7 +14,7 @@ export async function GET(
     .from("mentors")
     .select("slug, name, tagline, avatar_url, welcome_message, default_starters, starters_hint, bio, monthly_price")
     .eq("slug", slug)
-    .eq("active", true)
+    .eq("is_active", true)
     .single();
 
   if (mentorErr || !mentor) {

@@ -109,6 +109,7 @@ export default function Navbar() {
   const { data: session } = useSession();
   const pathname = usePathname();
   const inAppShell = !!session?.user && APP_ROUTES.some((r) => pathname.startsWith(r));
+  const chatNowHref = session?.user ? "/chat" : "/mentors";
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/85 backdrop-blur-xl border-b border-amber/[0.08]">
@@ -126,7 +127,7 @@ export default function Navbar() {
               <UserMenu />
             </div>
             <div className="hidden md:flex items-center">
-              <Link href="/mentors" className="bg-amber text-background px-5 py-2 rounded-md font-semibold text-sm hover:opacity-90 transition">
+              <Link href={chatNowHref} className="bg-amber text-background px-5 py-2 rounded-md font-semibold text-sm hover:opacity-90 transition">
                 Chat Now
               </Link>
             </div>
@@ -145,7 +146,7 @@ export default function Navbar() {
           <Link href="/thinking" onClick={() => setOpen(false)} className="text-muted hover:text-foreground font-medium">Thinking</Link>
           <Link href="/pricing" onClick={() => setOpen(false)} className="text-muted hover:text-foreground font-medium">Pricing</Link>
           <div onClick={() => setOpen(false)}><UserMenu /></div>
-          <Link href="/mentors" onClick={() => setOpen(false)} className="bg-amber text-background px-4 py-2 rounded-md font-semibold text-center">Chat Now</Link>
+          <Link href={chatNowHref} onClick={() => setOpen(false)} className="bg-amber text-background px-4 py-2 rounded-md font-semibold text-center">Chat Now</Link>
         </div>
       )}
     </nav>

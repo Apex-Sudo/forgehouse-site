@@ -14,7 +14,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from("mentors")
     .select("slug, name, tagline, avatar_url, monthly_price")
-    .eq("active", true)
+    .eq("is_active", true)
     .order("sort_order");
 
   if (error) {

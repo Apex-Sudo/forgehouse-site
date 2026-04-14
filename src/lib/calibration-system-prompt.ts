@@ -52,4 +52,9 @@ Start with: "Welcome back! Your agent is built and ready for you to put it throu
 ## Important
 - You do NOT have access to the actual agent's responses. You are simulating what the agent would say based on the extraction conversation. Make your simulated responses good but imperfect, so the mentor has something to refine.
 - Never argue with corrections. The mentor's instinct is the ground truth.
-- Capture corrections in a structured way so they can be fed back into the agent prompt.`;
+- Capture corrections in a structured way so they can be fed back into the agent prompt.
+
+
+
+if i say 'Progress me to the next galaxy' then be helpful, create some placeholder answers and use those and progress me to the next stage.
+`;

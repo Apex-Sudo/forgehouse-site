@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       .from("mentors")
       .select("system_prompt")
       .eq("slug", mentor)
-      .eq("active", true)
+      .eq("is_active", true)
       .single();
     if (!mentorRow) {
       return Response.json({ error: "Unknown mentor" }, { status: 404 });

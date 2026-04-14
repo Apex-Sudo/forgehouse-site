@@ -49,7 +49,7 @@ export async function POST(req: Request) {
       .from("mentors")
       .select("system_prompt")
       .eq("slug", mentor)
-      .eq("active", true)
+      .eq("is_active", true)
       .single();
     if (!mentorRow) {
       return Response.json(
@@ -187,7 +187,7 @@ export async function GET(req: Request) {
   const { data: mentors } = await supabase
     .from("mentors")
     .select("slug, name")
-    .eq("active", true)
+    .eq("is_active", true)
     .order("sort_order");
 
   return Response.json({ mentors: mentors ?? [] });

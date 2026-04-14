@@ -4,23 +4,11 @@ import { useState, useRef, useEffect } from "react";
 import { IconTarget } from "@tabler/icons-react";
 import ReactMarkdown from "react-markdown";
 import { readNdjsonStream } from "@/lib/agent/helper/stream";
+import type { OnboardingSession } from "@/types/onboarding";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
-}
-
-interface OnboardingSession {
-  id: string;
-  mentorName: string;
-  email: string;
-  currentPhase: "extraction" | "calibration" | "ingestion" | "complete";
-  extractionData: any;
-  calibrationData: any;
-  ingestionData: any;
-  createdAt: string;
-  updatedAt: string;
-  expiresAt: string;
 }
 
 interface CalibrationPhaseProps {

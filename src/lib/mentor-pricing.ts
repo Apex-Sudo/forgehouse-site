@@ -14,7 +14,7 @@ export async function getMentorPricing(slug: string): Promise<MentorPricing | nu
     .from("mentors")
     .select("name, stripe_price_id, monthly_price")
     .eq("slug", slug)
-    .eq("active", true)
+    .eq("is_active", true)
     .single();
 
   if (!data || !data.stripe_price_id) return null;

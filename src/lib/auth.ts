@@ -129,17 +129,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
     },
     async session({ session }) {
-      // Attach Supabase user ID to session
       if (session.user?.email) {
         const { data } = await supabase
           .from("users")
-          .select("id")
+          .select("id, role")
           .eq("email", session.user.email)
           .single();
 
         if (data) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (session.user as any).id = data.id;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (session.user as any).role = data.role;
         }
       }
       return session;

@@ -220,20 +220,6 @@ function ChatContent() {
 
   useEffect(() => {
     if (!userEmail || !mentorSlug) return;
-    fetch("/api/profile")
-      .then(async (r) => {
-        if (r.ok) {
-          const data = await r.json();
-          if (!data.profile?.profile_complete) {
-            window.location.href = `/chat/onboarding?redirect=/chat/${mentorSlug}`;
-          }
-        }
-      })
-      .catch(() => {});
-  }, [userEmail, mentorSlug]);
-
-  useEffect(() => {
-    if (!userEmail || !mentorSlug) return;
     fetch(`/api/insights?mentor=${mentorSlug}`)
       .then(async (r) => {
         if (r.ok) {

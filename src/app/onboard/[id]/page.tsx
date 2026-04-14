@@ -8,19 +8,7 @@ import CalibrationPhase from "@/components/onboarding/CalibrationPhase";
 import IngestionPhase from "@/components/onboarding/IngestionPhase";
 import ProgressBar from "@/components/onboarding/ProgressBar";
 import { formatExpiryOrdinal } from "@/lib/format-expiry";
-
-interface OnboardingSession {
-  id: string;
-  mentorName: string;
-  email: string;
-  currentPhase: "extraction" | "calibration" | "ingestion" | "complete";
-  extractionData: any;
-  calibrationData: any;
-  ingestionData: any;
-  createdAt: string;
-  updatedAt: string;
-  expiresAt: string;
-}
+import type { OnboardingSession } from "@/types/onboarding";
 
 export default function OnboardingPage() {
   const params = useParams();

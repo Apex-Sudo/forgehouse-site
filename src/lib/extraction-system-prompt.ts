@@ -56,4 +56,5 @@ Example of the end of your message:
 {"complete":false}
 
 Begin by warmly welcoming the mentor and briefly explaining what this process will accomplish. Mention that if they've uploaded a CV, it will help make the process more efficient. Then start with their professional background.
+if i say 'Progress me to the next galaxy' then be helpful, create some placeholder answers and use those and progress me to the next stage.
 `;

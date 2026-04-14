@@ -18,13 +18,21 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   const showShell = !!session?.user && isAppRoute(pathname);
 
   if (!showShell) {
-    // Chat routes need full-height layout even when not logged in
     const isChatRoute = pathname.startsWith("/chat");
-    return (
-      <main className={isChatRoute ? "h-screen pt-16 overflow-hidden" : "min-h-screen"}>
-        {children}
-      </main>
-    );
+    const isAdminRoute = pathname.startsWith("/admin");
+    if (isChatRoute) {
+      return (
+        <main className="h-screen pt-16 overflow-hidden">{children}</main>
+      );
+    }
+    if (isAdminRoute) {
+      return (
+        <main className="flex h-dvh min-h-0 flex-col overflow-hidden pt-16">
+          {children}
+        </main>
+      );
+    }
+    return <main className="min-h-screen">{children}</main>;
   }
 
   return (
