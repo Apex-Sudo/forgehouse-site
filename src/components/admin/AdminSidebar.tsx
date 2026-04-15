@@ -6,6 +6,7 @@ import {
   IconLayoutDashboard,
   IconUsers,
   IconChevronRight,
+  IconFileDescription,
 } from "@tabler/icons-react";
 
 interface NavItem {
@@ -24,6 +25,11 @@ const NAV_ITEMS: NavItem[] = [
     label: "Mentor Onboarding",
     href: "/admin/onboarding",
     icon: <IconUsers size={20} stroke={1.5} />,
+  },
+  {
+    label: "Mentor Pages",
+    href: "/admin/landing-pages",
+    icon: <IconFileDescription size={20} stroke={1.5} />,
   },
 ];
 

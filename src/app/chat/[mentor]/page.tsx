@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams, useParams } from "next/navigation";
+import Link from "next/link";
 import { Suspense } from "react";
 import { useSession, signIn } from "next-auth/react";
 import ChatMessage from "@/components/ChatMessage";
@@ -44,6 +45,31 @@ interface Message {
 const FREE_MESSAGE_LIMIT = 5;
 
 const VALID_INVITE_CODES = new Set(["alexw", "steve", "ray", "colin", "amber", "mark", "test"]);
+
+type MentorResolveState = "pending" | "ok" | "missing";
+
+function MentorChatComingSoon({ slug }: { slug: string }) {
+  return (
+    <div className="flex flex-col min-h-screen items-center justify-center px-4" style={{ background: "#F7F5F2" }}>
+      <div className="w-full max-w-md bg-white border border-foreground/[0.08] rounded-2xl shadow-[0_0_24px_rgba(0,0,0,0.06)] px-8 py-10 text-center">
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted mb-2">ForgeHouse chat</p>
+        <h1 className="text-2xl font-bold text-foreground mb-2">Coming soon</h1>
+        <p className="text-sm text-muted leading-relaxed mb-1">
+          We don&apos;t have an active mentor chat for <span className="font-medium text-foreground">{slug}</span> yet.
+        </p>
+        <p className="text-sm text-muted leading-relaxed mb-8">
+          Check back later or pick someone who&apos;s live today.
+        </p>
+        <Link
+          href="/mentors"
+          className="inline-flex items-center justify-center rounded-xl bg-[#B8916A] px-5 py-3 text-sm font-semibold text-white hover:bg-[#A07B56] transition"
+        >
+          Browse mentors
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 function ScenariosDropdown({ scenarios, onSelect }: { scenarios: ScenarioConfig[]; onSelect: (sc: ScenarioConfig) => void }) {
   const [open, setOpen] = useState(false);
@@ -102,6 +128,7 @@ function ChatContent() {
   const { triggerConversationRefresh, setActiveConversationId } = useAppShell();
 
   const [mentorConfig, setMentorConfig] = useState<MentorConfig | null>(null);
+  const [mentorResolve, setMentorResolve] = useState<MentorResolveState>("pending");
   const [scenarios, setScenarios] = useState<ScenarioConfig[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -154,18 +181,41 @@ function ChatContent() {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Fetch mentor config on mount
   useEffect(() => {
-    if (!mentorSlug) return;
-    fetch(`/api/mentors/${mentorSlug}`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
+    if (!mentorSlug) {
+      setMentorResolve("missing");
+      setMentorConfig(null);
+      setScenarios([]);
+      return;
+    }
+    setMentorResolve("pending");
+    setMentorConfig(null);
+    setScenarios([]);
+    const ac = new AbortController();
+    fetch(`/api/mentors/${mentorSlug}`, { signal: ac.signal })
+      .then(async (r) => {
+        if (r.status === 404 || r.status === 400) {
+          setMentorResolve("missing");
+          return;
+        }
+        if (!r.ok) {
+          setMentorResolve("missing");
+          return;
+        }
+        const data = await r.json();
         if (data?.mentor) {
           setMentorConfig(data.mentor);
           if (data.scenarios) setScenarios(data.scenarios);
+          setMentorResolve("ok");
+        } else {
+          setMentorResolve("missing");
         }
       })
-      .catch(() => {});
+      .catch((err: unknown) => {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setMentorResolve("missing");
+      });
+    return () => ac.abort();
   }, [mentorSlug]);
 
   const userEmail = session?.user?.email;
@@ -455,12 +505,20 @@ function ChatContent() {
     }
   };
 
-  if (status === "loading" || !mentorConfig) {
+  if (mentorResolve === "missing") {
+    return <MentorChatComingSoon slug={mentorSlug} />;
+  }
+
+  if (status === "loading" || mentorResolve === "pending") {
     return (
       <div className="flex flex-col h-screen items-center justify-center">
         <span className="animate-pulse text-muted text-sm">Loading...</span>
       </div>
     );
+  }
+
+  if (!mentorConfig) {
+    return <MentorChatComingSoon slug={mentorSlug} />;
   }
 
   const mc = mentorConfig;

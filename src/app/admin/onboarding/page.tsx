@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   IconPlus,
@@ -12,12 +12,11 @@ import {
   IconCopy,
   IconChevronLeft,
   IconChevronRight,
-  IconDotsVertical,
-  IconTrash,
   IconSearch,
   IconArrowsSort,
 } from "@tabler/icons-react";
 import type { EnrichedOnboarding, ReadinessStep } from "@/app/api/admin/onboardings/route";
+import { AdminTableRowMenu } from "@/components/admin/AdminTableRowMenu";
 import MentorOnboardingDetailModal from "@/components/admin/MentorOnboardingDetailModal";
 
 const PAGE_SIZE = 10;
@@ -215,60 +214,6 @@ function NewOnboardingModal({
           </form>
         )}
       </div>
-    </div>
-  );
-}
-
-function RowMenu({
-  onDelete,
-  deleting,
-}: {
-  onDelete: () => void;
-  deleting: boolean;
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function close(e: MouseEvent) {
-      if (!ref.current?.contains(e.target as Node)) setOpen(false);
-    }
-    if (open) {
-      document.addEventListener("mousedown", close);
-      return () => document.removeEventListener("mousedown", close);
-    }
-  }, [open]);
-
-  return (
-    <div className="relative" ref={ref} onClick={(e) => e.stopPropagation()}>
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="rounded-lg p-2 text-[#999] hover:bg-[#F5F3F0] hover:text-[#1A1A1A]"
-        aria-label="Row actions"
-      >
-        <IconDotsVertical size={18} stroke={1.5} />
-      </button>
-      {open && (
-        <div className="absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-lg border border-[#E5E2DC] bg-white py-1 shadow-lg">
-          <button
-            type="button"
-            disabled={deleting}
-            onClick={() => {
-              setOpen(false);
-              onDelete();
-            }}
-            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
-          >
-            {deleting ? (
-              <IconLoader2 size={16} className="animate-spin" />
-            ) : (
-              <IconTrash size={16} stroke={1.5} />
-            )}
-            Delete record
-          </button>
-        </div>
-      )}
     </div>
   );
 }
@@ -511,7 +456,7 @@ function AdminOnboardingPageContent() {
         </div>
       ) : (
         <>
-          <div className="overflow-hidden rounded-xl border border-[#E5E2DC] bg-white">
+          <div className="rounded-xl border border-[#E5E2DC] bg-white">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[640px] text-left text-sm">
                 <thead>
@@ -558,10 +503,14 @@ function AdminOnboardingPageContent() {
                           year: "numeric",
                         })}
                       </td>
-                      <td className="px-2 py-3 text-right">
-                        <RowMenu
+                      <td
+                        className="px-2 py-3 text-right"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <AdminTableRowMenu
                           onDelete={() => deleteRecord(ob.id)}
                           deleting={deletingId === ob.id}
+                          deleteLabel="Delete record"
                         />
                       </td>
                     </tr>

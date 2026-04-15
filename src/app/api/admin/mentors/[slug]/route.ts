@@ -2,6 +2,46 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { requireAdmin } from "@/lib/admin-auth";
 
+const SLUG_RE = /^[a-z0-9-]+$/;
+
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const authResult = await requireAdmin();
+  if ("error" in authResult) {
+    return NextResponse.json(
+      { error: authResult.error },
+      { status: authResult.status }
+    );
+  }
+
+  const { slug } = await params;
+  if (!slug || !SLUG_RE.test(slug)) {
+    return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
+  }
+
+  const { data, error } = await supabase
+    .from("mentors")
+    .select("slug, name, tagline, avatar_url, bio")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error) {
+    console.error("admin mentor GET:", error);
+    return NextResponse.json(
+      { error: "Failed to load mentor" },
+      { status: 500 }
+    );
+  }
+
+  if (!data) {
+    return NextResponse.json({ error: "Mentor not found" }, { status: 404 });
+  }
+
+  return NextResponse.json({ mentor: data });
+}
+
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ slug: string }> }
@@ -16,7 +56,7 @@ export async function PATCH(
 
   const { slug } = await params;
 
-  if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
+  if (!slug || !SLUG_RE.test(slug)) {
     return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
   }
 
