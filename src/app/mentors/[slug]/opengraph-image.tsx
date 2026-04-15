@@ -2,29 +2,54 @@ import { ImageResponse } from "next/og";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { supabase } from "@/lib/supabase";
+import { mentorLandingContentSchema } from "@/types/mentor-landing";
 
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+function humanizeSlug(slug: string): string {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
+}
+
+async function resolveParams(
+  params: Promise<{ slug: string }> | { slug: string }
+): Promise<{ slug: string }> {
+  return await Promise.resolve(params);
+}
+
 export async function generateImageMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }> | { slug: string };
 }) {
-  const { data: mentor } = await supabase
-    .from("mentors")
-    .select("name, tagline")
-    .eq("slug", params.slug)
-    .eq("is_active", true)
-    .single();
+  const { slug } = await resolveParams(params);
+
+  const { data: landingRow } = await supabase
+    .from("mentor_landing_pages")
+    .select("content")
+    .eq("slug", slug)
+    .eq("published", true)
+    .maybeSingle();
+
+  const parsed = landingRow?.content
+    ? mentorLandingContentSchema.safeParse(landingRow.content)
+    : null;
+
+  const displayName = humanizeSlug(slug);
+  const alt =
+    parsed?.success && parsed.data.heroQuote.trim().length > 0
+      ? `${displayName} — ${parsed.data.heroQuote.slice(0, 80)} | ForgeHouse`
+      : `${displayName} | ForgeHouse`;
 
   return [
     {
       id: "og",
-      alt: mentor
-        ? `${mentor.name} - ${mentor.tagline} | ForgeHouse`
-        : "ForgeHouse Mentor",
+      alt,
       size,
       contentType,
     },
@@ -34,25 +59,54 @@ export async function generateImageMetadata({
 export default async function OGImage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }> | { slug: string };
 }) {
-  const { data: mentor } = await supabase
-    .from("mentors")
-    .select("name, tagline, avatar_url, bio")
-    .eq("slug", params.slug)
-    .eq("is_active", true)
-    .single();
+  const { slug } = await resolveParams(params);
 
-  const name = mentor?.name ?? "ForgeHouse Mentor";
-  const tagline = mentor?.tagline ?? "";
-  const avatarFile = mentor?.avatar_url?.replace("/mentors/", "") ?? "";
+  const { data: landingRow } = await supabase
+    .from("mentor_landing_pages")
+    .select("content")
+    .eq("slug", slug)
+    .eq("published", true)
+    .maybeSingle();
+
+  const parsed = landingRow?.content
+    ? mentorLandingContentSchema.safeParse(landingRow.content)
+    : null;
+
+  const name = parsed?.success ? humanizeSlug(slug) : "ForgeHouse";
+  const tagline =
+    parsed?.success && parsed.data.heroQuote.trim().length > 0
+      ? parsed.data.heroQuote
+      : parsed?.success
+        ? parsed.data.heroDescription.slice(0, 140)
+        : "Mentor";
+  const bioSnippet =
+    parsed?.success && parsed.data.heroDescription.trim().length > 0
+      ? parsed.data.heroDescription.length > 120
+        ? `${parsed.data.heroDescription.slice(0, 120)}...`
+        : parsed.data.heroDescription
+      : null;
 
   let photoDataUri: string | null = null;
-  try {
-    const buf = readFileSync(join(process.cwd(), "public", "mentors", avatarFile));
-    photoDataUri = `data:image/png;base64,${buf.toString("base64")}`;
-  } catch {
-    // photo not available
+  const profile = parsed?.success ? parsed.data.profileImageUrl?.trim() : undefined;
+  if (profile && profile.startsWith("/")) {
+    try {
+      const rel = profile.slice(1);
+      const buf = readFileSync(join(process.cwd(), "public", rel));
+      const ext = rel.split(".").pop()?.toLowerCase();
+      const mime =
+        ext === "jpg" || ext === "jpeg"
+          ? "image/jpeg"
+          : ext === "webp"
+            ? "image/webp"
+            : ext === "gif"
+              ? "image/gif"
+              : "image/png";
+      photoDataUri = `data:${mime};base64,${buf.toString("base64")}`;
+    } catch {
+      // file not under public or missing
+    }
   }
 
   return new ImageResponse(
@@ -99,13 +153,11 @@ export default async function OGImage({
           >
             {tagline}
           </div>
-          {mentor?.bio && (
+          {bioSnippet ? (
             <div style={{ fontSize: 18, color: "#888888", lineHeight: 1.5 }}>
-              {mentor.bio.length > 120
-                ? mentor.bio.slice(0, 120) + "..."
-                : mentor.bio}
+              {bioSnippet}
             </div>
-          )}
+          ) : null}
           <div
             style={{
               position: "absolute",
@@ -121,7 +173,7 @@ export default async function OGImage({
           </div>
         </div>
 
-        {photoDataUri && (
+        {photoDataUri ? (
           <div
             style={{
               display: "flex",
@@ -147,7 +199,7 @@ export default async function OGImage({
               />
             </div>
           </div>
-        )}
+        ) : null}
       </div>
     ),
     { ...size }
