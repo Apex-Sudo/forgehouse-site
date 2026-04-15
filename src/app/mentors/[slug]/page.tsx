@@ -18,6 +18,9 @@ type MentorRow = {
 };
 
 function humanizeSlug(slug: string): string {
+  if (typeof slug !== "string" || slug.length === 0) {
+    return "";
+  }
   return slug
     .split("-")
     .filter(Boolean)
@@ -43,7 +46,9 @@ export async function generateStaticParams() {
     .select("slug")
     .eq("published", true);
 
-  return (landingRows ?? []).map((r) => ({ slug: r.slug }));
+  return (landingRows ?? [])
+    .filter((r): r is { slug: string } => typeof r.slug === "string" && r.slug.length > 0)
+    .map((r) => ({ slug: r.slug }));
 }
 
 export async function generateMetadata({

@@ -9,6 +9,9 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 function humanizeSlug(slug: string): string {
+  if (typeof slug !== "string" || slug.length === 0) {
+    return "";
+  }
   return slug
     .split("-")
     .filter(Boolean)
@@ -16,10 +19,14 @@ function humanizeSlug(slug: string): string {
     .join(" ");
 }
 
-async function resolveParams(
-  params: Promise<{ slug: string }> | { slug: string }
-): Promise<{ slug: string }> {
-  return await Promise.resolve(params);
+async function resolveSlugParam(
+  params: Promise<{ slug: string }> | { slug: string } | undefined
+): Promise<string> {
+  if (params === undefined) {
+    return "";
+  }
+  const p = await Promise.resolve(params);
+  return typeof p.slug === "string" ? p.slug : "";
 }
 
 export async function generateImageMetadata({
@@ -27,7 +34,17 @@ export async function generateImageMetadata({
 }: {
   params: Promise<{ slug: string }> | { slug: string };
 }) {
-  const { slug } = await resolveParams(params);
+  const slug = await resolveSlugParam(params);
+  if (slug.length === 0) {
+    return [
+      {
+        id: "og",
+        alt: "ForgeHouse",
+        size,
+        contentType,
+      },
+    ];
+  }
 
   const { data: landingRow } = await supabase
     .from("mentor_landing_pages")
@@ -40,7 +57,7 @@ export async function generateImageMetadata({
     ? mentorLandingContentSchema.safeParse(landingRow.content)
     : null;
 
-  const displayName = humanizeSlug(slug);
+  const displayName = humanizeSlug(slug) || "ForgeHouse";
   const alt =
     parsed?.success && parsed.data.heroQuote.trim().length > 0
       ? `${displayName} — ${parsed.data.heroQuote.slice(0, 80)} | ForgeHouse`
@@ -61,7 +78,30 @@ export default async function OGImage({
 }: {
   params: Promise<{ slug: string }> | { slug: string };
 }) {
-  const { slug } = await resolveParams(params);
+  const slug = await resolveSlugParam(params);
+  if (slug.length === 0) {
+    return new ImageResponse(
+      (
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#0A0A0B",
+            fontFamily: "sans-serif",
+            fontSize: 48,
+            fontWeight: 700,
+            color: "#FFFFFF",
+          }}
+        >
+          ForgeHouse
+        </div>
+      ),
+      { ...size }
+    );
+  }
 
   const { data: landingRow } = await supabase
     .from("mentor_landing_pages")
