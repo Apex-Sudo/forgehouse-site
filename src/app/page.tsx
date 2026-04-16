@@ -6,13 +6,46 @@ import { useRouter } from "next/navigation";
 import { IconArrowRight, IconCheck, IconMessageCircle, IconBulb, IconBookmark, IconChevronDown } from "@tabler/icons-react";
 import { useEffect, useRef, useCallback } from "react";
 
+type Mentor = {
+  slug: string;
+  name: string;
+  tagline: string;
+  avatar_url: string;
+};
+
 export default function Home() {
   const router = useRouter();
   const [input, setInput] = useState("");
+  const [mentors, setMentors] = useState<Mentor[]>([]);
+  const [selectedMentor, setSelectedMentor] = useState<Mentor | null>(null);
+  const [mentorDropdownOpen, setMentorDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetch("/api/mentors")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.mentors?.length) {
+          setMentors(data.mentors);
+          setSelectedMentor(data.mentors[0]);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setMentorDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSubmit = (text: string) => {
-    if (!text.trim()) return;
-    router.push(`/chat/colin-chapman?q=${encodeURIComponent(text.trim())}`);
+    if (!text.trim() || !selectedMentor) return;
+    router.push(`/chat/${selectedMentor.slug}?q=${encodeURIComponent(text.trim())}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -56,113 +89,179 @@ export default function Home() {
             background: 'linear-gradient(to bottom, transparent 0%, #1A1A1A 100%)',
           }}
         />
-        <div className="max-w-[800px] w-full mx-auto text-center">
-          {/* Category label */}
-          <p className="text-xs font-semibold text-amber uppercase tracking-[0.2em] mb-8 relative">
-            Expert Knowledge, On Demand
-          </p>
+        <div className="max-w-6xl w-full mx-auto grid md:grid-cols-2 gap-12 md:gap-16 items-center relative">
+          {/* Left column — hero copy */}
+          <div>
+            <p className="text-sm md:text-base font-semibold text-amber uppercase tracking-[0.2em] mb-8">
+              Expert Knowledge, On Demand
+            </p>
 
-          {/* Headline */}
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] text-white mb-6 relative">
-            Real Mentors.<br />
-            Real Frameworks.<br />
-            <span className="text-amber">Available Now.</span>
-          </h1>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] text-white mb-6">
+              Real Mentors.<br />
+              Real Frameworks.<br />
+              <span className="text-amber">Available Now.</span>
+            </h1>
 
-          {/* Subheadline */}
-          <p className="text-lg md:text-xl text-[#999] leading-relaxed max-w-[560px] mx-auto mb-10 relative">
-            Domain experts distilled into AI mentors you can talk to anytime. Not scraped content. Actual practitioner thinking, available 24/7.
-          </p>
+            <p className="text-lg md:text-xl text-[#999] leading-relaxed max-w-[480px] mb-10">
+              Domain experts distilled into AI mentors you can talk to anytime. Not scraped content. Actual practitioner thinking, available 24/7.
+            </p>
 
-          {/* Dual CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 relative">
-            <Link
-              href="/chat/colin-chapman"
-              className="inline-flex items-center gap-2 bg-amber text-white px-8 py-3.5 rounded-xl text-[15px] font-semibold hover:opacity-90 transition shadow-sm"
-            >
-              Talk to a Mentor <IconArrowRight size={18} stroke={2} />
-            </Link>
-            <a
-              href="#how-it-works"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-[15px] font-semibold text-[#999] border border-[#333] hover:border-amber hover:text-amber transition bg-transparent"
-            >
-              See How It Works
-            </a>
-          </div>
-
-          {/* Trust badges */}
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-[#666] relative">
-            <span className="flex items-center gap-1.5"><IconCheck size={15} className="text-amber" stroke={2.5} /> 5 free messages</span>
-            <span className="flex items-center gap-1.5"><IconCheck size={15} className="text-amber" stroke={2.5} /> No signup required</span>
-            <span className="flex items-center gap-1.5"><IconCheck size={15} className="text-amber" stroke={2.5} /> Real expert frameworks</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════
-          TRY IT — Chat window below the fold
-          ═══════════════════════════════════════════════ */}
-      <section className="px-6 py-24" style={{ background: "#FAFAF8" }}>
-        <div className="max-w-[720px] w-full mx-auto text-center">
-          <p className="text-xs font-semibold text-amber uppercase tracking-widest mb-4">Get Unstuck</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-3">What&apos;s your biggest sales problem right now?</h2>
-          <p className="text-[#737373] text-[15px] mb-10">Don&apos;t overthink it. Just type what&apos;s not working.</p>
-
-          {/* Input Box */}
-          <div className="mb-6">
-            <div className="relative">
-              <textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                rows={1}
-                placeholder="My outbound isn't working because..."
-                className="w-full px-6 py-4 text-[16px] rounded-2xl border border-[#E5E2DC] focus:border-amber focus:outline-none focus:ring-2 focus:ring-amber/20 transition resize-none bg-white text-[#1A1A1A] placeholder:text-[#999] shadow-sm"
-                style={{ minHeight: '60px' }}
-              />
-              <button
-                onClick={() => handleSubmit(input)}
-                disabled={!input.trim()}
-                className="absolute right-3 top-1/2 -translate-y-1/2 bg-amber text-white w-10 h-10 rounded-xl hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center font-bold text-lg"
+            <div className="flex flex-col sm:flex-row items-start gap-4 mb-10">
+              <Link
+                href="/chat/colin-chapman"
+                className="inline-flex items-center gap-2 bg-amber text-white px-8 py-3.5 rounded-xl text-[15px] font-semibold hover:opacity-90 transition shadow-sm"
               >
-                →
-              </button>
+                Talk to a Mentor <IconArrowRight size={18} stroke={2} />
+              </Link>
+              <a
+                href="#how-it-works"
+                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-[15px] font-semibold text-[#999] border border-[#333] hover:border-amber hover:text-amber transition bg-transparent"
+              >
+                See How It Works
+              </a>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-[#666]">
+              <span className="flex items-center gap-1.5"><IconCheck size={15} className="text-amber" stroke={2.5} /> 5 free messages</span>
+              <span className="flex items-center gap-1.5"><IconCheck size={15} className="text-amber" stroke={2.5} /> No signup required</span>
+              <span className="flex items-center gap-1.5"><IconCheck size={15} className="text-amber" stroke={2.5} /> Real expert frameworks</span>
             </div>
           </div>
 
-          {/* Prompt Suggestions */}
-          <div className="flex flex-wrap gap-3 justify-center">
-            <button
-              onClick={() => handleSubmit("My cold emails aren't getting replies")}
-              className="px-5 py-2.5 rounded-full border border-[#E5E2DC] bg-white text-[#555] text-[14px] hover:border-amber hover:text-amber transition"
-            >
-              My cold emails aren&apos;t getting replies
-            </button>
-            <button
-              onClick={() => handleSubmit("I built the product but don't know how to sell it")}
-              className="px-5 py-2.5 rounded-full border border-[#E5E2DC] bg-white text-[#555] text-[14px] hover:border-amber hover:text-amber transition"
-            >
-              I built the product but don&apos;t know how to sell it
-            </button>
-            <button
-              onClick={() => handleSubmit("How do I define my ICP?")}
-              className="px-5 py-2.5 rounded-full border border-[#E5E2DC] bg-white text-[#555] text-[14px] hover:border-amber hover:text-amber transition"
-            >
-              How do I define my ICP?
-            </button>
+          {/* Right column — chat CTA card with mentor selector */}
+          <div className="rounded-2xl border border-[#E5E2DC] bg-white p-8 shadow-2xl">
+            <p className="text-sm font-semibold text-amber uppercase tracking-widest mb-3">Get Started</p>
+            <h2 className="text-xl md:text-2xl font-bold text-[#1A1A1A] mb-2">What&apos;s your biggest problem right now?</h2>
+          <br></br>
+            {/* Mentor Selector */}
+            <div className="mb-5">
+              <div ref={dropdownRef} className="relative">
+                <button
+                  onClick={() => setMentorDropdownOpen(!mentorDropdownOpen)}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[#E5E2DC] bg-[#FAFAF8] hover:border-amber/40 transition text-left"
+                >
+                  <Image src={selectedMentor.avatar_url} alt={selectedMentor.name} width={32} height={32} className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-semibold text-[#1A1A1A] leading-tight">{selectedMentor.name}</p>
+                    <p className="text-[11px] text-[#999]">{selectedMentor.tagline}</p>
+                  </div>
+                  <IconChevronDown
+                    size={16}
+                    className={`text-[#999] transition-transform duration-200 ${mentorDropdownOpen ? "rotate-180" : ""}`}
+                    stroke={2}
+                  />
+                </button>
+
+                {mentorDropdownOpen && (
+                  <div className="absolute left-0 right-0 mt-2 rounded-xl border border-[#E5E2DC] bg-white shadow-lg z-20 overflow-hidden">
+                    {MENTORS.map((m) => (
+                      <button
+                        key={m.slug}
+                        onClick={() => { setSelectedMentor(m); setMentorDropdownOpen(false); }}
+                        className={`w-full flex items-center gap-3 px-4 py-3.5 hover:bg-[#FAFAF8] transition text-left ${
+                          m.slug === selectedMentor.slug ? "bg-amber/5" : ""
+                        }`}
+                      >
+                        <Image src={m.avatar_url} alt={m.name} width={32} height={32} className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[14px] font-semibold text-[#1A1A1A] leading-tight">{m.name}</p>
+                          <p className="text-[11px] text-[#999]">{m.tagline}</p>
+                        </div>
+                        {m.slug === selectedMentor.slug && (
+                          <IconCheck size={16} className="text-amber flex-shrink-0" stroke={2.5} />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Input Box */}
+            <div className="mb-4">
+              <div className="relative">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  rows={1}
+                  placeholder="My outbound isn't working because..."
+                  className="w-full px-5 py-3.5 text-[15px] rounded-xl border border-[#E5E2DC] focus:border-amber focus:outline-none focus:ring-2 focus:ring-amber/20 transition resize-none bg-[#FAFAF8] text-[#1A1A1A] placeholder:text-[#999] shadow-sm"
+                  style={{ minHeight: '56px' }}
+                />
+                <button
+                  onClick={() => handleSubmit(input)}
+                  disabled={!input.trim()}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 bg-amber text-white w-9 h-9 rounded-lg hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center font-bold text-base"
+                >
+                  →
+                </button>
+              </div>
+            </div>
+
+            {/* Prompt Suggestions */}
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => handleSubmit("My cold emails aren't getting replies")}
+                className="px-4 py-2 rounded-full border border-[#E5E2DC] text-[#555] text-[13px] hover:border-amber hover:text-amber transition"
+              >
+                My cold emails aren&apos;t getting replies
+              </button>
+              <button
+                onClick={() => handleSubmit("I built the product but don't know how to sell it")}
+                className="px-4 py-2 rounded-full border border-[#E5E2DC] text-[#555] text-[13px] hover:border-amber hover:text-amber transition"
+              >
+                I built the product but don&apos;t know how to sell it
+              </button>
+              <button
+                onClick={() => handleSubmit("How do I define my ICP?")}
+                className="px-4 py-2 rounded-full border border-[#E5E2DC] text-[#555] text-[13px] hover:border-amber hover:text-amber transition"
+              >
+                How do I define my ICP?
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════
-          WHO THIS IS FOR — dark section
+          WHO THIS IS FOR — pain point cards
           ═══════════════════════════════════════════════ */}
-      <section className="px-6 py-12" style={{ background: "#1A1A1A" }}>
-        <div className="max-w-2xl mx-auto text-center">
-          <p className="text-xs font-semibold text-amber uppercase tracking-widest mb-3">Who This Is For</p>
-          <p className="text-[#999] text-lg leading-relaxed">
-            <span className="font-semibold text-white">You&apos;re making decisions that could make or break your business.</span> But you&apos;re doing it alone, without anyone to sense-check your thinking. <span className="font-semibold text-white">Until now.</span>
-          </p>
+      <section className="px-6 py-20" style={{ background: "#F5F5F3" }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-sm md:text-base font-semibold text-amber uppercase tracking-widest mb-3">Who This Is For</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1A1A1A]">Sound familiar?</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              {
+                quote: "I just closed my first deal. Now I have no idea how to repeat it.",
+                role: "Early-stage founder",
+                detail: "You got lucky once. A mentor helps you turn that fluke into a repeatable process before your pipeline runs dry.",
+              },
+              {
+                quote: "I built something great but I can't explain why anyone should buy it.",
+                role: "Technical founder, first sales hire",
+                detail: "You can demo the product for an hour. But the moment someone asks 'why you?', you fumble. That's a positioning problem, not a product problem.",
+              },
+              {
+                quote: "I'm taking 6 sales calls a week and closing maybe one.",
+                role: "Founder doing outbound",
+                detail: "Something's breaking in discovery or pricing. A seasoned operator can usually spot it in 10 minutes — if you know what questions to ask.",
+              },
+            ].map((card) => (
+              <div key={card.role} className="bg-white rounded-2xl border border-[#E5E2DC] p-7 flex flex-col gap-4">
+                <p className="text-[17px] font-semibold text-[#1A1A1A] leading-snug">&ldquo;{card.quote}&rdquo;</p>
+                <div className="h-px bg-[#E5E2DC]" />
+                <div>
+                  <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-2">{card.role}</p>
+                  <p className="text-[14px] text-[#737373] leading-relaxed">{card.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -263,7 +362,7 @@ export default function Home() {
           ═══════════════════════════════════════════════ */}
       <section className="px-6 py-24">
         <div className="max-w-3xl mx-auto">
-          <p className="text-xs font-semibold text-amber uppercase tracking-widest text-center mb-4">Questions</p>
+          <p className="text-sm font-semibold text-amber uppercase tracking-widest text-center mb-4">Questions</p>
           <h2 className="text-3xl md:text-4xl font-bold text-[#1A1A1A] text-center mb-12">Before you ask Colin, ask us.</h2>
           <div className="space-y-3">
             {[
@@ -499,13 +598,12 @@ function HowItWorks() {
       style={{ background: current.bg }}
     >
       {/* Section header */}
-      <div className="px-6 pt-20 pb-8">
-        <p className="text-xs font-semibold text-amber uppercase tracking-widest text-center">How It Works</p>
-      </div>
-
       {/* Sticky container */}
       <div className="min-h-[200vh]">
-        <div className="sticky top-0 min-h-screen flex items-center">
+        <div className="sticky top-0 min-h-screen flex flex-col justify-center">
+          <div className="px-6 pt-8 pb-6">
+            <p className="text-sm md:text-base font-semibold text-amber uppercase tracking-widest text-center">How It Works</p>
+          </div>
           <div className="max-w-5xl mx-auto w-full px-6 grid md:grid-cols-2 gap-12 md:gap-20 items-center">
             {/* Left: Text steps */}
             <div className="space-y-16">

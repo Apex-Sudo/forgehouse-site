@@ -15,6 +15,27 @@ export async function POST(req: Request) {
   try {
     const { mentorName, email } = await req.json();
 
+    // #region agent log
+    fetch("http://127.0.0.1:7860/ingest/169d6f74-3402-4aca-8edc-53cea3641ed2", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Debug-Session-Id": "12fde0",
+      },
+      body: JSON.stringify({
+        sessionId: "12fde0",
+        hypothesisId: "H4",
+        location: "api/onboarding/generate:POST:parsed",
+        message: "generate handler received body",
+        data: {
+          hasMentorName: Boolean(mentorName),
+          hasEmail: Boolean(email),
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
+
     // Validate input
     if (!mentorName || !email) {
       return NextResponse.json(
@@ -53,11 +74,68 @@ export async function POST(req: Request) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://forgehouse.io";
     const onboardingLink = `${baseUrl}/onboard/${data.id}`;
 
-    await sendOnboardingInvitation({
+    const inviteResult = await sendOnboardingInvitation({
       to: email,
       mentorName,
       onboardingLink,
     });
+
+    if (!inviteResult.ok) {
+      const { error: rollbackError } = await supabase
+        .from("onboarding_sessions")
+        .delete()
+        .eq("id", data.id);
+      if (rollbackError) {
+        console.error(
+          "Failed to roll back onboarding session after email error:",
+          rollbackError
+        );
+      }
+      // #region agent log
+      fetch("http://127.0.0.1:7860/ingest/169d6f74-3402-4aca-8edc-53cea3641ed2", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Debug-Session-Id": "12fde0",
+        },
+        body: JSON.stringify({
+          sessionId: "12fde0",
+          runId: "post-fix",
+          hypothesisId: "H3",
+          location: "api/onboarding/generate:POST:inviteFailed",
+          message: "invite failed — returning error to client",
+          data: {
+            httpStatus: inviteResult.httpStatus,
+            rolledBack: !rollbackError,
+          },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
+      return NextResponse.json(
+        { error: inviteResult.error },
+        { status: inviteResult.httpStatus }
+      );
+    }
+
+    // #region agent log
+    fetch("http://127.0.0.1:7860/ingest/169d6f74-3402-4aca-8edc-53cea3641ed2", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Debug-Session-Id": "12fde0",
+      },
+      body: JSON.stringify({
+        sessionId: "12fde0",
+        runId: "post-fix",
+        hypothesisId: "H3",
+        location: "api/onboarding/generate:POST:afterInvite",
+        message: "sendOnboardingInvitation ok — returning 200 next",
+        data: { sessionId: data.id },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
 
     return NextResponse.json({
       sessionId: data.id,

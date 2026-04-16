@@ -13,8 +13,9 @@ function generateSlug(name: string): string {
 export async function GET() {
   const { data, error } = await supabase
     .from("mentors")
-    .select("slug, name, tagline, avatar_url, monthly_price")
+    .select("slug, name, tagline, avatar_url, monthly_price, is_free")
     .eq("is_active", true)
+    .eq("is_free", true)
     .order("sort_order");
 
   if (error) {

@@ -6,6 +6,10 @@ const resend = process.env.RESEND_API_KEY
 
 const FROM_ADDRESS = "ForgeHouse <onboarding@resend.dev>";
 
+export type SendOnboardingInvitationResult =
+  | { ok: true }
+  | { ok: false; error: string; httpStatus: number };
+
 function getBaseUrl(): string {
   return process.env.NEXT_PUBLIC_BASE_URL ?? "https://forgehouse.io";
 }
@@ -18,13 +22,57 @@ export async function sendOnboardingInvitation({
   to: string;
   mentorName: string;
   onboardingLink: string;
-}) {
+}): Promise<SendOnboardingInvitationResult> {
+  // #region agent log
+  fetch("http://127.0.0.1:7860/ingest/169d6f74-3402-4aca-8edc-53cea3641ed2", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Debug-Session-Id": "12fde0",
+    },
+    body: JSON.stringify({
+      sessionId: "12fde0",
+      hypothesisId: "H1",
+      location: "emails.ts:sendOnboardingInvitation:entry",
+      message: "invite email path entered",
+      data: {
+        hasResendClient: Boolean(resend),
+        envKeyLength: process.env.RESEND_API_KEY?.length ?? 0,
+        toLooksLikeEmail: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to),
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
+
   if (!resend) {
     console.error("RESEND_API_KEY not configured — skipping invitation email");
-    return;
+    // #region agent log
+    fetch("http://127.0.0.1:7860/ingest/169d6f74-3402-4aca-8edc-53cea3641ed2", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Debug-Session-Id": "12fde0",
+      },
+      body: JSON.stringify({
+        sessionId: "12fde0",
+        hypothesisId: "H1",
+        location: "emails.ts:sendOnboardingInvitation:skipped",
+        message: "no Resend client — email not sent",
+        data: {},
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
+    return {
+      ok: false,
+      error:
+        "Email delivery is not configured (RESEND_API_KEY is missing or empty).",
+      httpStatus: 503,
+    };
   }
 
-  await resend.emails.send({
+  const inviteSendResult = await resend.emails.send({
     from: FROM_ADDRESS,
     to,
     subject: `ForgeHouse — Begin your mentor onboarding`,
@@ -44,6 +92,50 @@ export async function sendOnboardingInvitation({
       </div>
     `,
   });
+
+  // #region agent log
+  fetch("http://127.0.0.1:7860/ingest/169d6f74-3402-4aca-8edc-53cea3641ed2", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Debug-Session-Id": "12fde0",
+    },
+    body: JSON.stringify({
+      sessionId: "12fde0",
+      hypothesisId: "H2",
+      location: "emails.ts:sendOnboardingInvitation:afterSend",
+      message: "Resend send returned",
+      data: {
+        hasEmailId: Boolean(inviteSendResult.data?.id),
+        resendError: inviteSendResult.error
+          ? {
+              name: inviteSendResult.error.name,
+              message: inviteSendResult.error.message,
+              statusCode: inviteSendResult.error.statusCode,
+            }
+          : null,
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
+
+  if (inviteSendResult.error) {
+    const sc = inviteSendResult.error.statusCode;
+    let httpStatus: number;
+    if (typeof sc === "number" && sc >= 400 && sc < 600) {
+      httpStatus = sc;
+    } else {
+      httpStatus = 502;
+    }
+    return {
+      ok: false,
+      error: inviteSendResult.error.message,
+      httpStatus,
+    };
+  }
+
+  return { ok: true };
 }
 
 export async function sendMentorAccountReady({

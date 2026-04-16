@@ -44,11 +44,18 @@ export async function POST(
 
   const onboardingLink = `${getBaseUrl()}/onboard/${row.id}`;
 
-  await sendOnboardingInvitation({
+  const inviteResult = await sendOnboardingInvitation({
     to: row.email,
     mentorName: row.mentor_name,
     onboardingLink,
   });
+
+  if (!inviteResult.ok) {
+    return NextResponse.json(
+      { error: inviteResult.error },
+      { status: inviteResult.httpStatus }
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }

@@ -466,6 +466,7 @@ function AdminOnboardingPageContent() {
                     <th className="px-4 py-3 font-medium text-[#737373]">Readiness</th>
                     <th className="px-4 py-3 font-medium text-[#737373]">Messages</th>
                     <th className="px-4 py-3 font-medium text-[#737373]">Created</th>
+                    <th className="px-4 py-3 font-medium text-[#737373]">Expires</th>
                     <th className="w-12 px-2 py-3" aria-hidden />
                   </tr>
                 </thead>
@@ -498,6 +499,13 @@ function AdminOnboardingPageContent() {
                       </td>
                       <td className="px-4 py-3 text-[#999]">
                         {new Date(ob.createdAt).toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </td>
+                      <td className="px-4 py-3 text-[#999]">
+                        {new Date(ob.expiresAt).toLocaleDateString("en-GB", {
                           day: "numeric",
                           month: "short",
                           year: "numeric",
