@@ -135,14 +135,6 @@ export default function Home() {
             <p className="text-xs font-semibold text-amber uppercase tracking-[0.18em] mb-2">Get Started</p>
             <h2 className="text-xl md:text-2xl font-bold text-[#1A1A1A] mb-3">What&apos;s your biggest GTM blocker right now?</h2>
 
-            <div className="flex flex-wrap items-center gap-2 mb-4">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber/10 text-amber text-[11px] font-medium">
-                <IconCheck size={13} stroke={2.5} /> Agent available now
-              </span>
-              <span className="inline-flex items-center px-2.5 py-1 rounded-full border border-[#E5E2DC] text-[#666] text-[11px] font-medium">
-                Built from mentor frameworks
-              </span>
-            </div>
 
             {/* Mentor Selector */}
             <div className="mb-4 border-b border-[#F1EFEA] pb-4">
