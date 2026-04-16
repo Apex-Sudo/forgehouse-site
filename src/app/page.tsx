@@ -248,22 +248,25 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
               {
-                situation: "You get replies, but pipeline quality is weak.",
-                broken: "ICP, qualification, or message to market fit is off.",
-                start: "Start with GTM Mentor",
-                prompt: "My outbound gets replies, but pipeline quality is weak. Where is the breakdown?",
+                situation: "You need founder-led sales that actually turns into pipeline.",
+                broken: "Your outreach, qualification, or discovery flow is leaking revenue before deals even get serious.",
+                start: "Start with Colin's B2B Sales Agent",
+                slug: "colin-chapman",
+                prompt: "I need help fixing founder-led sales. Diagnose my outbound, qualification, and discovery process.",
               },
               {
-                situation: "Your product is strong, but positioning is fuzzy.",
-                broken: "Buyers do not clearly understand why you over alternatives.",
-                start: "Start with Positioning Mentor",
-                prompt: "My product is solid, but my positioning and ICP are unclear. Help me tighten both.",
+                situation: "You are deciding whether AI is a real advantage or just noise.",
+                broken: "The bottleneck is not tooling, it is knowing what to build, how to scope it, and whether it should exist at all.",
+                start: "Start with Kyle's AI Mentor",
+                slug: "kyle-parratt",
+                prompt: "Help me figure out if AI is actually the right move for this business, and what I should build first.",
               },
               {
-                situation: "You are taking calls, but close rates stay low.",
-                broken: "Discovery flow, objection handling, or pricing narrative is leaking trust.",
-                start: "Start with Sales Process Mentor",
-                prompt: "I am taking sales calls but close rates are low. Diagnose my discovery and pricing flow.",
+                situation: "Your GTM has motion, but the strategy still feels scattered.",
+                broken: "Positioning, ICP, and channel focus are not aligned, so activity keeps happening without compounding.",
+                start: "Start with Ayush's GTM Module",
+                slug: "ayush-poddar",
+                prompt: "My GTM has activity but not enough clarity. Help me tighten positioning, ICP, and channel focus.",
               },
             ].map((card) => (
               <div key={card.start} className="bg-white rounded-2xl border border-[#E5E2DC] p-7 flex flex-col gap-4">
@@ -274,7 +277,7 @@ export default function Home() {
                   <p className="text-[14px] text-[#737373] leading-relaxed">{card.broken}</p>
                 </div>
                 <button
-                  onClick={() => handleSubmit(card.prompt)}
+                  onClick={() => router.push(`/chat/${card.slug}?q=${encodeURIComponent(card.prompt)}`)}
                   className="mt-auto inline-flex items-center justify-center bg-amber text-white px-4 py-2.5 rounded-xl text-[13px] font-semibold hover:opacity-90 transition"
                 >
                   {card.start} <span className="ml-1">→</span>
