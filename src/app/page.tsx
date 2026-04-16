@@ -43,6 +43,8 @@ export default function Home() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const mentorForUI = selectedMentor ?? mentors[0] ?? null;
+
   const handleSubmit = (text: string) => {
     if (!text.trim() || !selectedMentor) return;
     router.push(`/chat/${selectedMentor.slug}?q=${encodeURIComponent(text.trim())}`);
@@ -140,11 +142,19 @@ export default function Home() {
                   onClick={() => setMentorDropdownOpen(!mentorDropdownOpen)}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[#E5E2DC] bg-[#FAFAF8] hover:border-amber/40 transition text-left"
                 >
-                  <Image src={selectedMentor.avatar_url} alt={selectedMentor.name} width={32} height={32} className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-semibold text-[#1A1A1A] leading-tight">{selectedMentor.name}</p>
-                    <p className="text-[11px] text-[#999]">{selectedMentor.tagline}</p>
-                  </div>
+                  {mentorForUI ? (
+                    <>
+                      <Image src={mentorForUI.avatar_url} alt={mentorForUI.name} width={32} height={32} className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[14px] font-semibold text-[#1A1A1A] leading-tight">{mentorForUI.name}</p>
+                        <p className="text-[11px] text-[#999]">{mentorForUI.tagline}</p>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] font-semibold text-[#1A1A1A] leading-tight">Loading mentors...</p>
+                    </div>
+                  )}
                   <IconChevronDown
                     size={16}
                     className={`text-[#999] transition-transform duration-200 ${mentorDropdownOpen ? "rotate-180" : ""}`}
@@ -159,7 +169,7 @@ export default function Home() {
                         key={m.slug}
                         onClick={() => { setSelectedMentor(m); setMentorDropdownOpen(false); }}
                         className={`w-full flex items-center gap-3 px-4 py-3.5 hover:bg-[#FAFAF8] transition text-left ${
-                          m.slug === selectedMentor.slug ? "bg-amber/5" : ""
+                          m.slug === mentorForUI?.slug ? "bg-amber/5" : ""
                         }`}
                       >
                         <Image src={m.avatar_url} alt={m.name} width={32} height={32} className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
@@ -167,7 +177,7 @@ export default function Home() {
                           <p className="text-[14px] font-semibold text-[#1A1A1A] leading-tight">{m.name}</p>
                           <p className="text-[11px] text-[#999]">{m.tagline}</p>
                         </div>
-                        {m.slug === selectedMentor.slug && (
+                        {m.slug === mentorForUI?.slug && (
                           <IconCheck size={16} className="text-amber flex-shrink-0" stroke={2.5} />
                         )}
                       </button>
