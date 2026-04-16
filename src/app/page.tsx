@@ -164,7 +164,7 @@ export default function Home() {
 
                 {mentorDropdownOpen && (
                   <div className="absolute left-0 right-0 mt-2 rounded-xl border border-[#E5E2DC] bg-white shadow-lg z-20 overflow-hidden">
-                    {MENTORS.map((m) => (
+                    {mentors.map((m) => (
                       <button
                         key={m.slug}
                         onClick={() => { setSelectedMentor(m); setMentorDropdownOpen(false); }}
