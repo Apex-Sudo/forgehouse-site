@@ -131,7 +131,7 @@ export default function Home() {
           </div>
 
           {/* Right column — chat CTA card with mentor selector */}
-          <div className="rounded-2xl border border-[#E5E2DC] bg-white p-7 md:p-8 shadow-2xl">
+          <div className="rounded-2xl border border-[#E5E2DC] bg-white p-7 md:p-8 shadow-2xl min-h-[520px] flex flex-col">
             <p className="text-xs font-semibold text-amber uppercase tracking-[0.18em] mb-2">Get Started</p>
             <h2 className="text-xl md:text-2xl font-bold text-[#1A1A1A] mb-3">What&apos;s your biggest GTM blocker right now?</h2>
 
@@ -197,47 +197,25 @@ export default function Home() {
             </div>
 
             {/* Input Box */}
-            <div className="mb-3">
+            <div className="mt-auto">
               <div className="relative">
                 <textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  rows={1}
+                  rows={2}
                   placeholder="My outbound stalls after first replies..."
                   className="w-full pr-28 pl-4 py-3 text-[15px] rounded-xl border border-[#E5E2DC] focus:border-amber focus:outline-none focus:ring-2 focus:ring-amber/20 transition resize-none bg-[#FAFAF8] text-[#1A1A1A] placeholder:text-[#999] shadow-sm"
-                  style={{ minHeight: '56px' }}
+                  style={{ minHeight: '86px' }}
                 />
                 <button
                   onClick={() => handleSubmit(input)}
                   disabled={!input.trim()}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-amber text-white h-10 px-3 rounded-lg hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1 text-[13px] font-semibold"
+                  className="absolute right-2 bottom-2 bg-amber text-white h-10 px-3 rounded-lg hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1 text-[13px] font-semibold"
                 >
                   Start chat <IconArrowRight size={14} stroke={2.5} />
                 </button>
               </div>
-            </div>
-
-            {/* Prompt Suggestions */}
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => handleSubmit("Why are my cold emails getting ignored?")}
-                className="px-3.5 py-2 rounded-full border border-[#E5E2DC] text-[#555] text-[13px] hover:border-amber hover:text-amber transition"
-              >
-                Why are my cold emails getting ignored?
-              </button>
-              <button
-                onClick={() => handleSubmit("How do I fix weak pipeline quality?")}
-                className="px-3.5 py-2 rounded-full border border-[#E5E2DC] text-[#555] text-[13px] hover:border-amber hover:text-amber transition"
-              >
-                How do I fix weak pipeline quality?
-              </button>
-              <button
-                onClick={() => handleSubmit("What's broken in my ICP definition?")}
-                className="px-3.5 py-2 rounded-full border border-[#E5E2DC] text-[#555] text-[13px] hover:border-amber hover:text-amber transition"
-              >
-                What&apos;s broken in my ICP definition?
-              </button>
             </div>
           </div>
         </div>
