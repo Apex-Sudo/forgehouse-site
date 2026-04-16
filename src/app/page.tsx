@@ -22,7 +22,7 @@ export default function Home() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch("/api/mentors")
+    fetch("/api/mentors/free")
       .then((res) => res.json())
       .then((data) => {
         if (data.mentors?.length) {
@@ -136,7 +136,7 @@ export default function Home() {
             <h2 className="text-xl md:text-2xl font-bold text-[#1A1A1A] mb-2">What&apos;s your biggest problem right now?</h2>
           <br></br>
             {/* Mentor Selector */}
-            <div className="mb-5">
+            {selectedMentor && <div className="mb-5">
               <div ref={dropdownRef} className="relative">
                 <button
                   onClick={() => setMentorDropdownOpen(!mentorDropdownOpen)}
@@ -185,7 +185,7 @@ export default function Home() {
                   </div>
                 )}
               </div>
-            </div>
+            </div>}
 
             {/* Input Box */}
             <div className="mb-4">

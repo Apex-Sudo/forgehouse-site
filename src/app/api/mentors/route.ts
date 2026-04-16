@@ -15,7 +15,6 @@ export async function GET() {
     .from("mentors")
     .select("slug, name, tagline, avatar_url, monthly_price, is_free")
     .eq("is_active", true)
-    .eq("is_free", true)
     .order("sort_order");
 
   if (error) {
