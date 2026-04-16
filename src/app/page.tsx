@@ -218,13 +218,13 @@ export default function Home() {
                   onKeyDown={handleKeyDown}
                   rows={2}
                   placeholder="My outbound stalls after first replies..."
-                  className="w-full pr-28 pl-4 py-3 text-[15px] rounded-xl border border-[#E5E2DC] focus:border-amber focus:outline-none focus:ring-2 focus:ring-amber/20 transition resize-none bg-[#FAFAF8] text-[#1A1A1A] placeholder:text-[#999] shadow-sm"
-                  style={{ minHeight: '86px' }}
+                  className="w-full pr-32 pl-4 py-3 text-[15px] rounded-xl border border-[#E5E2DC] focus:border-amber focus:outline-none focus:ring-2 focus:ring-amber/20 transition resize-none bg-[#FAFAF8] text-[#1A1A1A] placeholder:text-[#999] shadow-sm"
+                  style={{ minHeight: '90px' }}
                 />
                 <button
                   onClick={() => handleSubmit(input)}
                   disabled={!input.trim()}
-                  className="absolute right-2 bottom-2 bg-amber text-white h-10 px-3 rounded-lg hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1 text-[13px] font-semibold"
+                  className="absolute right-3 bottom-3 bg-amber text-white h-10 px-3 rounded-lg hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1 text-[13px] font-semibold"
                 >
                   Start chat <IconArrowRight size={14} stroke={2.5} />
                 </button>
