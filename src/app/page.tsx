@@ -240,35 +240,45 @@ export default function Home() {
       <section className="px-6 py-20" style={{ background: "#F5F5F3" }}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-sm md:text-base font-semibold text-amber uppercase tracking-widest mb-3">Who This Is For</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1A1A1A]">Sound familiar?</h2>
+            <p className="text-sm md:text-base font-semibold text-amber uppercase tracking-widest mb-3">If this is you, start here</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1A1A1A]">Pick your bottleneck and get unstuck fast.</h2>
+            <p className="text-[15px] text-[#737373] mt-3">No theory dump, just the right mentor path for your current stage.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
               {
-                quote: "I just closed my first deal. Now I have no idea how to repeat it.",
-                role: "Early-stage founder",
-                detail: "You got lucky once. A mentor helps you turn that fluke into a repeatable process before your pipeline runs dry.",
+                situation: "You get replies, but pipeline quality is weak.",
+                broken: "ICP, qualification, or message to market fit is off.",
+                start: "Start with GTM Mentor",
+                prompt: "My outbound gets replies, but pipeline quality is weak. Where is the breakdown?",
               },
               {
-                quote: "I built something great but I can't explain why anyone should buy it.",
-                role: "Technical founder, first sales hire",
-                detail: "You can demo the product for an hour. But the moment someone asks 'why you?', you fumble. That's a positioning problem, not a product problem.",
+                situation: "Your product is strong, but positioning is fuzzy.",
+                broken: "Buyers do not clearly understand why you over alternatives.",
+                start: "Start with Positioning Mentor",
+                prompt: "My product is solid, but my positioning and ICP are unclear. Help me tighten both.",
               },
               {
-                quote: "I'm taking 6 sales calls a week and closing maybe one.",
-                role: "Founder doing outbound",
-                detail: "Something's breaking in discovery or pricing. A seasoned operator can usually spot it in 10 minutes — if you know what questions to ask.",
+                situation: "You are taking calls, but close rates stay low.",
+                broken: "Discovery flow, objection handling, or pricing narrative is leaking trust.",
+                start: "Start with Sales Process Mentor",
+                prompt: "I am taking sales calls but close rates are low. Diagnose my discovery and pricing flow.",
               },
             ].map((card) => (
-              <div key={card.role} className="bg-white rounded-2xl border border-[#E5E2DC] p-7 flex flex-col gap-4">
-                <p className="text-[17px] font-semibold text-[#1A1A1A] leading-snug">&ldquo;{card.quote}&rdquo;</p>
+              <div key={card.start} className="bg-white rounded-2xl border border-[#E5E2DC] p-7 flex flex-col gap-4">
+                <p className="text-[17px] font-semibold text-[#1A1A1A] leading-snug">{card.situation}</p>
                 <div className="h-px bg-[#E5E2DC]" />
                 <div>
-                  <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-2">{card.role}</p>
-                  <p className="text-[14px] text-[#737373] leading-relaxed">{card.detail}</p>
+                  <p className="text-xs font-semibold text-amber uppercase tracking-wider mb-2">What is actually broken</p>
+                  <p className="text-[14px] text-[#737373] leading-relaxed">{card.broken}</p>
                 </div>
+                <button
+                  onClick={() => handleSubmit(card.prompt)}
+                  className="mt-auto inline-flex items-center justify-center bg-[#1A1A1A] text-white px-4 py-2.5 rounded-xl text-[13px] font-semibold hover:bg-[#2A2A2A] transition"
+                >
+                  {card.start} <span className="ml-1">→</span>
+                </button>
               </div>
             ))}
           </div>
