@@ -196,6 +196,27 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Fake transcript preview */}
+            <div className="flex-1 mb-4 rounded-xl border border-[#F1EFEA] bg-[#FCFCFB] p-4 space-y-3">
+              <div className="flex justify-start">
+                <div className="max-w-[85%] rounded-2xl rounded-bl-md bg-white border border-[#EAE7E1] px-3.5 py-2.5 text-[13px] text-[#4A4A4A] leading-relaxed">
+                  Tell me your SaaS stage and biggest GTM blocker, I&apos;ll give you the fastest fix path.
+                </div>
+              </div>
+              <div className="flex justify-end">
+                <div className="max-w-[78%] rounded-2xl rounded-br-md bg-amber/15 border border-amber/20 px-3.5 py-2.5 text-[13px] text-[#3A3327] leading-relaxed">
+                  Early-stage B2B SaaS. Outbound gets replies, but pipeline quality is weak.
+                </div>
+              </div>
+              <div className="flex justify-start">
+                <div className="inline-flex items-center gap-2 rounded-2xl rounded-bl-md bg-white border border-[#EAE7E1] px-3.5 py-2 text-[12px] text-[#777]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#B9B2A6] animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#B9B2A6] animate-pulse [animation-delay:150ms]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#B9B2A6] animate-pulse [animation-delay:300ms]" />
+                </div>
+              </div>
+            </div>
+
             {/* Input Box */}
             <div className="mt-auto">
               <div className="relative">
