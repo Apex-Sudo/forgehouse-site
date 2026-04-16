@@ -13,6 +13,38 @@ type Mentor = {
   avatar_url: string;
 };
 
+const mentorPreviewContent: Record<string, {
+  heading: string;
+  agentLine: string;
+  userLine: string;
+  placeholder: string;
+}> = {
+  "colin-chapman": {
+    heading: "Where is your sales process breaking down?",
+    agentLine: "Tell me where deals are stalling, I’ll help you find the leak in your sales process.",
+    userLine: "Outbound gets responses, but discovery calls rarely turn into qualified pipeline.",
+    placeholder: "My outbound gets replies, but discovery calls go nowhere...",
+  },
+  "kyle-parratt": {
+    heading: "What AI problem are you actually trying to solve?",
+    agentLine: "Tell me the workflow, bottleneck, or idea you want to evaluate, and I’ll help you scope the right AI move.",
+    userLine: "We want to use AI, but I’m not sure if we need automation, an agent, or no AI at all.",
+    placeholder: "Should we build this with AI, automation, or not at all?...",
+  },
+  "ayush-poddar": {
+    heading: "What feels off in your GTM right now?",
+    agentLine: "Tell me where GTM feels scattered, and I’ll help you tighten positioning, ICP, and channel focus.",
+    userLine: "We’re doing a lot of GTM activity, but it doesn’t feel focused or compounding.",
+    placeholder: "Our GTM has activity, but not enough clarity or momentum...",
+  },
+  "leon-freier": {
+    heading: "What is the biggest bottleneck in your STR operation?",
+    agentLine: "Tell me where bookings, guest experience, or revenue feel weak, and I’ll help you diagnose it.",
+    userLine: "Occupancy is decent, but guest experience and repeatability still feel inconsistent.",
+    placeholder: "Our STR business is running, but guest experience still feels inconsistent...",
+  },
+};
+
 export default function Home() {
   const router = useRouter();
   const [input, setInput] = useState("");
@@ -44,6 +76,19 @@ export default function Home() {
   }, []);
 
   const mentorForUI = selectedMentor ?? mentors[0] ?? null;
+  const previewContent = mentorForUI
+    ? (mentorPreviewContent[mentorForUI.slug] ?? {
+        heading: `What do you want help with from ${mentorForUI.name}?`,
+        agentLine: `Tell me the bottleneck you want to work through, and I’ll help you find the fastest path forward.`,
+        userLine: `I know where I want to grow, but I need clearer direction on what to fix first.`,
+        placeholder: `Describe the problem you want help solving...`,
+      })
+    : {
+        heading: "What problem do you want help solving right now?",
+        agentLine: "Tell me the bottleneck, and I’ll help you find the fastest path forward.",
+        userLine: "I need clear direction on what to fix first.",
+        placeholder: "Describe the problem you want help solving...",
+      };
 
   const handleSubmit = (text: string) => {
     if (!text.trim() || !selectedMentor) return;
@@ -133,7 +178,7 @@ export default function Home() {
           {/* Right column — chat CTA card with mentor selector */}
           <div className="rounded-2xl border border-[#E5E2DC] bg-white p-7 md:p-8 shadow-2xl min-h-[520px] flex flex-col">
             <p className="text-xs font-semibold text-amber uppercase tracking-[0.18em] mb-2">Get Started</p>
-            <h2 className="text-xl md:text-2xl font-bold text-[#1A1A1A] mb-3">What&apos;s your biggest GTM blocker right now?</h2>
+            <h2 className="text-xl md:text-2xl font-bold text-[#1A1A1A] mb-3">{previewContent.heading}</h2>
 
 
             {/* Mentor Selector */}
@@ -192,12 +237,12 @@ export default function Home() {
             <div className="flex-1 mb-4 rounded-xl border border-[#F1EFEA] bg-[#FCFCFB] p-4 space-y-3">
               <div className="flex justify-start">
                 <div className="max-w-[85%] rounded-2xl rounded-bl-md bg-white border border-[#EAE7E1] px-3.5 py-2.5 text-[13px] text-[#4A4A4A] leading-relaxed">
-                  Tell me your SaaS stage and biggest GTM blocker, I&apos;ll give you the fastest fix path.
+                  {previewContent.agentLine}
                 </div>
               </div>
               <div className="flex justify-end">
                 <div className="max-w-[78%] rounded-2xl rounded-br-md bg-amber/15 border border-amber/20 px-3.5 py-2.5 text-[13px] text-[#3A3327] leading-relaxed">
-                  Early-stage B2B SaaS. Outbound gets replies, but pipeline quality is weak.
+                  {previewContent.userLine}
                 </div>
               </div>
               <div className="flex justify-start">
@@ -217,7 +262,7 @@ export default function Home() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   rows={2}
-                  placeholder="My outbound stalls after first replies..."
+                  placeholder={previewContent.placeholder}
                   className="w-full pr-32 pl-4 py-3 text-[15px] rounded-xl border border-[#E5E2DC] focus:border-amber focus:outline-none focus:ring-2 focus:ring-amber/20 transition resize-none bg-[#FAFAF8] text-[#1A1A1A] placeholder:text-[#999] shadow-sm"
                   style={{ minHeight: '90px' }}
                 />
