@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { requireAdmin } from "@/lib/admin-auth";
 import { sendMentorAccountReady } from "@/lib/emails";
+import { setSubscriptionActive } from "@/lib/subscription";
 
 function toSlug(name: string): string {
   return name
@@ -64,6 +65,7 @@ export async function POST(
       );
     }
 
+    await setSubscriptionActive(email, "admin-mentor");
     await sendMentorAccountReady({ to: email, mentorName: session.mentor_name });
 
     return NextResponse.json({
@@ -94,6 +96,7 @@ export async function POST(
     );
   }
 
+  await setSubscriptionActive(email, "admin-mentor");
   await sendMentorAccountReady({ to: email, mentorName: session.mentor_name });
 
   return NextResponse.json({

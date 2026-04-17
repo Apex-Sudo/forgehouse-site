@@ -2,6 +2,7 @@ import { after } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { supabase } from "@/lib/supabase";
 import { captureServerEvent } from "@/lib/posthog";
+import { setSubscriptionActive, setSubscriptionInactive } from "@/lib/subscription";
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -53,6 +54,8 @@ export async function POST(req: Request) {
           })
           .eq("id", userId);
 
+        await setSubscriptionActive(email, customerId ?? "");
+
         // Move free tier conversations to permanent
         if (mentorSlug) {
           const { data: freeConvos } = await supabase
@@ -97,6 +100,7 @@ export async function POST(req: Request) {
       if (customerId) {
         const customer = await stripe.customers.retrieve(customerId);
         if (!customer.deleted && customer.email) {
+          await setSubscriptionInactive(customer.email);
           await supabase
             .from("users")
             .update({ subscribed: false })
@@ -113,6 +117,14 @@ export async function POST(req: Request) {
       const customerId = typeof subscription.customer === "string" ? subscription.customer : null;
       if (customerId) {
         const isActive = subscription.status === "active" || subscription.status === "trialing";
+        const customer = await stripe.customers.retrieve(customerId);
+        if (!customer.deleted && customer.email) {
+          if (isActive) {
+            await setSubscriptionActive(customer.email, customerId);
+          } else {
+            await setSubscriptionInactive(customer.email);
+          }
+        }
         await supabase
           .from("users")
           .update({ subscribed: isActive })
