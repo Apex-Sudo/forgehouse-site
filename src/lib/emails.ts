@@ -4,7 +4,7 @@ const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
 
-const FROM_ADDRESS = "ForgeHouse <onboarding@resend.dev>";
+const FROM_ADDRESS = "ForgeHouse <onboarding@forgehouse.io>";
 
 export type SendOnboardingInvitationResult =
   | { ok: true }
