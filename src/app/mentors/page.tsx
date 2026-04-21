@@ -9,6 +9,7 @@ type Mentor = {
   name: string;
   tagline: string;
   avatar_url: string;
+  bio: string | null;
 };
 
 export default function ModulesPage() {
@@ -41,7 +42,10 @@ export default function ModulesPage() {
         const res = await fetch("/api/mentors");
         if (res.ok) {
           const data = await res.json();
-          setMentors(data?.mentors ?? []);
+          const list = data?.mentors;
+          if (Array.isArray(list)) {
+            setMentors(list);
+          }
         }
       } catch {
         // silent
@@ -110,9 +114,11 @@ export default function ModulesPage() {
                   </div>
                 </div>
 
-                <p className="text-foreground/80 text-[15px] leading-relaxed">
-                  Real-world expertise distilled into an AI mentor. Chat live or plug this module into your agent workflows.
-                </p>
+                {m.bio != null && m.bio.trim() !== "" && (
+                  <p className="text-foreground/80 text-[15px] leading-relaxed">
+                    {m.bio}
+                  </p>
+                )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Link

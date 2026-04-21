@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { PLATFORM_MONTHLY_PRICE_USD } from "@/lib/platform-pricing";
 
 export interface MentorPricing {
   stripePriceId: string;
@@ -7,7 +8,7 @@ export interface MentorPricing {
 }
 
 export const PLATFORM_PRICE_ID = process.env.STRIPE_PLATFORM_PRICE_ID || "price_PLATFORM_PLACEHOLDER";
-export const PLATFORM_MONTHLY_PRICE = 47;
+export const PLATFORM_MONTHLY_PRICE = PLATFORM_MONTHLY_PRICE_USD;
 
 export async function getMentorPricing(slug: string): Promise<MentorPricing | null> {
   const { data } = await supabase
@@ -29,5 +30,5 @@ export async function getMentorPricing(slug: string): Promise<MentorPricing | nu
 export async function getTotalPrice(slug: string): Promise<number | null> {
   const mentor = await getMentorPricing(slug);
   if (!mentor) return null;
-  return PLATFORM_MONTHLY_PRICE + mentor.monthlyPrice;
+  return PLATFORM_MONTHLY_PRICE_USD + mentor.monthlyPrice / 100;
 }

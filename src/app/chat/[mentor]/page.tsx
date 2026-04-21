@@ -675,7 +675,11 @@ function ChatContent() {
               <div className="text-center">
                 <p className="text-sm text-foreground/90 mb-1 font-medium">You&apos;ve used your {FREE_MESSAGE_LIMIT} free messages.</p>
                 <p className="text-xs text-muted mb-4">Subscribe to keep talking to {mc.name} and save your conversations.</p>
-                <UpgradePrompt mentorSlug={mentorSlug} mentorName={mc.name} mentorPrice={mc.monthly_price} />
+                <UpgradePrompt
+                  mentorSlug={mentorSlug}
+                  mentorName={mc.name}
+                  mentorMonthlyPriceCents={mc.monthly_price}
+                />
               </div>
             </div>
           ) : (

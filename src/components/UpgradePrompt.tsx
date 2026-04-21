@@ -1,29 +1,49 @@
 "use client";
 import { useState } from "react";
+import { PLATFORM_MONTHLY_PRICE_USD } from "@/lib/platform-pricing";
 
 interface UpgradePromptProps {
   mentorSlug: string;
   mentorName: string;
-  mentorPrice?: number;
+  /** Stored amount in cents (same as `mentors.monthly_price`). */
+  mentorMonthlyPriceCents: number;
+}
+
+function formatUsd(amount: number): string {
+  return amount.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
 }
 
 export default function UpgradePrompt({
   mentorSlug,
   mentorName,
-  mentorPrice = 1,
+  mentorMonthlyPriceCents,
 }: UpgradePromptProps) {
   const [loading, setLoading] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [error, setError] = useState("");
-  const total = 47 + mentorPrice;
+  const mentorMonthlyUsd = mentorMonthlyPriceCents / 100;
+  const totalMonthlyUsd = PLATFORM_MONTHLY_PRICE_USD + mentorMonthlyUsd;
 
   if (dismissed) return null;
 
   const handleSubscribe = async () => {
     setLoading(true);
     setError("");
-    window.posthog?.capture("checkout_started", { mentor: mentorSlug, mentor_name: mentorName, price: total });
-    window.posthog?.capture("subscription_started", { mentor: mentorSlug, mentor_name: mentorName, price: total });
+    window.posthog?.capture("checkout_started", {
+      mentor: mentorSlug,
+      mentor_name: mentorName,
+      price_usd: totalMonthlyUsd,
+    });
+    window.posthog?.capture("subscription_started", {
+      mentor: mentorSlug,
+      mentor_name: mentorName,
+      price_usd: totalMonthlyUsd,
+    });
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -58,15 +78,15 @@ export default function UpgradePrompt({
         <div className="text-xs text-muted mb-4 space-y-0.5">
           <div className="flex justify-between">
             <span>ForgeHouse Platform</span>
-            <span>$47/mo</span>
+            <span>{formatUsd(PLATFORM_MONTHLY_PRICE_USD)}/mo</span>
           </div>
           <div className="flex justify-between">
             <span>{mentorName}</span>
-            <span>${mentorPrice}/mo</span>
+            <span>{formatUsd(mentorMonthlyUsd)}/mo</span>
           </div>
           <div className="flex justify-between pt-1.5 border-t border-white/[0.06] text-foreground/80 font-medium">
             <span>Total</span>
-            <span>${total}/mo</span>
+            <span>{formatUsd(totalMonthlyUsd)}/mo</span>
           </div>
         </div>
 
@@ -76,7 +96,7 @@ export default function UpgradePrompt({
             disabled={loading}
             className="flex-1 bg-amber text-white py-2.5 rounded-xl font-semibold text-sm hover:bg-amber-dark transition disabled:opacity-50 cursor-pointer"
           >
-            {loading ? "Loading..." : `Subscribe — $${total}/mo`}
+            {loading ? "Loading..." : `Subscribe — ${formatUsd(totalMonthlyUsd)}/mo`}
           </button>
           <button
             onClick={() => setDismissed(true)}
