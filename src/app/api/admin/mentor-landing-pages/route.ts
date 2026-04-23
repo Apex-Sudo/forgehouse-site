@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { requireAdmin } from "@/lib/admin-auth";
+import { requireAdminRoute } from "@/lib/admin-route-guard";
 import {
   emptyMentorLandingContent,
   mentorLandingContentSchema,
@@ -8,13 +8,7 @@ import {
 } from "@/types/mentor-landing";
 
 export async function GET() {
-  const authResult = await requireAdmin();
-  if ("error" in authResult) {
-    return NextResponse.json(
-      { error: authResult.error },
-      { status: authResult.status }
-    );
-  }
+  await requireAdminRoute();
 
   const { data, error } = await supabase
     .from("mentor_landing_pages")
@@ -33,13 +27,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const authResult = await requireAdmin();
-  if ("error" in authResult) {
-    return NextResponse.json(
-      { error: authResult.error },
-      { status: authResult.status }
-    );
-  }
+  await requireAdminRoute();
 
   let body: unknown;
   try {

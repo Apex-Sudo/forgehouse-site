@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   IconUsers,
   IconCreditCard,
@@ -120,15 +121,23 @@ function PipelineBar({
 }
 
 export default function AdminDashboardPage() {
+  const router = useRouter();
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/admin/metrics")
-      .then((res) => res.json())
-      .then((data) => setMetrics(data))
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    Promise.all([
+      fetch("/api/auth/session").then((r) => r.json()),
+      fetch("/api/admin/metrics").then((r) => r.json()),
+    ]).then(([sessionData, metricsData]) => {
+      if (sessionData?.user?.role === "mentor") {
+        router.replace("/admin/mentor-overview");
+        return;
+      }
+      setMetrics(metricsData);
+      setLoading(false);
+    }).catch(() => setLoading(false));
   }, []);
 
   if (loading) {

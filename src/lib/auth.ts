@@ -132,7 +132,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (session.user?.email) {
         const { data } = await supabase
           .from("users")
-          .select("id, role")
+          .select("id, role, \"mentor-slug\"")
           .eq("email", session.user.email)
           .single();
 
@@ -141,6 +141,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           (session.user as any).id = data.id;
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (session.user as any).role = data.role;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (session.user as any)["mentor-slug"] = data["mentor-slug"];
         }
       }
       return session;

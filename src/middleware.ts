@@ -15,7 +15,10 @@ export default auth((req) => {
       return NextResponse.redirect(new URL("/sign-in", req.url));
     }
 
-    if (role !== "admin") {
+    const userIsAdmin = role === "admin";
+    const userIsMentor = role === "mentor";
+
+    if (!userIsAdmin && !userIsMentor) {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }

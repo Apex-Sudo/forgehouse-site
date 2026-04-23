@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { requireAdmin } from "@/lib/admin-auth";
+import { requireAdminOrMentor } from "@/lib/admin-auth";
 
 export async function GET() {
-  const authResult = await requireAdmin();
+  const authResult = await requireAdminOrMentor();
   if ("error" in authResult) {
     return NextResponse.json(
       { error: authResult.error },

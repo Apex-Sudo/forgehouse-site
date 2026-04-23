@@ -3,44 +3,61 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  IconLayoutDashboard,
-  IconUsers,
+  IconHome,
+  IconUserPlus,
+  IconLayout,
+  IconChartBar,
   IconChevronRight,
-  IconFileDescription,
 } from "@tabler/icons-react";
 
 interface NavItem {
   label: string;
   href: string;
   icon: React.ReactNode;
+  visible_to: ("admin" | "mentor")[];
 }
 
 const NAV_ITEMS: NavItem[] = [
   {
     label: "Dashboard",
     href: "/admin",
-    icon: <IconLayoutDashboard size={20} stroke={1.5} />,
+    icon: <IconHome size={20} stroke={1.5} />,
+    visible_to: ["admin"],
   },
   {
-    label: "Mentor Onboarding",
+    label: "Onboarding",
     href: "/admin/onboarding",
-    icon: <IconUsers size={20} stroke={1.5} />,
+    icon: <IconUserPlus size={20} stroke={1.5} />,
+    visible_to: ["admin"],
   },
   {
-    label: "Mentor Pages",
+    label: "Landing Pages",
     href: "/admin/landing-pages",
-    icon: <IconFileDescription size={20} stroke={1.5} />,
+    icon: <IconLayout size={20} stroke={1.5} />,
+    visible_to: ["admin"],
+  },
+  {
+    label: "Mentor Overview",
+    href: "/admin/mentor-overview",
+    icon: <IconChartBar size={20} stroke={1.5} />,
+    visible_to: ["admin", "mentor"],
   },
 ];
 
 interface AdminSidebarProps {
   userName: string;
   userEmail: string;
+  userRole: string;
+  isAdmin: boolean;
+  isMentor: boolean;
 }
 
 export default function AdminSidebar({
   userName,
   userEmail,
+  userRole,
+  isAdmin,
+  isMentor,
 }: AdminSidebarProps) {
   const pathname = usePathname();
 
@@ -62,7 +79,10 @@ export default function AdminSidebar({
 
       <nav className="flex-1 px-3 py-4">
         <ul className="space-y-1">
-          {NAV_ITEMS.map((item) => {
+          {NAV_ITEMS.filter(item => 
+            item.visible_to.includes('admin') && isAdmin || 
+            item.visible_to.includes('mentor') && isMentor
+          ).map((item) => {
             const active = isActive(item.href);
             return (
               <li key={item.href}>

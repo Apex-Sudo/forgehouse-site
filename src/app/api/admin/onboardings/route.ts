@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { requireAdmin } from "@/lib/admin-auth";
+import { requireAdminRoute } from "@/lib/admin-route-guard";
 
 function toSlug(name: string): string {
   return name
@@ -80,13 +80,7 @@ export interface EnrichedOnboarding {
 }
 
 export async function GET() {
-  const authResult = await requireAdmin();
-  if ("error" in authResult) {
-    return NextResponse.json(
-      { error: authResult.error },
-      { status: authResult.status }
-    );
-  }
+  await requireAdminRoute();
 
   const [sessionsRes, mentorsRes] = await Promise.all([
     supabase
