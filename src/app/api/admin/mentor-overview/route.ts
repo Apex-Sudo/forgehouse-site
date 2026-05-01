@@ -9,6 +9,7 @@ interface MentorStat {
   conversationCount: number;
   messageCount: number;
   lastConversationAt: string | null;
+  monthlyEarnings?: number;
 }
 
 export async function GET() {
@@ -112,22 +113,78 @@ export async function GET() {
       };
     });
 
-    // Look up mentor names if admin
+    // Look up mentor names and prices if admin
+    let mentorPrices: Record<string, number> = {};
     if (role === "admin") {
       const { data: mentorRows, error: mentorRowsError } = await supabase
         .from("mentors")
-        .select("slug, name");
+        .select("slug, name, monthly_price");
+      
+      if (mentorRowsError) {
+        console.error("Error fetching mentor prices:", mentorRowsError);
+      }
       
       if (!mentorRowsError && mentorRows) {
         const nameMap: Record<string, string> = {};
         mentorRows.forEach((m: any) => {
           nameMap[m.slug] = m.name;
+          mentorPrices[m.slug] = m.monthly_price || 0;
+          console.log(`Mentor price: ${m.slug} = ${m.monthly_price}`);
         });
         mentors.forEach(m => {
           m.name = nameMap[m.slug] || m.slug;
         });
       }
+    } else {
+      // For mentor role, fetch their own price
+      const { data: mentorRows, error: mentorRowsError } = await supabase
+        .from("mentors")
+        .select("slug, monthly_price")
+        .in("slug", mentorSlugs);
+      
+      if (mentorRowsError) {
+        console.error("Error fetching mentor prices for mentor role:", mentorRowsError);
+      }
+      
+      if (!mentorRowsError && mentorRows) {
+        mentorRows.forEach((m: any) => {
+          mentorPrices[m.slug] = m.monthly_price || 0;
+          console.log(`Mentor price: ${m.slug} = ${m.monthly_price}`);
+        });
+      }
     }
+
+    console.log(`Mentor slugs to check: ${mentorSlugs.join(", ")}`);
+    console.log(`Mentor prices map:`, mentorPrices);
+
+    // Count subscribers per mentor using the SQL function
+    const subscriberCounts: Record<string, number> = {};
+    
+    for (const slug of mentorSlugs) {
+      const { data, error } = await supabase
+        .rpc("get_mentor_subscriber_count", { mentor_slug_param: slug });
+      
+      if (error) {
+        console.error(`Error getting subscriber count for ${slug}:`, error);
+        subscriberCounts[slug] = 0;
+      } else {
+        subscriberCounts[slug] = (data as any) || 0;
+        console.log(`Subscriber count for ${slug}: ${subscriberCounts[slug]}`);
+      }
+    }
+
+    console.log(`Subscriber counts:`, subscriberCounts);
+
+    // Compute monthly earnings for each mentor
+    for (const mentor of mentors) {
+      const subscriberCount = subscriberCounts[mentor.slug] || 0;
+      const monthlyPrice = mentorPrices[mentor.slug] || 0;
+      mentor.monthlyEarnings = subscriberCount * monthlyPrice;
+      console.log(`Mentor ${mentor.slug}: subscribers=${subscriberCount}, price=${monthlyPrice}, earnings=${mentor.monthlyEarnings}`);
+    }
+
+    // Calculate total earnings
+    const totalEarnings = mentors.reduce((sum, m) => sum + (m.monthlyEarnings || 0), 0);
 
     // Sort by conversation count descending
     mentors.sort((a, b) => b.conversationCount - a.conversationCount);
@@ -141,6 +198,7 @@ export async function GET() {
       totalConversations,
       totalMessages: totalMessageCount,
       lastActiveAt,
+      totalEarnings,
       mentors,
     });
   } catch (error) {

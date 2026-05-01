@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ChatCircleDots, Star, LinkedinLogo } from "@phosphor-icons/react";
 import {
@@ -38,6 +39,53 @@ export default function MentorMarketingClient({
   mentor: MentorRow;
   marketing: MentorLandingContent | null;
 }) {
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [checkingSub, setCheckingSub] = useState(false);
+  const [mentorPrice, setMentorPrice] = useState<{ monthlyPrice: number } | null>(null);
+  
+  const slug = mentor.slug;
+  
+  useEffect(() => {
+    if (!slug) return;
+    setCheckingSub(true);
+    // Check subscription status
+    fetch(`/api/subscription-status?mentor=${slug}`)
+      .then(async (r) => {
+        if (r.ok) {
+          const data = await r.json();
+          setIsSubscribed(data.isSubscribed);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setCheckingSub(false));
+    
+    // Fetch mentor price
+    fetch(`/api/mentors/${slug}/pricing`)
+      .then(async (r) => {
+        if (r.ok) {
+          const data = await r.json();
+          setMentorPrice({ monthlyPrice: data.monthlyPrice });
+        }
+      })
+      .catch(() => {});
+  }, [slug]);
+
+  const handlePayNow = async () => {
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mentorSlug: slug }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        window.location.href = data.url;
+      }
+    } catch {
+      window.location.href = "/pricing";
+    }
+  };
+
   const firstName = mentor.name.split(" ")[0];
   const starters = (marketing?.chatStarters ?? []).filter(
     (s) => s.trim().length > 0
@@ -110,14 +158,34 @@ export default function MentorMarketingClient({
                   </p>
                 </div>
               )}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link
-                  href={`/chat/${mentor.slug}`}
-                  className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center inline-flex items-center justify-center gap-2"
-                >
-                  <ChatCircleDots size={20} />
-                  Chat with the agent
-                </Link>
+               <div className="flex flex-col sm:flex-row gap-3">
+                 {checkingSub ? (
+                   <div className="bg-amber/10 text-amber px-8 py-3.5 rounded-xl font-semibold text-center inline-flex items-center justify-center gap-2">
+                     Checking...
+                   </div>
+                 ) : isSubscribed ? (
+                   <button
+                     disabled
+                     className="bg-foreground/20 text-muted px-8 py-3.5 rounded-xl font-semibold text-center inline-flex items-center justify-center gap-2 cursor-not-allowed"
+                   >
+                     Subscribed
+                   </button>
+                 ) : (
+                   <>
+                     <Link
+                       href={`/chat/${mentor.slug}`}
+                       className="border border-amber text-amber px-8 py-3.5 rounded-xl font-semibold hover:bg-amber/5 transition text-center inline-flex items-center justify-center gap-2"
+                     >
+                       Try Free
+                     </Link>
+                     <button
+                       onClick={handlePayNow}
+                       className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center inline-flex items-center justify-center gap-2"
+                     >
+                       Pay {mentorPrice?.monthlyPrice === 0 ? "Free" : `$${Math.floor((mentorPrice?.monthlyPrice ?? 0) / 100)}`}
+                     </button>
+                   </>
+                 )}
                 {externalLink && (
                   <a
                     href={externalLink.url}
@@ -300,13 +368,35 @@ export default function MentorMarketingClient({
               ))}
             </div>
           ) : null}
-          <Link
-            href={`/chat/${mentor.slug}`}
-            className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-flex items-center gap-2"
-          >
-            <ChatCircleDots size={20} />
-            Chat with the agent
-          </Link>
+           <div className="flex flex-col sm:flex-row gap-3 justify-center">
+             {checkingSub ? (
+               <div className="bg-amber/10 text-amber px-8 py-3.5 rounded-xl font-semibold text-center inline-flex items-center justify-center gap-2">
+                 Checking...
+               </div>
+             ) : isSubscribed ? (
+               <button
+                 disabled
+                 className="bg-foreground/20 text-muted px-8 py-3.5 rounded-xl font-semibold text-center inline-flex items-center justify-center gap-2 cursor-not-allowed"
+               >
+                 Subscribed
+               </button>
+             ) : (
+               <>
+                 <Link
+                   href={`/chat/${mentor.slug}`}
+                   className="border border-amber text-amber px-8 py-3.5 rounded-xl font-semibold hover:bg-amber/5 transition inline-flex items-center gap-2"
+                 >
+                   Try Free
+                 </Link>
+                 <button
+                   onClick={handlePayNow}
+                   className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-flex items-center gap-2"
+                 >
+                   Pay {mentorPrice?.monthlyPrice === 0 ? "Free" : `$${Math.floor((mentorPrice?.monthlyPrice ?? 0) / 100)}`}
+                 </button>
+               </>
+             )}
+           </div>
           <p className="text-[11px] text-zinc-600 text-center mt-4">
             Your conversations are private. We don&apos;t sell or share your
             data.

@@ -2,7 +2,6 @@ import { after } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { supabase } from "@/lib/supabase";
 import { captureServerEvent } from "@/lib/posthog";
-import { setSubscriptionActive, setSubscriptionInactive } from "@/lib/subscription";
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -47,14 +46,11 @@ export async function POST(req: Request) {
         await supabase
           .from("users")
           .update({
-            subscribed: true,
             stripe_customer_id: customerId,
             stripe_subscription_id: subscriptionId,
             subscribed_mentor_slugs: updatedSlugs,
           })
           .eq("id", userId);
-
-        await setSubscriptionActive(email, customerId ?? "");
 
         // Move free tier conversations to permanent
         if (mentorSlug) {
@@ -97,16 +93,22 @@ export async function POST(req: Request) {
     case "customer.subscription.deleted": {
       const subscription = event.data.object;
       const customerId = typeof subscription.customer === "string" ? subscription.customer : null;
+      const metadata = subscription.metadata as any;
+      const mentorSlug = metadata?.mentorSlug;
+      const userId = metadata?.userId;
+
+      // Remove mentor slug from subscribed_mentor_slugs array
+      if (mentorSlug && userId) {
+        await supabase.rpc("remove_mentor_slug_from_subscribed_array", {
+          user_id: userId,
+          slug: mentorSlug,
+        });
+      }
+
       if (customerId) {
         const customer = await stripe.customers.retrieve(customerId);
         if (!customer.deleted && customer.email) {
-          await setSubscriptionInactive(customer.email);
-          await supabase
-            .from("users")
-            .update({ subscribed: false })
-            .eq("stripe_customer_id", customerId);
-
-          await notifyTelegram(`⚠️ FH subscription ended: ${customer.email}`);
+          await notifyTelegram(`⚠️ FH subscription ended: ${customer.email} (mentor: ${mentorSlug || "unknown"})`);
         }
       }
       break;
@@ -115,21 +117,29 @@ export async function POST(req: Request) {
     case "customer.subscription.updated": {
       const subscription = event.data.object;
       const customerId = typeof subscription.customer === "string" ? subscription.customer : null;
-      if (customerId) {
-        const isActive = subscription.status === "active" || subscription.status === "trialing";
-        const customer = await stripe.customers.retrieve(customerId);
-        if (!customer.deleted && customer.email) {
-          if (isActive) {
-            await setSubscriptionActive(customer.email, customerId);
-          } else {
-            await setSubscriptionInactive(customer.email);
-          }
+      const metadata = subscription.metadata as any;
+      const mentorSlug = metadata?.mentorSlug;
+      const userId = metadata?.userId;
+      const status = subscription.status;
+
+      // Handle mentor slug based on subscription status
+      if (mentorSlug && userId) {
+        if (status === "active" || status === "trialing") {
+          // Add slug if subscription is active
+          await supabase.rpc("add_mentor_slug_to_subscribed_array", {
+            user_id: userId,
+            slug: mentorSlug,
+          });
+        } else if (status === "canceled" || status === "paused") {
+          // Remove slug if subscription is canceled or paused
+          await supabase.rpc("remove_mentor_slug_from_subscribed_array", {
+            user_id: userId,
+            slug: mentorSlug,
+          });
         }
-        await supabase
-          .from("users")
-          .update({ subscribed: isActive })
-          .eq("stripe_customer_id", customerId);
       }
+
+      // Note: We no longer update the global `subscribed` field — only per-mentor slugs
       break;
     }
   }

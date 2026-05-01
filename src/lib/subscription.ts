@@ -1,4 +1,5 @@
 import { Redis } from "@upstash/redis";
+import { supabase } from "@/lib/supabase";
 
 let _redis: Redis | null = null;
 
@@ -12,7 +13,6 @@ function redis() {
   return _redis;
 }
 
-const PREFIX = "fh:sub:";
 const FREE_PREFIX = "fh:free:";
 const AUTH_FREE_PREFIX = "fh:free:auth:";
 
@@ -23,28 +23,6 @@ const AUTHENTICATED_FREE_MESSAGES = 2; // 2 more after login (5 total)
 const WHITELISTED_IPS = new Set(
   (process.env.WHITELISTED_IPS || "").split(",").map((ip) => ip.trim()).filter(Boolean)
 );
-
-// --- Subscription management ---
-
-export async function setSubscriptionActive(email: string, stripeCustomerId: string) {
-  await redis().set(`${PREFIX}${email.toLowerCase()}`, {
-    active: true,
-    customerId: stripeCustomerId,
-    updatedAt: Date.now(),
-  });
-}
-
-export async function setSubscriptionInactive(email: string) {
-  await redis().set(`${PREFIX}${email.toLowerCase()}`, {
-    active: false,
-    updatedAt: Date.now(),
-  });
-}
-
-export async function isSubscribed(email: string): Promise<boolean> {
-  const data = await redis().get<{ active: boolean }>(`${PREFIX}${email.toLowerCase()}`);
-  return data?.active === true;
-}
 
 // --- Anonymous message tracking (by IP) ---
 
@@ -78,7 +56,7 @@ export async function incrementAuthenticatedMessages(email: string): Promise<voi
   }
 }
 
-// --- Access check: tiered gating ---
+// --- Legacy access check (for backward compat during transition) ---
 
 export async function canAccess(
   ip: string,
@@ -86,12 +64,6 @@ export async function canAccess(
 ): Promise<{ allowed: boolean; reason: "free" | "subscribed" | "login_required" | "paywall" }> {
   // Whitelisted IPs bypass all gating
   if (WHITELISTED_IPS.has(ip)) return { allowed: true, reason: "free" };
-
-  // If subscribed, always allow
-  if (email) {
-    const active = await isSubscribed(email);
-    if (active) return { allowed: true, reason: "subscribed" };
-  }
 
   // Check anonymous messages
   const anonCount = await getAnonymousMessageCount(ip);
@@ -104,7 +76,7 @@ export async function canAccess(
     return { allowed: false, reason: "login_required" };
   }
 
-  // Has email but not subscribed: check authenticated tier
+  // Has email: check authenticated tier
   const authCount = await getAuthenticatedMessageCount(email);
   if (authCount < AUTHENTICATED_FREE_MESSAGES) {
     return { allowed: true, reason: "free" };
@@ -121,4 +93,63 @@ export async function hasFreeMessages(ip: string): Promise<boolean> {
 
 export async function incrementFreeMessages(ip: string): Promise<void> {
   return incrementAnonymousMessages(ip);
+}
+
+// Legacy isSubscribed for backward compatibility with conversations.ts
+// Checks Redis authenticated subscription status
+export async function isSubscribed(email: string): Promise<boolean> {
+  const count = await getAuthenticatedMessageCount(email);
+  // If user has exceeded free message count, they are considered subscribed (legacy behavior)
+  return count >= AUTHENTICATED_FREE_MESSAGES;
+}
+
+// --- Mentor-specific subscription checks ---
+
+export async function isSubscribedToMentor(
+  userId: string,
+  mentorSlug: string
+): Promise<boolean> {
+  try {
+    const { data, error } = await supabase
+      .from("users")
+      .select("subscribed_mentor_slugs")
+      .eq("id", userId)
+      .single();
+
+    if (error || !data?.subscribed_mentor_slugs) {
+      return false;
+    }
+
+    return data.subscribed_mentor_slugs.includes(mentorSlug);
+  } catch {
+    return false;
+  }
+}
+
+export async function canAccessMentor(
+  userId: string,
+  email: string | undefined,
+  ip: string,
+  mentorSlug: string,
+  isFree: boolean = false
+): Promise<{ allowed: boolean; reason: "free" | "subscribed" | "login_required" | "paywall" }> {
+  if (isFree) return { allowed: true, reason: "free" };
+
+  // If user has this mentor in their subscribed list, allow
+  if (userId) {
+    const subscribed = await isSubscribedToMentor(userId, mentorSlug);
+    if (subscribed) return { allowed: true, reason: "subscribed" };
+  }
+
+  // Fall back to legacy checks (IP-based, email-based free tiers)
+  const legacyResult = await canAccess(ip, email);
+  if (legacyResult.allowed) {
+    return legacyResult;
+  }
+
+  if (!email) {
+    return { allowed: false, reason: "login_required" };
+  }
+
+  return { allowed: false, reason: "paywall" };
 }

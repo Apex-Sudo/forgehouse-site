@@ -10,6 +10,11 @@ type Mentor = {
   tagline: string;
   avatar_url: string;
   bio: string | null;
+  price?: { monthlyPrice: number };
+};
+
+type MentorPrice = {
+  monthlyPrice: number;
 };
 
 export default function ModulesPage() {
@@ -18,6 +23,9 @@ export default function ModulesPage() {
   const [submitting, setSubmitting] = useState(false);
   const [mentors, setMentors] = useState<Mentor[]>([]);
   const [loadingMentors, setLoadingMentors] = useState(true);
+  const [mentorSubscribed, setMentorSubscribed] = useState<Record<string, boolean>>({});
+  const [mentorPrices, setMentorPrices] = useState<Record<string, MentorPrice>>({});
+  const [mentorsLoading, setMentorsLoading] = useState<Record<string, boolean>>({});
 
   const handleWaitlist = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +53,27 @@ export default function ModulesPage() {
           const list = data?.mentors;
           if (Array.isArray(list)) {
             setMentors(list);
+            // Check subscription status and prices for each mentor
+            list.forEach(async (mentor: Mentor) => {
+              setMentorsLoading(prev => ({ ...prev, [mentor.slug]: true }));
+              // Check subscription
+              try {
+                const subRes = await fetch(`/api/subscription-status?mentor=${mentor.slug}`);
+                if (subRes.ok) {
+                  const subData = await subRes.json();
+                  setMentorSubscribed(prev => ({ ...prev, [mentor.slug]: subData.isSubscribed }));
+                }
+              } catch {}
+              // Fetch price
+              try {
+                const priceRes = await fetch(`/api/mentors/${mentor.slug}/pricing`);
+                if (priceRes.ok) {
+                  const priceData = await priceRes.json();
+                  setMentorPrices(prev => ({ ...prev, [mentor.slug]: { monthlyPrice: priceData.monthlyPrice } }));
+                }
+              } catch {}
+              setMentorsLoading(prev => ({ ...prev, [mentor.slug]: false }));
+            });
           }
         }
       } catch {
@@ -120,20 +149,49 @@ export default function ModulesPage() {
                   </p>
                 )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="flex flex-col gap-3">
                   <Link
                     href={`/chat/${m.slug}`}
-                    className="flex items-center justify-center gap-2 bg-amber text-background py-3.5 rounded-xl font-semibold hover:opacity-90 transition cursor-pointer"
+                    className="inline-flex items-center justify-center gap-2 bg-amber text-background px-4 py-2.5 rounded-xl font-semibold text-sm hover:opacity-90 transition cursor-pointer"
                   >
-                    <ChatCircleDots size={18} weight="bold" />
+                    <ChatCircleDots size={16} weight="bold" />
                     Chat with {m.name.split(" ")[0]}
                   </Link>
                   <Link
                     href={`/mentors/${m.slug}`}
-                    className="flex items-center justify-center gap-2 border border-foreground/[0.1] text-muted py-3.5 rounded-xl font-medium hover:text-foreground hover:border-foreground/[0.2] transition cursor-pointer"
+                    className="inline-flex items-center justify-center gap-2 border border-foreground/[0.1] text-muted px-4 py-2.5 rounded-xl font-medium text-sm hover:text-foreground hover:border-foreground/[0.2] transition cursor-pointer"
                   >
                     Learn more
                   </Link>
+                  {mentorSubscribed[m.slug] ? (
+                    <button
+                      disabled
+                      className="inline-flex items-center justify-center gap-2 bg-foreground/20 text-muted px-4 py-2.5 rounded-xl font-semibold text-sm cursor-not-allowed"
+                    >
+                      Subscribed
+                    </button>
+                  ) : (
+                    <button
+                      onClick={async () => {
+                        try {
+                          const res = await fetch("/api/checkout", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ mentorSlug: m.slug }),
+                          });
+                          if (res.ok) {
+                            const data = await res.json();
+                            window.location.href = data.url;
+                          }
+                        } catch {
+                          window.location.href = "/pricing";
+                        }
+                      }}
+                      className="inline-flex items-center justify-center gap-2 bg-amber text-background px-4 py-2.5 rounded-xl font-semibold text-sm hover:opacity-90 transition cursor-pointer"
+                    >
+                      Pay ${Math.floor((mentorPrices[m.slug]?.monthlyPrice || 0) / 100)}/mo
+                    </button>
+                  )}
                 </div>
 
                 <p className="text-xs text-muted text-center">5 free messages. No card required.</p>

@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { PLATFORM_MONTHLY_PRICE_USD } from "@/lib/platform-pricing";
 
 interface UpgradePromptProps {
   mentorSlug: string;
@@ -27,7 +26,6 @@ export default function UpgradePrompt({
   const [dismissed, setDismissed] = useState(false);
   const [error, setError] = useState("");
   const mentorMonthlyUsd = mentorMonthlyPriceCents / 100;
-  const totalMonthlyUsd = PLATFORM_MONTHLY_PRICE_USD + mentorMonthlyUsd;
 
   if (dismissed) return null;
 
@@ -37,12 +35,12 @@ export default function UpgradePrompt({
     window.posthog?.capture("checkout_started", {
       mentor: mentorSlug,
       mentor_name: mentorName,
-      price_usd: totalMonthlyUsd,
+      price_usd: mentorMonthlyUsd,
     });
     window.posthog?.capture("subscription_started", {
       mentor: mentorSlug,
       mentor_name: mentorName,
-      price_usd: totalMonthlyUsd,
+      price_usd: mentorMonthlyUsd,
     });
     try {
       const res = await fetch("/api/checkout", {
@@ -75,18 +73,10 @@ export default function UpgradePrompt({
           your conversations forever.
         </p>
 
-        <div className="text-xs text-muted mb-4 space-y-0.5">
-          <div className="flex justify-between">
-            <span>ForgeHouse Platform</span>
-            <span>{formatUsd(PLATFORM_MONTHLY_PRICE_USD)}/mo</span>
-          </div>
-          <div className="flex justify-between">
-            <span>{mentorName}</span>
-            <span>{formatUsd(mentorMonthlyUsd)}/mo</span>
-          </div>
-          <div className="flex justify-between pt-1.5 border-t border-white/[0.06] text-foreground/80 font-medium">
-            <span>Total</span>
-            <span>{formatUsd(totalMonthlyUsd)}/mo</span>
+        <div className="text-sm text-muted mb-4">
+          <div className="flex justify-between items-center">
+            <span>{mentorName} Subscription</span>
+            <span className="font-semibold">{formatUsd(mentorMonthlyUsd)}/mo</span>
           </div>
         </div>
 
@@ -96,7 +86,7 @@ export default function UpgradePrompt({
             disabled={loading}
             className="flex-1 bg-amber text-white py-2.5 rounded-xl font-semibold text-sm hover:bg-amber-dark transition disabled:opacity-50 cursor-pointer"
           >
-            {loading ? "Loading..." : `Subscribe — ${formatUsd(totalMonthlyUsd)}/mo`}
+            {loading ? "Loading..." : `Subscribe — ${formatUsd(mentorMonthlyUsd)}/mo`}
           </button>
           <button
             onClick={() => setDismissed(true)}

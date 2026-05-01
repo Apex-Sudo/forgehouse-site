@@ -8,6 +8,7 @@ import {
   IconClock,
   IconArrowUpRight,
   IconArrowDownRight,
+  IconCurrencyDollar,
 } from "@tabler/icons-react";
 
 interface MentorStat {
@@ -16,6 +17,7 @@ interface MentorStat {
   conversationCount: number;
   messageCount: number;
   lastConversationAt: string | null;
+  monthlyEarnings?: number;
 }
 
 interface MentorOverviewStats {
@@ -24,6 +26,7 @@ interface MentorOverviewStats {
   totalConversations: number;
   totalMessages: number;
   lastActiveAt: string | null;
+  totalEarnings?: number;
   mentors: MentorStat[];
 }
 
@@ -184,7 +187,7 @@ export default function MentorOverviewPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <StatCard
           label="Total Mentors"
           value={stats.totalMentors}
@@ -205,6 +208,11 @@ export default function MentorOverviewPage() {
           label="Total Messages"
           value={stats.totalMessages}
           icon={<IconClock size={20} stroke={1.5} />}
+        />
+        <StatCard
+          label="Monthly Earnings"
+          value={`$${((stats.totalEarnings || 0) / 100).toFixed(2)}`}
+          icon={<IconCurrencyDollar size={20} stroke={1.5} />}
         />
       </div>
 

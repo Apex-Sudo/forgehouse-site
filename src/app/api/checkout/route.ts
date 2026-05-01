@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { getStripe } from "@/lib/stripe";
-import { getMentorPricing, PLATFORM_PRICE_ID } from "@/lib/mentor-pricing";
+import { getMentorPricing } from "@/lib/mentor-pricing";
+import { isSubscribedToMentor } from "@/lib/subscription";
 
 export async function POST(req: Request) {
   try {
@@ -19,19 +20,26 @@ export async function POST(req: Request) {
       return Response.json({ error: "Unknown mentor" }, { status: 400 });
     }
 
-    const stripe = getStripe();
+    // Check if user is already subscribed to this mentor
     const userId = (session.user as { id?: string }).id;
+    if (userId) {
+      const alreadySubscribed = await isSubscribedToMentor(userId, mentorSlug);
+      if (alreadySubscribed) {
+        return Response.json({ error: "Already subscribed to this mentor" }, { status: 400 });
+      }
+    }
+
+    const stripe = getStripe();
 
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
       line_items: [
-        { price: PLATFORM_PRICE_ID, quantity: 1 },
         { price: mentor.stripePriceId, quantity: 1 },
       ],
       customer_email: session.user.email,
       success_url: `${process.env.NEXTAUTH_URL || "https://forgehouse.io"}/chat/${mentorSlug}?subscribed=true`,
-      cancel_url: `${process.env.NEXTAUTH_URL || "https://forgehouse.io"}/pricing`,
+      cancel_url: `${process.env.NEXTAUTH_URL || "https://forgehouse.io"}/mentors`,
       subscription_data: {
         metadata: {
           userId: userId || "",

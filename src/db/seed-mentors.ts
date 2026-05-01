@@ -5,6 +5,15 @@
  * Run: npx tsx src/db/seed-mentors.ts
  *
  * Requires SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local
+ *
+ * STRIPE_PRICE_ID NOTES:
+ * - Each mentor needs a Stripe Price ID for their subscription tier
+ * - Set these environment variables before running:
+ *   - STRIPE_COLIN_PRICE_ID - Stripe price ID for Colin Chapman's mentor subscription
+ *   - STRIPE_LEON_PRICE_ID - Stripe price ID for Leon Freier's mentor subscription  
+ *   - STRIPE_KYLE_PRICE_ID - Stripe price ID for Kyle Parratt's mentor subscription
+ * - If any stripe_price_id is null, that mentor is treated as free
+ * - Create these prices in Stripe Dashboard first, then add the IDs to your .env.local
  */
 
 import { createClient } from "@supabase/supabase-js";

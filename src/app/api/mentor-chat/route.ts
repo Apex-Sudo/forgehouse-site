@@ -2,7 +2,7 @@ import { after } from "next/server";
 import { auth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { getContextMessages, getConversationMessages } from "@/lib/conversations";
-import { canAccess, incrementAnonymousMessages, incrementAuthenticatedMessages } from "@/lib/subscription";
+import { canAccessMentor, incrementAnonymousMessages, incrementAuthenticatedMessages } from "@/lib/subscription";
 import { captureServerEvent } from "@/lib/posthog";
 import { MentorAgentNode } from "@/lib/agent/nodes/MentorAgentNode";
 
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
 
     const { data: mentorRow } = await supabase
       .from("mentors")
-      .select("system_prompt")
+      .select("system_prompt, is_free_tier")
       .eq("slug", mentor)
       .eq("is_active", true)
       .single();
@@ -54,8 +54,11 @@ export async function POST(req: Request) {
     const user = session?.user as { id?: string; email?: string } | undefined;
 
     const effectiveEmail = user?.email || undefined;
+    const userId = user?.id || "";
+    const isFreeTier = mentorRow.is_free_tier ?? false;
+
     if (!isInvited) {
-      const access = await canAccess(ip, effectiveEmail);
+      const access = await canAccessMentor(userId, effectiveEmail, ip, mentor, isFreeTier);
       if (!access.allowed) {
         if (access.reason === "login_required") {
           return Response.json({ error: "login_required" }, { status: 403 });

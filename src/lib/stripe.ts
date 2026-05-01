@@ -12,4 +12,4 @@ export function getStripe() {
   return _stripe;
 }
 
-export const PRICE_ID = process.env.STRIPE_PRICE_ID || "price_1T2wKI6mX5Jyd7kwg0rwilfd";
+// PRICE_ID removed — pricing is now per-mentor via stripe_price_id column in mentors table

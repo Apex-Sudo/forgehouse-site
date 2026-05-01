@@ -1,29 +1,28 @@
 import { auth } from "@/lib/auth";
-import { supabase } from "@/lib/supabase";
+import { canAccessMentor } from "@/lib/subscription";
 
-export async function GET() {
-  try {
-    const session = await auth();
-    if (!session?.user?.email) {
-      return Response.json({ subscribed: false });
-    }
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const mentorSlug = searchParams.get("mentor");
 
-    const userId = (session.user as { id?: string }).id;
-    if (!userId) {
-      return Response.json({ subscribed: false });
-    }
-
-    const { data: user } = await supabase
-      .from("users")
-      .select("subscribed, subscribed_mentor_slugs")
-      .eq("id", userId)
-      .single();
-
-    return Response.json({
-      subscribed: user?.subscribed ?? false,
-      mentorSlugs: user?.subscribed_mentor_slugs ?? [],
-    });
-  } catch {
-    return Response.json({ subscribed: false });
+  if (!mentorSlug) {
+    return Response.json({ error: "mentor parameter required" }, { status: 400 });
   }
+
+  const session = await auth();
+  if (!session?.user?.email) {
+    return Response.json({ isSubscribed: false });
+  }
+
+  const userId = (session.user as { id?: string }).id;
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+
+  const result = await canAccessMentor(
+    userId || "",
+    session.user.email,
+    ip,
+    mentorSlug
+  );
+
+  return Response.json({ isSubscribed: result.reason === "subscribed" });
 }

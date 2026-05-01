@@ -251,7 +251,8 @@ function ChatContent() {
 
   useEffect(() => {
     if (isInvited) return;
-    fetch("/api/gate-check")
+    // Check gate with mentorSlug for per-mentor subscription check
+    fetch(`/api/gate-check?mentor=${mentorSlug}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.gate === "login") {
@@ -269,7 +270,8 @@ function ChatContent() {
   }, [isInvited, userEmail, mentorSlug]);
 
   useEffect(() => {
-    if (!userEmail || !mentorSlug) return;
+    if (!userEmail || !session?.user?.id || !mentorSlug) return;
+    // Check general insights
     fetch(`/api/insights?mentor=${mentorSlug}`)
       .then(async (r) => {
         if (r.ok) {
@@ -282,7 +284,20 @@ function ChatContent() {
         }
       })
       .catch(() => {});
-  }, [userEmail, mentorSlug]);
+    
+    // Also check direct mentor subscription
+    fetch(`/api/subscription-status?mentor=${mentorSlug}`)
+      .then(async (r) => {
+        if (r.ok) {
+          const data = await r.json();
+          if (data.isSubscribed) {
+            setIsSubscribed(true);
+            setShowBanner(false);
+          }
+        }
+      })
+      .catch(() => {});
+  }, [userEmail, mentorSlug, session?.user?.id]);
 
   useEffect(() => {
     if (newParam === "true") {
@@ -464,7 +479,7 @@ function ChatContent() {
       setStreaming(false);
       scheduleSummary(convId);
       if (!isInvited) {
-        fetch("/api/gate-check")
+        fetch(`/api/gate-check?mentor=${mentorSlug}`)
           .then((r) => r.json())
           .then((data) => {
             if (data.gate === "login" && !showLoginGate) {
