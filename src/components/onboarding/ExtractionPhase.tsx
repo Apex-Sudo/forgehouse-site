@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { IconCheck, IconClock } from "@tabler/icons-react";
+import { IconCheck, IconClock, IconMicrophone, IconMicrophoneOff } from "@tabler/icons-react";
 import ChatMessage from "@/components/ChatMessage";
 import {
   EXTRACTION_EXCHANGE_ESCAPE_HATCH,
@@ -41,6 +41,10 @@ export default function ExtractionPhase({
   );
   const messagesScrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<any>(null);
+  const isListeningRef = useRef(false);
+  const [isListening, setIsListening] = useState(false);
+  const [speechRecognitionSupported, setSpeechRecognitionSupported] = useState(false);
 
   useEffect(() => {
     const el = messagesScrollRef.current;
@@ -49,6 +53,111 @@ export default function ExtractionPhase({
       el.scrollTop = el.scrollHeight;
     });
   }, [messages, streaming]);
+
+  // Check for SpeechRecognition support and initialize
+  useEffect(() => {
+    const SpeechRecognition =
+      (window as unknown as { SpeechRecognition?: any; webkitSpeechRecognition?: any }).SpeechRecognition ||
+      (window as unknown as { SpeechRecognition?: any; webkitSpeechRecognition?: any }).webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+      setSpeechRecognitionSupported(true);
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.lang = "en-US";
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.continuous = true;
+
+      recognitionRef.current.onresult = (event: any) => {
+        let transcript = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        // Append to current input value
+        setInput((prev) => {
+          const hasSpace = prev.length > 0 && !prev.endsWith(" ");
+          return prev + (hasSpace ? " " : "") + transcript;
+        });
+      };
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error("Speech recognition error:", event.error);
+        // Handle specific error cases
+        if (event.error === "not-allowed") {
+          alert("Microphone access denied. Please grant microphone permissions in your browser settings to use voice dictation.");
+        } else if (event.error === "not-allowed" && !window.location.protocol.includes("https")) {
+          alert("Microphone access requires HTTPS. Please ensure you're accessing this site over a secure connection.");
+        }
+        stopListening();
+      };
+
+      recognitionRef.current.onend = () => {
+        if (isListeningRef.current) {
+          isListeningRef.current = false;
+          setIsListening(false);
+        }
+      };
+    } else {
+      setSpeechRecognitionSupported(false);
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, []);
+
+  const startListening = () => {
+    if (!recognitionRef.current || !speechRecognitionSupported || streaming) return;
+
+    // Check if we're on HTTPS (required for microphone access)
+    if (window.location.protocol !== "https:" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+      alert("Voice dictation requires a secure connection (HTTPS). Please ensure you're accessing this site over HTTPS.");
+      return;
+    }
+
+    try {
+      // Clear any previous input when starting fresh
+      setInput("");
+      recognitionRef.current.start();
+      isListeningRef.current = true;
+      setIsListening(true);
+    } catch (error) {
+      console.error("Failed to start speech recognition:", error);
+      // Handle the case where recognition is already started
+      if (error instanceof DOMException && error.name === "InvalidStateError") {
+        // Recognition is already running, stop it first
+        try {
+          recognitionRef.current.stop();
+        } catch {
+          // Ignore stop errors
+        }
+      }
+      setIsListening(false);
+      isListeningRef.current = false;
+    }
+  };
+
+  const stopListening = () => {
+    if (!recognitionRef.current) return;
+
+    try {
+      recognitionRef.current.stop();
+    } catch (error) {
+      console.error("Failed to stop speech recognition:", error);
+    }
+
+    isListeningRef.current = false;
+    setIsListening(false);
+  };
+
+  const toggleListening = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
+    }
+  };
 
   // Save progress to session (debounced)
   useEffect(() => {
@@ -397,14 +506,40 @@ export default function ExtractionPhase({
                 className="flex-1 resize-none rounded-xl border border-[#E5E2DC] bg-white px-4 py-3 text-[15px] text-[#1A1A1A] placeholder:text-[#C5C0B8] focus:border-amber/50 focus:outline-none"
                 disabled={streaming}
               />
-              <button
-                type="button"
-                onClick={() => sendMessage(input)}
-                disabled={!input.trim() || streaming}
-                className="self-end rounded-xl bg-amber px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-40"
-              >
-                {streaming ? "..." : "Send"}
-              </button>
+              <div className="flex gap-2 self-end">
+                {speechRecognitionSupported ? (
+                  <button
+                    type="button"
+                    onClick={toggleListening}
+                    disabled={streaming}
+                    className={`self-end rounded-xl px-4 py-3 text-sm font-semibold transition ${
+                      isListening
+                        ? "bg-red-500 text-white hover:bg-red-600 animate-pulse"
+                        : "bg-[#F5F5F5] text-[#1A1A1A] hover:bg-[#E5E2DC]"
+                    } disabled:opacity-40 disabled:cursor-not-allowed`}
+                    title={isListening ? "Stop listening" : "Start voice dictation"}
+                  >
+                    {isListening ? <IconMicrophoneOff size={20} /> : <IconMicrophone size={20} />}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    disabled
+                    className="self-end rounded-xl bg-gray-200 px-4 py-3 text-sm font-semibold text-gray-400 cursor-not-allowed"
+                    title="Voice dictation not supported in this browser. Try Chrome, Safari, or Edge."
+                  >
+                    <IconMicrophone size={20} />
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => sendMessage(input)}
+                  disabled={!input.trim() || streaming}
+                  className="self-end rounded-xl bg-amber px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-40"
+                >
+                  {streaming ? "..." : "Send"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
