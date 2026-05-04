@@ -153,3 +153,21 @@ export async function canAccessMentor(
 
   return { allowed: false, reason: "paywall" };
 }
+
+// --- Legacy mutation APIs kept for build compatibility ---
+
+export async function setSubscriptionActive(email: string, _customerId?: string): Promise<void> {
+  const normalizedEmail = email.toLowerCase().trim();
+  await supabase
+    .from("users")
+    .update({ subscribed: true })
+    .eq("email", normalizedEmail);
+}
+
+export async function setSubscriptionInactive(email: string): Promise<void> {
+  const normalizedEmail = email.toLowerCase().trim();
+  await supabase
+    .from("users")
+    .update({ subscribed: false })
+    .eq("email", normalizedEmail);
+}
