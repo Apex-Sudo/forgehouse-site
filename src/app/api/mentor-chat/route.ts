@@ -41,7 +41,7 @@ export async function POST(req: Request) {
 
     const { data: mentorRow } = await supabase
       .from("mentors")
-      .select("system_prompt, is_free_tier")
+      .select("system_prompt, is_free")
       .eq("slug", mentor)
       .eq("is_active", true)
       .single();
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
 
     const effectiveEmail = user?.email || undefined;
     const userId = user?.id || "";
-    const isFreeTier = mentorRow.is_free_tier ?? false;
+    const isFreeTier = mentorRow.is_free ?? false;
 
     if (!isInvited) {
       const access = await canAccessMentor(userId, effectiveEmail, ip, mentor, isFreeTier);
