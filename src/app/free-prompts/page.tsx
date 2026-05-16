@@ -133,30 +133,37 @@ export default function FreePromptsPage() {
               return (
                 <div
                   key={prompt.id}
-                  className="glass-card border border-[#E8E5E0] rounded-2xl p-6 flex flex-col hover:border-[#B8916A]/30 hover:shadow-[0_4px_20px_rgba(0,0,0,0.04)] transition-all group"
+                  className="bg-white border border-[#E8E5E0] rounded-2xl p-6 flex flex-col shadow-[0_1px_3px_rgba(0,0,0,0.02),0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] hover:border-[#B8916A]/25 transition-all group"
                 >
-                  <h3 className="text-base font-semibold text-[#1A1A1A] mb-2 group-hover:text-[#B8916A] transition-colors">
-                    {prompt.title}
-                  </h3>
-                  <p className="text-sm text-muted leading-relaxed mb-4 flex-1">
+                  {/* Header: title + category badge */}
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <h3 className="text-base font-semibold text-[#1A1A1A] group-hover:text-[#B8916A] transition-colors leading-snug">
+                      {prompt.title}
+                    </h3>
+                    <span className="shrink-0 text-[10px] font-medium text-[#B8916A] bg-amber/[0.08] px-2 py-0.5 rounded-md whitespace-nowrap">
+                      {activeData?.name}
+                    </span>
+                  </div>
+
+                  <p className="text-sm text-muted leading-relaxed mb-5">
                     {prompt.description}
                   </p>
 
                   {/* Prompt preview */}
-                  <div className="bg-[#FAFAF8] border border-[#F0EDE8] rounded-xl px-4 py-3 mb-4">
-                    <p className="text-xs text-[#999] leading-relaxed italic line-clamp-3">
+                  <div className="bg-[#FAFAF8] border border-[#F0EDE8] rounded-xl px-4 py-3.5 mb-5">
+                    <p className="text-xs text-[#999] leading-relaxed italic">
                       &ldquo;{prompt.prompt_text}&rdquo;
                     </p>
                   </div>
 
-                  {/* Actions */}
-                  <div className="flex items-center gap-2">
+                  {/* Actions — always visible, clean layout */}
+                  <div className="mt-auto flex items-center gap-2.5 pt-1">
                     <button
                       onClick={() => handleCopy(prompt.id, prompt.prompt_text)}
-                      className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium transition cursor-pointer ${
+                      className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-medium transition cursor-pointer ${
                         isCopied
                           ? "bg-green-50 text-green-700 border border-green-200"
-                          : "bg-white border border-[#E5E2DC] text-[#737373] hover:text-[#1A1A1A] hover:border-[#B8916A]/30"
+                          : "bg-[#F5F3F0] border border-transparent text-[#737373] hover:text-[#1A1A1A] hover:bg-[#EDEAE5] hover:border-[#DDD9D3]"
                       }`}
                     >
                       {isCopied ? (
@@ -173,7 +180,7 @@ export default function FreePromptsPage() {
                     </button>
                     <Link
                       href={`/chat`}
-                      className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium bg-[#B8916A] text-white hover:bg-[#A07B56] transition ml-auto"
+                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-medium bg-[#B8916A] text-white hover:bg-[#A07B56] transition ml-auto"
                     >
                       Try in chat
                       <ArrowRight size={14} weight="bold" />

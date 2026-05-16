@@ -65,15 +65,19 @@ export default function ConversationHistory({ mentorSlug, onSelect, onNew }: Pro
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
+  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
   const getPreview = (c: Conversation) => {
     if (c.summary) {
       // Show first line of summary
       const firstLine = c.summary.split("\n").find((l) => l.trim()) ?? "";
-      return firstLine.length > 60 ? firstLine.slice(0, 60) + "..." : firstLine;
+      const text = firstLine.length > 60 ? firstLine.slice(0, 60) + "..." : firstLine;
+      return capitalize(text);
     }
     const first = c.messages?.find((m) => m.role === "user");
     if (!first) return "Empty conversation";
-    return first.content.length > 60 ? first.content.slice(0, 60) + "..." : first.content;
+    const text = first.content.length > 60 ? first.content.slice(0, 60) + "..." : first.content;
+    return capitalize(text);
   };
 
   return (
@@ -91,18 +95,18 @@ export default function ConversationHistory({ mentorSlug, onSelect, onNew }: Pro
       {open && (
         <div className="absolute left-0 top-full mt-2 w-72 bg-background border border-white/[0.08] rounded-lg shadow-xl z-50 overflow-hidden">
           <div className="px-3 py-2 border-b border-white/[0.06] flex items-center justify-between">
-            <span className="text-xs font-semibold text-muted uppercase tracking-wider">History</span>
+            <span className="text-sm font-semibold text-muted uppercase tracking-wider">History</span>
             <button
               onClick={() => { setOpen(false); onNew(); }}
-              className="text-xs text-amber hover:text-amber-dark transition"
+              className="text-sm text-amber hover:text-amber-dark transition"
             >
               + New
             </button>
           </div>
           <div className="max-h-64 overflow-y-auto">
-            {loading && <div className="px-3 py-4 text-xs text-muted text-center">Loading...</div>}
+            {loading && <div className="px-3 py-4 text-sm text-muted text-center">Loading...</div>}
             {!loading && conversations.length === 0 && (
-              <div className="px-3 py-4 text-xs text-muted text-center">No conversations yet</div>
+              <div className="px-3 py-4 text-sm text-muted text-center">No conversations yet</div>
             )}
             {conversations.map((c) => (
               <button
@@ -114,7 +118,7 @@ export default function ConversationHistory({ mentorSlug, onSelect, onNew }: Pro
                 }}
                 className="w-full text-left px-3 py-2.5 hover:bg-white/[0.04] transition border-b border-white/[0.04] last:border-0"
               >
-                <div className="text-xs text-muted">{formatDate(c.created_at)}</div>
+                <div className="text-sm text-muted">{formatDate(c.created_at)}</div>
                 <div className="text-sm text-foreground/80 truncate">{getPreview(c)}</div>
               </button>
             ))}

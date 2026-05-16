@@ -155,22 +155,31 @@ export default function PromptLibraryBottomSheet({ open, onClose, onSelect }: Pr
                     onSelect(prompt.prompt_text);
                     onClose();
                   }}
-                  className="text-left bg-[#FAFAF8] border border-[#EDEAE5] rounded-xl px-4 py-3.5 hover:border-[#B8916A]/30 hover:bg-[#F7F5F2] hover:shadow-sm transition group cursor-pointer"
+                  className="text-left bg-white border border-[#EDEAE5] rounded-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.02),0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] hover:border-[#B8916A]/25 transition-all group cursor-pointer"
                 >
-                  <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-[#1A1A1A] mb-1 group-hover:text-[#B8916A] transition-colors">
-                        {prompt.title}
-                      </p>
-                      <p className="text-xs text-[#888] leading-relaxed line-clamp-2">
+                      <div className="flex items-center gap-2 mb-2">
+                        <p className="text-sm font-semibold text-[#1A1A1A] group-hover:text-[#B8916A] transition-colors">
+                          {prompt.title}
+                        </p>
+                        <span className="shrink-0 text-[10px] font-medium text-[#B8916A] bg-amber/[0.08] px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                          Use this
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#888] leading-relaxed line-clamp-2 mb-3">
                         {prompt.description}
                       </p>
-                      <p className="text-[11px] text-[#B0ADA5] mt-2 line-clamp-2 leading-relaxed italic">
-                        &ldquo;{prompt.prompt_text.slice(0, 120)}{prompt.prompt_text.length > 120 ? "..." : ""}&rdquo;
-                      </p>
+                      <div className="bg-[#FAFAF8] border border-[#F0EDE8] rounded-lg px-3 py-2.5">
+                        <p className="text-[11px] text-[#A09D96] leading-relaxed line-clamp-2 italic">
+                          &ldquo;{prompt.prompt_text.slice(0, 120)}{prompt.prompt_text.length > 120 ? "..." : ""}&rdquo;
+                        </p>
+                      </div>
                     </div>
-                    <div className="shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ArrowRight size={16} weight="bold" className="text-[#B8916A]" />
+                    <div className="shrink-0 mt-1 opacity-30 group-hover:opacity-100 transition-opacity">
+                      <div className="w-6 h-6 rounded-full bg-amber/10 flex items-center justify-center">
+                        <ArrowRight size={13} weight="bold" className="text-[#B8916A]" />
+                      </div>
                     </div>
                   </div>
                 </button>

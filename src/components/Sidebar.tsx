@@ -76,16 +76,20 @@ function ConversationRow({
     return raw.replace(/^[\s\-–—•*#]+/, "").trim();
   };
 
+  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
   const getTitle = () => {
     if (conv.summary) {
       const line = conv.summary.split("\n").find((l) => l.trim()) ?? "";
       const cleaned = cleanText(line);
-      return cleaned.length > 50 ? cleaned.slice(0, 50) + "\u2026" : cleaned;
+      const title = cleaned.length > 50 ? cleaned.slice(0, 50) + "\u2026" : cleaned;
+      return capitalize(title);
     }
     const first = conv.messages?.find((m) => m.role === "user");
     if (!first) return "New conversation";
     const cleaned = cleanText(first.content);
-    return cleaned.length > 50 ? cleaned.slice(0, 50) + "\u2026" : cleaned;
+    const title = cleaned.length > 50 ? cleaned.slice(0, 50) + "\u2026" : cleaned;
+    return capitalize(title);
   };
 
   const formatDate = (d: string) => {
@@ -107,8 +111,8 @@ function ConversationRow({
           <img src={safeAvatar(mentor.avatar_url)} alt="" width={22} height={22} className="rounded-full shrink-0" onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }} />
         )}
         <div className="flex-1 min-w-0 pr-4">
-          <p className="text-xs font-medium truncate leading-snug">{getTitle()}</p>
-          <p className="text-[10px] text-[#999] mt-px">{mentor?.name ? `${mentor.name.split(" ")[0]} \u00b7 ` : ""}{formatDate(conv.created_at)}</p>
+          <p className="text-sm font-medium truncate leading-snug">{getTitle()}</p>
+          <p className="text-xs text-[#999] mt-px">{mentor?.name ? `${mentor.name.split(" ")[0]} \u00b7 ` : ""}{formatDate(conv.created_at)}</p>
         </div>
       </Link>
 
@@ -303,8 +307,8 @@ export default function Sidebar() {
                   <div key={m.slug} className="flex items-center gap-2.5 px-3 py-2.5 hover:bg-[#F5F3F0] transition">
                     <img src={safeAvatar(m.avatar_url)} alt={m.name} width={28} height={28} className="rounded-full shrink-0" onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium text-[#1A1A1A] leading-tight">{m.name}</p>
-                      <p className="text-[10px] text-[#999] truncate">{m.tagline}</p>
+                      <p className="text-sm font-medium text-[#1A1A1A] leading-tight">{m.name}</p>
+                      <p className="text-xs text-[#999] truncate">{m.tagline}</p>
                     </div>
                     <Link
                       href={`/chat/${m.slug}?new=true`}
