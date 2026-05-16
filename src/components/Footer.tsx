@@ -16,6 +16,7 @@ export default function Footer() {
         <div className="flex gap-6 text-[#666]">
           <Link href="/the-forge" className="hover:text-white transition">The Forge</Link>
           <Link href="/for-mentors" className="hover:text-white transition">For Experts</Link>
+          <Link href="/free-prompts" className="hover:text-white transition">Free Prompts</Link>
           <Link href="/security" className="hover:text-white transition">Security</Link>
           <Link href="/privacy" className="hover:text-white transition">Privacy</Link>
         </div>

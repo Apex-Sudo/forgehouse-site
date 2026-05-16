@@ -122,6 +122,7 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-8 text-sm text-muted absolute left-1/2 -translate-x-1/2">
               <Link href="/mentors" className="hover:text-foreground transition font-medium">Modules</Link>
               <Link href="/tools" className="hover:text-foreground transition font-medium">Tools</Link>
+              <Link href="/free-prompts" className="hover:text-foreground transition font-medium">Free Prompts</Link>
               <Link href="/thinking" className="hover:text-foreground transition font-medium">Thinking</Link>
               <Link href="/pricing" className="hover:text-foreground transition font-medium">Pricing</Link>
               <UserMenu />
@@ -143,6 +144,7 @@ export default function Navbar() {
         <div className="md:hidden border-t border-amber/[0.08] bg-background/90 backdrop-blur-xl px-6 py-4 flex flex-col gap-4 text-sm">
           <Link href="/mentors" onClick={() => setOpen(false)} className="text-muted hover:text-foreground font-medium">Modules</Link>
           <Link href="/tools" onClick={() => setOpen(false)} className="text-muted hover:text-foreground font-medium">Tools</Link>
+          <Link href="/free-prompts" onClick={() => setOpen(false)} className="text-muted hover:text-foreground font-medium">Free Prompts</Link>
           <Link href="/thinking" onClick={() => setOpen(false)} className="text-muted hover:text-foreground font-medium">Thinking</Link>
           <Link href="/pricing" onClick={() => setOpen(false)} className="text-muted hover:text-foreground font-medium">Pricing</Link>
           <div onClick={() => setOpen(false)}><UserMenu /></div>

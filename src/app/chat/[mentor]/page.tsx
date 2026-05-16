@@ -7,6 +7,9 @@ import { useSession, signIn } from "next-auth/react";
 import ChatMessage from "@/components/ChatMessage";
 import MemoryBanner from "@/components/MemoryBanner";
 import UpgradePrompt from "@/components/UpgradePrompt";
+import PromptLibraryButton from "@/components/PromptLibraryButton";
+import PromptLibraryBottomSheet from "@/components/PromptLibraryBottomSheet";
+import MobileMenu from "@/components/MobileMenu";
 import { parseStreamChunk, extractArtifacts, type Artifact } from "@/lib/agent/helper/stream";
 import { useTokenBuffer } from "@/hooks/useTokenBuffer";
 import { useAppShell } from "@/components/AppShellContext";
@@ -151,6 +154,7 @@ function ChatContent() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
   const [activeScenario, setActiveScenario] = useState<string | null>(null);
+  const [promptSheetOpen, setPromptSheetOpen] = useState(false);
   const [loadingConversation, setLoadingConversation] = useState(!!searchParams.get("conv"));
   const summaryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -542,24 +546,42 @@ function ChatContent() {
     <div className="flex flex-col h-full px-4 py-3" style={{ background: "#F7F5F2" }}>
       <div className="flex-1 flex justify-center min-h-0">
         <div className="w-full max-w-5xl bg-white flex flex-col overflow-hidden shadow-[0_0_24px_rgba(0,0,0,0.06)] border border-foreground/[0.08] rounded-2xl h-full">
-          <div className="flex items-center gap-3 px-6 py-4 border-b border-foreground/[0.08]">
-            <img src={safeAvatar(mc.avatar_url)} alt={mc.name} width={36} height={36} className="rounded-full object-cover shrink-0" onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }} />
-            <div className="flex-1 min-w-0">
-              <h1 className="font-bold text-sm">{mc.name}</h1>
-              <p className="text-xs text-muted">{mc.tagline}</p>
+          <MobileMenu
+            onPromptClick={() => setPromptSheetOpen(true)}
+            scenarios={scenarios}
+            onScenarioSelect={(sc) => {
+              if (messages.length > 0 && !confirm("Start a new scenario? This will begin a fresh conversation.")) return;
+              setConversationId(null);
+              setSummary(null);
+              if (summaryTimerRef.current) clearTimeout(summaryTimerRef.current);
+              setActiveScenario(sc.id);
+              setMessages([{ role: "assistant", content: sc.questions[0] }]);
+              triggerConversationRefresh();
+            }}
+          >
+            <div className="flex items-center gap-3 px-6 py-4 border-b border-foreground/[0.08]">
+              <img src={safeAvatar(mc.avatar_url)} alt={mc.name} width={36} height={36} className="rounded-full object-cover shrink-0" onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }} />
+              <div className="flex-1 min-w-0">
+                <h1 className="font-bold text-sm">{mc.name}</h1>
+                <p className="text-xs text-muted">{mc.tagline}</p>
+              </div>
+              {/* Desktop: always-visible buttons */}
+              <div className="hidden md:flex items-center gap-2">
+                <PromptLibraryButton onClick={() => setPromptSheetOpen(true)} />
+                {scenarios.length > 0 && (
+                  <ScenariosDropdown scenarios={scenarios} onSelect={(sc) => {
+                    if (messages.length > 0 && !confirm("Start a new scenario? This will begin a fresh conversation.")) return;
+                    setConversationId(null);
+                    setSummary(null);
+                    if (summaryTimerRef.current) clearTimeout(summaryTimerRef.current);
+                    setActiveScenario(sc.id);
+                    setMessages([{ role: "assistant", content: sc.questions[0] }]);
+                    triggerConversationRefresh();
+                  }} />
+                )}
+              </div>
             </div>
-            {scenarios.length > 0 && (
-              <ScenariosDropdown scenarios={scenarios} onSelect={(sc) => {
-                if (messages.length > 0 && !confirm("Start a new scenario? This will begin a fresh conversation.")) return;
-                setConversationId(null);
-                setSummary(null);
-                if (summaryTimerRef.current) clearTimeout(summaryTimerRef.current);
-                setActiveScenario(sc.id);
-                setMessages([{ role: "assistant", content: sc.questions[0] }]);
-                triggerConversationRefresh();
-              }} />
-            )}
-          </div>
+          </MobileMenu>
 
           {showWelcome && (
             <div className="mx-6 mt-4 animate-in fade-in slide-in-from-top-2 duration-500">
@@ -713,6 +735,15 @@ function ChatContent() {
           )}
         </div>
       </div>
+
+      <PromptLibraryBottomSheet
+        open={promptSheetOpen}
+        onClose={() => setPromptSheetOpen(false)}
+        onSelect={(promptText) => {
+          setInput(promptText);
+          setPromptSheetOpen(false);
+        }}
+      />
     </div>
   );
 }
