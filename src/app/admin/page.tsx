@@ -46,15 +46,17 @@ function StatCard({
   trend?: { value: string; positive: boolean };
 }) {
   return (
-    <div className="rounded-xl border border-[#E5E2DC] bg-white p-5">
+    <div className="rounded-lg border border-border bg-surface p-5">
       <div className="flex items-start justify-between">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F5F3F0] text-[#737373]">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-light text-muted">
           {icon}
         </div>
         {trend && (
           <span
-            className={`flex items-center gap-0.5 text-xs font-medium ${
-              trend.positive ? "text-green-600" : "text-red-500"
+            className={`mono flex items-center gap-0.5 rounded border px-2 py-0.5 text-[10px] tracking-[0.06em] ${
+              trend.positive
+                ? "border-accent/25 bg-accent/15 text-accent"
+                : "border-[#F2777A]/25 bg-[#F2777A]/12 text-[#F2777A]"
             }`}
           >
             {trend.positive ? (
@@ -66,9 +68,11 @@ function StatCard({
           </span>
         )}
       </div>
-      <p className="mt-3 text-2xl font-bold text-[#1A1A1A]">{value}</p>
-      <p className="mt-1 text-sm text-[#999]">{label}</p>
-      {subValue && <p className="mt-0.5 text-xs text-[#B8B8B8]">{subValue}</p>}
+      <p className="mono mt-4 text-[26px] leading-none text-foreground">{value}</p>
+      <p className="mono mt-2.5 text-[11px] uppercase tracking-[0.08em] text-faint">
+        {label}
+      </p>
+      {subValue && <p className="mono mt-1.5 text-[11px] text-muted">{subValue}</p>}
     </div>
   );
 }
@@ -82,20 +86,20 @@ function PipelineBar({
     phases.extraction + phases.calibration + phases.ingestion + phases.complete;
   if (total === 0) {
     return (
-      <p className="text-sm text-[#999]">No onboardings yet</p>
+      <p className="mono text-[12px] text-muted">No onboardings yet</p>
     );
   }
 
   const segments = [
-    { key: "extraction", label: "Extraction", count: phases.extraction, color: "bg-blue-400" },
-    { key: "calibration", label: "Calibration", count: phases.calibration, color: "bg-amber" },
-    { key: "ingestion", label: "Ingestion", count: phases.ingestion, color: "bg-purple-400" },
-    { key: "complete", label: "Complete", count: phases.complete, color: "bg-green-500" },
+    { key: "extraction", label: "Extraction", count: phases.extraction, color: "bg-white/25" },
+    { key: "calibration", label: "Calibration", count: phases.calibration, color: "bg-tan" },
+    { key: "ingestion", label: "Ingestion", count: phases.ingestion, color: "bg-[#E3B341]" },
+    { key: "complete", label: "Complete", count: phases.complete, color: "bg-accent" },
   ];
 
   return (
     <div>
-      <div className="flex h-3 w-full overflow-hidden rounded-full bg-[#F5F5F5]">
+      <div className="flex h-3 w-full overflow-hidden rounded-full bg-white/10">
         {segments.map((seg) =>
           seg.count > 0 ? (
             <div
@@ -106,16 +110,27 @@ function PipelineBar({
           ) : null
         )}
       </div>
-      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1">
+      <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
         {segments.map((seg) => (
-          <div key={seg.key} className="flex items-center gap-2 text-sm">
-            <span className={`h-2.5 w-2.5 rounded-full ${seg.color}`} />
-            <span className="text-[#737373]">
-              {seg.label}: <span className="font-medium text-[#1A1A1A]">{seg.count}</span>
+          <div key={seg.key} className="flex items-center gap-2">
+            <span className={`h-2 w-2 rounded-full ${seg.color}`} />
+            <span className="mono text-[11px] uppercase tracking-[0.08em] text-faint">
+              {seg.label}: <span className="text-foreground">{seg.count}</span>
             </span>
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function MetricRow({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="flex items-center justify-between border-b border-border py-2 last:border-b-0">
+      <span className="mono text-[11px] uppercase tracking-[0.06em] text-faint">
+        {label}
+      </span>
+      <span className="mono text-[13px] text-foreground">{value}</span>
     </div>
   );
 }
@@ -143,7 +158,7 @@ export default function AdminDashboardPage() {
   if (loading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-amber" />
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent" />
       </div>
     );
   }
@@ -151,7 +166,7 @@ export default function AdminDashboardPage() {
   if (!metrics) {
     return (
       <div className="flex h-full items-center justify-center">
-        <p className="text-[#999]">Failed to load metrics.</p>
+        <p className="mono text-[12px] text-muted">Failed to load metrics.</p>
       </div>
     );
   }
@@ -159,8 +174,8 @@ export default function AdminDashboardPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[#1A1A1A]">Dashboard</h1>
-        <p className="mt-1 text-sm text-[#999]">
+        <h1 className="text-[34px] leading-none text-foreground">Dashboard</h1>
+        <p className="mono mt-2.5 text-[12px] text-muted">
           Overview of ForgeHouse platform metrics
         </p>
       </div>
@@ -196,62 +211,37 @@ export default function AdminDashboardPage() {
         />
       </div>
 
-      <div className="mt-8 rounded-xl border border-[#E5E2DC] bg-white p-6">
-        <h2 className="mb-4 text-lg font-bold text-[#1A1A1A]">
+      <div className="mt-8 rounded-lg border border-border bg-surface p-6">
+        <h2 className="mb-2 text-[22px] leading-none text-foreground">
           Onboarding Pipeline
         </h2>
-        <p className="mb-4 text-sm text-[#999]">
+        <p className="mono mb-6 text-[11px] uppercase tracking-[0.08em] text-faint">
           {metrics.onboarding.total} total onboarding sessions
         </p>
         <PipelineBar phases={metrics.onboarding.phases} />
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-[#E5E2DC] bg-white p-6">
-          <h3 className="mb-3 font-bold text-[#1A1A1A]">Signups</h3>
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-[#737373]">Last 7 days</span>
-              <span className="font-medium text-[#1A1A1A]">
-                {metrics.users.last7d}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-[#737373]">Last 30 days</span>
-              <span className="font-medium text-[#1A1A1A]">
-                {metrics.users.last30d}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-[#737373]">All time</span>
-              <span className="font-medium text-[#1A1A1A]">
-                {metrics.users.total}
-              </span>
-            </div>
+        <div className="rounded-lg border border-border bg-surface p-6">
+          <h3 className="mb-4 text-[20px] leading-none text-foreground">Signups</h3>
+          <div>
+            <MetricRow label="Last 7 days" value={metrics.users.last7d} />
+            <MetricRow label="Last 30 days" value={metrics.users.last30d} />
+            <MetricRow label="All time" value={metrics.users.total} />
           </div>
         </div>
 
-        <div className="rounded-xl border border-[#E5E2DC] bg-white p-6">
-          <h3 className="mb-3 font-bold text-[#1A1A1A]">Conversations</h3>
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-[#737373]">Paid subscribers</span>
-              <span className="font-medium text-[#1A1A1A]">
-                {metrics.conversations.paid}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-[#737373]">Free tier</span>
-              <span className="font-medium text-[#1A1A1A]">
-                {metrics.conversations.free}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-[#737373]">Messages (7d)</span>
-              <span className="font-medium text-[#1A1A1A]">
-                {metrics.conversations.messagesLast7d}
-              </span>
-            </div>
+        <div className="rounded-lg border border-border bg-surface p-6">
+          <h3 className="mb-4 text-[20px] leading-none text-foreground">
+            Conversations
+          </h3>
+          <div>
+            <MetricRow label="Paid subscribers" value={metrics.conversations.paid} />
+            <MetricRow label="Free tier" value={metrics.conversations.free} />
+            <MetricRow
+              label="Messages (7d)"
+              value={metrics.conversations.messagesLast7d}
+            />
           </div>
         </div>
       </div>

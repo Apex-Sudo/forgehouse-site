@@ -2,7 +2,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { PlugsConnected, ChatCircleDots } from "@phosphor-icons/react";
+import ClipButton from "@/components/ui/ClipButton";
+import { getExpertProfile, firstName } from "@/lib/expert-profile";
 
 type Mentor = {
   slug: string;
@@ -85,188 +86,221 @@ export default function ModulesPage() {
   }, []);
 
   return (
-    <div className="pt-16">
-      {/* Hero */}
-      <section className="px-6 py-24 md:py-32 max-w-4xl mx-auto text-center">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] mb-6">
-          Expert knowledge, <span className="text-amber">packaged.</span>
-        </h1>
-        <p className="text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-          Each module is built from one expert&apos;s real experience. Plug it into your agent or use it directly.
-        </p>
+    <div className="pt-16 md:pt-[72px]">
+      {/* ═══════════════════════════════════════════
+          HERO
+          ═══════════════════════════════════════════ */}
+      <section className="px-6 pt-16 md:pt-24 pb-14">
+        <div className="max-w-[1008px] mx-auto">
+          <p className="mono text-[13px] text-accent mb-4">Expert modules</p>
+          <h1 className="text-[56px] md:text-[88px] leading-[0.91] tracking-[-0.02em] max-w-[900px]">
+            Expert knowledge, <span className="text-accent">packaged.</span>
+          </h1>
+          <p className="mt-6 text-[17px] leading-[1.5] text-muted max-w-[560px]">
+            Each module is built from one expert&apos;s real experience. Plug it into your agent or use
+            it directly.
+          </p>
+        </div>
       </section>
 
-      {/* Active mentors grid */}
-      <section className="px-6 pb-24">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {loadingMentors && (
-              <div className="glass-card p-8 md:p-10 animate-pulse space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-foreground/5" />
-                  <div className="space-y-2 flex-1">
-                    <div className="h-3 w-32 bg-foreground/5 rounded" />
-                    <div className="h-3 w-40 bg-foreground/5 rounded" />
-                  </div>
+      {/* ═══════════════════════════════════════════
+          ACTIVE MODULES
+          ═══════════════════════════════════════════ */}
+      <section className="px-6 pb-20 md:pb-24">
+        <div className="max-w-[1008px] mx-auto">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-[30px]">
+            {loadingMentors &&
+              [0, 1, 2].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-[4/5] w-full bg-surface" />
+                  <div className="h-7 w-2/3 bg-surface mt-5 rounded" />
+                  <div className="h-4 w-1/2 bg-surface mt-3 rounded" />
+                  <div className="h-24 w-full bg-surface mt-4 rounded" />
                 </div>
-                <div className="h-3 w-full bg-foreground/5 rounded" />
-                <div className="h-3 w-3/4 bg-foreground/5 rounded" />
-                <div className="grid grid-cols-2 gap-3 pt-2">
-                  <div className="h-9 bg-foreground/5 rounded" />
-                  <div className="h-9 bg-foreground/5 rounded" />
-                </div>
-              </div>
-            )}
+              ))}
 
             {!loadingMentors && mentors.length === 0 && (
-              <div className="glass-card p-8 md:p-10 text-center">
-                <p className="text-lg font-semibold mb-2">No mentors available yet</p>
-                <p className="text-muted text-sm mb-4">We&apos;re onboarding new experts. Join the waitlist to be notified.</p>
-                <Link href="/pricing" className="text-amber font-semibold hover:opacity-80">See plans</Link>
+              <div className="col-span-full py-16 text-center">
+                <p className="text-[24px] text-paper mb-2">No mentors available yet</p>
+                <p className="mono text-[12px] text-muted mb-5">
+                  We&apos;re onboarding new experts. Join the waitlist to be notified.
+                </p>
+                <Link
+                  href="/pricing"
+                  className="mono text-[12px] tracking-[0.02em] text-accent hover:text-foreground transition"
+                >
+                  See plans
+                </Link>
               </div>
             )}
 
-            {mentors.map((m) => (
-              <div key={m.slug} className="glass-card p-8 md:p-10 flex flex-col gap-5">
-                <div className="flex items-start gap-5">
-                  <Image
-                    src={m.avatar_url || "/mentors/default-avatar.svg"}
-                    alt={m.name}
-                    width={64}
-                    height={64}
-                    className="rounded-2xl object-cover shrink-0"
-                  />
-                  <div>
-                    <p className="text-xs text-amber font-semibold uppercase tracking-wider mb-1">Expert Module</p>
-                    <h2 className="text-2xl font-bold mb-1">{m.name}</h2>
-                    <p className="text-muted text-sm">{m.tagline}</p>
+            {mentors.map((m) => {
+              const profile = getExpertProfile(m.slug, m.tagline);
+              const isSubscribed = mentorSubscribed[m.slug];
+              const monthly = Math.floor((mentorPrices[m.slug]?.monthlyPrice || 0) / 100);
+              return (
+                <article key={m.slug} className="flex flex-col">
+                  <div className="relative aspect-[4/5] w-full overflow-hidden bg-surface">
+                    <Image
+                      src={m.avatar_url || "/mentors/default-avatar.svg"}
+                      alt={m.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 316px"
+                      className="object-cover object-top"
+                    />
                   </div>
-                </div>
 
-                {m.bio != null && m.bio.trim() !== "" && (
-                  <p className="text-foreground/80 text-[15px] leading-relaxed">
-                    {m.bio}
-                  </p>
-                )}
+                  <h2 className="mt-5 text-[28px] uppercase leading-none tracking-[0.01em] text-paper">
+                    {m.name}
+                  </h2>
+                  <p className="text-[19px] italic text-accent mt-1">{profile.specialty}</p>
 
-                <div className="flex flex-col gap-3">
-                  <Link
-                    href={`/chat/${m.slug}`}
-                    className="inline-flex items-center justify-center gap-2 bg-amber text-background px-4 py-2.5 rounded-xl font-semibold text-sm hover:opacity-90 transition cursor-pointer"
-                  >
-                    <ChatCircleDots size={16} weight="bold" />
-                    Chat with {m.name.split(" ")[0]}
-                  </Link>
-                  <Link
-                    href={`/mentors/${m.slug}`}
-                    className="inline-flex items-center justify-center gap-2 border border-foreground/[0.1] text-muted px-4 py-2.5 rounded-xl font-medium text-sm hover:text-foreground hover:border-foreground/[0.2] transition cursor-pointer"
-                  >
-                    Learn more
-                  </Link>
-                  {mentorSubscribed[m.slug] ? (
-                    <button
-                      disabled
-                      className="inline-flex items-center justify-center gap-2 bg-foreground/20 text-muted px-4 py-2.5 rounded-xl font-semibold text-sm cursor-not-allowed"
-                    >
-                      Subscribed
-                    </button>
-                  ) : (
-                    <button
-                      onClick={async () => {
-                        try {
-                          const res = await fetch("/api/checkout", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ mentorSlug: m.slug }),
-                          });
-                          if (res.ok) {
-                            const data = await res.json();
-                            window.location.href = data.url;
-                          }
-                        } catch {
-                          window.location.href = "/pricing";
-                        }
-                      }}
-                      className="inline-flex items-center justify-center gap-2 bg-amber text-background px-4 py-2.5 rounded-xl font-semibold text-sm hover:opacity-90 transition cursor-pointer"
-                    >
-                      Pay ${Math.floor((mentorPrices[m.slug]?.monthlyPrice || 0) / 100)}/mo
-                    </button>
+                  {profile.highlights.length > 0 && (
+                    <ul className="mt-4 space-y-0.5">
+                      {profile.highlights.map((h) => (
+                        <li key={h} className="mono text-[11px] tracking-[0.04em] text-muted">
+                          {h}
+                        </li>
+                      ))}
+                    </ul>
                   )}
-                </div>
 
-                <p className="text-xs text-muted text-center">5 free messages. No card required.</p>
-              </div>
-            ))}
+                  {m.bio != null && m.bio.trim() !== "" && (
+                    <p className="mt-4 text-[16px] leading-[1.45] text-muted">{m.bio}</p>
+                  )}
+
+                  <p className="mono text-[15px] tracking-[0.02em] text-accent mt-6 mb-5">
+                    {isSubscribed ? "SUBSCRIBED" : monthly > 0 ? `${monthly} USD PER MONTH` : "FREE TO START"}
+                  </p>
+
+                  <div className="mt-auto flex flex-col gap-2.5">
+                    <ClipButton href={`/chat/${m.slug}`} variant="paper">
+                      Chat with {firstName(m.name)}
+                    </ClipButton>
+
+                    {isSubscribed ? (
+                      <div className="clip-corner mono flex items-center justify-between gap-3 w-full px-5 py-3.5 text-[12px] tracking-[0.02em] bg-surface text-faint">
+                        <span>Subscribed</span>
+                      </div>
+                    ) : (
+                      <ClipButton
+                        variant="dark"
+                        onClick={async () => {
+                          try {
+                            const res = await fetch("/api/checkout", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ mentorSlug: m.slug }),
+                            });
+                            if (res.ok) {
+                              const data = await res.json();
+                              window.location.href = data.url;
+                            }
+                          } catch {
+                            window.location.href = "/pricing";
+                          }
+                        }}
+                      >
+                        Pay ${monthly}/mo
+                      </ClipButton>
+                    )}
+
+                    <div className="flex items-center justify-between gap-4 pt-1">
+                      <Link
+                        href={`/mentors/${m.slug}`}
+                        className="mono text-[11px] tracking-[0.04em] text-muted hover:text-accent transition"
+                      >
+                        Learn more
+                      </Link>
+                      <span className="mono text-[11px] tracking-[0.04em] text-faint">
+                        5 free messages
+                      </span>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Divider */}
-      <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
-
-      {/* Coming Soon */}
-      <section className="px-6 py-24">
-        <div className="max-w-2xl mx-auto text-center">
-          <p className="text-xs text-amber font-semibold uppercase tracking-widest mb-4">In the forge</p>
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">More modules are being forged.</h2>
-          <p className="text-muted text-lg mb-10 max-w-xl mx-auto">
+      {/* ═══════════════════════════════════════════
+          IN THE FORGE
+          ═══════════════════════════════════════════ */}
+      <section className="sparkle-field px-6 py-20 md:py-28">
+        <div className="max-w-[1008px] mx-auto">
+          <p className="mono text-[13px] text-accent mb-4">In the forge</p>
+          <h2 className="text-[44px] md:text-[64px] leading-[0.92] tracking-[-0.015em] max-w-[720px]">
+            More modules are being forged.
+          </h2>
+          <p className="mt-5 text-[17px] leading-[1.5] text-muted max-w-[520px]">
             Each one goes through weeks of extraction before it goes live. We don&apos;t rush this.
           </p>
 
           {/* Upcoming modules */}
-          <div className="grid grid-cols-3 gap-4 mb-10 max-w-md mx-auto">
+          <div className="mt-12 grid sm:grid-cols-3 gap-[30px]">
             {[
               { label: "Brand & Reputation", desc: "Positioning, narrative, PR" },
               { label: "Revenue Operations", desc: "Systems, metrics, forecasting" },
               { label: "Product Strategy", desc: "Roadmap, prioritization, PMF" },
             ].map((mod) => (
-              <div key={mod.label} className="text-center">
-                <div className="w-12 h-12 rounded-xl bg-foreground/[0.03] border border-foreground/[0.08] mx-auto mb-2 flex items-center justify-center">
-                  <span className="text-foreground/20 text-lg">?</span>
+              <div key={mod.label} className="bg-surface border border-border rounded-lg p-6">
+                <div className="w-10 h-10 rounded-md bg-background border border-border flex items-center justify-center mb-4">
+                  <span className="mono text-[16px] text-faint">?</span>
                 </div>
-                <p className="text-[11px] text-muted/70 font-medium">{mod.label}</p>
-                <p className="text-[10px] text-muted/40 mt-0.5">{mod.desc}</p>
+                <p className="text-[22px] leading-[1.15] text-paper">{mod.label}</p>
+                <p className="mono text-[11px] tracking-[0.04em] text-muted mt-2">{mod.desc}</p>
               </div>
             ))}
           </div>
 
           {/* Waitlist */}
-          {submitted ? (
-            <div className="glass-card p-6 max-w-md mx-auto">
-              <p className="text-amber font-medium">You&apos;re on the list.</p>
-              <p className="text-muted text-sm mt-1">We&apos;ll notify you when the next module goes live.</p>
-            </div>
-          ) : (
-            <form onSubmit={handleWaitlist} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                required
-                className="flex-1 bg-white border border-foreground/[0.12] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/40 transition"
-              />
-              <button
-                type="submit"
-                disabled={submitting}
-                className="bg-amber text-background px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition text-sm cursor-pointer disabled:opacity-50"
-              >
-                {submitting ? "..." : "Notify me"}
-              </button>
-            </form>
-          )}
+          <div className="mt-12 max-w-[520px]">
+            {submitted ? (
+              <div className="bg-surface border border-border rounded-lg p-6">
+                <p className="mono text-[12px] tracking-[0.02em] text-accent">
+                  You&apos;re on the list.
+                </p>
+                <p className="text-[16px] leading-[1.45] text-muted mt-2">
+                  We&apos;ll notify you when the next module goes live.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleWaitlist} className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                  className="flex-1 rounded-md border border-border bg-background px-4 py-3 text-[16px] text-foreground placeholder:text-faint focus:border-accent/60 focus:outline-none transition"
+                />
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="mono shrink-0 inline-flex items-center justify-center gap-3 bg-accent text-[#1B1B18] px-6 py-3 rounded-md text-[12px] tracking-[0.02em] hover:bg-accent-dim transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  {submitting ? "..." : "Notify me"}
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </section>
 
-      {/* Divider */}
-      <div className="max-w-[600px] mx-auto h-px bg-gradient-to-r from-transparent via-amber/[0.12] to-transparent" />
-
-      {/* Expert recruitment CTA */}
-      <section className="px-6 py-16">
-        <div className="max-w-2xl mx-auto text-center">
-          <p className="text-muted mb-3">Have expertise worth preserving?</p>
-          <Link href="/apply" className="text-amber hover:underline font-medium">
-            Apply to become an expert →
+      {/* ═══════════════════════════════════════════
+          EXPERT RECRUITMENT
+          ═══════════════════════════════════════════ */}
+      <section className="px-6 py-10 md:py-14">
+        <div className="max-w-[1008px] mx-auto bg-accent text-[#1B1B18] px-8 md:px-12 py-7 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <p className="text-[26px] md:text-[32px] leading-none tracking-[0.01em] text-center sm:text-left">
+            Have expertise worth preserving?
+          </p>
+          <Link
+            href="/apply"
+            className="mono shrink-0 bg-[#1B1B18] text-paper px-8 py-3.5 text-[12px] tracking-[0.08em] hover:bg-[#2A2A26] transition"
+          >
+            APPLY TO BECOME AN EXPERT
           </Link>
         </div>
       </section>

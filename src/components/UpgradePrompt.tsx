@@ -66,17 +66,17 @@ export default function UpgradePrompt({
   };
 
   return (
-    <div className="mx-6 my-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="bg-white/[0.03] border border-amber/20 rounded-2xl px-6 py-5">
-        <p className="text-sm text-foreground/90 mb-3 leading-relaxed">
+    <div className="mt-5 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="bg-surface border border-accent/40 rounded-lg px-6 py-5">
+        <p className="text-[17px] text-foreground mb-4 leading-relaxed">
           Want to go deeper? Subscribe to unlock full mentor access and keep
           your conversations forever.
         </p>
 
-        <div className="text-sm text-muted mb-4">
-          <div className="flex justify-between items-center">
-            <span>{mentorName} Subscription</span>
-            <span className="font-semibold">{formatUsd(mentorMonthlyUsd)}/mo</span>
+        <div className="mono text-[11px] tracking-[0.04em] text-muted mb-4">
+          <div className="flex justify-between items-center border-t border-border pt-3">
+            <span className="uppercase">{mentorName} Subscription</span>
+            <span className="text-accent">{formatUsd(mentorMonthlyUsd)}/mo</span>
           </div>
         </div>
 
@@ -84,19 +84,19 @@ export default function UpgradePrompt({
           <button
             onClick={handleSubscribe}
             disabled={loading}
-            className="flex-1 bg-amber text-white py-2.5 rounded-xl font-semibold text-sm hover:bg-amber-dark transition disabled:opacity-50 cursor-pointer"
+            className="mono flex-1 bg-accent text-[#1B1B18] py-3 rounded-md text-[12px] tracking-[0.06em] uppercase hover:bg-accent-dim transition disabled:opacity-50 cursor-pointer"
           >
             {loading ? "Loading..." : `Subscribe — ${formatUsd(mentorMonthlyUsd)}/mo`}
           </button>
           <button
             onClick={() => setDismissed(true)}
-            className="text-muted hover:text-foreground transition text-xs cursor-pointer"
+            className="mono text-muted hover:text-accent transition text-[11px] uppercase tracking-[0.06em] cursor-pointer"
           >
             Not now
           </button>
         </div>
         {error && (
-          <p className="text-red-400 text-xs text-center mt-2">{error}</p>
+          <p className="mono text-red-400 text-[11px] text-center mt-3">{error}</p>
         )}
       </div>
     </div>

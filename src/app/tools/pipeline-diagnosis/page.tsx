@@ -34,12 +34,12 @@ export default function Page() {
 
       <PipelineDiagnosisTool />
 
-      <section className="max-w-2xl mx-auto px-6 pb-20 space-y-12">
+      <section className="max-w-[720px] mx-auto px-6 pb-20 space-y-12">
         <div>
-          <h2 className="text-lg font-semibold text-foreground mb-4">
+          <h2 className="text-[30px] leading-[1.05] text-foreground mb-4">
             Why deals really stall
           </h2>
-          <div className="text-muted text-sm leading-relaxed space-y-3">
+          <div className="text-[16px] leading-[1.65] text-muted space-y-3">
             <p>
               Most founders think each lost deal has its own reason. The prospect went dark, they chose a competitor, timing was wrong. But when you line up three or more losses side by side, a pattern almost always emerges. The same failure point shows up across deals that look completely different on the surface.
             </p>
@@ -53,10 +53,10 @@ export default function Page() {
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold text-foreground mb-4">
+          <h2 className="text-[30px] leading-[1.05] text-foreground mb-4">
             What you get
           </h2>
-          <div className="text-muted text-sm leading-relaxed space-y-3">
+          <div className="text-[16px] leading-[1.65] text-muted space-y-3">
             <p>
               The diagnosis produces five outputs: individual deal autopsies showing where and why each deal died; the connecting pattern across all three; the one fix with a 7-day implementation plan; a salvage assessment for each deal (can it be revived or is it dead); and a pipeline health score with risks and strengths.
             </p>
@@ -67,47 +67,47 @@ export default function Page() {
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold text-foreground mb-6">
+          <h2 className="text-[30px] leading-[1.05] text-foreground mb-6">
             Frequently asked questions
           </h2>
           <div className="space-y-6">
             <div>
-              <h3 className="text-sm font-medium text-foreground mb-1">Why three deals?</h3>
-              <p className="text-muted text-sm leading-relaxed">
+              <h3 className="text-[20px] text-foreground mb-1.5">Why three deals?</h3>
+              <p className="text-[16px] leading-[1.6] text-muted">
                 One lost deal is an anecdote. Two might be coincidence. Three reveals a pattern. The diagnostic needs enough data to separate the systemic issue from individual deal noise.
               </p>
             </div>
             <div>
-              <h3 className="text-sm font-medium text-foreground mb-1">What if my deals died for completely different reasons?</h3>
-              <p className="text-muted text-sm leading-relaxed">
+              <h3 className="text-[20px] text-foreground mb-1.5">What if my deals died for completely different reasons?</h3>
+              <p className="text-[16px] leading-[1.6] text-muted">
                 That&apos;s rare, but possible. If no pattern connects them, the tool tells you and analyzes each deal independently. Even without a shared pattern, the individual root cause analysis is valuable.
               </p>
             </div>
             <div>
-              <h3 className="text-sm font-medium text-foreground mb-1">What counts as a &quot;lost deal&quot;?</h3>
-              <p className="text-muted text-sm leading-relaxed">
+              <h3 className="text-[20px] text-foreground mb-1.5">What counts as a &quot;lost deal&quot;?</h3>
+              <p className="text-[16px] leading-[1.6] text-muted">
                 Any deal that entered your pipeline and didn&apos;t close. Prospects who went silent, chose a competitor, said the timing was wrong, or ghosted after a demo. The more detail you provide about what happened, the sharper the diagnosis.
               </p>
             </div>
             <div>
-              <h3 className="text-sm font-medium text-foreground mb-1">Is my data stored?</h3>
-              <p className="text-muted text-sm leading-relaxed">
+              <h3 className="text-[20px] text-foreground mb-1.5">Is my data stored?</h3>
+              <p className="text-[16px] leading-[1.6] text-muted">
                 No. Your deal descriptions are processed in real time and never saved. The diagnosis exists only in your browser.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-border-light pt-8">
-          <p className="text-xs text-muted/50 uppercase tracking-wider mb-4">More free tools</p>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/tools/icp-diagnostic" className="text-sm text-muted hover:text-amber transition">
+        <div className="border-t border-border pt-8">
+          <p className="mono text-[11px] tracking-[0.06em] uppercase text-faint mb-4">More free tools</p>
+          <div className="flex flex-wrap gap-5">
+            <Link href="/tools/icp-diagnostic" className="mono text-[12px] text-muted hover:text-accent transition">
               ICP Diagnostic →
             </Link>
-            <Link href="/tools/cold-email-teardown" className="text-sm text-muted hover:text-amber transition">
+            <Link href="/tools/cold-email-teardown" className="mono text-[12px] text-muted hover:text-accent transition">
               Cold Email Teardown →
             </Link>
-            <Link href="/tools/outbound-planner" className="text-sm text-muted hover:text-amber transition">
+            <Link href="/tools/outbound-planner" className="mono text-[12px] text-muted hover:text-accent transition">
               Outbound Week Planner →
             </Link>
           </div>

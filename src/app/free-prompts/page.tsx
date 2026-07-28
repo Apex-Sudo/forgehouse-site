@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BookOpen, Copy, Check, ArrowRight, Lightbulb, Code, Briefcase, Flask } from "@phosphor-icons/react";
+import ClipButton from "@/components/ui/ClipButton";
 
 interface PromptItem {
   id: string;
@@ -62,28 +63,32 @@ export default function FreePromptsPage() {
   const activePrompts = activeData?.prompts ?? [];
 
   return (
-    <main className="min-h-screen bg-background">
-      {/* Hero */}
-      <section className="pt-32 pb-12 px-6 text-center">
-        <div className="max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-amber/10 border border-amber/20 rounded-full px-4 py-1.5 text-amber text-xs font-medium mb-6">
-            <BookOpen size={14} weight="fill" />
+    <main className="min-h-screen bg-background pt-16 md:pt-[72px]">
+      {/* ═══════════════════════════════════════════
+          HERO
+          ═══════════════════════════════════════════ */}
+      <section className="px-6 pt-20 md:pt-28 pb-12">
+        <div className="max-w-[1008px] mx-auto">
+          <span className="mono inline-flex items-center gap-2 text-[11px] tracking-[0.06em] uppercase text-accent bg-accent/10 border border-accent/25 rounded-md px-2.5 py-1 mb-6">
+            <BookOpen size={13} weight="fill" />
             Prompt Library
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+          </span>
+          <h1 className="text-[48px] md:text-[72px] leading-[0.92] tracking-[-0.015em] mb-6">
             Free Prompts
           </h1>
-          <p className="text-lg text-muted max-w-2xl mx-auto leading-relaxed">
-            Premade, battle-tested prompts you can drop into any AI chat. 
-            Built from real coaching sessions with ForgeHouse mentors. 
+          <p className="text-[17px] leading-[1.55] text-muted max-w-[580px]">
+            Premade, battle-tested prompts you can drop into any AI chat.
+            Built from real coaching sessions with ForgeHouse mentors.
             No sign-up required — copy and use anywhere.
           </p>
         </div>
       </section>
 
-      {/* Category tabs */}
-      <div className="max-w-4xl mx-auto px-6 pb-8">
-        <div className="flex flex-wrap justify-center gap-2">
+      {/* ═══════════════════════════════════════════
+          CATEGORY TABS
+          ═══════════════════════════════════════════ */}
+      <div className="max-w-[1008px] mx-auto px-6 pb-10">
+        <div className="flex flex-wrap gap-2">
           {categories.map((cat) => {
             const Icon = CATEGORY_ICONS[cat.slug] ?? BookOpen;
             const isActive = activeCategory === cat.slug;
@@ -91,13 +96,13 @@ export default function FreePromptsPage() {
               <button
                 key={cat.slug}
                 onClick={() => setActiveCategory(cat.slug)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer ${
+                className={`mono flex items-center gap-2 px-4 py-2.5 rounded-md text-[11px] tracking-[0.06em] uppercase transition cursor-pointer border ${
                   isActive
-                    ? "bg-[#B8916A] text-white shadow-[0_2px_8px_rgba(184,145,106,0.3)]"
-                    : "bg-[#F5F3F0] text-[#737373] hover:bg-[#EDEAE5] hover:text-[#1A1A1A]"
+                    ? "bg-accent text-[#1B1B18] border-accent"
+                    : "bg-surface text-muted border-border hover:border-border-light hover:text-foreground"
                 }`}
               >
-                <Icon size={16} weight={isActive ? "fill" : "regular"} />
+                <Icon size={14} weight={isActive ? "fill" : "regular"} />
                 {cat.name}
               </button>
             );
@@ -105,65 +110,67 @@ export default function FreePromptsPage() {
         </div>
 
         {activeData && (
-          <p className="text-center text-sm text-muted mt-4 max-w-xl mx-auto">
+          <p className="text-[16px] leading-[1.5] text-muted mt-5 max-w-[560px]">
             {CATEGORY_DESCRIPTIONS[activeCategory] ?? ""}
           </p>
         )}
       </div>
 
-      {/* Prompt cards */}
-      <div className="max-w-4xl mx-auto px-6 pb-16">
+      {/* ═══════════════════════════════════════════
+          PROMPT CARDS
+          ═══════════════════════════════════════════ */}
+      <div className="max-w-[1008px] mx-auto px-6 pb-20">
         {loading && (
           <div className="flex justify-center py-20">
-            <div className="w-6 h-6 border-2 border-amber/30 border-t-amber rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
           </div>
         )}
 
         {!loading && activePrompts.length === 0 && (
           <div className="text-center py-20">
-            <BookOpen size={40} weight="regular" className="text-muted/30 mx-auto mb-4" />
-            <p className="text-muted text-sm">No prompts in this category yet. Check back soon.</p>
+            <BookOpen size={36} weight="regular" className="text-faint mx-auto mb-4" />
+            <p className="mono text-[12px] tracking-[0.06em] uppercase text-muted">
+              No prompts in this category yet. Check back soon.
+            </p>
           </div>
         )}
 
         {!loading && activePrompts.length > 0 && (
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid md:grid-cols-2 gap-[30px]">
             {activePrompts.map((prompt) => {
               const isCopied = copiedId === prompt.id;
               return (
                 <div
                   key={prompt.id}
-                  className="bg-white border border-[#E8E5E0] rounded-2xl p-6 flex flex-col shadow-[0_1px_3px_rgba(0,0,0,0.02),0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] hover:border-[#B8916A]/25 transition-all group"
+                  className="bg-surface border border-border rounded-lg p-6 flex flex-col hover:border-border-light transition-colors group"
                 >
                   {/* Header: title + category badge */}
                   <div className="flex items-start justify-between gap-3 mb-3">
-                    <h3 className="text-base font-semibold text-[#1A1A1A] group-hover:text-[#B8916A] transition-colors leading-snug">
+                    <h3 className="text-[22px] leading-[1.15] text-foreground group-hover:text-accent transition-colors">
                       {prompt.title}
                     </h3>
-                    <span className="shrink-0 text-[10px] font-medium text-[#B8916A] bg-amber/[0.08] px-2 py-0.5 rounded-md whitespace-nowrap">
+                    <span className="mono shrink-0 text-[11px] tracking-[0.06em] uppercase text-accent bg-accent/10 border border-accent/25 rounded-md px-2.5 py-1 whitespace-nowrap">
                       {activeData?.name}
                     </span>
                   </div>
 
-                  <p className="text-sm text-muted leading-relaxed mb-5">
+                  <p className="text-[16px] leading-[1.5] text-muted mb-5">
                     {prompt.description}
                   </p>
 
                   {/* Prompt preview */}
-                  <div className="bg-[#FAFAF8] border border-[#F0EDE8] rounded-xl px-4 py-3.5 mb-5">
-                    <p className="text-xs text-[#999] leading-relaxed italic">
-                      &ldquo;{prompt.prompt_text}&rdquo;
-                    </p>
+                  <div className="mono text-[13px] leading-[1.6] bg-background border border-border rounded-md p-4 text-foreground mb-5">
+                    &ldquo;{prompt.prompt_text}&rdquo;
                   </div>
 
                   {/* Actions — always visible, clean layout */}
                   <div className="mt-auto flex items-center gap-2.5 pt-1">
                     <button
                       onClick={() => handleCopy(prompt.id, prompt.prompt_text)}
-                      className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-medium transition cursor-pointer ${
+                      className={`mono inline-flex items-center gap-2 border px-4 py-2.5 rounded-md text-[11px] tracking-[0.06em] uppercase transition cursor-pointer ${
                         isCopied
-                          ? "bg-green-50 text-green-700 border border-green-200"
-                          : "bg-[#F5F3F0] border border-transparent text-[#737373] hover:text-[#1A1A1A] hover:bg-[#EDEAE5] hover:border-[#DDD9D3]"
+                          ? "border-accent/40 bg-accent/10 text-accent"
+                          : "border-border-light text-foreground hover:border-accent hover:text-accent"
                       }`}
                     >
                       {isCopied ? (
@@ -180,7 +187,7 @@ export default function FreePromptsPage() {
                     </button>
                     <Link
                       href={`/chat`}
-                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-medium bg-[#B8916A] text-white hover:bg-[#A07B56] transition ml-auto"
+                      className="mono inline-flex items-center gap-2 bg-accent text-[#1B1B18] px-4 py-2.5 rounded-md text-[11px] tracking-[0.06em] uppercase hover:bg-accent-dim transition ml-auto"
                     >
                       Try in chat
                       <ArrowRight size={14} weight="bold" />
@@ -193,24 +200,26 @@ export default function FreePromptsPage() {
         )}
       </div>
 
-      {/* Bottom CTA */}
-      <section className="pb-24 px-6">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="bg-[#F5F3F0] border border-[#E8E5E0] rounded-2xl px-8 py-10">
-            <BookOpen size={28} weight="fill" className="text-[#B8916A] mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-[#1A1A1A] mb-2">Want more than a prompt?</h2>
-            <p className="text-sm text-muted mb-6 leading-relaxed">
-              These prompts are a starting point. ForgeHouse mentors use them inside 
-              real coaching sessions — where prompts become conversations, and conversations 
+      {/* ═══════════════════════════════════════════
+          BOTTOM CTA
+          ═══════════════════════════════════════════ */}
+      <section className="px-6 pb-24">
+        <div className="max-w-[1008px] mx-auto">
+          <div className="sparkle-field border border-border rounded-lg px-8 md:px-12 py-14 text-center">
+            <BookOpen size={28} weight="fill" className="text-accent mx-auto mb-5" />
+            <h2 className="text-[36px] md:text-[44px] leading-[0.95] tracking-[-0.015em] text-foreground mb-4">
+              Want more than a prompt?
+            </h2>
+            <p className="text-[17px] leading-[1.5] text-muted max-w-[520px] mx-auto mb-8">
+              These prompts are a starting point. ForgeHouse mentors use them inside
+              real coaching sessions — where prompts become conversations, and conversations
               become results.
             </p>
-            <Link
-              href="/mentors"
-              className="inline-flex items-center gap-2 bg-[#B8916A] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#A07B56] transition"
-            >
-              Browse mentors
-              <ArrowRight size={16} weight="bold" />
-            </Link>
+            <div className="max-w-[260px] mx-auto">
+              <ClipButton href="/mentors" variant="paper">
+                Browse mentors
+              </ClipButton>
+            </div>
           </div>
         </div>
       </section>

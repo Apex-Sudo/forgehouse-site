@@ -63,12 +63,12 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     return (
       <div className="flex w-full items-center justify-between gap-3 py-1">
         <div className="flex min-w-0 items-center gap-2">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E5E2DC] bg-white text-amber">
-            <Icon size={18} stroke={1.75} className="text-amber" />
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-accent/25 bg-accent/15 text-accent">
+            <Icon size={18} stroke={1.75} className="text-accent" />
           </div>
           <div className="min-w-0">
-            <p className="text-xs font-medium text-[#999]">Current step</p>
-            <p className="truncate text-sm font-semibold text-[#1A1A1A]">{label}</p>
+            <p className="mono text-[10px] uppercase tracking-[0.08em] text-faint">Current step</p>
+            <p className="truncate text-[15px] text-foreground">{label}</p>
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-1">
@@ -78,7 +78,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
               <span
                 key={id}
                 className={`h-1.5 w-1.5 rounded-full ${
-                  st === "completed" ? "bg-amber" : st === "active" ? "bg-amber ring-2 ring-amber/30" : "bg-[#E5E2DC]"
+                  st === "completed" ? "bg-accent" : st === "active" ? "bg-accent ring-2 ring-accent/30" : "bg-white/15"
                 }`}
               />
             );
@@ -88,7 +88,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           <button
             type="button"
             onClick={onExpand}
-            className="flex shrink-0 items-center gap-1 rounded-lg border border-[#E5E2DC] px-2.5 py-1.5 text-xs font-medium text-[#737373] transition hover:border-amber/40 hover:text-[#1A1A1A]"
+            className="mono flex shrink-0 items-center gap-1 rounded-lg border border-border px-2.5 py-1.5 text-[11px] uppercase tracking-[0.06em] text-muted transition hover:border-accent/40 hover:text-foreground"
           >
             Show steps
             <IconChevronDown size={16} stroke={1.75} />
@@ -105,7 +105,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           <button
             type="button"
             onClick={onCollapse}
-            className="flex items-center gap-1 text-xs font-medium text-[#737373] transition hover:text-[#1A1A1A]"
+            className="mono flex items-center gap-1 text-[11px] uppercase tracking-[0.06em] text-muted transition hover:text-foreground"
           >
             Hide steps
             <IconChevronUp size={16} stroke={1.75} />
@@ -127,25 +127,29 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
               <div
                 className={`mb-2 flex h-10 w-10 items-center justify-center rounded-full ${
                   status === "completed"
-                    ? "border border-amber/40 bg-amber/10 text-amber"
+                    ? "border border-accent/40 bg-accent/15 text-accent"
                     : ""
                 } ${
                   status === "active"
-                    ? "border border-[#E5E2DC] bg-white text-amber"
+                    ? "border border-accent bg-accent text-[#1B1B18]"
                     : ""
-                } ${status === "pending" ? "bg-[#E5E2DC] text-[#999]" : ""}`}
+                } ${status === "pending" ? "border border-border bg-white/8 text-muted" : ""}`}
               >
                 {status === "completed" ? (
-                  <IconCheck size={20} stroke={2.25} className="text-amber" />
+                  <IconCheck size={20} stroke={2.25} className="text-accent" />
                 ) : (
-                  <Icon size={20} stroke={1.75} className={status === "pending" ? "text-[#999]" : "text-amber"} />
+                  <Icon
+                    size={20}
+                    stroke={1.75}
+                    className={status === "pending" ? "text-muted" : "text-[#1B1B18]"}
+                  />
                 )}
               </div>
               <span
-                className={`text-center text-xs font-medium ${
-                  status === "active" ? "text-[#1A1A1A]" : ""
-                } ${status === "pending" ? "text-[#999]" : ""} ${
-                  status === "completed" ? "text-[#737373]" : ""
+                className={`mono text-center text-[11px] uppercase tracking-[0.06em] ${
+                  status === "active" ? "text-foreground" : ""
+                } ${status === "pending" ? "text-faint" : ""} ${
+                  status === "completed" ? "text-muted" : ""
                 }`}
               >
                 {label}
@@ -156,9 +160,9 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       </div>
 
       <div className="relative pt-4">
-        <div className="absolute top-0 left-0 h-1 w-full rounded-full bg-[#F5F5F5]" />
+        <div className="absolute top-0 left-0 h-1 w-full rounded-full bg-white/10" />
         <div
-          className="absolute top-0 left-0 h-1 rounded-full bg-amber transition-all duration-500"
+          className="absolute top-0 left-0 h-1 rounded-full bg-accent transition-all duration-500"
           style={{
             width:
               currentPhase === "extraction" ? "0%" : currentPhase === "calibration" ? "50%" : "100%",
@@ -167,8 +171,8 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       </div>
 
       <div className="mt-6 text-center">
-        <h3 className="font-bold text-[#1A1A1A]">{PHASE_HEADLINES[currentPhase]}</h3>
-        <p className="mt-1 text-sm text-[#737373]">{PHASE_SUBTEXT[currentPhase]}</p>
+        <h3 className="text-[22px] text-foreground">{PHASE_HEADLINES[currentPhase]}</h3>
+        <p className="mono mt-1.5 text-[12px] text-muted">{PHASE_SUBTEXT[currentPhase]}</p>
       </div>
     </div>
   );

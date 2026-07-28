@@ -2,6 +2,7 @@
 import { Suspense, useState, useRef, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
+import { IconTool, IconPaperclip } from "@tabler/icons-react";
 
 const CONTRIBUTE_ACCESS_CODE = "HYNXmhPKruI";
 
@@ -12,7 +13,7 @@ interface Message {
 
 export default function ExtractionPageWrapper() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0e1117] flex items-center justify-center"><span className="text-white/40 text-sm">Loading...</span></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><span className="mono text-[12px] tracking-[0.04em] text-muted">Loading...</span></div>}>
       <ExtractionPage />
     </Suspense>
   );
@@ -188,20 +189,22 @@ function ExtractionPage() {
   const messageCount = messages.filter((m) => m.role === "user").length;
 
   return (
-    <div className="pt-20 flex flex-col h-screen">
-      <div className="flex-1 flex justify-center px-4 py-6">
-        <div className="w-full max-w-3xl glass-card flex flex-col overflow-hidden">
+    <div className="pt-20 flex flex-col h-screen bg-background">
+      <div className="flex-1 flex justify-center px-6 py-6 min-h-0">
+        <div className="w-full max-w-3xl bg-surface border border-border rounded-lg flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E2DC]">
+          <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-border">
             <div className="flex items-center gap-3">
-              <span className="text-2xl">🔧</span>
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface-light border border-border text-accent">
+                <IconTool size={18} stroke={1.5} aria-hidden />
+              </span>
               <div>
-                <h1 className="font-bold text-sm">Mentor Session</h1>
-                <p className="text-xs text-muted">{slug} &middot; {messageCount} exchanges</p>
+                <h1 className="text-[20px] leading-none text-foreground">Mentor Session</h1>
+                <p className="mono text-[11px] tracking-[0.04em] text-faint mt-1.5">{slug} &middot; {messageCount} exchanges</p>
               </div>
             </div>
             {messages.length > 0 && (
-              <div className="flex gap-2">
+              <div className="flex gap-2 shrink-0">
                 <button
                   onClick={() => {
                     if (confirm("Start over? This will clear the conversation.")) {
@@ -210,13 +213,13 @@ function ExtractionPage() {
                       setStarted(false);
                     }
                   }}
-                  className="text-xs text-[#999] hover:text-red-500 border border-[#E5E2DC] px-3 py-1.5 rounded-lg hover:border-red-400/30 transition"
+                  className="mono text-[11px] tracking-[0.06em] uppercase text-muted border border-border px-3 py-1.5 rounded-lg hover:text-[#F2777A] hover:border-[#F2777A]/25 hover:bg-[#F2777A]/10 transition"
                 >
                   Reset
                 </button>
                 <button
                   onClick={exportConversation}
-                  className="text-xs text-[#999] hover:text-[#1A1A1A] border border-[#E5E2DC] px-3 py-1.5 rounded-lg hover:border-[#B8916A]/30 transition"
+                  className="mono text-[11px] tracking-[0.06em] uppercase text-muted border border-border px-3 py-1.5 rounded-lg hover:text-foreground hover:bg-surface-light transition"
                 >
                   Export
                 </button>
@@ -225,11 +228,11 @@ function ExtractionPage() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
+          <div className="fh-scroll flex-1 overflow-y-auto px-6 py-6 space-y-5">
             {/* Auto-greeting if fresh session */}
             {!started && (
               <div className="flex justify-start">
-                <div className="max-w-[80%] bg-[#F5F3F0] border border-[#E5E2DC] px-5 py-3.5 text-sm leading-relaxed text-[#1A1A1A] rounded-2xl rounded-bl-md shadow-sm">
+                <div className="max-w-[80%] bg-surface-light border border-border px-5 py-3.5 text-sm leading-relaxed text-foreground rounded-lg rounded-bl-sm">
                   Hey! Thanks for being here. What you know took years to build, and most of it lives in your head where only a few people at a time can access it. We&apos;re going to change that. Over our conversations, I&apos;ll learn how you think, how you diagnose problems, and what makes your approach yours. No prep needed, no right answers. Just talk to me the way you&apos;d talk to someone you&apos;re helping. Before we start: if you have any documents that capture your background, frameworks, or past work (a CV, a portfolio doc, case studies, anything), upload them using the paperclip icon below. It saves us time and lets me ask better questions from the start. If not, no worries. Just tell me what you do and who you help, and we&apos;ll go from there.
                 </div>
               </div>
@@ -241,29 +244,29 @@ function ExtractionPage() {
                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 {m.role === "user" ? (
-                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap bg-[#B8916A] text-white rounded-2xl rounded-br-md shadow-sm">
+                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap bg-accent text-[#1B1B18] rounded-lg rounded-br-sm">
                     {m.content}
                   </div>
                 ) : (
-                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed bg-[#F5F3F0] border border-[#E5E2DC] text-[#1A1A1A] rounded-2xl rounded-bl-md shadow-sm">
+                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed bg-surface-light border border-border text-foreground rounded-lg rounded-bl-sm">
                     <ReactMarkdown
                       components={{
                         p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
-                        strong: ({ children }) => <strong className="font-semibold text-[#1A1A1A]">{children}</strong>,
-                        em: ({ children }) => <em className="italic text-[#555]">{children}</em>,
+                        strong: ({ children }) => <strong className="font-medium text-foreground">{children}</strong>,
+                        em: ({ children }) => <em className="italic text-muted">{children}</em>,
                         ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
                         ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
                         li: ({ children }) => (
                           <li className="flex items-start gap-2">
-                            <span className="text-[#B8916A] mt-0.5 shrink-0">▸</span>
+                            <span className="text-accent mt-0.5 shrink-0">▸</span>
                             <span>{children}</span>
                           </li>
                         ),
-                        h1: ({ children }) => <h3 className="font-bold text-[#1A1A1A] mb-2 text-base">{children}</h3>,
-                        h2: ({ children }) => <h3 className="font-bold text-[#1A1A1A] mb-2 text-base">{children}</h3>,
-                        h3: ({ children }) => <h3 className="font-semibold text-[#1A1A1A] mb-1.5 text-sm">{children}</h3>,
+                        h1: ({ children }) => <h3 className="text-foreground mb-2 text-lg">{children}</h3>,
+                        h2: ({ children }) => <h3 className="text-foreground mb-2 text-lg">{children}</h3>,
+                        h3: ({ children }) => <h3 className="text-foreground mb-1.5 text-base">{children}</h3>,
                         blockquote: ({ children }) => (
-                          <blockquote className="border-l-2 border-[#B8916A]/40 pl-3 my-2 text-[#737373] italic">{children}</blockquote>
+                          <blockquote className="border-l-2 border-accent/40 pl-3 my-2 text-muted italic">{children}</blockquote>
                         ),
                       }}
                     >
@@ -278,8 +281,8 @@ function ExtractionPage() {
               messages.length > 0 &&
               messages[messages.length - 1].content === "" && (
                 <div className="flex justify-start">
-                  <div className="bg-[#F5F3F0] border border-[#E5E2DC] px-5 py-3.5 text-sm rounded-2xl rounded-bl-md shadow-sm">
-                    <span className="animate-pulse text-[#999]">●●●</span>
+                  <div className="bg-surface-light border border-border px-5 py-3.5 text-sm rounded-lg rounded-bl-sm">
+                    <span className="animate-pulse text-faint">●●●</span>
                   </div>
                 </div>
               )}
@@ -288,20 +291,20 @@ function ExtractionPage() {
           </div>
 
           {/* Progress bar */}
-          <div className="px-6 py-2 border-t border-[#E5E2DC]">
+          <div className="px-6 py-3 border-t border-border">
             <div className="flex items-center gap-3">
-              <div className="flex-1 h-1 bg-[#E5E2DC] rounded-full overflow-hidden">
+              <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-[#B8916A] rounded-full transition-all duration-500"
+                  className="h-full bg-accent rounded-full transition-all duration-500"
                   style={{ width: `${Math.min((messageCount / 40) * 100, 100)}%` }}
                 />
               </div>
-              <span className="text-xs text-[#999]">{messageCount} of ~40 exchanges</span>
+              <span className="mono text-[11px] tracking-[0.06em] text-faint shrink-0">{messageCount} of ~40 exchanges</span>
             </div>
           </div>
 
           {/* Input */}
-          <div className="border-t border-[#E5E2DC] px-6 py-4">
+          <div className="border-t border-border px-6 py-4">
             <div className="flex gap-2 sm:gap-3 items-end">
               <input
                 ref={fileInputRef}
@@ -314,14 +317,12 @@ function ExtractionPage() {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={streaming || uploading}
                 title="Upload a file (.txt, .pdf, .docx, .md)"
-                className="text-[#999] hover:text-[#1A1A1A] border border-[#E5E2DC] px-3 py-3 rounded-xl hover:border-[#B8916A]/30 transition disabled:opacity-50 shrink-0"
+                className="text-muted hover:text-foreground border border-border px-3 py-3 rounded-lg hover:bg-surface-light transition disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
               >
                 {uploading ? (
-                  <span className="animate-pulse text-sm">...</span>
+                  <span className="mono animate-pulse text-[12px]">...</span>
                 ) : (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" />
-                  </svg>
+                  <IconPaperclip size={18} stroke={1.5} aria-hidden />
                 )}
               </button>
               <textarea
@@ -334,13 +335,13 @@ function ExtractionPage() {
                 onKeyDown={handleKeyDown}
                 placeholder={started ? "Continue where you left off..." : "Start by telling me about yourself..."}
                 rows={1}
-                className="flex-1 bg-white border border-[#E5E2DC] rounded-xl px-4 py-3 text-sm text-[#1A1A1A] placeholder:text-[#C5C0B8] focus:outline-none focus:border-[#B8916A]/50 focus:ring-1 focus:ring-[#B8916A]/20 transition resize-none overflow-y-auto"
+                className="fh-scroll flex-1 rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-faint focus:border-accent/60 focus:outline-none transition resize-none overflow-y-auto"
                 style={{ maxHeight: 200 }}
               />
               <button
                 onClick={() => send()}
                 disabled={streaming}
-                className="bg-[#B8916A] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#A07B56] transition disabled:opacity-50"
+                className="mono bg-accent text-[#1B1B18] px-6 py-3 rounded-lg text-[12px] tracking-[0.02em] hover:bg-accent-dim transition disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Send
               </button>

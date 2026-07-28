@@ -84,7 +84,7 @@ export default function ConversationHistory({ mentorSlug, onSelect, onNew }: Pro
     <div className="relative" ref={panelRef}>
       <button
         onClick={toggle}
-        className="text-muted hover:text-foreground transition p-1.5 rounded-lg hover:bg-white/[0.04]"
+        className="text-muted hover:text-accent transition p-1.5 rounded-md hover:bg-surface-light"
         title="Conversation history"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -93,20 +93,20 @@ export default function ConversationHistory({ mentorSlug, onSelect, onNew }: Pro
         </svg>
       </button>
       {open && (
-        <div className="absolute left-0 top-full mt-2 w-72 bg-background border border-white/[0.08] rounded-lg shadow-xl z-50 overflow-hidden">
-          <div className="px-3 py-2 border-b border-white/[0.06] flex items-center justify-between">
-            <span className="text-sm font-semibold text-muted uppercase tracking-wider">History</span>
+        <div className="absolute left-0 top-full mt-2 w-72 bg-surface border border-border rounded-md shadow-2xl z-50 overflow-hidden">
+          <div className="px-3 py-2.5 border-b border-border flex items-center justify-between">
+            <span className="mono text-[11px] text-muted uppercase tracking-[0.1em]">History</span>
             <button
               onClick={() => { setOpen(false); onNew(); }}
-              className="text-sm text-amber hover:text-amber-dark transition"
+              className="mono text-[11px] text-accent hover:text-foreground transition cursor-pointer"
             >
               + New
             </button>
           </div>
-          <div className="max-h-64 overflow-y-auto">
-            {loading && <div className="px-3 py-4 text-sm text-muted text-center">Loading...</div>}
+          <div className="max-h-64 overflow-y-auto fh-scroll">
+            {loading && <div className="mono px-3 py-4 text-[11px] text-faint text-center">Loading...</div>}
             {!loading && conversations.length === 0 && (
-              <div className="px-3 py-4 text-sm text-muted text-center">No conversations yet</div>
+              <div className="mono px-3 py-4 text-[11px] text-faint text-center">No conversations yet</div>
             )}
             {conversations.map((c) => (
               <button
@@ -116,10 +116,10 @@ export default function ConversationHistory({ mentorSlug, onSelect, onNew }: Pro
                   const msgs = (c.messages || []) as { role: "user" | "assistant"; content: string }[];
                   onSelect(c.id, msgs, c.summary);
                 }}
-                className="w-full text-left px-3 py-2.5 hover:bg-white/[0.04] transition border-b border-white/[0.04] last:border-0"
+                className="w-full text-left px-3 py-2.5 hover:bg-surface-light transition border-b border-border last:border-0 cursor-pointer"
               >
-                <div className="text-sm text-muted">{formatDate(c.created_at)}</div>
-                <div className="text-sm text-foreground/80 truncate">{getPreview(c)}</div>
+                <div className="mono text-[10px] tracking-[0.06em] text-faint">{formatDate(c.created_at)}</div>
+                <div className="text-[15px] text-foreground truncate">{getPreview(c)}</div>
               </button>
             ))}
           </div>

@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import ReactMarkdown from "react-markdown";
+import { IconBookmark, IconSearch } from "@tabler/icons-react";
 
 const FALLBACK_AVATAR = "/mentors/default-avatar.svg";
 function safeAvatar(url: string | undefined | null): string {
@@ -93,52 +94,48 @@ export default function InsightsPage() {
   if (status === "loading" || status === "unauthenticated") {
     return (
       <div className="flex items-center justify-center h-full pt-20">
-        <span className="animate-pulse text-muted text-sm">Loading...</span>
+        <span className="mono animate-pulse text-muted text-[12px] tracking-[0.04em]">Loading...</span>
       </div>
     );
   }
 
   return (
-    <div className="pt-4 h-full overflow-y-auto">
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
+    <div className="pt-4 h-full overflow-y-auto bg-background">
+      <div className="max-w-[1008px] mx-auto px-6 py-10">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-xl font-bold">Saved Insights</h1>
-            <p className="text-sm text-muted mt-1">
+            <p className="mono text-[13px] text-accent mb-4">Your Playbook</p>
+            <h1 className="text-[44px] md:text-[56px] leading-[0.92] tracking-[-0.02em]">Saved Insights</h1>
+            <p className="mono text-[12px] tracking-[0.04em] text-muted mt-3">
               {insights.length} insight{insights.length !== 1 ? "s" : ""} saved
             </p>
           </div>
         </div>
 
         {/* Search */}
-        <div className="mb-6">
+        <div className="mb-8 relative">
+          <IconSearch
+            size={16}
+            stroke={1.5}
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-faint"
+          />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search insights..."
-            className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-amber/40 transition"
+            className="w-full rounded-lg border border-border bg-surface pl-10 pr-3 py-2.5 text-[15px] text-foreground placeholder:text-faint focus:border-accent/60 focus:outline-none transition"
           />
         </div>
 
         {loading ? (
           <div className="text-center py-12">
-            <span className="animate-pulse text-muted text-sm">Loading insights...</span>
+            <span className="mono animate-pulse text-muted text-[12px] tracking-[0.04em]">Loading insights...</span>
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16">
-            <svg
-              width="48"
-              height="48"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              className="mx-auto text-muted/30 mb-4"
-            >
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-            </svg>
-            <p className="text-muted text-sm">
+            <IconBookmark size={40} stroke={1.25} className="mx-auto text-faint mb-5" />
+            <p className="text-muted text-[17px] leading-[1.5] max-w-[420px] mx-auto">
               {search
                 ? "No insights match your search."
                 : "No saved insights yet. Bookmark advice from your mentors to build your playbook."}
@@ -148,33 +145,33 @@ export default function InsightsPage() {
           Object.entries(grouped).map(([slug, items]) => {
             const mentor = mentors[slug];
             return (
-              <div key={slug} className="mb-8">
-                <h2 className="text-sm font-semibold text-muted flex items-center gap-2 mb-4">
-                  <img src={safeAvatar(mentor?.avatar_url)} alt="" className="w-5 h-5 rounded-full" onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }} />
+              <div key={slug} className="mb-10">
+                <h2 className="mono text-[11px] uppercase tracking-[0.08em] text-faint flex items-center gap-2.5 mb-4 pb-3 border-b border-border">
+                  <img src={safeAvatar(mentor?.avatar_url)} alt="" className="w-6 h-6 rounded-full object-cover ring-1 ring-border" onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }} />
                   {mentor?.name ?? slug}
                 </h2>
-                <div className="space-y-3">
+                <div className="space-y-[14px]">
                   {items.map((insight) => (
                     <div
                       key={insight.id}
-                      className="glass-card px-5 py-4 group/item"
+                      className="bg-surface border border-border rounded-lg px-5 py-4 group/item hover:border-border-light transition"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           {insight.context && (
-                            <p className="text-xs text-muted/60 mb-2 italic truncate">
+                            <p className="mono text-[11px] tracking-[0.02em] text-faint mb-2.5 truncate">
                               You asked: {insight.context.length > 100 ? insight.context.slice(0, 100) + "..." : insight.context}
                             </p>
                           )}
-                          <div className="text-sm text-foreground/80 prose-chat">
+                          <div className="text-[16px] leading-[1.5] text-foreground/85 prose-chat">
                             <ReactMarkdown
                               components={{
-                                p: ({ children }) => <p className="mb-1.5 last:mb-0 text-sm">{children}</p>,
-                                strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
-                                ul: ({ children }) => <ul className="space-y-0.5 list-none">{children}</ul>,
+                                p: ({ children }) => <p className="mb-2 last:mb-0 text-[16px] leading-[1.5]">{children}</p>,
+                                strong: ({ children }) => <strong className="font-medium text-foreground">{children}</strong>,
+                                ul: ({ children }) => <ul className="space-y-1 list-none">{children}</ul>,
                                 li: ({ children }) => (
-                                  <li className="flex items-start gap-1.5 text-sm">
-                                    <span className="text-amber mt-0.5 shrink-0 text-xs">▸</span>
+                                  <li className="flex items-start gap-2 text-[16px] leading-[1.5]">
+                                    <span className="text-accent mt-0.5 shrink-0 text-[11px]">▸</span>
                                     <span>{children}</span>
                                   </li>
                                 ),
@@ -183,13 +180,13 @@ export default function InsightsPage() {
                               {insight.content}
                             </ReactMarkdown>
                           </div>
-                          <p className="text-[10px] text-muted/40 mt-2">
+                          <p className="mono text-[10px] tracking-[0.06em] text-faint mt-3">
                             {formatDate(insight.created_at)}
                           </p>
                         </div>
                         <button
                           onClick={() => remove(insight.id)}
-                          className="opacity-0 group-hover/item:opacity-100 text-xs text-muted/40 hover:text-red-400 transition cursor-pointer shrink-0 mt-1"
+                          className="mono text-[11px] tracking-[0.02em] text-faint opacity-0 group-hover/item:opacity-100 focus-visible:opacity-100 hover:text-[#F2777A] transition cursor-pointer shrink-0 mt-1"
                         >
                           Delete
                         </button>

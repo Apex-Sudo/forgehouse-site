@@ -1,8 +1,18 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Monogram from "@/components/brand/Monogram";
 
-const HIDDEN_ROUTES = ["/contribute", "/calibrate", "/chat", "/insights", "/account", "/onboard"];
+const HIDDEN_ROUTES = ["/contribute", "/calibrate", "/chat", "/insights", "/account", "/onboard", "/admin", "/extraction"];
+
+const FOOTER_LINKS = [
+  { href: "/", label: "HOME" },
+  { href: "/for-mentors", label: "MENTOR'S PAGE" },
+  { href: "/pricing", label: "PRICING" },
+  { href: "/#faq", label: "FAQ" },
+  { href: "/privacy", label: "PRIVACY POLICY" },
+  { href: "/apply", label: "CONTACT" },
+];
 
 export default function Footer() {
   const pathname = usePathname();
@@ -10,17 +20,25 @@ export default function Footer() {
   if (hidden) return null;
 
   return (
-    <footer className="py-16 px-6" style={{ background: "#1A1A1A" }}>
-      <div className="max-w-6xl mx-auto flex flex-col items-center gap-6 text-sm text-center">
-        <img src="/logo.svg" alt="ForgeHouse" className="h-5 brightness-0 invert" />
-        <div className="flex gap-6 text-[#666]">
-          <Link href="/the-forge" className="hover:text-white transition">The Forge</Link>
-          <Link href="/for-mentors" className="hover:text-white transition">For Experts</Link>
-          <Link href="/free-prompts" className="hover:text-white transition">Free Prompts</Link>
-          <Link href="/security" className="hover:text-white transition">Security</Link>
-          <Link href="/privacy" className="hover:text-white transition">Privacy</Link>
+    <footer className="px-6 md:px-10 pb-12">
+      <div className="max-w-[1280px] mx-auto">
+        <div className="h-px bg-border" />
+        <div className="pt-10 flex items-start justify-between gap-8">
+          <Link href="/" aria-label="Forge House" className="text-foreground">
+            <Monogram size={30} />
+          </Link>
+          <nav className="flex flex-col items-end gap-1.5">
+            {FOOTER_LINKS.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="mono text-[11px] tracking-[0.08em] text-muted hover:text-accent transition"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
         </div>
-        <p className="text-xs text-[#444]">&copy; {new Date().getFullYear()} ForgeHouse</p>
       </div>
     </footer>
   );

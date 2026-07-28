@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Wordmark from "@/components/brand/Wordmark";
 import {
   IconHome,
   IconUserPlus,
@@ -67,11 +68,11 @@ export default function AdminSidebar({
   };
 
   return (
-    <aside className="flex w-60 shrink-0 flex-col border-r border-[#E5E2DC] bg-white">
-      <div className="border-b border-[#E5E2DC] px-5 py-5">
-        <Link href="/admin" className="flex items-center gap-2">
-          <span className="text-lg font-bold text-[#1A1A1A]">ForgeHouse</span>
-          <span className="rounded bg-amber/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber">
+    <aside className="flex w-60 shrink-0 flex-col border-r border-border bg-surface">
+      <div className="border-b border-border px-5 py-5">
+        <Link href="/admin" className="flex items-start justify-between gap-2">
+          <Wordmark size={20} className="text-foreground" />
+          <span className="mono rounded bg-accent/15 px-1.5 py-0.5 text-[10px] uppercase tracking-[0.08em] text-accent">
             Admin
           </span>
         </Link>
@@ -88,16 +89,16 @@ export default function AdminSidebar({
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                  className={`mono flex items-center gap-3 rounded-lg px-3 py-2.5 text-[12px] tracking-[0.02em] transition ${
                     active
-                      ? "bg-amber/10 text-amber"
-                      : "text-[#737373] hover:bg-[#F5F3F0] hover:text-[#1A1A1A]"
+                      ? "bg-accent/15 text-accent"
+                      : "text-muted hover:bg-surface-light hover:text-foreground"
                   }`}
                 >
                   {item.icon}
                   <span className="flex-1">{item.label}</span>
                   {active && (
-                    <IconChevronRight size={16} stroke={1.5} className="text-amber/60" />
+                    <IconChevronRight size={16} stroke={1.5} className="text-accent/60" />
                   )}
                 </Link>
               </li>
@@ -106,16 +107,16 @@ export default function AdminSidebar({
         </ul>
       </nav>
 
-      <div className="border-t border-[#E5E2DC] px-4 py-4">
+      <div className="border-t border-border px-4 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber/10 text-xs font-bold text-amber">
+          <div className="mono flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/15 text-[12px] text-accent">
             {userName.charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-[#1A1A1A]">
+            <p className="truncate text-[15px] text-foreground">
               {userName}
             </p>
-            <p className="truncate text-xs text-[#999]">{userEmail}</p>
+            <p className="mono truncate text-[11px] text-faint">{userEmail}</p>
           </div>
         </div>
       </div>

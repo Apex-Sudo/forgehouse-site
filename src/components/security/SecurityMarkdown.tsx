@@ -36,10 +36,12 @@ function Pre({ children }: PreProps) {
   if (typeof className === "string" && className.includes("language-mermaid")) {
     return (
       <figure
-        className="my-6 rounded-xl border border-neutral-200 bg-white p-5 text-sm text-neutral-800 shadow-sm"
+        className="my-8 rounded-lg border border-border bg-surface p-5 text-[16px] text-foreground/80"
         aria-label="High-level system data flow"
       >
-        <figcaption className="font-semibold text-neutral-950 mb-3">High-level data flow</figcaption>
+        <figcaption className="mono text-[11px] tracking-[0.06em] uppercase text-accent mb-4">
+          High-level data flow
+        </figcaption>
         <div className="overflow-x-auto">
           <svg
             viewBox="0 0 860 140"
@@ -52,31 +54,31 @@ function Pre({ children }: PreProps) {
                 <path d="M0,0 L6,3 L0,6 Z" fill="currentColor" />
               </marker>
             </defs>
-            <g fill="none" stroke="currentColor" strokeWidth="2" className="text-neutral-500">
-              <rect x="20" y="40" width="170" height="56" rx="14" className="fill-white stroke-neutral-300" />
-              <rect x="230" y="40" width="210" height="56" rx="14" className="fill-white stroke-neutral-300" />
-              <rect x="480" y="12" width="170" height="44" rx="14" className="fill-white stroke-neutral-300" />
-              <rect x="480" y="84" width="170" height="44" rx="14" className="fill-white stroke-neutral-300" />
-              <rect x="670" y="48" width="170" height="44" rx="14" className="fill-white stroke-neutral-300" />
+            <g fill="none" stroke="currentColor" strokeWidth="2" className="text-muted">
+              <rect x="20" y="40" width="170" height="56" rx="6" fill="#181815" stroke="rgba(235,236,236,0.2)" />
+              <rect x="230" y="40" width="210" height="56" rx="6" fill="#181815" stroke="#CAED57" />
+              <rect x="480" y="12" width="170" height="44" rx="6" fill="#181815" stroke="rgba(235,236,236,0.2)" />
+              <rect x="480" y="84" width="170" height="44" rx="6" fill="#181815" stroke="rgba(235,236,236,0.2)" />
+              <rect x="670" y="48" width="170" height="44" rx="6" fill="#181815" stroke="rgba(235,236,236,0.2)" />
 
               <line x1="190" y1="68" x2="230" y2="68" markerEnd="url(#arrow)" />
               <line x1="440" y1="56" x2="480" y2="34" markerEnd="url(#arrow)" />
               <line x1="440" y1="80" x2="480" y2="106" markerEnd="url(#arrow)" />
               <line x1="650" y1="68" x2="670" y2="70" markerEnd="url(#arrow)" />
             </g>
-            <g className="text-neutral-950" fontFamily="ui-sans-serif, system-ui, -apple-system" fontSize="14" fontWeight="600">
-              <text x="105" y="74" textAnchor="middle">User client</text>
-              <text x="335" y="74" textAnchor="middle">ForgeHouse app</text>
+            <g className="mono fill-[#EBECEC]" fontSize="13">
+              <text x="105" y="73" textAnchor="middle">User client</text>
+              <text x="335" y="73" textAnchor="middle">ForgeHouse app</text>
               <text x="565" y="38" textAnchor="middle">Managed database</text>
               <text x="565" y="110" textAnchor="middle">Payment processor</text>
-              <text x="755" y="76" textAnchor="middle">AI providers</text>
+              <text x="755" y="75" textAnchor="middle">AI providers</text>
             </g>
-            <g className="text-neutral-600" fontFamily="ui-sans-serif, system-ui, -apple-system" fontSize="12" fontWeight="600">
+            <g className="mono fill-[#CAED57]" fontSize="11">
               <text x="210" y="56" textAnchor="middle">TLS</text>
             </g>
           </svg>
         </div>
-        <ul className="mt-4 list-disc list-inside space-y-1 text-neutral-700">
+        <ul className="mt-5 list-disc list-outside pl-5 space-y-2 text-[16px] leading-[1.7] text-foreground/70">
           <li>Traffic between user devices and the application is protected using TLS (HTTPS).</li>
           <li>The application connects to managed services (database, payments, AI) over encrypted channels.</li>
         </ul>
@@ -84,7 +86,7 @@ function Pre({ children }: PreProps) {
     );
   }
   return (
-    <pre className="overflow-x-auto rounded-xl bg-neutral-950 p-4 text-sm my-4 text-neutral-100">
+    <pre className="mono overflow-x-auto rounded-md border border-border bg-background p-4 text-[13px] leading-[1.6] my-6 text-foreground">
       {children}
     </pre>
   );
@@ -96,59 +98,83 @@ export function SecurityMarkdown({ content }: { content: string }) {
       remarkPlugins={[remarkGfm]}
       components={{
         h1: ({ children }) => (
-          <h1 className="text-3xl font-bold mb-8 text-neutral-950">{children}</h1>
+          <h1 className="text-[48px] md:text-[64px] leading-[0.95] tracking-[-0.015em] text-paper mb-8">
+            {children}
+          </h1>
         ),
         h2: ({ children }) => {
           const id = slugifyHeading(textFromNode(children));
           return (
-            <h2 id={id} className="scroll-mt-20 text-xl font-semibold text-neutral-950 mb-3 mt-10">
+            <h2 id={id} className="scroll-mt-24 text-[28px] leading-[1.15] tracking-[-0.01em] text-foreground mt-12 mb-3">
               {children}
             </h2>
           );
         },
         h3: ({ children }) => (
-          <h3 className="text-lg font-semibold text-neutral-950 mb-2 mt-6">{children}</h3>
+          <h3 className="text-[21px] leading-[1.25] text-foreground mt-8 mb-2">{children}</h3>
         ),
-        p: ({ children }) => <p className="text-neutral-800 leading-relaxed mb-4">{children}</p>,
+        h4: ({ children }) => (
+          <h4 className="mono text-[11px] tracking-[0.06em] uppercase text-accent mt-6 mb-2">{children}</h4>
+        ),
+        p: ({ children }) => (
+          <p className="text-[16px] leading-[1.7] text-foreground/70 mb-4">{children}</p>
+        ),
         ul: ({ children }) => (
-          <ul className="list-disc list-inside space-y-2 text-neutral-800 mb-4">{children}</ul>
+          <ul className="list-disc list-outside pl-5 space-y-2 text-[16px] leading-[1.7] text-foreground/70 mb-5">
+            {children}
+          </ul>
         ),
         ol: ({ children }) => (
-          <ol className="list-decimal list-inside space-y-2 text-neutral-800 mb-4">{children}</ol>
+          <ol className="list-decimal list-outside pl-5 space-y-2 text-[16px] leading-[1.7] text-foreground/70 mb-5">
+            {children}
+          </ol>
         ),
-        li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+        li: ({ children }) => <li className="leading-[1.7]">{children}</li>,
         a: ({ href, children }) => (
-          <a href={href} className="text-amber-700 underline-offset-2 hover:underline">
+          <a
+            href={href}
+            className="text-accent underline underline-offset-4 decoration-accent/40 hover:decoration-accent transition"
+          >
             {children}
           </a>
         ),
-        strong: ({ children }) => <strong className="font-semibold text-neutral-950">{children}</strong>,
-        hr: () => <hr className="my-10 border-neutral-200" />,
+        strong: ({ children }) => <strong className="text-foreground">{children}</strong>,
+        em: ({ children }) => <em className="italic text-muted">{children}</em>,
+        blockquote: ({ children }) => (
+          <blockquote className="border-l-2 border-accent pl-6 my-8 text-[18px] italic text-foreground">
+            {children}
+          </blockquote>
+        ),
+        hr: () => <hr className="my-10 h-px bg-border border-0" />,
         code: ({ className, children }) => {
           const isBlock = typeof className === "string" && className.startsWith("language-");
           if (isBlock) {
             return <code className={className}>{children}</code>;
           }
           return (
-            <code className="rounded bg-neutral-100 px-1.5 py-0.5 text-sm text-neutral-900 ring-1 ring-neutral-200">
+            <code className="mono text-[13px] bg-background border border-border rounded px-1.5 py-0.5 text-accent">
               {children}
             </code>
           );
         },
         pre: Pre,
         table: ({ children }) => (
-          <div className="my-4 w-full overflow-x-auto rounded-lg border border-neutral-200">
-            <table className="w-full min-w-[32rem] border-collapse text-left text-sm text-neutral-800">{children}</table>
+          <div className="my-6 w-full overflow-x-auto rounded-lg border border-border">
+            <table className="w-full min-w-[32rem] border-collapse text-left">{children}</table>
           </div>
         ),
-        thead: ({ children }) => <thead className="bg-neutral-100 text-neutral-950">{children}</thead>,
-        tbody: ({ children }) => <tbody className="divide-y divide-neutral-200 bg-white">{children}</tbody>,
-        tr: ({ children }) => <tr className="border-b border-neutral-200 last:border-0">{children}</tr>,
+        thead: ({ children }) => <thead className="bg-surface">{children}</thead>,
+        tbody: ({ children }) => <tbody className="divide-y divide-border bg-surface/40">{children}</tbody>,
+        tr: ({ children }) => <tr className="border-b border-border last:border-0">{children}</tr>,
         th: ({ children }) => (
-          <th className="border-b border-neutral-200 px-3 py-2 font-semibold first:pl-4 last:pr-4">{children}</th>
+          <th className="mono text-[11px] tracking-[0.06em] uppercase text-muted border-b border-border px-3 py-3 first:pl-4 last:pr-4">
+            {children}
+          </th>
         ),
         td: ({ children }) => (
-          <td className="align-top px-3 py-2 first:pl-4 last:pr-4">{children}</td>
+          <td className="align-top text-[16px] leading-[1.6] text-foreground/80 px-3 py-3 first:pl-4 last:pr-4">
+            {children}
+          </td>
         ),
       }}
     >

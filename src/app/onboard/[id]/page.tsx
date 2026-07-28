@@ -119,10 +119,12 @@ export default function OnboardingPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#FAFAF8]">
+      <div className="flex items-center justify-center min-h-screen bg-background px-6">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber mx-auto mb-4"></div>
-          <p className="text-[#737373]">Loading your onboarding session...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-5"></div>
+          <p className="mono text-[12px] tracking-[0.04em] text-muted">
+            Loading your onboarding session...
+          </p>
         </div>
       </div>
     );
@@ -130,16 +132,16 @@ export default function OnboardingPage() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#FAFAF8]">
-        <div className="text-center max-w-md p-6 bg-white rounded-xl shadow-sm">
-          <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4 text-red-600">
-            <IconAlertCircle size={36} stroke={1.5} aria-hidden />
+      <div className="flex items-center justify-center min-h-screen bg-background px-6">
+        <div className="text-center max-w-md p-8 bg-surface border border-border rounded-lg">
+          <div className="w-16 h-16 rounded-full bg-[#F2777A]/12 border border-[#F2777A]/25 flex items-center justify-center mx-auto mb-5 text-[#F2777A]">
+            <IconAlertCircle size={32} stroke={1.5} aria-hidden />
           </div>
-          <h2 className="text-xl font-bold text-[#1A1A1A] mb-2">Session Error</h2>
-          <p className="text-[#737373] mb-6">{error}</p>
+          <h2 className="text-[28px] text-foreground mb-3">Session Error</h2>
+          <p className="text-muted text-[15px] leading-relaxed mb-7">{error}</p>
           <button
             onClick={() => router.push("/")}
-            className="bg-amber text-white px-6 py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition"
+            className="mono bg-accent text-[#1B1B18] hover:bg-accent-dim px-4 py-2 rounded-lg text-[12px] tracking-[0.02em] transition"
           >
             Back to Home
           </button>
@@ -150,32 +152,35 @@ export default function OnboardingPage() {
 
   if (!session) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#FAFAF8]">
+      <div className="flex items-center justify-center min-h-screen bg-background px-6">
         <div className="text-center">
-          <h2 className="text-xl font-bold text-[#1A1A1A] mb-2">Session Not Found</h2>
-          <p className="text-[#737373]">The onboarding session could not be found.</p>
+          <h2 className="text-[28px] text-foreground mb-3">Session Not Found</h2>
+          <p className="mono text-[12px] tracking-[0.04em] text-muted">
+            The onboarding session could not be found.
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-dvh pt-16 overflow-hidden bg-[#FAFAF8]">
-      <div className="shrink-0 border-b border-[#E5E2DC] bg-white px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+    <div className="flex flex-col h-dvh pt-16 overflow-hidden bg-background">
+      <div className="shrink-0 border-b border-border bg-surface px-6 py-4">
+        <div className="max-w-4xl mx-auto flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-lg font-bold text-[#1A1A1A]">Welcome, {session.mentorName.split(' ')[0]?.[0]?.toUpperCase() + session.mentorName.split(' ')[0]?.slice(1) + ' ' + session.mentorName.split(' ')[1]?.[0]?.toUpperCase() + session.mentorName.split(' ')[1]?.slice(1) + '!'}</h1>
-            <h3 className="text-[#999]">Let&apos;s get your expertise live.</h3>
+            <p className="mono text-[12px] tracking-[0.06em] text-accent mb-2">Onboarding</p>
+            <h1 className="text-[26px] leading-none text-foreground">Welcome, {session.mentorName.split(' ')[0]?.[0]?.toUpperCase() + session.mentorName.split(' ')[0]?.slice(1) + ' ' + session.mentorName.split(' ')[1]?.[0]?.toUpperCase() + session.mentorName.split(' ')[1]?.slice(1) + '!'}</h1>
+            <h3 className="mono text-[12px] tracking-[0.02em] text-muted mt-2">Let&apos;s get your expertise live.</h3>
           </div>
-          <div className="text-right">
-            <p className="text-xs text-[#999]">
+          <div className="text-right shrink-0">
+            <p className="mono text-[11px] tracking-[0.04em] text-faint">
               Expires: {formatExpiryOrdinal(session.expiresAt)}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="shrink-0 bg-white border-b border-[#E5E2DC] px-6 py-3">
+      <div className="shrink-0 bg-surface border-b border-border px-6 py-3">
         <div className="max-w-4xl mx-auto">
           <ProgressBar
             currentPhase={phaseForBar as "extraction" | "calibration" | "ingestion"}

@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { IconCheck, IconCircleCheck, IconClock, IconTool } from "@tabler/icons-react";
 import ChatMessage from "@/components/ChatMessage";
 import {
   EXTRACTION_EXCHANGE_ESCAPE_HATCH,
@@ -218,8 +219,8 @@ export default function ExtractionPage() {
 
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-[#999]">Loading...</p>
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <p className="mono text-[12px] tracking-[0.04em] text-muted">Loading...</p>
       </div>
     );
   }
@@ -227,13 +228,14 @@ export default function ExtractionPage() {
   // Show completion screen when extraction is finished
   if (showCompletion) {
     return (
-      <div className="flex flex-col h-screen bg-[#FAFAF8]">
+      <div className="flex flex-col h-dvh pt-16 md:pt-[72px] overflow-hidden bg-background">
         {/* Header */}
-        <div className="border-b border-[#E5E2DC] bg-white px-6 py-4">
+        <div className="shrink-0 border-b border-border bg-surface px-6 py-4">
           <div className="max-w-3xl mx-auto flex items-center justify-between">
             <div>
-              <h1 className="text-lg font-bold text-[#1A1A1A]">Mentor Extraction Complete</h1>
-              <p className="text-sm text-[#999]">
+              <p className="mono text-[12px] tracking-[0.06em] text-accent mb-2">Extraction</p>
+              <h1 className="text-[26px] leading-none text-foreground">Mentor Extraction Complete</h1>
+              <p className="mono text-[11px] tracking-[0.04em] text-faint mt-2">
                 {session?.user?.name ? `Session with ${session.user.name}` : "Building your mentor agent"}
               </p>
             </div>
@@ -241,18 +243,18 @@ export default function ExtractionPage() {
         </div>
 
         {/* Completion Screen */}
-        <div className="flex-1 overflow-y-auto px-6 py-8">
+        <div className="fh-scroll flex-1 overflow-y-auto px-6 py-8">
           <div className="max-w-3xl mx-auto space-y-6">
             <div className="text-center py-16">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">✅</span>
+              <div className="w-16 h-16 rounded-full bg-accent/15 border border-accent/25 text-accent flex items-center justify-center mx-auto mb-6">
+                <IconCircleCheck size={32} stroke={1.5} aria-hidden />
               </div>
-              <h2 className="text-xl font-bold text-[#1A1A1A] mb-2">Extraction complete</h2>
-              <p className="text-[#737373] max-w-md mx-auto mb-8">
+              <h2 className="text-[32px] leading-none text-foreground mb-3">Extraction complete</h2>
+              <p className="text-muted max-w-md mx-auto mb-8">
                 {completionSubtext}
               </p>
-              <div className="bg-amber/10 rounded-xl p-6 mb-8 text-left">
-                <ul className="list-disc pl-5 space-y-2 text-[#737373]">
+              <div className="bg-surface border border-border rounded-lg p-6 mb-8 text-left">
+                <ul className="list-disc pl-5 space-y-2 text-foreground/85">
                   <li>Your mentor agent will be trained with this knowledge</li>
                   <li>You'll receive an email notification when your agent is ready</li>
                   <li>You can refine your agent further through additional conversations</li>
@@ -261,7 +263,7 @@ export default function ExtractionPage() {
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <button
                   onClick={() => router.push("/mentors")}
-                  className="bg-amber text-white px-6 py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition"
+                  className="mono bg-accent text-[#1B1B18] px-4 py-2 rounded-lg text-[12px] tracking-[0.02em] hover:bg-accent-dim transition"
                 >
                   {llmMarkedComplete ? "Continue when ready" : "I have said enough — done"}
                 </button>
@@ -271,7 +273,7 @@ export default function ExtractionPage() {
                     setLlmMarkedComplete(false);
                     localStorage.removeItem("fh-extraction-session");
                   }}
-                  className="border border-[#E5E2DC] text-[#1A1A1A] px-6 py-3 rounded-xl text-sm font-semibold hover:bg-[#F5F5F5] transition"
+                  className="mono border border-border text-foreground px-4 py-2 rounded-lg text-[12px] tracking-[0.02em] hover:bg-surface-light transition"
                 >
                   Restart Extraction
                 </button>
@@ -284,19 +286,20 @@ export default function ExtractionPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[#FAFAF8]">
+    <div className="flex flex-col h-dvh pt-16 md:pt-[72px] overflow-hidden bg-background">
       {/* Header */}
-      <div className="border-b border-[#E5E2DC] bg-white px-6 py-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
+      <div className="shrink-0 border-b border-border bg-surface px-6 py-4">
+        <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-lg font-bold text-[#1A1A1A]">Mentor Extraction</h1>
-            <p className="text-sm text-[#999]">
+            <p className="mono text-[12px] tracking-[0.06em] text-accent mb-2">Extraction</p>
+            <h1 className="text-[26px] leading-none text-foreground">Mentor Extraction</h1>
+            <p className="mono text-[11px] tracking-[0.04em] text-faint mt-2">
               {session?.user?.name ? `Session with ${session.user.name}` : "Building your mentor agent"}
               {exchangeCount > 0 && ` · ${exchangeCount} exchanges`}
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-xs px-3 py-1.5 rounded-full bg-amber/10 text-amber font-medium">
+            <span className="mono text-[10px] uppercase tracking-[0.08em] px-2 py-0.5 rounded bg-white/8 text-muted border border-border">
               {exchangeCount < 10
                 ? "Phase 1: Foundation"
                 : exchangeCount < 20
@@ -312,34 +315,34 @@ export default function ExtractionPage() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-6 py-8">
+      <div className="fh-scroll flex-1 overflow-y-auto px-6 py-8">
         <div className="max-w-3xl mx-auto space-y-6">
           {messages.length === 0 && (
             <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-full bg-amber/10 flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">🔧</span>
+              <div className="w-16 h-16 rounded-full bg-accent/15 border border-accent/25 text-accent flex items-center justify-center mx-auto mb-6">
+                <IconTool size={30} stroke={1.5} aria-hidden />
               </div>
-              <h2 className="text-xl font-bold text-[#1A1A1A] mb-2">Ready to extract your expertise</h2>
-              
+              <h2 className="text-[32px] leading-none text-foreground mb-6">Ready to extract your expertise</h2>
+
               {/* Time estimate */}
-              <div className="bg-blue-50 rounded-xl p-4 mb-6 max-w-md mx-auto">
-                <div className="flex items-start">
-                  <span className="text-blue-500 mr-2">⏱️</span>
-                  <p className="text-[#737373] text-sm">
-                    <span className="font-semibold">Time estimate:</span> 1-2 hours to complete thoroughly. 
+              <div className="bg-accent/5 border border-accent/20 rounded-lg p-4 mb-6 max-w-md mx-auto">
+                <div className="flex items-start gap-3">
+                  <IconClock size={20} stroke={1.75} className="mt-0.5 shrink-0 text-accent" aria-hidden />
+                  <p className="text-muted text-sm text-left">
+                    <span className="mono text-[11px] uppercase tracking-[0.06em] text-foreground">Time estimate:</span> 1-2 hours to complete thoroughly.
                     You can pause and return anytime - your progress is automatically saved.
                   </p>
                 </div>
               </div>
-              
+
               {/* CV Upload */}
               <div className="mb-8 max-w-md mx-auto">
-                <div className="border-2 border-dashed border-[#E5E2DC] rounded-xl p-6">
-                  <h3 className="font-bold text-[#1A1A1A] mb-2">Speed up with your CV/Resume</h3>
-                  <p className="text-[#737373] text-sm mb-4">
+                <div className="border-2 border-dashed border-border bg-surface rounded-lg p-6 transition hover:border-accent/40 hover:bg-surface-light">
+                  <h3 className="text-[19px] leading-tight text-foreground mb-2">Speed up with your CV/Resume</h3>
+                  <p className="text-muted text-sm mb-4">
                     Upload your CV to skip surface-level questions and dive straight into your expertise.
                   </p>
-                  
+
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -348,28 +351,25 @@ export default function ExtractionPage() {
                     className="hidden"
                     disabled={isUploading}
                   />
-                  
+
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploading}
-                    className={`w-full py-2 rounded-lg text-sm font-medium ${
-                      isUploading 
-                        ? "bg-gray-200 text-gray-500 cursor-not-allowed" 
-                        : "bg-[#F5F5F5] text-[#1A1A1A] hover:bg-[#E5E2DC]"
-                    }`}
+                    className="mono w-full py-2 rounded-lg border border-border text-foreground text-[12px] tracking-[0.02em] transition hover:bg-surface-light disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {isUploading ? "Uploading..." : "Upload CV/Resume"}
                   </button>
-                  
+
                   {uploadedCV && (
-                    <div className="mt-3 text-xs text-green-600 flex items-center justify-center">
-                      <span>✓ Uploaded: {uploadedCV.filename}</span>
+                    <div className="mono mt-3 text-[11px] text-accent flex items-center justify-center gap-1.5">
+                      <IconCheck size={14} stroke={2} aria-hidden />
+                      <span>Uploaded: {uploadedCV.filename}</span>
                     </div>
                   )}
                 </div>
               </div>
-              
-              <p className="text-[#737373] max-w-md mx-auto mb-8">
+
+              <p className="text-muted max-w-md mx-auto mb-8">
                 This conversation will map how you think, diagnose problems, and help people.
                 No prep needed. Just talk naturally.
               </p>
@@ -377,7 +377,7 @@ export default function ExtractionPage() {
                 onClick={() =>
                   sendMessage("Let's get started.")
                 }
-                className="bg-amber text-white px-6 py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition"
+                className="mono bg-accent text-[#1B1B18] px-4 py-2 rounded-lg text-[12px] tracking-[0.02em] hover:bg-accent-dim transition"
               >
                 Start Extraction →
               </button>
@@ -393,19 +393,19 @@ export default function ExtractionPage() {
 
       {/* Progress Bar */}
       {messages.length > 0 && (
-        <div className="px-6 py-2 bg-white border-t border-[#E5E2DC]">
+        <div className="shrink-0 px-6 py-2 bg-surface border-t border-border">
           <div className="max-w-3xl mx-auto">
-            <div className="flex justify-between text-xs text-[#999] mb-1">
+            <div className="mono flex justify-between text-[11px] uppercase tracking-[0.06em] text-faint mb-1">
               <span>Progress</span>
               <span>{Math.min(100, Math.round((exchangeCount / EXTRACTION_EXCHANGE_ESCAPE_HATCH) * 100))}%</span>
             </div>
-            <div className="w-full bg-[#F5F5F5] rounded-full h-2">
-              <div 
-                className="bg-amber h-2 rounded-full transition-all duration-300" 
+            <div className="w-full bg-white/10 rounded-full h-2">
+              <div
+                className="bg-accent h-2 rounded-full transition-all duration-300"
                 style={{ width: `${Math.min(100, (exchangeCount / EXTRACTION_EXCHANGE_ESCAPE_HATCH) * 100)}%` }}
               ></div>
             </div>
-            <div className="text-xs text-[#999] mt-1">
+            <div className="mono text-[11px] tracking-[0.02em] text-faint mt-1">
               {exchangeCount} of ~{EXTRACTION_EXCHANGE_ESCAPE_HATCH} exchanges (finish earlier if the guide marks you ready)
             </div>
           </div>
@@ -414,7 +414,7 @@ export default function ExtractionPage() {
 
       {/* Input */}
       {messages.length > 0 && (
-        <div className="border-t border-[#E5E2DC] bg-white px-6 py-4">
+        <div className="shrink-0 border-t border-border bg-surface px-6 py-4">
           <div className="max-w-3xl mx-auto flex gap-3">
             <textarea
               value={input}
@@ -422,13 +422,13 @@ export default function ExtractionPage() {
               onKeyDown={handleKeyDown}
               placeholder="Share your thinking..."
               rows={2}
-              className="flex-1 resize-none rounded-xl border border-[#E5E2DC] px-4 py-3 text-[15px] focus:outline-none focus:border-amber/50 placeholder:text-[#C5C0B8]"
+              className="flex-1 resize-none rounded-lg border border-border bg-background px-4 py-3 text-[15px] text-foreground placeholder:text-faint transition focus:outline-none focus:border-accent/60 disabled:opacity-40 disabled:cursor-not-allowed"
               disabled={streaming}
             />
             <button
               onClick={() => sendMessage(input)}
               disabled={!input.trim() || streaming}
-              className="self-end bg-amber text-white px-5 py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition disabled:opacity-40"
+              className="mono self-end bg-accent text-[#1B1B18] px-4 py-2 rounded-lg text-[12px] tracking-[0.02em] hover:bg-accent-dim transition disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {streaming ? "..." : "Send"}
             </button>

@@ -40,45 +40,65 @@ const tools = [
 
 export default function ToolsPage() {
   return (
-    <div className="pt-24 pb-16 px-6">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-14">
-          <p className="text-amber text-sm font-medium uppercase tracking-wider mb-3">Built on Colin</p>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">Colin’s Free Sales Tools</h1>
-          <p className="text-muted max-w-2xl mx-auto">
-            Each tool is a focused interface to Colin Chapman’s GTM framework. Use a tool for a fast answer, then continue with Colin for full context and strategy.
+    <div className="pt-16 md:pt-[72px]">
+      <section className="px-6 pt-14 md:pt-20 pb-16">
+        <div className="max-w-[1008px] mx-auto">
+          <p className="mono text-[13px] text-accent mb-4">Built on Colin</p>
+          <h1 className="text-[56px] md:text-[80px] leading-[0.92] tracking-[-0.02em] max-w-[820px]">
+            Colin’s Free Sales Tools
+          </h1>
+          <p className="mt-5 text-[17px] leading-[1.5] text-muted max-w-[560px]">
+            Each tool is a focused interface to Colin Chapman’s GTM framework. Use a tool for a fast
+            answer, then continue with Colin for full context and strategy.
+          </p>
+
+          <p className="mono text-[11px] tracking-[0.06em] uppercase text-faint mt-14 mb-5">
+            Built on Colin’s methodology
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-[30px]">
+            {tools.map((tool) => (
+              <Link
+                key={tool.href}
+                href={tool.href}
+                className="group bg-surface border border-border rounded-lg p-7 flex flex-col hover:border-accent/25 transition"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="bg-accent/10 border border-accent/25 rounded-md p-2.5">
+                    <tool.icon size={22} className="text-accent" />
+                  </div>
+                  <span className="mono text-[11px] tracking-[0.06em] uppercase text-muted">
+                    {tool.time}
+                  </span>
+                </div>
+
+                <h2 className="mt-6 text-[26px] leading-[1.1] group-hover:text-accent transition">
+                  {tool.title}
+                </h2>
+
+                <p className="mt-3 text-[16px] leading-[1.5] text-muted">{tool.description}</p>
+
+                <p className="mono text-[11px] tracking-[0.04em] text-faint mt-4 mb-8">
+                  Powered by {tool.framework}
+                </p>
+
+                <div className="mt-auto">
+                  <div className="clip-corner mono flex items-center justify-between gap-3 w-full px-5 py-3.5 text-[12px] tracking-[0.02em] bg-paper text-[#1B1B18] transition group-hover:bg-white">
+                    <span>Need deeper diagnosis? Continue with Colin</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                      <path d="M9 6l6 6-6 6" />
+                    </svg>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <p className="mono text-[11px] tracking-[0.06em] uppercase text-faint mt-12">
+            More tools coming. Each built on a specific expert&apos;s methodology.
           </p>
         </div>
-
-        <p className="text-xs text-muted/50 uppercase tracking-wider mb-4 text-center">Built on Colin’s methodology</p>
-
-        <div className="grid gap-4">
-          {tools.map((tool) => (
-            <Link
-              key={tool.href}
-              href={tool.href}
-              className="glass-card p-6 flex items-start gap-5 hover:border-amber/20 transition group"
-            >
-              <div className="p-3 rounded-xl bg-amber/10 border border-amber/20 shrink-0">
-                <tool.icon size={22} className="text-amber" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-3 mb-1.5">
-                  <h2 className="text-lg font-semibold group-hover:text-amber transition">{tool.title}</h2>
-                  <span className="text-xs text-muted/60 bg-white/[0.04] px-2 py-0.5 rounded-md">{tool.time}</span>
-                </div>
-                <p className="text-muted text-sm">{tool.description}</p>
-                <p className="text-xs text-muted/70 mt-2">Powered by {tool.framework}</p>
-                <p className="text-xs text-amber mt-1">Need deeper diagnosis? Continue with Colin →</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        <p className="text-center text-muted/40 text-xs mt-10">
-          More tools coming. Each built on a specific expert&apos;s methodology.
-        </p>
-      </div>
+      </section>
     </div>
   );
 }

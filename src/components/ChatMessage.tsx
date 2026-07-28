@@ -19,7 +19,7 @@ function StreamingText({ content }: { content: string }) {
     <div className="whitespace-pre-wrap">
       {already}
       <span key={content.length} className="stream-fade">{fresh}</span>
-      <span className="inline-block w-1.5 h-4 bg-amber/70 rounded-sm animate-pulse ml-0.5 align-text-bottom" />
+      <span className="inline-block w-1.5 h-4 bg-[#1B1B18]/60 rounded-sm animate-pulse ml-0.5 align-text-bottom" />
     </div>
   );
 }
@@ -86,7 +86,7 @@ function BookmarkButton({
         fill={saved ? "currentColor" : "none"}
         stroke="currentColor"
         strokeWidth="2"
-        className={saved ? "text-amber" : "text-muted hover:text-foreground"}
+        className={saved ? "text-accent" : "text-muted hover:text-accent"}
       >
         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
       </svg>
@@ -100,50 +100,57 @@ const ChatMessage = React.memo(function ChatMessage({ role, content, mentorSlug,
   if (role === "user") {
     return (
       <div className="flex justify-end">
-        <div className="max-w-[80%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap bg-[#B8916A] text-white rounded-2xl">
+        <div className="max-w-[75%] px-5 py-3 text-[15px] leading-relaxed whitespace-pre-wrap text-right border border-border text-foreground rounded-lg rounded-br-sm">
           {content}
         </div>
       </div>
     );
   }
 
+  // Typing indicator lives outside the lime bubble so the dots read on the panel.
+  if (isStreaming && !content) {
+    return (
+      <div className="flex justify-start items-center gap-3">
+        <span className="flex gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-accent fh-dot" />
+          <span className="w-1.5 h-1.5 rounded-full bg-accent fh-dot [animation-delay:200ms]" />
+          <span className="w-1.5 h-1.5 rounded-full bg-accent fh-dot [animation-delay:400ms]" />
+        </span>
+        <span className="mono text-[11px] tracking-[0.06em] uppercase text-muted">
+          {statusText ?? "Thinking..."}
+        </span>
+      </div>
+    );
+  }
+
   return (
     <div className="flex justify-start group">
-      <div className="max-w-[80%]">
-        <div className="px-4 py-3 text-sm leading-relaxed bg-[#F5F3F0] text-foreground rounded-2xl prose-chat">
-          {isStreaming && !content ? (
-            <div className="flex items-center gap-2.5">
-              <span className="flex gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#B8916A] animate-bounce [animation-delay:0ms]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#B8916A] animate-bounce [animation-delay:150ms]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#B8916A] animate-bounce [animation-delay:300ms]" />
-              </span>
-              <span className="text-muted text-xs">{statusText ?? "Thinking..."}</span>
-            </div>
-          ) : isStreaming ? (
+      <div className="max-w-[75%]">
+        <div className="px-5 py-3.5 text-[15px] leading-relaxed bg-accent text-[#1B1B18] rounded-lg rounded-bl-sm prose-chat">
+          {isStreaming ? (
             <StreamingText content={content} />
           ) : (
             <ReactMarkdown
               components={{
                 p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
-                strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
-                em: ({ children }) => <em className="italic text-foreground/80">{children}</em>,
+                strong: ({ children }) => <strong className="font-semibold text-[#1B1B18]">{children}</strong>,
+                em: ({ children }) => <em className="italic text-[#1B1B18]/80">{children}</em>,
                 ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
                 ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
                 li: ({ children }) => (
                   <li className="flex items-start gap-2">
-                    <span className="text-amber mt-0.5 shrink-0">▸</span>
+                    <span className="text-[#1B1B18]/55 mt-0.5 shrink-0">▸</span>
                     <span>{children}</span>
                   </li>
                 ),
                 code: ({ children }) => (
-                  <code className="bg-foreground/[0.06] px-1.5 py-0.5 rounded text-xs font-mono">{children}</code>
+                  <code className="bg-[#1B1B18]/10 text-[#1B1B18] px-1.5 py-0.5 rounded text-[13px] mono">{children}</code>
                 ),
-                h1: ({ children }) => <h3 className="font-bold text-foreground mb-2 text-base">{children}</h3>,
-                h2: ({ children }) => <h3 className="font-bold text-foreground mb-2 text-base">{children}</h3>,
-                h3: ({ children }) => <h3 className="font-semibold text-foreground mb-1.5 text-sm">{children}</h3>,
+                h1: ({ children }) => <h3 className="text-[#1B1B18] mb-2 text-[19px]">{children}</h3>,
+                h2: ({ children }) => <h3 className="text-[#1B1B18] mb-2 text-[19px]">{children}</h3>,
+                h3: ({ children }) => <h3 className="text-[#1B1B18] mb-1.5 text-[17px]">{children}</h3>,
                 blockquote: ({ children }) => (
-                  <blockquote className="border-l-2 border-amber/40 pl-3 my-2 text-muted italic">{children}</blockquote>
+                  <blockquote className="border-l-2 border-[#1B1B18]/30 pl-3 my-2 text-[#1B1B18]/70 italic">{children}</blockquote>
                 ),
               }}
             >

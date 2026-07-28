@@ -156,92 +156,97 @@ function OnboardingContent() {
 
   if (status === "loading" || status === "unauthenticated") {
     return (
-      <div className="flex flex-col h-screen items-center justify-center">
-        <span className="animate-pulse text-muted text-sm">Loading...</span>
+      <div className="flex flex-col h-full items-center justify-center bg-background">
+        <span className="mono animate-pulse text-muted text-[11px] tracking-[0.1em] uppercase">Loading...</span>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-full px-4 py-3">
-      <div className="flex-1 flex justify-center min-h-0">
-        <div className="w-full max-w-5xl glass-card flex flex-col overflow-hidden shadow-[0_0_24px_rgba(184,145,106,0.12)] border-[rgba(184,145,106,0.2)] h-full">
-          {/* Header */}
-          <div className="flex items-center gap-3 px-6 py-4 border-b border-white/[0.06]">
-            <IconUserCircle size={24} className="text-amber shrink-0" />
-            <div className="flex-1">
-              <h1 className="font-bold text-sm">Set Up Your Profile</h1>
-              <p className="text-xs text-muted">Tell us about your business so our mentors can give you tailored advice</p>
+    <div className="flex flex-col h-full bg-background px-5 py-4">
+      <div className="w-full max-w-5xl mx-auto flex flex-col h-full min-h-0 gap-4">
+        {/* Eyebrow */}
+        <div className="flex justify-end shrink-0">
+          <span className="mono text-[12px] tracking-[0.1em] uppercase text-muted">Trained Experts</span>
+        </div>
+
+        {/* Header card */}
+        <div className="bg-surface border border-accent/60 rounded-lg px-7 py-6 flex items-start gap-4 shrink-0">
+          <IconUserCircle size={26} stroke={1.3} className="text-accent shrink-0 mt-1.5" />
+          <div className="flex-1 min-w-0">
+            <h1 className="text-[40px] leading-[0.95] uppercase text-foreground">Set Up Your Profile</h1>
+            <p className="text-[19px] italic leading-tight text-accent mt-1.5">
+              Tell us about your business so our mentors can give you tailored advice
+            </p>
+          </div>
+        </div>
+
+        {/* Messages */}
+        <div className="flex-1 min-h-0 overflow-y-auto fh-scroll bg-surface rounded-lg px-7 py-7 space-y-6">
+          {messages.map((m, i) => (
+            <ChatMessage
+              key={i}
+              role={m.role}
+              content={m.content}
+              isStreaming={streaming && i === messages.length - 1 && m.role === "assistant"}
+            />
+          ))}
+
+          {extracting && (
+            <div className="flex justify-center">
+              <div className="flex items-center gap-2 bg-background border border-border rounded-md px-5 py-3">
+                <svg className="animate-spin h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                <span className="mono text-muted text-[11px] tracking-[0.06em] uppercase">Saving your profile...</span>
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
-            {messages.map((m, i) => (
-              <ChatMessage
-                key={i}
-                role={m.role}
-                content={m.content}
-                isStreaming={streaming && i === messages.length - 1 && m.role === "assistant"}
-              />
-            ))}
-
-            {extracting && (
-              <div className="flex justify-center">
-                <div className="flex items-center gap-2 bg-[#F5F3F0] border border-[#E5E2DC] rounded-xl px-5 py-3 text-sm">
-                  <svg className="animate-spin h-4 w-4 text-[#B8916A]" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  <span className="text-muted text-xs">Saving your profile...</span>
+          {profileComplete && (
+            <div className="flex justify-center">
+              <div className="bg-background border border-accent/40 rounded-lg px-8 py-7 text-center max-w-md">
+                <div className="w-12 h-12 rounded-full border border-accent/50 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-accent text-xl">✓</span>
                 </div>
-              </div>
-            )}
-
-            {profileComplete && (
-              <div className="flex justify-center">
-                <div className="bg-[#F5F3F0] border border-[#E5E2DC] rounded-2xl px-8 py-6 text-center max-w-md">
-                  <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-green-600 text-xl">✓</span>
-                  </div>
-                  <p className="text-foreground font-medium mb-1">You&apos;re all set.</p>
-                  <p className="text-sm text-muted mb-5">Colin now knows your business and can give you tailored advice.</p>
-                  <button
-                    onClick={() => router.push(redirectTo)}
-                    className="inline-flex items-center gap-2 bg-[#B8916A] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#A07D5A] transition cursor-pointer"
-                  >
-                    Continue <IconArrowRight size={16} />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div ref={bottomRef} />
-          </div>
-
-          {/* Input */}
-          {!profileComplete && (
-            <div className="border-t border-[#E5E2DC] px-6 py-4">
-              <div className="flex gap-3">
-                <textarea
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Tell us about your business..."
-                  rows={1}
-                  className="flex-1 bg-[#F5F3F0] border border-[#E5E2DC] rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-[#B8916A]/40 transition resize-none"
-                />
+                <p className="text-[26px] leading-none text-foreground mb-2">You&apos;re all set.</p>
+                <p className="mono text-[11px] leading-relaxed tracking-[0.02em] text-muted mb-6">Colin now knows your business and can give you tailored advice.</p>
                 <button
-                  onClick={() => send()}
-                  disabled={streaming}
-                  className="bg-[#B8916A] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#A07D5A] transition disabled:opacity-50 cursor-pointer"
+                  onClick={() => router.push(redirectTo)}
+                  className="mono inline-flex items-center gap-2 bg-accent text-[#1B1B18] px-5 py-3 rounded-md text-[12px] tracking-[0.06em] uppercase hover:bg-accent-dim transition cursor-pointer"
                 >
-                  Send
+                  Continue <IconArrowRight size={15} />
                 </button>
               </div>
             </div>
           )}
+
+          <div ref={bottomRef} />
         </div>
+
+        {/* Input */}
+        {!profileComplete && (
+          <div className="shrink-0">
+            <div className="flex gap-3">
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Tell us about your business..."
+                rows={1}
+                className="flex-1 bg-surface border border-border rounded-md px-5 py-3.5 text-[15px] text-foreground placeholder:text-faint focus:outline-none focus:border-accent/50 transition resize-none"
+              />
+              <button
+                onClick={() => send()}
+                disabled={streaming}
+                className="mono shrink-0 bg-transparent text-accent border border-accent/70 px-7 rounded-md text-[12px] tracking-[0.08em] uppercase hover:bg-accent hover:text-[#1B1B18] transition disabled:opacity-40 cursor-pointer"
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

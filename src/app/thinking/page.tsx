@@ -59,29 +59,40 @@ const posts = [
 
 export default function ThinkingPage() {
   return (
-    <main className="min-h-screen bg-background pt-32 pb-24 px-6">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4">Thinking</h1>
-        <p className="text-muted mb-16 text-lg">
-          How we think about mentoring. Not content. Signal.
-        </p>
+    <main className="pt-16 md:pt-[72px]">
+      <section className="px-6 pt-16 md:pt-24 pb-24">
+        <div className="max-w-[1008px] mx-auto">
+          <p className="mono text-[13px] text-accent mb-4">Field notes</p>
+          <h1 className="text-[56px] md:text-[88px] leading-[0.91] tracking-[-0.02em]">
+            Thinking
+          </h1>
+          <p className="mt-5 text-[17px] text-muted max-w-[560px]">
+            How we think about mentoring. Not content. Signal.
+          </p>
 
-        <div className="flex flex-col gap-12">
-          {posts.map((post) => (
-            <Link
-              key={post.slug}
-              href={`/thinking/${post.slug}`}
-              className="group block"
-            >
-              <time className="text-sm text-muted/60">{post.date}</time>
-              <h2 className="text-xl font-semibold mt-1 group-hover:text-amber transition">
-                {post.title}
-              </h2>
-              <p className="text-muted mt-2">{post.excerpt}</p>
-            </Link>
-          ))}
+          <div className="mt-14 border-t border-border">
+            {posts.map((post) => (
+              <Link
+                key={post.slug}
+                href={`/thinking/${post.slug}`}
+                className="group block border-b border-border py-8 md:grid md:grid-cols-[140px_1fr] md:gap-10 md:items-baseline"
+              >
+                <time className="mono text-[11px] tracking-[0.06em] uppercase text-faint block mb-2 md:mb-0">
+                  {post.date}
+                </time>
+                <div>
+                  <h2 className="text-[26px] md:text-[30px] leading-[1.1] tracking-[-0.01em] text-foreground group-hover:text-accent transition">
+                    {post.title}
+                  </h2>
+                  <p className="mt-2 text-[16px] leading-[1.5] text-muted max-w-[560px]">
+                    {post.excerpt}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
     </main>
   );
 }

@@ -8,7 +8,6 @@ import {
   IconCopy,
   IconLoader2,
   IconMail,
-  IconTarget,
   IconChartBar,
 } from "@tabler/icons-react";
 
@@ -50,11 +49,11 @@ interface PlanResult {
 }
 
 const dayColors: Record<string, string> = {
-  Monday: "border-amber/30",
-  Tuesday: "border-amber/30",
-  Wednesday: "border-amber/30",
-  Thursday: "border-amber/30",
-  Friday: "border-green-400/30",
+  Monday: "border-l-accent/30",
+  Tuesday: "border-l-accent/30",
+  Wednesday: "border-l-accent/30",
+  Thursday: "border-l-accent/30",
+  Friday: "border-l-accent/70",
 };
 
 function ResultView({ result, onStartOver }: { result: PlanResult; onStartOver: () => void }) {
@@ -94,40 +93,45 @@ function ResultView({ result, onStartOver }: { result: PlanResult; onStartOver: 
   };
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-500">
+    <div className="space-y-[30px] animate-in fade-in duration-500">
       {/* Week Summary */}
-      <div className="glass-card p-8 text-center">
-        <p className="text-amber text-xs font-medium uppercase tracking-wider mb-3">This Week&apos;s Focus</p>
-        <p className="text-foreground text-xl font-semibold mb-3 leading-snug">{result.weekSummary.focus}</p>
-        <p className="text-muted text-sm">{result.weekSummary.targetOutcomes}</p>
+      <div className="bg-surface border border-border rounded-lg p-6 md:p-7">
+        <p className="mono text-[11px] tracking-[0.06em] uppercase text-accent mb-3">
+          This Week&apos;s Focus
+        </p>
+        <p className="text-[26px] leading-[1.1] text-foreground mb-3">{result.weekSummary.focus}</p>
+        <p className="text-[16px] leading-[1.6] text-muted">{result.weekSummary.targetOutcomes}</p>
       </div>
 
       {/* Copy all */}
       <div className="flex justify-end">
         <button
           onClick={handleCopy}
-          className="flex items-center gap-2 text-sm text-muted hover:text-foreground transition px-3 py-1.5 rounded-lg hover:bg-white/[0.04]"
+          className="mono inline-flex items-center gap-2 text-[12px] tracking-[0.02em] text-muted hover:text-accent transition"
         >
-          {copied ? <IconCheck size={16} className="text-green-400" /> : <IconCopy size={16} />}
+          {copied ? <IconCheck size={14} className="text-accent" /> : <IconCopy size={14} />}
           {copied ? "Copied" : "Copy full plan"}
         </button>
       </div>
 
       {/* Daily Plans */}
       {result.days.map((day, i) => (
-        <div key={i} className={`glass-card p-8 border-l-2 ${dayColors[day.day] || "border-amber/30"}`}>
+        <div
+          key={i}
+          className={`bg-surface border border-border rounded-lg p-6 border-l-2 ${dayColors[day.day] || "border-l-accent/30"}`}
+        >
           <div className="mb-6">
-            <h3 className="text-xl font-semibold">{day.day}</h3>
-            <p className="text-muted text-sm mt-1">{day.theme}</p>
+            <h3 className="mono text-[11px] tracking-[0.06em] uppercase text-accent">{day.day}</h3>
+            <p className="text-[22px] leading-[1.15] text-foreground mt-2">{day.theme}</p>
           </div>
           <div className="space-y-6">
             {day.tasks.map((task, j) => (
               <div key={j}>
-                <div className="flex items-baseline gap-3 mb-1">
-                  <span className="text-xs text-amber/60 uppercase tracking-wider shrink-0">{task.time}</span>
-                  <p className="text-foreground text-sm leading-relaxed">{task.action}</p>
-                </div>
-                <p className="text-muted/40 text-xs ml-[calc(theme(spacing.3)+3.5rem)] leading-relaxed">{task.why}</p>
+                <p className="mono text-[11px] tracking-[0.06em] uppercase text-muted mb-1.5">
+                  {task.time}
+                </p>
+                <p className="text-[20px] leading-[1.25] text-foreground">{task.action}</p>
+                <p className="mt-1.5 text-[16px] leading-[1.55] text-muted">{task.why}</p>
               </div>
             ))}
           </div>
@@ -135,12 +139,12 @@ function ResultView({ result, onStartOver }: { result: PlanResult; onStartOver: 
       ))}
 
       {/* Templates */}
-      <div className="glass-card p-8">
-        <div className="flex items-center gap-3 mb-8">
-          <IconMail size={20} className="text-amber" />
-          <h3 className="text-lg font-semibold">Ready-to-Use Templates</h3>
+      <div className="bg-surface border border-border rounded-lg p-6 md:p-7">
+        <div className="flex items-center gap-3 mb-6">
+          <IconMail size={18} className="text-accent" />
+          <h3 className="text-[26px] leading-[1.1] text-foreground">Ready-to-Use Templates</h3>
         </div>
-        <div className="space-y-8">
+        <div className="space-y-7">
           {([
             { key: "coldOutreach", label: "Cold Outreach", text: result.templates.coldOutreach },
             { key: "followUp", label: "Follow-Up (Day 3-4)", text: result.templates.followUp },
@@ -148,15 +152,17 @@ function ResultView({ result, onStartOver }: { result: PlanResult; onStartOver: 
           ] as const).map((tpl) => (
             <div key={tpl.key}>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-amber text-xs font-medium uppercase tracking-wider">{tpl.label}</span>
+                <span className="mono text-[11px] tracking-[0.06em] uppercase text-accent">
+                  {tpl.label}
+                </span>
                 <button
                   onClick={() => copyTemplate(tpl.key, tpl.text)}
-                  className="text-xs text-muted hover:text-foreground transition"
+                  className="mono text-[12px] tracking-[0.02em] text-muted hover:text-accent transition"
                 >
                   {copiedTemplate === tpl.key ? "Copied" : "Copy"}
                 </button>
               </div>
-              <div className="text-sm text-foreground whitespace-pre-wrap bg-white/[0.02] rounded-xl p-5 border border-border-light font-mono leading-loose">
+              <div className="mono text-[13px] leading-[1.6] whitespace-pre-wrap bg-background border border-border rounded-md px-3 py-2 text-foreground">
                 {tpl.text}
               </div>
             </div>
@@ -165,43 +171,55 @@ function ResultView({ result, onStartOver }: { result: PlanResult; onStartOver: 
       </div>
 
       {/* Metrics */}
-      <div className="glass-card p-8">
-        <div className="flex items-center gap-3 mb-8">
-          <IconChartBar size={20} className="text-amber" />
-          <h3 className="text-lg font-semibold">Targets</h3>
+      <div className="bg-surface border border-border rounded-lg p-6 md:p-7">
+        <div className="flex items-center gap-3 mb-6">
+          <IconChartBar size={18} className="text-accent" />
+          <h3 className="text-[26px] leading-[1.1] text-foreground">Targets</h3>
         </div>
-        <div className="grid grid-cols-2 gap-10">
+        <div className="grid grid-cols-2 gap-[30px]">
           <div>
-            <span className="text-muted text-xs uppercase tracking-wider">Daily</span>
-            <div className="space-y-3 mt-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted">New outreach</span>
-                <span className="text-foreground font-medium">{result.metrics.dailyTargets.newOutreach}</span>
+            <span className="mono text-[11px] tracking-[0.06em] uppercase text-accent">Daily</span>
+            <div className="space-y-3 mt-4">
+              <div className="flex justify-between items-baseline gap-3">
+                <span className="text-[16px] text-muted">New outreach</span>
+                <span className="mono text-[15px] text-foreground">
+                  {result.metrics.dailyTargets.newOutreach}
+                </span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted">Follow-ups</span>
-                <span className="text-foreground font-medium">{result.metrics.dailyTargets.followUps}</span>
+              <div className="flex justify-between items-baseline gap-3">
+                <span className="text-[16px] text-muted">Follow-ups</span>
+                <span className="mono text-[15px] text-foreground">
+                  {result.metrics.dailyTargets.followUps}
+                </span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted">LinkedIn</span>
-                <span className="text-foreground font-medium">{result.metrics.dailyTargets.linkedinEngagements}</span>
+              <div className="flex justify-between items-baseline gap-3">
+                <span className="text-[16px] text-muted">LinkedIn</span>
+                <span className="mono text-[15px] text-foreground">
+                  {result.metrics.dailyTargets.linkedinEngagements}
+                </span>
               </div>
             </div>
           </div>
           <div>
-            <span className="text-muted text-xs uppercase tracking-wider">Weekly</span>
-            <div className="space-y-3 mt-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted">Conversations</span>
-                <span className="text-foreground font-medium">{result.metrics.weeklyTargets.conversationsStarted}</span>
+            <span className="mono text-[11px] tracking-[0.06em] uppercase text-accent">Weekly</span>
+            <div className="space-y-3 mt-4">
+              <div className="flex justify-between items-baseline gap-3">
+                <span className="text-[16px] text-muted">Conversations</span>
+                <span className="mono text-[15px] text-foreground">
+                  {result.metrics.weeklyTargets.conversationsStarted}
+                </span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted">Meetings</span>
-                <span className="text-foreground font-medium">{result.metrics.weeklyTargets.meetingsBooked}</span>
+              <div className="flex justify-between items-baseline gap-3">
+                <span className="text-[16px] text-muted">Meetings</span>
+                <span className="mono text-[15px] text-foreground">
+                  {result.metrics.weeklyTargets.meetingsBooked}
+                </span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted">Pipeline added</span>
-                <span className="text-foreground font-medium">{result.metrics.weeklyTargets.pipelineAdded}</span>
+              <div className="flex justify-between items-baseline gap-3">
+                <span className="text-[16px] text-muted">Pipeline added</span>
+                <span className="mono text-[15px] text-foreground">
+                  {result.metrics.weeklyTargets.pipelineAdded}
+                </span>
               </div>
             </div>
           </div>
@@ -209,13 +227,13 @@ function ResultView({ result, onStartOver }: { result: PlanResult; onStartOver: 
       </div>
 
       {/* CTA */}
-      <div className="text-center pt-4 pb-8">
-        <p className="text-muted text-sm mb-3">
+      <div className="pt-4 pb-8">
+        <p className="text-[16px] leading-[1.5] text-muted mb-3">
           This planner uses Colin Chapman&apos;s outbound execution methodology.
         </p>
         <Link
           href="/mentors/colin-chapman"
-          className="inline-flex items-center gap-2 text-amber hover:text-amber-dark transition font-medium"
+          className="mono inline-flex items-center gap-2 text-[12px] tracking-[0.02em] text-accent hover:text-foreground transition"
           onClick={() => {
             if (typeof window !== "undefined" && (window as any).posthog) {
               (window as any).posthog.capture("tool_cta_clicked", { tool: "outbound-planner", target: "colin-chapman" });
@@ -226,8 +244,11 @@ function ResultView({ result, onStartOver }: { result: PlanResult; onStartOver: 
         </Link>
       </div>
 
-      <div className="text-center">
-        <button onClick={onStartOver} className="text-sm text-muted hover:text-foreground transition">
+      <div>
+        <button
+          onClick={onStartOver}
+          className="mono text-[12px] tracking-[0.02em] text-muted hover:text-accent transition"
+        >
           ← Plan another week
         </button>
       </div>
@@ -289,28 +310,39 @@ export default function OutboundPlannerPage() {
 
   if (result) {
     return (
-      <div className="pt-24 pb-16 px-6">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-10">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">Your Outbound Plan</h1>
-            <p className="text-muted">Execute this Monday morning.</p>
+      <div className="pt-16 md:pt-[72px]">
+        <section className="px-6 pt-14 md:pt-20 pb-16">
+          <div className="max-w-[720px] mx-auto">
+            <div className="mb-12">
+              <p className="mono text-[13px] text-accent mb-4">Free Tool</p>
+              <h1 className="text-[44px] md:text-[60px] leading-[0.92] tracking-[-0.015em]">
+                Your Outbound Plan
+              </h1>
+              <p className="mt-5 text-[17px] leading-[1.5] text-muted max-w-[520px]">
+                Execute this Monday morning.
+              </p>
+            </div>
+            <ResultView result={result} onStartOver={handleStartOver} />
           </div>
-          <ResultView result={result} onStartOver={handleStartOver} />
-        </div>
+        </section>
       </div>
     );
   }
 
   if (loading) {
     return (
-      <div className="pt-24 pb-16 px-6">
-        <div className="max-w-xl mx-auto text-center">
-          <div className="glass-card p-12">
-            <IconLoader2 size={32} className="text-amber animate-spin mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Building your week</h2>
-            <p className="text-muted text-sm">Creating a day-by-day action plan...</p>
+      <div className="pt-16 md:pt-[72px]">
+        <section className="px-6 pt-14 md:pt-20 pb-16">
+          <div className="max-w-[720px] mx-auto">
+            <div className="bg-surface border border-border rounded-lg p-10 md:p-12">
+              <IconLoader2 size={32} className="text-accent animate-spin mb-5" />
+              <h2 className="text-[28px] leading-[1.1] text-foreground mb-2">Building your week</h2>
+              <p className="mono text-[11px] tracking-[0.06em] uppercase text-muted">
+                Creating a day-by-day action plan...
+              </p>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     );
   }
@@ -322,49 +354,53 @@ export default function OutboundPlannerPage() {
   ];
 
   return (
-    <div className="pt-24 pb-16 px-6">
-      <div className="max-w-xl mx-auto">
-        <div className="text-center mb-12">
-          <p className="text-amber text-sm font-medium uppercase tracking-wider mb-3">Free Tool</p>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">Outbound Week Planner</h1>
-          <p className="text-muted max-w-md mx-auto">
-            Get a concrete Mon-Fri outbound plan with daily tasks, email templates, and targets.
-          </p>
-        </div>
-
-        <div className="glass-card p-8 md:p-10 space-y-6">
-          {fields.map((field, i) => (
-            <div key={i}>
-              <label className="block text-sm font-medium text-foreground mb-2">{field.label}</label>
-              <textarea
-                value={field.value}
-                onChange={(e) => field.onChange(e.target.value)}
-                placeholder={field.placeholder}
-                className="w-full bg-white/[0.03] border border-border-light focus:border-amber/40 rounded-xl outline-none text-sm p-4 text-foreground placeholder:text-muted/40 transition resize-none min-h-[80px]"
-              />
-            </div>
-          ))}
-
-          <div className="flex justify-end pt-2">
-            <button
-              onClick={handleSubmit}
-              disabled={!canSubmit}
-              className="bg-amber text-white px-6 py-2.5 rounded-xl font-medium hover:bg-amber-dark transition disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2"
-            >
-              <IconCalendarWeek size={18} />
-              Plan My Week
-            </button>
+    <div className="pt-16 md:pt-[72px]">
+      <section className="px-6 pt-14 md:pt-20 pb-16">
+        <div className="max-w-[720px] mx-auto">
+          <div className="mb-12">
+            <p className="mono text-[13px] text-accent mb-4">Free Tool</p>
+            <h1 className="text-[44px] md:text-[60px] leading-[0.92] tracking-[-0.015em]">
+              Outbound Week Planner
+            </h1>
+            <p className="mt-5 text-[17px] leading-[1.5] text-muted max-w-[520px]">
+              Get a concrete Mon-Fri outbound plan with daily tasks, email templates, and targets.
+            </p>
           </div>
 
-          {error && (
-            <p className="text-red-400 text-sm mt-4 text-center">{error}</p>
-          )}
-        </div>
+          <div className="bg-surface border border-border rounded-lg p-6 md:p-7 space-y-6">
+            {fields.map((field, i) => (
+              <div key={i}>
+                <label className="block mono text-[11px] tracking-[0.06em] uppercase text-muted mb-2">
+                  {field.label}
+                </label>
+                <textarea
+                  value={field.value}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  placeholder={field.placeholder}
+                  className="w-full rounded-md border border-border bg-background px-4 py-3 text-[16px] leading-[1.6] text-foreground placeholder:text-faint focus:border-accent/60 focus:outline-none transition resize-none min-h-[80px]"
+                />
+              </div>
+            ))}
 
-        <p className="text-center text-muted/50 text-xs mt-6">
-          No login required. Your data is not stored.
-        </p>
-      </div>
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={handleSubmit}
+                disabled={!canSubmit}
+                className="mono inline-flex items-center gap-3 bg-accent text-[#1B1B18] px-6 py-3 rounded-md text-[12px] tracking-[0.02em] hover:bg-accent-dim transition disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <IconCalendarWeek size={16} />
+                Plan My Week
+              </button>
+            </div>
+
+            {error && <p className="text-[14px] text-[#E06C5C] mt-4">{error}</p>}
+          </div>
+
+          <p className="mono text-[11px] tracking-[0.06em] uppercase text-faint mt-6">
+            No login required. Your data is not stored.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }

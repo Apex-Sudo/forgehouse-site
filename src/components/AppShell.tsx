@@ -5,7 +5,7 @@ import { AppShellProvider, useAppShell } from "./AppShellContext";
 import Sidebar from "./Sidebar";
 import { IconMenu2 } from "@tabler/icons-react";
 
-const APP_ROUTES = ["/chat", "/insights", "/scenarios", "/account", "/pricing"];
+const APP_ROUTES = ["/chat", "/insights", "/scenarios", "/account"];
 
 function isAppRoute(pathname: string) {
   return APP_ROUTES.some((r) => pathname.startsWith(r));
@@ -22,30 +22,31 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
     const isAdminRoute = pathname.startsWith("/admin");
     if (isChatRoute) {
       return (
-        <main className="h-screen pt-16 overflow-hidden">{children}</main>
+        <main className="h-screen pt-16 overflow-hidden bg-background">{children}</main>
       );
     }
     if (isAdminRoute) {
       return (
-        <main className="flex h-dvh min-h-0 flex-col overflow-hidden pt-16">
+        <main className="flex h-dvh min-h-0 flex-col overflow-hidden pt-16 bg-background">
           {children}
         </main>
       );
     }
-    return <main className="min-h-screen">{children}</main>;
+    return <main className="min-h-screen bg-background">{children}</main>;
   }
 
+  // Navbar returns null on these routes, so the shell owns the full viewport.
   return (
-    <div className="flex h-screen pt-16">
+    <div className="flex h-screen bg-background">
       <Sidebar />
       {/* Mobile hamburger */}
       <button
         onClick={() => setSidebarOpen(true)}
-        className="fixed top-[18px] left-16 z-50 md:hidden text-muted hover:text-foreground p-1"
+        className="fixed top-4 right-5 z-50 md:hidden text-muted hover:text-accent p-1"
       >
         <IconMenu2 size={20} />
       </button>
-      <main className="flex-1 overflow-hidden">{children}</main>
+      <main className="flex-1 overflow-hidden bg-background">{children}</main>
     </div>
   );
 }

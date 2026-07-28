@@ -1,6 +1,10 @@
 "use client";
 import { useState } from "react";
 
+const LABEL = "mono text-[11px] tracking-[0.06em] uppercase text-muted mb-2 block";
+const FIELD =
+  "w-full rounded-md border border-border bg-background px-4 py-3 text-[16px] text-foreground placeholder:text-faint focus:border-accent/60 focus:outline-none transition";
+
 export default function ApplyPage() {
   const [form, setForm] = useState({ name: "", email: "", linkedin: "", role: "", expertise: "", whyForgeHouse: "", contentLink: "" });
   const [submitted, setSubmitted] = useState(false);
@@ -24,89 +28,142 @@ export default function ApplyPage() {
   };
 
   return (
-    <div className="pt-16">
-      <section className="px-6 py-28 md:py-36 max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-5xl font-bold mb-4 text-center">
-          More people need what you know than you&apos;ll ever have <span className="text-amber">time to help.</span>
-        </h1>
-        <p className="text-muted text-lg mb-12 leading-relaxed text-center">
-          Your agent thinks like you 24/7 and compounds with every conversation.
-        </p>
+    <div className="pt-16 md:pt-[72px]">
+      <section className="px-6 pt-20 md:pt-28 pb-24 md:pb-32">
+        <div className="max-w-[1008px] mx-auto">
+          <p className="mono text-[13px] tracking-[0.06em] uppercase text-accent mb-5">Become a Trained Expert</p>
+          <h1 className="text-[44px] md:text-[64px] leading-[0.92] tracking-[-0.015em] max-w-[880px]">
+            More people need what you know than you&apos;ll ever have <span className="text-accent">time to help.</span>
+          </h1>
+          <p className="mt-6 text-[17px] leading-[1.5] text-muted max-w-[520px]">
+            Your agent thinks like you 24/7 and compounds with every conversation.
+          </p>
 
-        {submitted ? (
-          <div className="border border-amber/20 bg-amber/5 p-8 text-center rounded-xl max-w-lg mx-auto">
-            <p className="text-lg font-semibold mb-2">Application received.</p>
-            <p className="text-muted">We review every submission personally. If there&apos;s a fit, we&apos;ll be in touch within 5 business days.</p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto">
-            <input
-              type="text"
-              placeholder="Full name"
-              required
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              required
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
-            />
-            <input
-              type="url"
-              placeholder="LinkedIn profile URL"
-              required
-              value={form.linkedin}
-              onChange={(e) => setForm({ ...form, linkedin: e.target.value })}
-              className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
-            />
-            <input
-              type="text"
-              placeholder="Current role and company"
-              required
-              value={form.role}
-              onChange={(e) => setForm({ ...form, role: e.target.value })}
-              className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
-            />
-            <textarea
-              placeholder="What do people come to you for?"
-              required
-              value={form.expertise}
-              onChange={(e) => setForm({ ...form, expertise: e.target.value })}
-              rows={3}
-              className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition resize-none"
-            />
-            <textarea
-              placeholder="Why does this interest you?"
-              required
-              value={form.whyForgeHouse}
-              onChange={(e) => setForm({ ...form, whyForgeHouse: e.target.value })}
-              rows={3}
-              className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
-            />
-            <input
-              type="url"
-              placeholder="Link to something that shows how you think (blog, talk, thread)"
-              required
-              value={form.contentLink}
-              onChange={(e) => setForm({ ...form, contentLink: e.target.value })}
-              className="w-full bg-white/[0.03] border border-glass-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted/50 focus:outline-none focus:border-amber/30 transition"
-            />
-            <div className="text-center pt-2">
-              <button
-                type="submit"
-                disabled={submitting}
-                className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition disabled:opacity-50"
+          <div className="mt-14 max-w-[560px]">
+            {submitted ? (
+              <div className="rounded-lg border border-accent/25 bg-accent/5 p-8">
+                <p className="text-[28px] leading-[1.1] text-accent mb-3">Application received.</p>
+                <p className="text-[16px] leading-[1.55] text-muted">
+                  We review every submission personally. If there&apos;s a fit, we&apos;ll be in touch within 5 business days.
+                </p>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleSubmit}
+                className="rounded-lg border border-border bg-surface p-7 md:p-9 space-y-6"
               >
-                {submitting ? "Submitting..." : "Submit Application"}
-              </button>
-            </div>
-          </form>
-        )}
+                <div>
+                  <label htmlFor="apply-name" className={LABEL}>
+                    Full name
+                  </label>
+                  <input
+                    id="apply-name"
+                    type="text"
+                    required
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className={FIELD}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="apply-email" className={LABEL}>
+                    Email
+                  </label>
+                  <input
+                    id="apply-email"
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className={FIELD}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="apply-linkedin" className={LABEL}>
+                    LinkedIn profile URL
+                  </label>
+                  <input
+                    id="apply-linkedin"
+                    type="url"
+                    required
+                    value={form.linkedin}
+                    onChange={(e) => setForm({ ...form, linkedin: e.target.value })}
+                    className={FIELD}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="apply-role" className={LABEL}>
+                    Current role and company
+                  </label>
+                  <input
+                    id="apply-role"
+                    type="text"
+                    required
+                    value={form.role}
+                    onChange={(e) => setForm({ ...form, role: e.target.value })}
+                    className={FIELD}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="apply-expertise" className={LABEL}>
+                    What do people come to you for?
+                  </label>
+                  <textarea
+                    id="apply-expertise"
+                    required
+                    value={form.expertise}
+                    onChange={(e) => setForm({ ...form, expertise: e.target.value })}
+                    rows={3}
+                    className={`${FIELD} resize-none`}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="apply-why" className={LABEL}>
+                    Why does this interest you?
+                  </label>
+                  <textarea
+                    id="apply-why"
+                    required
+                    value={form.whyForgeHouse}
+                    onChange={(e) => setForm({ ...form, whyForgeHouse: e.target.value })}
+                    rows={3}
+                    className={`${FIELD} resize-none`}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="apply-content" className={LABEL}>
+                    Link to something that shows how you think (blog, talk, thread)
+                  </label>
+                  <input
+                    id="apply-content"
+                    type="url"
+                    required
+                    value={form.contentLink}
+                    onChange={(e) => setForm({ ...form, contentLink: e.target.value })}
+                    className={FIELD}
+                  />
+                </div>
+
+                <div className="pt-1">
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="mono inline-flex items-center gap-3 bg-accent text-[#1B1B18] px-6 py-3 rounded-md text-[12px] tracking-[0.02em] hover:bg-accent-dim transition disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    {submitting ? "Submitting..." : "Submit Application"}
+                    <span aria-hidden="true">›</span>
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
       </section>
     </div>
   );

@@ -96,7 +96,7 @@ function parseStoredContent(raw: unknown): MentorLandingContent {
   return p.success ? normalizeFeaturedReviews(p.data) : emptyMentorLandingContent();
 }
 
-const accordionIconClass = "flex shrink-0 items-center justify-center text-amber";
+const accordionIconClass = "flex shrink-0 items-center justify-center text-accent";
 
 function AccordionSection({
   title,
@@ -113,41 +113,58 @@ function AccordionSection({
 }) {
   return (
     <details
-      className="group overflow-hidden rounded-xl border border-solid border-[#b8926b] bg-white shadow-[0_1px_2px_rgba(26,26,26,0.04)]"
+      className="group overflow-hidden rounded-lg border border-border bg-surface"
       onToggle={(e) => {
         if (e.currentTarget.open && onExpand) {
           onExpand();
         }
       }}
     >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 hover:bg-[#FAFAF8] [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 transition hover:bg-surface-light [&::-webkit-details-marker]:hidden">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <span className={accordionIconClass} aria-hidden>
             {icon}
           </span>
           <div className="min-w-0">
-            <span className="text-sm font-semibold text-[#1A1A1A]">{title}</span>
+            <span className="text-[16px] text-foreground">{title}</span>
             {subtitle ? (
-              <p className="mt-0.5 text-xs text-[#8a847c]">{subtitle}</p>
+              <p className="mono mt-0.5 text-[11px] leading-relaxed text-muted">
+                {subtitle}
+              </p>
             ) : null}
           </div>
         </div>
         <IconChevronDown
-          className="shrink-0 text-[#9c958c] transition-transform group-open:rotate-180"
+          className="shrink-0 text-faint transition-transform group-open:rotate-180"
           size={20}
           stroke={1.5}
           aria-hidden
         />
       </summary>
-      <div className="border-t border-[#F0EDE6] px-4 py-4">{children}</div>
+      <div className="border-t border-border px-4 py-4">{children}</div>
     </details>
   );
 }
 
 const inputClass =
-  "w-full rounded-lg border border-[#E5E2DC] bg-white px-3 py-2 text-sm text-[#1A1A1A] focus:border-amber/50 focus:outline-none focus:ring-2 focus:ring-amber/20";
+  "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-faint transition focus:border-accent/60 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40";
 
-const labelClass = "mb-1 block text-xs font-medium text-[#5c564c]";
+const labelClass =
+  "mono mb-1 block text-[11px] uppercase tracking-[0.06em] text-faint";
+
+const addButtonClass =
+  "mono inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.06em] text-accent transition hover:text-accent-dim";
+
+const removeTextButtonClass =
+  "mono text-[11px] uppercase tracking-[0.06em] text-[#F2777A] transition hover:underline";
+
+const iconRemoveButtonClass =
+  "shrink-0 rounded-lg border border-border px-2 text-faint transition hover:border-[#F2777A]/25 hover:bg-[#F2777A]/10 hover:text-[#F2777A]";
+
+const nestedCardClass = "rounded-lg border border-border bg-surface-light p-3";
+
+const errorBoxClass =
+  "rounded-lg border border-[#F2777A]/25 bg-[#F2777A]/12 px-3 py-2 text-sm text-[#F2777A]";
 
 const PREVIEW_FALLBACK_AVATAR = "/mentors/default-avatar.svg";
 
@@ -481,17 +498,17 @@ export default function MentorLandingDetailModal({
 
   return (
     <>
-      <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/45 p-4">
-        <div className="relative flex max-h-[min(92dvh,calc(100dvh-2rem))] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-[#E0DCD4] bg-[#FAFAF8] shadow-[0_25px_50px_-12px_rgba(26,26,26,0.18)]">
-          <header className="shrink-0 border-b border-[#E5E2DC] bg-white px-6 py-4">
+      <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+        <div className="relative flex max-h-[min(92dvh,calc(100dvh-2rem))] w-full max-w-4xl flex-col overflow-hidden rounded-lg border border-border bg-surface shadow-2xl">
+          <header className="shrink-0 border-b border-border bg-surface px-6 py-4">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-lg font-bold text-[#1A1A1A]">
+                <h2 className="text-[22px] leading-tight text-foreground">
                   {mode === "create"
                     ? "New mentor landing page"
                     : "Edit mentor landing page"}
                 </h2>
-                <p className="mt-1 text-xs text-[#999]">
+                <p className="mono mt-1.5 text-[11px] tracking-[0.02em] text-muted">
                   Manage the content for a mentor landing page.
                 </p>
               </div>
@@ -500,17 +517,17 @@ export default function MentorLandingDetailModal({
                   ref={actionsMenuRef}
                   className="group relative"
                 >
-                  <summary className="flex cursor-pointer list-none items-center gap-1.5 rounded-lg border border-[#E5E2DC] bg-white px-3 py-2 text-xs font-semibold text-[#1A1A1A] hover:bg-[#FAFAF8] [&::-webkit-details-marker]:hidden">
+                  <summary className="mono flex cursor-pointer list-none items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-[12px] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light [&::-webkit-details-marker]:hidden">
                     Actions
                     <IconChevronDown
                       size={14}
                       stroke={1.5}
-                      className="text-[#8a847c] transition-transform group-open:rotate-180"
+                      className="text-faint transition-transform group-open:rotate-180"
                       aria-hidden
                     />
                   </summary>
                   <div
-                    className="absolute right-0 z-[70] mt-1 min-w-[12.5rem] rounded-lg border border-[#E5E2DC] bg-white py-1 shadow-[0_8px_24px_rgba(26,26,26,0.12)]"
+                    className="absolute right-0 z-[70] mt-1 min-w-[12.5rem] rounded-lg border border-border bg-surface py-1 shadow-2xl"
                     role="menu"
                   >
                     {resolvedSlug ? (
@@ -519,7 +536,7 @@ export default function MentorLandingDetailModal({
                         target="_blank"
                         rel="noopener noreferrer"
                         role="menuitem"
-                        className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-[#1A1A1A] hover:bg-[#F5F3F0]"
+                        className="mono flex items-center gap-2 px-3 py-2.5 text-[12px] text-foreground transition hover:bg-surface-light"
                         onClick={closeActionsMenu}
                       >
                         <IconExternalLink size={16} stroke={1.5} />
@@ -527,7 +544,7 @@ export default function MentorLandingDetailModal({
                       </Link>
                     ) : (
                       <span
-                        className="flex cursor-not-allowed items-center gap-2 px-3 py-2.5 text-sm text-[#b5aea4]"
+                        className="mono flex cursor-not-allowed items-center gap-2 px-3 py-2.5 text-[12px] text-faint"
                         title="Enter a valid URL slug in Basics first"
                       >
                         <IconExternalLink size={16} stroke={1.5} />
@@ -543,7 +560,7 @@ export default function MentorLandingDetailModal({
                           ? undefined
                           : "Enter a valid URL slug in Basics first"
                       }
-                      className="flex w-full items-center gap-2 px-3 py-2.5 text-left text-sm font-medium text-[#1A1A1A] hover:bg-[#F5F3F0] disabled:cursor-not-allowed disabled:text-[#b5aea4] disabled:hover:bg-transparent"
+                      className="mono flex w-full items-center gap-2 px-3 py-2.5 text-left text-[12px] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:text-faint disabled:hover:bg-transparent"
                       onClick={async () => {
                         const started = await openPreview();
                         if (started) closeActionsMenu();
@@ -561,7 +578,7 @@ export default function MentorLandingDetailModal({
                           ? undefined
                           : "Enter a valid URL slug in Basics first"
                       }
-                      className="flex w-full items-center gap-2 px-3 py-2.5 text-left text-sm font-medium text-[#1A1A1A] hover:bg-[#F5F3F0] disabled:cursor-not-allowed disabled:text-[#b5aea4] disabled:hover:bg-transparent"
+                      className="mono flex w-full items-center gap-2 px-3 py-2.5 text-left text-[12px] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:text-faint disabled:hover:bg-transparent"
                       onClick={() => {
                         openAiPromptModal();
                       }}
@@ -573,7 +590,7 @@ export default function MentorLandingDetailModal({
                 </details>
                 {aiLoading ? (
                   <span
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-[#8a847c]"
+                    className="mono inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.06em] text-muted"
                     aria-live="polite"
                   >
                     <IconLoader2 size={16} className="animate-spin" />
@@ -583,7 +600,7 @@ export default function MentorLandingDetailModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex h-10 w-10 items-center justify-center rounded-lg text-[#8a847c] transition hover:bg-[#F5F3F0] hover:text-[#1A1A1A]"
+                  className="flex h-10 w-10 items-center justify-center rounded-lg text-muted transition hover:bg-surface-light hover:text-foreground"
                   aria-label="Close"
                 >
                   <IconX size={22} stroke={1.5} />
@@ -592,26 +609,26 @@ export default function MentorLandingDetailModal({
             </div>
           </header>
 
-          <div className="min-h-0 flex-1 overflow-y-auto px-6 py-4">
+          <div className="fh-scroll min-h-0 flex-1 overflow-y-auto bg-background px-6 py-4">
             {loadError && (
-              <div className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
-                {loadError}
-              </div>
+              <div className={`mb-3 ${errorBoxClass}`}>{loadError}</div>
             )}
             {saveError && (
-              <div className="mb-3 max-h-40 overflow-y-auto rounded-lg border border-red-200 bg-red-50 px-3 py-2 font-mono text-xs text-red-800 whitespace-pre-wrap">
+              <div
+                className="fh-scroll mb-3 max-h-40 overflow-y-auto whitespace-pre-wrap rounded-lg border border-[#F2777A]/25 bg-[#F2777A]/12 px-3 py-2 mono text-xs text-[#F2777A]"
+              >
                 {saveError}
               </div>
             )}
 
             {loading ? (
               <div className="flex justify-center py-16">
-                <IconLoader2 className="animate-spin text-amber" size={32} />
+                <IconLoader2 className="animate-spin text-accent" size={32} />
               </div>
             ) : (
               <>
                 <div
-                  className="mb-4 flex rounded-xl border border-[#E5E2DC] bg-[#EFEBE4] p-1"
+                  className="mb-4 flex gap-6 border-b border-border"
                   role="tablist"
                   aria-label="Landing editor mode"
                 >
@@ -620,13 +637,13 @@ export default function MentorLandingDetailModal({
                     role="tab"
                     aria-selected={editorTab === "form"}
                     onClick={() => setEditorTab("form")}
-                    className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
+                    className={`mono -mb-px flex items-center gap-2 border-b-2 px-1 py-2.5 text-[11px] uppercase tracking-[0.08em] transition ${
                       editorTab === "form"
-                        ? "bg-white text-[#1A1A1A] shadow-sm"
-                        : "text-[#6b6560] hover:text-[#1A1A1A]"
+                        ? "border-accent text-accent"
+                        : "border-transparent text-faint hover:text-foreground"
                     }`}
                   >
-                    <IconForms size={18} stroke={1.5} aria-hidden />
+                    <IconForms size={16} stroke={1.5} aria-hidden />
                     Form
                   </button>
                   <button
@@ -638,13 +655,13 @@ export default function MentorLandingDetailModal({
                       setRawJsonText(JSON.stringify(content, null, 2));
                       setRawJsonError(null);
                     }}
-                    className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
+                    className={`mono -mb-px flex items-center gap-2 border-b-2 px-1 py-2.5 text-[11px] uppercase tracking-[0.08em] transition ${
                       editorTab === "json"
-                        ? "bg-white text-[#1A1A1A] shadow-sm"
-                        : "text-[#6b6560] hover:text-[#1A1A1A]"
+                        ? "border-accent text-accent"
+                        : "border-transparent text-faint hover:text-foreground"
                     }`}
                   >
-                    <IconCode size={18} stroke={1.5} aria-hidden />
+                    <IconCode size={16} stroke={1.5} aria-hidden />
                     Raw JSON
                   </button>
                 </div>
@@ -668,20 +685,20 @@ export default function MentorLandingDetailModal({
                       )
                     }
                     placeholder="e.g. colin-chapman"
-                    className={`${inputClass} mb-3 font-mono`}
+                    className={`${inputClass} mb-3 mono`}
                     spellCheck={false}
                   />
-                  <p className="mb-3 text-xs text-[#8a847c]">
+                  <p className="mb-3 text-xs leading-relaxed text-muted">
                     Lowercase letters, numbers, and hyphens only. Changing the slug
                     updates the row URL; ensure the mentor profile uses the same
                     slug.
                   </p>
                   <label className={labelClass}>Profile image URL</label>
-                  <p className="mb-3 text-[11px] leading-relaxed text-[#9c958c]">
-                    Optional. Full <code className="text-[#6b6560]">https://</code>{" "}
+                  <p className="mb-3 text-[11px] leading-relaxed text-muted">
+                    Optional. Full <code className="text-foreground">https://</code>{" "}
                     image URL or a path served from{" "}
-                    <code className="text-[#6b6560]">/public</code> (e.g.{" "}
-                    <code className="text-[#6b6560]">/mentors/colin.jpg</code>
+                    <code className="text-foreground">/public</code> (e.g.{" "}
+                    <code className="text-foreground">/mentors/colin.jpg</code>
                     ). When empty, the mentor record&apos;s avatar is used.
                   </p>
                   <div className="mb-3 flex flex-col gap-4 sm:flex-row sm:items-stretch sm:gap-0">
@@ -701,13 +718,13 @@ export default function MentorLandingDetailModal({
                       />
                     </div>
                     <div
-                      className="flex shrink-0 flex-col items-center justify-start gap-2 sm:w-[5.75rem] sm:justify-center sm:border-l sm:border-[#F0EDE6] sm:pl-5 sm:py-1"
+                      className="flex shrink-0 flex-col items-center justify-start gap-2 sm:w-[5.75rem] sm:justify-center sm:border-l sm:border-border sm:pl-5 sm:py-1"
                       aria-label="Profile image preview"
                     >
-                      <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#9c958c]">
+                      <span className="mono text-[10px] uppercase tracking-[0.08em] text-faint">
                         Preview
                       </span>
-                      <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-full border border-[#E5E2DC] bg-[#FAFAF8] shadow-[0_1px_2px_rgba(26,26,26,0.06)]">
+                      <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-full border border-border bg-background">
                         {(() => {
                           const src = profileImagePreviewSrc(
                             content.profileImageUrl
@@ -718,10 +735,10 @@ export default function MentorLandingDetailModal({
                                 <IconPhoto
                                   size={20}
                                   stroke={1.25}
-                                  className="text-[#c9c4bc]"
+                                  className="text-faint"
                                   aria-hidden
                                 />
-                                <span className="text-[9px] font-medium leading-tight text-[#b5aea4]">
+                                <span className="mono text-[9px] leading-tight text-faint">
                                   No URL
                                 </span>
                               </div>
@@ -743,17 +760,17 @@ export default function MentorLandingDetailModal({
                       </div>
                     </div>
                   </div>
-                  <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-[#1A1A1A]">
+                  <label className="flex cursor-pointer items-center gap-2 text-sm text-foreground">
                     <input
                       type="checkbox"
                       checked={published}
                       onChange={(e) => setPublished(e.target.checked)}
-                      className="h-4 w-4 rounded border-[#E5E2DC] text-amber focus:ring-amber/30"
+                      className="h-4 w-4 rounded border-border accent-[#CAED57]"
                     />
                     Published (live when this is on and the mentor is active)
                   </label>
-                  <div className="mt-4 border-t border-[#F0EDE6] pt-4">
-                    <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.08em] text-[#9c958c]">
+                  <div className="mt-4 border-t border-border pt-4">
+                    <p className="mono mb-3 text-[11px] uppercase tracking-[0.08em] text-faint">
                       Hero
                     </p>
                     <label className={labelClass}>Hero description</label>
@@ -805,7 +822,7 @@ export default function MentorLandingDetailModal({
                             highlights: c.highlights.filter((_, j) => j !== i),
                           }))
                         }
-                        className="shrink-0 rounded-lg border border-[#E5E2DC] px-2 text-[#999] hover:bg-red-50 hover:text-red-600"
+                        className={iconRemoveButtonClass}
                         aria-label="Remove highlight"
                       >
                         <IconTrash size={16} stroke={1.5} />
@@ -820,7 +837,7 @@ export default function MentorLandingDetailModal({
                         highlights: [...c.highlights, { label: "" }],
                       }))
                     }
-                    className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-amber"
+                    className={`${addButtonClass} mt-1`}
                   >
                     <IconPlus size={14} /> Add highlight
                   </button>
@@ -848,7 +865,7 @@ export default function MentorLandingDetailModal({
                   {content.sessions.map((s, i) => (
                     <div
                       key={i}
-                      className="mb-3 rounded-lg border border-[#F0EDE8] bg-[#FAFAF8] p-3"
+                      className={`${nestedCardClass} mb-3`}
                     >
                       <div className="mb-2 flex gap-2">
                         <input
@@ -859,7 +876,7 @@ export default function MentorLandingDetailModal({
                             next[i] = { ...next[i], num: e.target.value };
                             setContent((c) => ({ ...c, sessions: next }));
                           }}
-                          className={`${inputClass} w-20 shrink-0 font-mono`}
+                          className={`${inputClass} w-20 shrink-0 mono`}
                           placeholder="01"
                         />
                         <input
@@ -893,7 +910,7 @@ export default function MentorLandingDetailModal({
                             sessions: c.sessions.filter((_, j) => j !== i),
                           }))
                         }
-                        className="text-xs font-medium text-red-600 hover:underline"
+                        className={removeTextButtonClass}
                       >
                         Remove card
                       </button>
@@ -910,7 +927,7 @@ export default function MentorLandingDetailModal({
                         ],
                       }))
                     }
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-amber"
+                    className={addButtonClass}
                   >
                     <IconPlus size={14} /> Add problem card
                   </button>
@@ -921,10 +938,10 @@ export default function MentorLandingDetailModal({
                   subtitle="Logo strip"
                   icon={<IconBuilding size={20} stroke={1.5} aria-hidden />}
                 >
-                  <p className="mb-3 text-xs leading-relaxed text-[#737373]">
+                  <p className="mb-3 text-xs leading-relaxed text-muted">
                     Logos in the &quot;Companies worked with&quot; strip. Use a
-                    path under <code className="text-[#5c564c]">/public</code>{" "}
-                    (e.g. <code className="text-[#5c564c]">/companies/ibm.svg</code>)
+                    path under <code className="text-foreground">/public</code>{" "}
+                    (e.g. <code className="text-foreground">/companies/ibm.svg</code>)
                     or a full <strong>https://</strong> image URL. Each row needs a
                     unique alt label. Height is a preset (Tailwind); width follows
                     the image aspect ratio on the live page.
@@ -932,13 +949,13 @@ export default function MentorLandingDetailModal({
                   {(content.companies ?? []).map((co, i) => (
                     <div
                       key={i}
-                      className="mb-4 rounded-lg border border-[#F0EDE8] bg-[#FAFAF8] p-3"
+                      className={`${nestedCardClass} mb-4`}
                     >
                       <div className="mb-3">
                         <label className={labelClass}>Image URL</label>
-                        <p className="mb-1 text-[11px] text-[#9c958c]">
+                        <p className="mb-1 text-[11px] leading-relaxed text-muted">
                           Local file path or hosted image URL (
-                          <code className="text-[#6b6560]">https://…</code>).
+                          <code className="text-foreground">https://…</code>).
                         </p>
                         <input
                           type="text"
@@ -954,7 +971,7 @@ export default function MentorLandingDetailModal({
                       </div>
                       <div className="mb-3">
                         <label className={labelClass}>Alt text</label>
-                        <p className="mb-1 text-[11px] text-[#9c958c]">
+                        <p className="mb-1 text-[11px] leading-relaxed text-muted">
                           Short description for screen readers; use a distinct
                           value per logo.
                         </p>
@@ -973,7 +990,7 @@ export default function MentorLandingDetailModal({
                       <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                         <div className="min-w-0 flex-1">
                           <label className={labelClass}>Logo height</label>
-                          <p className="mb-1 text-[11px] text-[#9c958c]">
+                          <p className="mb-1 text-[11px] leading-relaxed text-muted">
                             Taller presets suit wide wordmarks; the site keeps
                             width automatic.
                           </p>
@@ -990,10 +1007,14 @@ export default function MentorLandingDetailModal({
                               list[i] = { ...list[i], h: e.target.value };
                               setContent((c) => ({ ...c, companies: list }));
                             }}
-                            className={inputClass}
+                            className={`${inputClass} mono`}
                           >
                             {MENTOR_LANDING_COMPANY_LOGO_HEIGHTS.map((opt) => (
-                              <option key={opt} value={opt}>
+                              <option
+                                key={opt}
+                                value={opt}
+                                className="bg-surface text-foreground"
+                              >
                                 {opt} (preset)
                               </option>
                             ))}
@@ -1009,7 +1030,7 @@ export default function MentorLandingDetailModal({
                               companies: list.length ? list : undefined,
                             }));
                           }}
-                          className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-[#E5E2DC] bg-white px-3 py-2 text-xs font-medium text-red-700 hover:bg-red-50"
+                          className="mono inline-flex shrink-0 items-center gap-1 rounded-lg border border-[#F2777A]/25 px-3 py-2 text-[11px] uppercase tracking-[0.06em] text-[#F2777A] transition hover:bg-[#F2777A]/10"
                         >
                           <IconTrash size={14} />
                           Remove
@@ -1028,7 +1049,7 @@ export default function MentorLandingDetailModal({
                         ],
                       }))
                     }
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-amber"
+                    className={addButtonClass}
                   >
                     <IconPlus size={14} /> Add company
                   </button>
@@ -1054,7 +1075,7 @@ export default function MentorLandingDetailModal({
                   {content.pillars.map((p, i) => (
                     <div
                       key={i}
-                      className="mb-3 rounded-lg border border-[#F0EDE8] bg-[#FAFAF8] p-3"
+                      className={`${nestedCardClass} mb-3`}
                     >
                       <input
                         type="text"
@@ -1086,7 +1107,7 @@ export default function MentorLandingDetailModal({
                             pillars: c.pillars.filter((_, j) => j !== i),
                           }))
                         }
-                        className="mt-2 text-xs font-medium text-red-600 hover:underline"
+                        className={`${removeTextButtonClass} mt-2 block`}
                       >
                         Remove
                       </button>
@@ -1100,7 +1121,7 @@ export default function MentorLandingDetailModal({
                         pillars: [...c.pillars, { title: "", desc: "" }],
                       }))
                     }
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-amber"
+                    className={addButtonClass}
                   >
                     <IconPlus size={14} /> Add pillar
                   </button>
@@ -1152,12 +1173,13 @@ export default function MentorLandingDetailModal({
                   {(content.reviews ?? []).map((r, i) => (
                     <div
                       key={i}
-                      className="mb-3 rounded-lg border border-[#F0EDE8] bg-[#FAFAF8] p-3"
+                      className={`${nestedCardClass} mb-3`}
                     >
-                      <label className="mb-1 flex items-center gap-2 text-xs text-[#737373]">
+                      <label className="mb-1 flex cursor-pointer items-center gap-2 text-xs text-muted">
                         <input
                           type="radio"
                           name="featuredReview"
+                          className="accent-[#CAED57]"
                           checked={Boolean(r.featured)}
                           onChange={() => {
                             const list = (content.reviews ?? []).map((x, j) => ({
@@ -1214,7 +1236,7 @@ export default function MentorLandingDetailModal({
                             reviews: list.length ? list : undefined,
                           }));
                         }}
-                        className="mt-2 text-xs text-red-600 hover:underline"
+                        className={`${removeTextButtonClass} mt-2 block`}
                       >
                         Remove review
                       </button>
@@ -1231,7 +1253,7 @@ export default function MentorLandingDetailModal({
                         ],
                       }))
                     }
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-amber"
+                    className={addButtonClass}
                   >
                     <IconPlus size={14} /> Add review
                   </button>
@@ -1242,14 +1264,14 @@ export default function MentorLandingDetailModal({
                   icon={<IconMessages size={20} stroke={1.5} aria-hidden />}
                 >
                   {content.chatStarters.length === 0 ? (
-                    <p className="mb-3 text-sm text-[#8a847c]">
+                    <p className="mb-3 text-sm text-muted">
                       No starters yet. Add one to show suggestion chips on the
                       marketing page.
                     </p>
                   ) : null}
                   {content.chatStarters.map((line, i) => (
                     <div key={i} className="mb-2 flex gap-2">
-                      <span className="flex w-7 shrink-0 items-start justify-end pt-2.5 font-mono text-[11px] text-[#b5aea4]">
+                      <span className="mono flex w-7 shrink-0 items-start justify-end pt-2.5 text-[11px] text-faint">
                         {i + 1}.
                       </span>
                       <input
@@ -1271,7 +1293,7 @@ export default function MentorLandingDetailModal({
                             chatStarters: c.chatStarters.filter((_, j) => j !== i),
                           }))
                         }
-                        className="shrink-0 rounded-lg border border-[#E5E2DC] px-2 text-[#999] hover:bg-red-50 hover:text-red-600"
+                        className={iconRemoveButtonClass}
                         aria-label="Remove starter"
                       >
                         <IconTrash size={16} stroke={1.5} />
@@ -1286,7 +1308,7 @@ export default function MentorLandingDetailModal({
                         chatStarters: [...c.chatStarters, ""],
                       }))
                     }
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-amber"
+                    className={addButtonClass}
                   >
                     <IconPlus size={14} /> Add starter
                   </button>
@@ -1309,7 +1331,7 @@ export default function MentorLandingDetailModal({
                     }
                     className={`${inputClass} mb-3`}
                   />
-                  <p className="mb-3 text-xs text-[#737373]">
+                  <p className="mb-3 text-xs leading-relaxed text-muted">
                     Shown above the conversation starter chips. Leave blank to
                     use the site default (&quot;Ask [first name] anything&quot;).
                   </p>
@@ -1347,8 +1369,8 @@ export default function MentorLandingDetailModal({
                 </AccordionSection>
               </div>
                 ) : (
-                  <div className="flex flex-col gap-3">
-                    <p className="text-xs text-[#737373]">
+                  <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-4">
+                    <p className="text-xs leading-relaxed text-muted">
                       Edit the full landing content object. Apply runs schema
                       validation and replaces the form fields.
                     </p>
@@ -1356,17 +1378,17 @@ export default function MentorLandingDetailModal({
                       value={rawJsonText}
                       onChange={(e) => setRawJsonText(e.target.value)}
                       spellCheck={false}
-                      className={`${inputClass} min-h-[min(55vh,22rem)] flex-1 resize-y font-mono text-xs leading-relaxed`}
+                      className={`${inputClass} fh-scroll min-h-[min(55vh,22rem)] flex-1 resize-y mono text-xs leading-relaxed`}
                     />
                     {rawJsonError ? (
-                      <p className="max-h-40 overflow-y-auto rounded-lg border border-red-200 bg-red-50 px-3 py-2 font-mono text-xs text-red-800 whitespace-pre-wrap">
+                      <p className="fh-scroll max-h-40 overflow-y-auto whitespace-pre-wrap rounded-lg border border-[#F2777A]/25 bg-[#F2777A]/12 px-3 py-2 mono text-xs text-[#F2777A]">
                         {rawJsonError}
                       </p>
                     ) : null}
                     <button
                       type="button"
                       onClick={handleApplyRawJson}
-                      className="inline-flex w-fit items-center gap-2 rounded-lg border border-[#E5E2DC] bg-white px-4 py-2.5 text-sm font-semibold text-[#1A1A1A] hover:bg-[#F5F3F0]"
+                      className="mono inline-flex w-fit items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-[12px] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light"
                     >
                       <IconCode size={18} stroke={1.5} aria-hidden />
                       Apply JSON to form
@@ -1377,7 +1399,7 @@ export default function MentorLandingDetailModal({
             )}
           </div>
 
-          <footer className="shrink-0 border-t border-[#E5E2DC] bg-white px-6 py-4">
+          <footer className="shrink-0 border-t border-border bg-surface px-6 py-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 {mode === "edit" && (originalSlug ?? slug) && !loading && (
@@ -1385,7 +1407,7 @@ export default function MentorLandingDetailModal({
                     type="button"
                     onClick={handleDelete}
                     disabled={deleting || saving}
-                    className="inline-flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-800 hover:bg-red-100 disabled:opacity-50"
+                    className="mono inline-flex items-center gap-2 rounded-lg border border-[#F2777A]/25 px-4 py-2.5 text-[12px] uppercase tracking-[0.06em] text-[#F2777A] transition hover:bg-[#F2777A]/10 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     {deleting ? (
                       <IconLoader2 size={16} className="animate-spin" />
@@ -1400,7 +1422,7 @@ export default function MentorLandingDetailModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-lg border border-[#E5E2DC] px-4 py-2.5 text-sm font-semibold text-[#1A1A1A] hover:bg-[#F5F3F0]"
+                  className="mono rounded-lg border border-border px-4 py-2.5 text-[12px] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light"
                 >
                   Cancel
                 </button>
@@ -1408,7 +1430,7 @@ export default function MentorLandingDetailModal({
                   type="button"
                   onClick={handleSave}
                   disabled={saving || loading || deleting || aiLoading}
-                  className="rounded-lg bg-amber px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
+                  className="mono rounded-lg bg-accent px-4 py-2.5 text-[12px] uppercase tracking-[0.06em] text-[#1B1B18] transition hover:bg-accent-dim disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   {saving ? (
                     <span className="flex items-center gap-2">
@@ -1427,7 +1449,7 @@ export default function MentorLandingDetailModal({
 
       {aiPromptModalOpen && (
         <div
-          className="fixed inset-0 z-[75] flex items-center justify-center bg-black/50 p-4"
+          className="fixed inset-0 z-[75] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
           role="presentation"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget && !aiLoading) {
@@ -1437,20 +1459,20 @@ export default function MentorLandingDetailModal({
           }}
         >
           <div
-            className="w-full max-w-lg rounded-2xl border border-[#E0DCD4] bg-[#FAFAF8] shadow-[0_25px_50px_-12px_rgba(26,26,26,0.18)]"
+            className="w-full max-w-lg rounded-lg border border-border bg-surface shadow-2xl"
             role="dialog"
             aria-modal="true"
             aria-labelledby="ai-draft-modal-title"
             onMouseDown={(e) => e.stopPropagation()}
           >
-            <div className="border-b border-[#E5E2DC] bg-white px-5 py-4">
+            <div className="border-b border-border bg-surface px-5 py-4">
               <h3
                 id="ai-draft-modal-title"
-                className="text-base font-bold text-[#1A1A1A]"
+                className="text-[20px] leading-tight text-foreground"
               >
                 Fill with AI
               </h3>
-              <p className="mt-1 text-xs text-[#737373]">
+              <p className="mt-1.5 text-xs leading-relaxed text-muted">
                 Paste positioning notes, bio bullets, testimonials, or links. The
                 mentor slug in Basics is sent with this request.
               </p>
@@ -1466,19 +1488,19 @@ export default function MentorLandingDetailModal({
                 rows={10}
                 placeholder="Minimum 20 characters…"
                 disabled={aiLoading}
-                className={`${inputClass} resize-y font-mono text-xs`}
+                className={`${inputClass} fh-scroll resize-y mono text-xs`}
                 spellCheck={true}
               />
-              <p className="mt-1 text-xs text-[#8a847c]">
+              <p className="mono mt-1.5 text-[11px] text-faint">
                 {aiNotes.trim().length} / 20+ characters
               </p>
               {aiDraftModalError ? (
-                <p className="mt-2 max-h-32 overflow-y-auto rounded-lg border border-red-200 bg-red-50 px-3 py-2 font-mono text-xs text-red-800 whitespace-pre-wrap">
+                <p className="fh-scroll mt-2 max-h-32 overflow-y-auto whitespace-pre-wrap rounded-lg border border-[#F2777A]/25 bg-[#F2777A]/12 px-3 py-2 mono text-xs text-[#F2777A]">
                   {aiDraftModalError}
                 </p>
               ) : null}
             </div>
-            <div className="flex flex-wrap justify-end gap-2 border-t border-[#E5E2DC] bg-white px-5 py-4">
+            <div className="flex flex-wrap justify-end gap-2 border-t border-border bg-surface px-5 py-4">
               <button
                 type="button"
                 disabled={aiLoading}
@@ -1486,7 +1508,7 @@ export default function MentorLandingDetailModal({
                   setAiPromptModalOpen(false);
                   setAiDraftModalError(null);
                 }}
-                className="rounded-lg border border-[#E5E2DC] px-4 py-2.5 text-sm font-semibold text-[#1A1A1A] hover:bg-[#F5F3F0] disabled:opacity-50"
+                className="mono rounded-lg border border-border px-4 py-2.5 text-[12px] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Cancel
               </button>
@@ -1497,7 +1519,7 @@ export default function MentorLandingDetailModal({
                   const ok = await handleAiDraft();
                   if (ok) setAiPromptModalOpen(false);
                 }}
-                className="inline-flex items-center gap-2 rounded-lg bg-amber px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
+                className="mono inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-[12px] uppercase tracking-[0.06em] text-[#1B1B18] transition hover:bg-accent-dim disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {aiLoading ? (
                   <IconLoader2 size={18} className="animate-spin" />
@@ -1512,23 +1534,23 @@ export default function MentorLandingDetailModal({
       )}
 
       {previewOpen && (
-        <div className="fixed inset-0 z-[70] flex flex-col bg-black/50 p-2 sm:p-4">
-          <div className="flex shrink-0 items-center justify-between gap-2 rounded-t-xl border border-b-0 border-[#E5E2DC] bg-white px-4 py-3">
-            <p className="text-sm font-semibold text-[#1A1A1A]">
+        <div className="fixed inset-0 z-[70] flex flex-col bg-black/70 backdrop-blur-sm p-2 sm:p-4">
+          <div className="flex shrink-0 items-center justify-between gap-2 rounded-t-lg border border-b-0 border-border bg-surface px-4 py-3">
+            <p className="mono text-[11px] tracking-[0.02em] text-muted">
               Preview (draft — not saved to live until you publish and save)
             </p>
             <button
               type="button"
               onClick={() => setPreviewOpen(false)}
-              className="rounded-lg border border-[#E5E2DC] px-3 py-1.5 text-sm font-medium text-[#1A1A1A] hover:bg-[#F5F3F0]"
+              className="mono rounded-lg border border-border px-3 py-1.5 text-[11px] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light"
             >
               Close preview
             </button>
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto rounded-b-xl border border-[#E5E2DC] bg-[#F7F5F2]">
+          <div className="fh-scroll min-h-0 flex-1 overflow-y-auto rounded-b-lg border border-border bg-background">
             {previewLoading || !previewMentor ? (
               <div className="flex justify-center py-24">
-                <IconLoader2 className="animate-spin text-amber" size={36} />
+                <IconLoader2 className="animate-spin text-accent" size={36} />
               </div>
             ) : (
               <MentorMarketingClient

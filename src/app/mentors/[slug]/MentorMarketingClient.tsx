@@ -1,7 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ChatCircleDots, Star, LinkedinLogo } from "@phosphor-icons/react";
+import { Star, LinkedinLogo } from "@phosphor-icons/react";
+import ClipButton from "@/components/ui/ClipButton";
+import { getExpertProfile } from "@/lib/expert-profile";
 import {
   companyLogoHeightClass,
   type MentorLandingCompanyLogoHeight,
@@ -42,9 +44,9 @@ export default function MentorMarketingClient({
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [checkingSub, setCheckingSub] = useState(false);
   const [mentorPrice, setMentorPrice] = useState<{ monthlyPrice: number } | null>(null);
-  
+
   const slug = mentor.slug;
-  
+
   useEffect(() => {
     if (!slug) return;
     setCheckingSub(true);
@@ -58,7 +60,7 @@ export default function MentorMarketingClient({
       })
       .catch(() => {})
       .finally(() => setCheckingSub(false));
-    
+
     // Fetch mentor price
     fetch(`/api/mentors/${slug}/pricing`)
       .then(async (r) => {
@@ -115,89 +117,117 @@ export default function MentorMarketingClient({
       : mentor.avatar_url
   );
 
+  const priceLabel =
+    mentorPrice?.monthlyPrice === 0
+      ? "Free"
+      : `$${Math.floor((mentorPrice?.monthlyPrice ?? 0) / 100)}`;
+
+  /* The landing row derives `tagline` from `heroQuote`, so the specialty line
+     comes from the shared expert profile to avoid printing the quote twice. */
+  const specialty = getExpertProfile(mentor.slug, mentor.tagline).specialty;
+  const showHeroQuote = Boolean(heroQuote) && heroQuote !== specialty;
+
+  /* Shared subscribe / try-free action row. */
+  const actions = (
+    <>
+      {checkingSub ? (
+        <span className="mono inline-flex items-center gap-3 border border-border-light text-muted px-6 py-3 rounded-md text-[12px] tracking-[0.02em]">
+          Checking...
+        </span>
+      ) : isSubscribed ? (
+        <button
+          disabled
+          className="mono inline-flex items-center gap-3 bg-surface text-faint px-6 py-3 rounded-md text-[12px] tracking-[0.02em] cursor-not-allowed"
+        >
+          Subscribed
+        </button>
+      ) : (
+        <>
+          <Link
+            href={`/chat/${mentor.slug}`}
+            className="mono inline-flex items-center gap-3 border border-border-light text-foreground px-6 py-3 rounded-md text-[12px] tracking-[0.02em] hover:border-accent hover:text-accent transition"
+          >
+            Try Free
+            <span aria-hidden="true">›</span>
+          </Link>
+          <button
+            onClick={handlePayNow}
+            className="mono inline-flex items-center gap-3 bg-accent text-[#1B1B18] px-6 py-3 rounded-md text-[12px] tracking-[0.02em] hover:bg-accent-dim transition cursor-pointer"
+          >
+            Pay {priceLabel}
+            <span aria-hidden="true">›</span>
+          </button>
+        </>
+      )}
+    </>
+  );
+
   return (
-    <div className="pt-16">
-      <section className="gradient-hero px-6 py-20 md:py-28">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start">
+    <div className="pt-16 md:pt-[72px]">
+      {/* ═══════════════════════════════════════════
+          HERO
+          ═══════════════════════════════════════════ */}
+      <section className="gradient-hero px-6 pt-16 md:pt-24 pb-16 md:pb-20">
+        <div className="max-w-[1008px] mx-auto">
+          <div className="grid md:grid-cols-[300px_1fr] gap-10 md:gap-[30px] items-start">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={avatarSrc}
               alt={mentor.name}
-              className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border border-border-light shrink-0"
+              className="w-full max-w-[300px] aspect-[4/5] object-cover object-top bg-surface"
               onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }}
             />
-            <div className="flex-1">
-              <p className="text-amber text-sm font-semibold mb-2 tracking-wide uppercase">
-                ForgeHouse Expert
-              </p>
-              <h1 className="text-3xl md:text-5xl font-bold mb-3">
+            <div>
+              <p className="mono text-[13px] text-accent mb-4">ForgeHouse Expert</p>
+              <h1 className="text-[44px] md:text-[64px] uppercase leading-[0.92] tracking-[-0.01em] text-paper">
                 {mentor.name}
               </h1>
-              <p className="text-muted text-lg md:text-xl leading-relaxed mb-2">
-                {mentor.tagline}
-              </p>
-              <p className="text-muted text-base leading-relaxed mb-6">
-                {heroDescription}
-              </p>
+              {specialty && (
+                <p className="text-[21px] md:text-[24px] italic text-accent mt-2">
+                  {specialty}
+                </p>
+              )}
+              {heroDescription && (
+                <p className="mt-6 text-[17px] leading-[1.55] text-muted max-w-[560px]">
+                  {heroDescription}
+                </p>
+              )}
+
               {highlights.length > 0 && (
-                <div className="flex flex-wrap gap-3 mb-6">
+                <div className="flex flex-wrap gap-2.5 mt-7">
                   {highlights.map((h) => (
-                    <div
+                    <span
                       key={h.label}
-                      className="flex items-center gap-2 text-sm text-muted border border-glass-border rounded-full px-3.5 py-1.5"
+                      className="mono text-[11px] tracking-[0.04em] uppercase text-muted border border-border rounded-md px-3 py-1.5"
                     >
                       {h.label}
-                    </div>
+                    </span>
                   ))}
                 </div>
               )}
-              {heroQuote && (
-                <div className="pl-5 border-l-2 border-amber/20 mb-8">
-                  <p className="text-foreground/40 italic text-[14px] leading-relaxed">
+
+              {showHeroQuote && (
+                <div className="border-l-2 border-accent pl-6 mt-8">
+                  <p className="text-[19px] italic leading-[1.4] text-foreground">
                     &ldquo;{heroQuote}&rdquo;
                   </p>
                 </div>
               )}
-               <div className="flex flex-col sm:flex-row gap-3">
-                 {checkingSub ? (
-                   <div className="bg-amber/10 text-amber px-8 py-3.5 rounded-xl font-semibold text-center inline-flex items-center justify-center gap-2">
-                     Checking...
-                   </div>
-                 ) : isSubscribed ? (
-                   <button
-                     disabled
-                     className="bg-foreground/20 text-muted px-8 py-3.5 rounded-xl font-semibold text-center inline-flex items-center justify-center gap-2 cursor-not-allowed"
-                   >
-                     Subscribed
-                   </button>
-                 ) : (
-                   <>
-                     <Link
-                       href={`/chat/${mentor.slug}`}
-                       className="border border-amber text-amber px-8 py-3.5 rounded-xl font-semibold hover:bg-amber/5 transition text-center inline-flex items-center justify-center gap-2"
-                     >
-                       Try Free
-                     </Link>
-                     <button
-                       onClick={handlePayNow}
-                       className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition text-center inline-flex items-center justify-center gap-2"
-                     >
-                       Pay {mentorPrice?.monthlyPrice === 0 ? "Free" : `$${Math.floor((mentorPrice?.monthlyPrice ?? 0) / 100)}`}
-                     </button>
-                   </>
-                 )}
+
+              <div className="flex flex-wrap items-center gap-3 mt-9">
+                {actions}
                 {externalLink && (
                   <a
                     href={externalLink.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="border border-glass-border text-muted px-5 py-3.5 rounded-xl font-semibold hover:text-foreground hover:border-white/20 transition text-center inline-flex items-center justify-center gap-2 text-sm"
+                    className="mono inline-flex items-center gap-2 text-[12px] tracking-[0.02em] text-muted hover:text-accent transition px-2 py-3"
                   >
                     {externalLink.url.includes("linkedin") && (
-                      <LinkedinLogo size={18} />
+                      <LinkedinLogo size={16} />
                     )}
                     {externalLink.url.includes("airbnb") && (
-                      <Star size={18} />
+                      <Star size={16} />
                     )}
                     {externalLink.label}
                   </a>
@@ -208,35 +238,36 @@ export default function MentorMarketingClient({
         </div>
       </section>
 
+      {/* ═══════════════════════════════════════════
+          THE PROBLEM
+          ═══════════════════════════════════════════ */}
       {sessions.length > 0 && (
-        <section className="px-6 pt-10 pb-14">
-          <div className="max-w-4xl mx-auto">
-            <p className="text-[11px] uppercase tracking-widest text-muted mb-3">
-              The problem
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold mb-3">
+        <section className="px-6 py-16 md:py-20">
+          <div className="max-w-[1008px] mx-auto">
+            <p className="mono text-[13px] text-accent mb-4">The problem</p>
+            <h2 className="text-[44px] md:text-[56px] leading-[0.92] tracking-[-0.015em]">
               Sound familiar?
             </h2>
-            <p className="text-muted text-base mb-10 max-w-2xl">
-              {problemSubtitle}
-            </p>
-            <div className="grid md:grid-cols-3 gap-6">
+            {problemSubtitle && (
+              <p className="mt-5 text-[17px] leading-[1.5] text-muted max-w-[560px]">
+                {problemSubtitle}
+              </p>
+            )}
+
+            <div className="mt-12 grid md:grid-cols-3 gap-x-16 gap-y-12">
               {sessions.map((s) => (
-                <div key={s.num} className="flex flex-col gap-3">
-                  <span className="font-mono text-[13px] text-amber/60">
-                    {s.num}
-                  </span>
-                  <p className="font-semibold text-base">{s.title}</p>
-                  <p className="text-muted text-sm leading-relaxed">
-                    {s.desc}
-                  </p>
+                <div key={s.num}>
+                  <p className="mono text-[22px] text-accent mb-3">{s.num}</p>
+                  <h3 className="text-[26px] leading-[1.1] mb-3 text-paper">{s.title}</h3>
+                  <p className="text-[16px] leading-[1.45] text-muted">{s.desc}</p>
                 </div>
               ))}
             </div>
-            <div className="mt-8 text-center">
+
+            <div className="mt-12">
               <Link
                 href={`/chat/${mentor.slug}`}
-                className="text-amber text-[14px] hover:text-foreground transition"
+                className="mono text-[12px] tracking-[0.02em] text-accent hover:text-foreground transition"
               >
                 Start with any of these &rarr;
               </Link>
@@ -245,19 +276,23 @@ export default function MentorMarketingClient({
         </section>
       )}
 
+      {/* ═══════════════════════════════════════════
+          COMPANIES
+          ═══════════════════════════════════════════ */}
       {companies && companies.length > 0 && (
-        <section className="px-6 py-10">
-          <div className="max-w-4xl mx-auto">
-            <p className="text-[11px] uppercase tracking-widest text-muted mb-8 text-center">
+        <section className="sparkle-field px-6 py-14 md:py-16">
+          <div className="max-w-[1008px] mx-auto">
+            <p className="mono text-[11px] tracking-[0.06em] uppercase text-faint mb-9 text-center">
               Companies worked with
             </p>
             <div className="grid grid-cols-4 md:grid-cols-8 gap-6 items-center justify-items-center">
               {companies.map((c, i) => (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   key={`${i}-${c.src}`}
                   src={c.src}
                   alt={c.alt}
-                  className={`${LOGO_HEIGHT_TW[companyLogoHeightClass(c.h)]} w-auto object-contain opacity-40 brightness-0`}
+                  className={`${LOGO_HEIGHT_TW[companyLogoHeightClass(c.h)]} w-auto object-contain brightness-0 invert opacity-45`}
                 />
               ))}
             </div>
@@ -265,23 +300,26 @@ export default function MentorMarketingClient({
         </section>
       )}
 
+      {/* ═══════════════════════════════════════════
+          THE AGENT
+          ═══════════════════════════════════════════ */}
       {pillars.length > 0 && (
-        <section className="px-6 py-14">
-          <div className="max-w-4xl mx-auto">
-            <p className="text-[11px] uppercase tracking-widest text-muted mb-3">
-              The agent
-            </p>
-            <h2 className="text-xl md:text-2xl font-bold mb-3">
+        <section className="px-6 py-16 md:py-20">
+          <div className="max-w-[1008px] mx-auto">
+            <p className="mono text-[13px] text-accent mb-4">The agent</p>
+            <h2 className="text-[44px] md:text-[56px] leading-[0.92] tracking-[-0.015em]">
               How {firstName}&apos;s agent thinks
             </h2>
-            <p className="text-muted text-base mb-10 max-w-2xl">
-              {pillarSubtitle}
-            </p>
-            <div className="grid md:grid-cols-3 gap-6">
+            {pillarSubtitle && (
+              <p className="mt-5 text-[17px] leading-[1.5] text-muted max-w-[560px]">
+                {pillarSubtitle}
+              </p>
+            )}
+            <div className="mt-12 grid md:grid-cols-3 gap-[30px]">
               {pillars.map((p) => (
-                <div key={p.title} className="glass-card p-6">
-                  <p className="font-semibold mb-2 text-sm">{p.title}</p>
-                  <p className="text-muted text-sm">{p.desc}</p>
+                <div key={p.title} className="bg-surface border border-border rounded-lg p-7">
+                  <h3 className="text-[24px] leading-[1.15] text-paper mb-3">{p.title}</h3>
+                  <p className="text-[16px] leading-[1.45] text-muted">{p.desc}</p>
                 </div>
               ))}
             </div>
@@ -289,117 +327,103 @@ export default function MentorMarketingClient({
         </section>
       )}
 
+      {/* ═══════════════════════════════════════════
+          REVIEWS
+          ═══════════════════════════════════════════ */}
       {reviews && reviews.length > 0 && (
-        <section className="px-6 py-14">
-          <div className="max-w-4xl mx-auto">
-            <p className="text-[11px] uppercase tracking-widest text-muted mb-3">
-              Reviews
-            </p>
-            <div className="flex items-center gap-3 mb-10">
-              <h2 className="text-xl md:text-2xl font-bold">
+        <section className="px-6 py-16 md:py-20">
+          <div className="max-w-[1008px] mx-auto">
+            <p className="mono text-[13px] text-accent mb-4">Reviews</p>
+            <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
+              <h2 className="text-[44px] md:text-[56px] leading-[0.92] tracking-[-0.015em]">
                 What people say
               </h2>
               {marketing?.reviewRating && (
-                <div className="flex items-center gap-1.5 text-amber">
-                  <Star size={16} weight="fill" />
-                  <span className="font-semibold">{marketing.reviewRating}</span>
+                <span className="inline-flex items-center gap-1.5 text-accent">
+                  <Star size={15} weight="fill" />
+                  <span className="mono text-[13px] tracking-[0.02em]">
+                    {marketing.reviewRating}
+                  </span>
                   {marketing.reviewSource &&
                     marketing.reviewSource.label.trim().length > 0 && (
-                      <span className="text-muted text-xs ml-1">
+                      <span className="mono text-[11px] tracking-[0.04em] text-muted ml-1">
                         {marketing.reviewSource.label}
                       </span>
                     )}
-                </div>
+                </span>
               )}
             </div>
+
             {featuredReview && (
-              <div className="glass-card p-8 md:p-10 mb-6">
-                <p className="text-foreground/90 text-lg leading-relaxed mb-5 italic">
+              <div className="mt-12 bg-paper text-[#1B1B18] rounded-lg p-8 md:p-10">
+                <p className="text-[24px] md:text-[28px] italic leading-[1.25]">
                   &ldquo;{featuredReview.quote}&rdquo;
                 </p>
-                <div>
-                  <p className="font-semibold text-sm">
-                    {featuredReview.author}
-                  </p>
-                  <p className="text-muted text-xs">{featuredReview.role}</p>
-                </div>
+                <div className="w-10 h-px bg-tan my-7" />
+                <p className="mono text-[11px] tracking-[0.06em] uppercase text-[#1B1B18]">
+                  {featuredReview.author}
+                </p>
+                <p className="mono text-[11px] tracking-[0.04em] text-[#5C5A52] mt-1">
+                  {featuredReview.role}
+                </p>
               </div>
             )}
-            <div className="grid md:grid-cols-3 gap-4">
-              {otherReviews.map((r) => (
-                <div key={r.author} className="glass-card p-5">
-                  <p className="text-foreground/80 text-sm leading-relaxed mb-4 italic">
-                    &ldquo;{r.quote}&rdquo;
-                  </p>
-                  <div>
-                    <p className="font-semibold text-xs">{r.author}</p>
-                    <p className="text-muted text-[11px]">{r.role}</p>
+
+            {otherReviews.length > 0 && (
+              <div className="mt-[30px] grid md:grid-cols-3 gap-[30px]">
+                {otherReviews.map((r) => (
+                  <div key={r.author} className="bg-surface border border-border rounded-lg p-6">
+                    <p className="text-[17px] italic leading-[1.45] text-foreground/85">
+                      &ldquo;{r.quote}&rdquo;
+                    </p>
+                    <div className="w-8 h-px bg-border-light my-5" />
+                    <p className="mono text-[11px] tracking-[0.06em] uppercase text-paper">
+                      {r.author}
+                    </p>
+                    <p className="mono text-[11px] tracking-[0.04em] text-muted mt-1">{r.role}</p>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       )}
 
-      <section className="px-6 py-14">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-[11px] uppercase tracking-widest text-muted mb-3">
-            Try it
-          </p>
-          <h2 className="text-xl md:text-2xl font-bold mb-3">
+      {/* ═══════════════════════════════════════════
+          TRY IT
+          ═══════════════════════════════════════════ */}
+      <section className="sparkle-field px-6 py-16 md:py-24">
+        <div className="max-w-[1008px] mx-auto text-center">
+          <p className="mono text-[13px] text-accent mb-4">Try it</p>
+          <h2 className="text-[44px] md:text-[56px] leading-[0.92] tracking-[-0.015em]">
             {tryItHeading}
           </h2>
-          <p className="text-muted text-base mb-10 max-w-xl mx-auto">
+          <p className="mt-5 text-[17px] leading-[1.5] text-muted max-w-[520px] mx-auto">
             {starters.length > 0
               ? "Pick one, or describe your situation."
               : "Describe your situation below, or open chat to begin."}
           </p>
+
           {starters.length > 0 ? (
-            <div className="grid sm:grid-cols-2 gap-3 max-w-2xl mx-auto mb-10">
+            <div className="mt-12 grid sm:grid-cols-2 gap-[30px] max-w-[760px] mx-auto text-left">
               {starters.map((s, i) => (
-                <Link
+                <ClipButton
                   key={`${i}-${s}`}
                   href={`/chat/${mentor.slug}?q=${encodeURIComponent(s)}`}
-                  className="glass-card p-4 text-sm text-left hover:border-amber/20 transition text-muted hover:text-foreground"
+                  variant="paper"
                 >
                   {s}
-                </Link>
+                </ClipButton>
               ))}
             </div>
           ) : null}
-           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-             {checkingSub ? (
-               <div className="bg-amber/10 text-amber px-8 py-3.5 rounded-xl font-semibold text-center inline-flex items-center justify-center gap-2">
-                 Checking...
-               </div>
-             ) : isSubscribed ? (
-               <button
-                 disabled
-                 className="bg-foreground/20 text-muted px-8 py-3.5 rounded-xl font-semibold text-center inline-flex items-center justify-center gap-2 cursor-not-allowed"
-               >
-                 Subscribed
-               </button>
-             ) : (
-               <>
-                 <Link
-                   href={`/chat/${mentor.slug}`}
-                   className="border border-amber text-amber px-8 py-3.5 rounded-xl font-semibold hover:bg-amber/5 transition inline-flex items-center gap-2"
-                 >
-                   Try Free
-                 </Link>
-                 <button
-                   onClick={handlePayNow}
-                   className="bg-amber text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-amber-dark transition inline-flex items-center gap-2"
-                 >
-                   Pay {mentorPrice?.monthlyPrice === 0 ? "Free" : `$${Math.floor((mentorPrice?.monthlyPrice ?? 0) / 100)}`}
-                 </button>
-               </>
-             )}
-           </div>
-          <p className="text-[11px] text-zinc-600 text-center mt-4">
-            Your conversations are private. We don&apos;t sell or share your
-            data.
+
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+            {actions}
+          </div>
+
+          <p className="mono text-[11px] tracking-[0.04em] text-faint mt-6">
+            Your conversations are private. We don&apos;t sell or share your data.
           </p>
         </div>
       </section>

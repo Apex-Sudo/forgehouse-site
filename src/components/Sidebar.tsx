@@ -5,11 +5,12 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useAppShell } from "./AppShellContext";
+import Wordmark from "@/components/brand/Wordmark";
+import { getExpertProfile } from "@/lib/expert-profile";
 import {
   IconBookmark,
   IconChevronDown,
-  IconPlus,
-  IconUserCircle,
+  IconUser,
   IconDotsVertical,
   IconTrash,
   IconPencil,
@@ -41,6 +42,11 @@ interface Conversation {
 
 interface InsightCount {
   total: number;
+}
+
+/** Small lime bullet used on the account links in the footer of the rail. */
+function Bullet() {
+  return <span className="text-accent text-[9px] leading-none shrink-0">&#9679;</span>;
 }
 
 function ConversationRow({
@@ -82,13 +88,13 @@ function ConversationRow({
     if (conv.summary) {
       const line = conv.summary.split("\n").find((l) => l.trim()) ?? "";
       const cleaned = cleanText(line);
-      const title = cleaned.length > 50 ? cleaned.slice(0, 50) + "\u2026" : cleaned;
+      const title = cleaned.length > 50 ? cleaned.slice(0, 50) + "…" : cleaned;
       return capitalize(title);
     }
     const first = conv.messages?.find((m) => m.role === "user");
     if (!first) return "New conversation";
     const cleaned = cleanText(first.content);
-    const title = cleaned.length > 50 ? cleaned.slice(0, 50) + "\u2026" : cleaned;
+    const title = cleaned.length > 50 ? cleaned.slice(0, 50) + "…" : cleaned;
     return capitalize(title);
   };
 
@@ -96,47 +102,60 @@ function ConversationRow({
     return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
+  const profile = getExpertProfile(conv.mentor_slug, mentor?.tagline);
+
   return (
     <div className="relative group">
       <Link
         href={`/chat/${conv.mentor_slug}?conv=${conv.id}`}
         onClick={onNavigate}
-        className={`flex items-center gap-2 px-2.5 py-2 rounded-lg transition ${
-          isActive
-            ? "bg-amber/10 text-foreground border border-amber/20"
-            : "text-[#1A1A1A] hover:bg-[#F5F3F0]"
+        title={getTitle()}
+        className={`flex items-start gap-3 px-3 py-2.5 rounded-md transition ${
+          isActive ? "bg-surface" : "hover:bg-surface/70"
         }`}
       >
-        {mentor && (
-          <img src={safeAvatar(mentor.avatar_url)} alt="" width={22} height={22} className="rounded-full shrink-0" onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }} />
-        )}
+        <img
+          src={safeAvatar(mentor?.avatar_url)}
+          alt=""
+          width={32}
+          height={32}
+          className="w-8 h-8 rounded-full object-cover shrink-0 mt-0.5"
+          onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }}
+        />
         <div className="flex-1 min-w-0 pr-4">
-          <p className="text-sm font-medium truncate leading-snug">{getTitle()}</p>
-          <p className="text-xs text-[#999] mt-px">{mentor?.name ? `${mentor.name.split(" ")[0]} \u00b7 ` : ""}{formatDate(conv.created_at)}</p>
+          <p className="text-[18px] leading-[1.15] text-foreground truncate">
+            {mentor?.name ?? "Trained Expert"}
+          </p>
+          <p className="text-[14px] italic leading-[1.25] text-accent truncate">
+            {profile.specialty}
+          </p>
+          <p className="mono text-[10px] text-faint truncate mt-1">
+            {getTitle()} &middot; {formatDate(conv.created_at)}
+          </p>
         </div>
       </Link>
 
       <div ref={menuRef} className="absolute right-1.5 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setMenuOpen(!menuOpen); }}
-          className="p-0.5 rounded bg-white/80 hover:bg-[#E5E2DC] border border-transparent hover:border-[#E5E2DC] transition cursor-pointer shadow-sm"
+          className="p-0.5 rounded bg-surface-light border border-border hover:border-border-light transition cursor-pointer"
         >
-          <IconDotsVertical size={13} className="text-[#666]" />
+          <IconDotsVertical size={13} className="text-muted" />
         </button>
         {menuOpen && (
-          <div className="absolute right-0 top-7 bg-white border border-[#E5E2DC] rounded-lg shadow-lg py-1 z-50 w-36">
+          <div className="absolute right-0 top-7 bg-surface border border-border rounded-md shadow-2xl py-1 z-50 w-36">
             <button
               onClick={() => { setMenuOpen(false); onRename(conv.id, getTitle()); }}
-              className="flex items-center gap-2 w-full px-3 py-1.5 text-sm text-[#1A1A1A] hover:bg-[#F5F3F0] transition cursor-pointer"
+              className="mono flex items-center gap-2 w-full px-3 py-1.5 text-[11px] text-muted hover:text-foreground hover:bg-surface-light transition cursor-pointer"
             >
-              <IconPencil size={14} />
+              <IconPencil size={13} />
               Rename
             </button>
             <button
               onClick={() => { setMenuOpen(false); onDelete(conv.id); }}
-              className="flex items-center gap-2 w-full px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 transition cursor-pointer"
+              className="mono flex items-center gap-2 w-full px-3 py-1.5 text-[11px] text-red-400 hover:text-red-300 hover:bg-surface-light transition cursor-pointer"
             >
-              <IconTrash size={14} />
+              <IconTrash size={13} />
               Delete
             </button>
           </div>
@@ -272,195 +291,203 @@ export default function Sidebar() {
     setRenamingId(null);
   };
 
+  const accountLinkClass =
+    "flex items-center gap-2 px-1 py-1 text-[12px] italic text-muted hover:text-accent transition text-left";
+
   return (
     <>
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/60 z-40 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       <aside
-        className={`fixed top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-background border-r border-white/[0.06] z-50 flex flex-col transition-transform duration-200 ${
+        className={`fixed top-16 left-0 h-[calc(100vh-4rem)] w-[290px] bg-background border-r border-border z-50 flex flex-col transition-transform duration-200 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:static md:z-auto`}
       >
-        <div className="h-3" />
+        {/* Wordmark lockup */}
+        <div className="px-5 pt-6 pb-5 shrink-0 text-foreground">
+          <Wordmark size={22} />
+        </div>
 
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* New Chat — mentor dropdown */}
-          <div className="px-3 pt-4 pb-2 shrink-0">
+          {/* New Chat — expert dropdown */}
+          <div className="px-4 pb-3 shrink-0">
             <button
               onClick={() => setMentorsExpanded(!mentorsExpanded)}
-              className="flex items-center justify-between w-full px-3 py-2.5 rounded-lg bg-amber/10 border border-amber/20 text-sm font-medium text-foreground hover:bg-amber/15 transition cursor-pointer"
+              className="flex items-center justify-between w-full px-4 py-2.5 rounded-md border border-border text-[19px] leading-none text-foreground hover:border-accent/50 hover:bg-surface transition cursor-pointer"
             >
-              <div className="flex items-center gap-2">
-                <IconPlus size={15} className="text-amber" />
-                <span>Select an Expert</span>
-              </div>
-              <IconChevronDown size={14} className={`text-muted transition-transform ${mentorsExpanded ? "rotate-180" : ""}`} />
+              <span>
+                Select an <span className="uppercase">Expert</span>
+              </span>
+              <IconChevronDown
+                size={16}
+                className={`text-muted transition-transform ${mentorsExpanded ? "rotate-180" : ""}`}
+              />
             </button>
             {mentorsExpanded && (
-              <div className="mt-1 border border-[#E5E2DC] rounded-lg bg-white overflow-hidden">
-                {mentors.map((m) => (
-                  <div key={m.slug} className="flex items-center gap-2.5 px-3 py-2.5 hover:bg-[#F5F3F0] transition">
-                    <img src={safeAvatar(m.avatar_url)} alt={m.name} width={28} height={28} className="rounded-full shrink-0" onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[#1A1A1A] leading-tight">{m.name}</p>
-                      <p className="text-xs text-[#999] truncate">{m.tagline}</p>
+              <div className="mt-1.5 border border-border rounded-md bg-surface overflow-hidden">
+                {mentors.map((m) => {
+                  const profile = getExpertProfile(m.slug, m.tagline);
+                  return (
+                    <div key={m.slug} className="flex items-center gap-2.5 px-3 py-2.5 hover:bg-surface-light transition">
+                      <img
+                        src={safeAvatar(m.avatar_url)}
+                        alt={m.name}
+                        width={30}
+                        height={30}
+                        className="w-[30px] h-[30px] rounded-full object-cover shrink-0"
+                        onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[16px] leading-tight text-foreground truncate">{m.name}</p>
+                        <p className="text-[13px] italic text-accent truncate leading-tight">{profile.specialty}</p>
+                      </div>
+                      <Link
+                        href={`/chat/${m.slug}?new=true`}
+                        onClick={() => { setMentorsExpanded(false); setSidebarOpen(false); }}
+                        className="mono shrink-0 flex items-center gap-1 text-[10px] tracking-[0.06em] uppercase text-accent hover:text-[#1B1B18] hover:bg-accent border border-accent/60 px-2 py-1 rounded transition"
+                      >
+                        <IconMessage size={11} />
+                        Chat
+                      </Link>
                     </div>
-                    <Link
-                      href={`/chat/${m.slug}?new=true`}
-                      onClick={() => { setMentorsExpanded(false); setSidebarOpen(false); }}
-                      className="shrink-0 flex items-center gap-1 text-[11px] font-medium text-amber hover:text-amber-dark px-2 py-1 rounded-md hover:bg-amber/10 transition"
-                    >
-                      <IconMessage size={12} />
-                      Chat
-                    </Link>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
 
           {/* Profile setup — only shown when incomplete */}
           {profileComplete === false && (
-            <div className="px-3 pt-1 pb-2 shrink-0">
+            <div className="px-4 pb-3 shrink-0">
               <Link
                 href="/chat/onboarding"
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center justify-between px-3 py-2 rounded-lg transition text-sm ${
+                className={`flex items-center justify-between px-2 py-1.5 rounded-md transition text-[17px] ${
                   isActivePath("/chat/onboarding")
-                    ? "bg-amber/10 text-foreground border border-amber/20"
-                    : "text-muted hover:text-foreground hover:bg-white/[0.04]"
+                    ? "text-accent"
+                    : "text-foreground hover:text-accent"
                 }`}
               >
-                <div className="flex items-center gap-2">
-                  <IconUserCircle size={16} />
-                  <span>Set up your profile</span>
-                </div>
-                <span className="w-2 h-2 rounded-full bg-amber animate-pulse" />
+                <span className="flex items-center gap-2.5">
+                  <IconUser size={17} stroke={1.4} className="text-muted shrink-0" />
+                  Set up your Profile
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               </Link>
             </div>
           )}
 
-          <div className="px-3 pt-2 pb-2 flex-1 min-h-0 flex flex-col">
-            <div className="px-2 mb-2 shrink-0">
-              <p className="text-xs text-muted/60 uppercase tracking-wider font-medium">Conversations</p>
-            </div>
-              <div className="space-y-0.5 flex-1 overflow-y-auto min-h-0">
-                {loadingConvos && (
-                  <div className="space-y-1 px-1">
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} className="flex items-center gap-2 px-2.5 py-2">
-                        <div className="w-[22px] h-[22px] rounded-full bg-[#E5E2DC] animate-pulse shrink-0" />
-                        <div className="flex-1 space-y-1.5">
-                          <div className="h-3 bg-[#E5E2DC] rounded animate-pulse w-3/4" />
-                          <div className="h-2 bg-[#EEECE8] rounded animate-pulse w-1/2" />
-                        </div>
+          <div className="px-4 flex-1 min-h-0 flex flex-col">
+            <p className="px-2 mb-2 shrink-0 text-[19px] leading-none text-muted">Conversations</p>
+
+            <div className="space-y-1 flex-1 overflow-y-auto min-h-0 fh-scroll -mx-1 px-1">
+              {loadingConvos && (
+                <div className="space-y-1.5 px-2">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="flex items-center gap-3 py-2">
+                      <div className="w-8 h-8 rounded-full bg-surface-light animate-pulse shrink-0" />
+                      <div className="flex-1 space-y-1.5">
+                        <div className="h-3 bg-surface-light rounded animate-pulse w-3/4" />
+                        <div className="h-2 bg-surface rounded animate-pulse w-1/2" />
                       </div>
-                    ))}
-                  </div>
-                )}
+                    </div>
+                  ))}
+                </div>
+              )}
 
-                {renamingId && (
-                  <div className="px-2 py-1">
-                    <input
-                      autoFocus
-                      value={renameValue}
-                      onChange={(e) => setRenameValue(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") handleRenameSubmit();
-                        if (e.key === "Escape") setRenamingId(null);
-                      }}
-                      onBlur={handleRenameSubmit}
-                      className="w-full bg-white border border-amber/30 rounded-lg px-3 py-1.5 text-[13px] text-[#1A1A1A] focus:outline-none focus:border-amber"
-                    />
-                  </div>
-                )}
+              {renamingId && (
+                <div className="px-1 py-1">
+                  <input
+                    autoFocus
+                    value={renameValue}
+                    onChange={(e) => setRenameValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleRenameSubmit();
+                      if (e.key === "Escape") setRenamingId(null);
+                    }}
+                    onBlur={handleRenameSubmit}
+                    className="w-full bg-surface border border-accent/40 rounded-md px-3 py-2 text-[14px] text-foreground focus:outline-none focus:border-accent"
+                  />
+                </div>
+              )}
 
-                {conversations.slice(0, 15).map((c) => {
-                  if (c.id === renamingId) return null;
-                  const mentor = mentorsBySlug[c.mentor_slug];
-                  return (
-                    <ConversationRow
-                      key={c.id}
-                      conv={c}
-                      mentor={mentor}
-                      isActive={activeConversationId === c.id}
-                      onNavigate={() => setSidebarOpen(false)}
-                      onDelete={handleDelete}
-                      onRename={handleRenameStart}
-                    />
-                  );
-                })}
+              {conversations.slice(0, 15).map((c) => {
+                if (c.id === renamingId) return null;
+                const mentor = mentorsBySlug[c.mentor_slug];
+                return (
+                  <ConversationRow
+                    key={c.id}
+                    conv={c}
+                    mentor={mentor}
+                    isActive={activeConversationId === c.id}
+                    onNavigate={() => setSidebarOpen(false)}
+                    onDelete={handleDelete}
+                    onRename={handleRenameStart}
+                  />
+                );
+              })}
 
-                {!loadingConvos && conversations.length === 0 && (
-                  <p className="px-3 py-2 text-xs text-muted/50">No conversations yet</p>
-                )}
-              </div>
+              {!loadingConvos && conversations.length === 0 && (
+                <p className="mono px-2 py-2 text-[11px] tracking-[0.04em] text-faint">No conversations yet</p>
+              )}
+            </div>
           </div>
 
-          <div className="px-3 pt-2 pb-2 shrink-0">
+          <div className="px-4 pt-3 pb-2 shrink-0">
             <Link
               href="/insights"
               onClick={() => setSidebarOpen(false)}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition text-sm ${
+              className={`flex items-center justify-between px-2 py-1.5 rounded-md transition text-[17px] ${
                 isActivePath("/insights")
-                  ? "bg-amber/10 text-foreground border border-amber/20"
-                  : "text-muted hover:text-foreground hover:bg-white/[0.04]"
+                  ? "text-accent"
+                  : "text-foreground hover:text-accent"
               }`}
             >
-              <div className="flex items-center gap-2">
-                <IconBookmark size={16} />
-                <span>Saved Insights</span>
-              </div>
+              <span className="flex items-center gap-2.5">
+                <IconBookmark size={16} stroke={1.4} className="text-muted shrink-0" />
+                Saved Insights
+              </span>
               {insightCount.total > 0 && (
-                <span className="text-[10px] bg-amber/20 text-amber px-1.5 py-0.5 rounded-full font-medium">
+                <span className="mono text-[10px] text-accent border border-accent/50 px-1.5 py-px rounded-full">
                   {insightCount.total}
                 </span>
               )}
             </Link>
           </div>
-
         </div>
 
         {session?.user && (
-          <div className="shrink-0 border-t border-foreground/[0.06] px-3 py-3">
-            <div className="flex items-center gap-2.5 mb-2 px-1">
+          <div className="shrink-0 border-t border-border px-5 py-4">
+            <div className="flex items-center gap-2.5 mb-2">
               {session.user.image ? (
                 <Image
                   src={session.user.image}
                   alt=""
-                  width={28}
-                  height={28}
+                  width={26}
+                  height={26}
                   className="rounded-full shrink-0"
                 />
               ) : (
-                <div className="w-7 h-7 rounded-full bg-foreground/[0.08] flex items-center justify-center text-xs font-semibold shrink-0">
+                <div className="w-[26px] h-[26px] rounded-full bg-surface-light flex items-center justify-center mono text-[11px] text-accent shrink-0">
                   {session.user.name?.[0] ?? "?"}
                 </div>
               )}
-              <span className="text-sm font-medium text-foreground truncate">
+              <span className="text-[20px] leading-none text-foreground truncate">
                 {session.user.name?.split(" ")[0]}
               </span>
             </div>
             <div className="flex flex-col gap-0.5">
-              <Link
-                href="/account"
-                onClick={() => setSidebarOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-muted hover:text-foreground hover:bg-foreground/[0.04] rounded-lg transition"
-              >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <Link href="/account" onClick={() => setSidebarOpen(false)} className={accountLinkClass}>
+                <Bullet />
                 Account
               </Link>
-              <Link
-                href="/pricing"
-                onClick={() => setSidebarOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-muted hover:text-foreground hover:bg-foreground/[0.04] rounded-lg transition"
-              >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <Link href="/pricing" onClick={() => setSidebarOpen(false)} className={accountLinkClass}>
+                <Bullet />
                 Pricing
               </Link>
               <button
@@ -471,17 +498,16 @@ export default function Sidebar() {
                     if (data.url) window.location.href = data.url;
                   } catch { /* silent */ }
                 }}
-                className="flex items-center gap-2.5 w-full px-3 py-1.5 text-sm text-muted hover:text-foreground hover:bg-foreground/[0.04] rounded-lg transition cursor-pointer"
+                className={`${accountLinkClass} w-full cursor-pointer`}
               >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></svg>
+                <Bullet />
                 Billing
               </button>
-              <div className="my-1 border-t border-foreground/[0.06]" />
               <button
                 onClick={() => signOut()}
-                className="flex items-center gap-2.5 w-full px-3 py-1.5 text-sm text-muted hover:text-foreground hover:bg-foreground/[0.04] rounded-lg transition cursor-pointer"
+                className={`${accountLinkClass} w-full cursor-pointer`}
               >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <Bullet />
                 Sign out
               </button>
             </div>

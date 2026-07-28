@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { IconArrowRight, IconMicrophone, IconEyeCheck, IconShare, IconCash, IconCpu, IconCode, IconHeadset, IconReceipt } from "@tabler/icons-react";
 
@@ -22,24 +21,23 @@ function RevenueCalculator() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mentors-card-elevated p-10 flex flex-col items-center gap-4 mb-16 max-w-md mx-auto">
-        <label className="mentors-muted text-base">What would you charge per month?</label>
+    <div>
+      <div className="mentors-card-elevated p-8 md:p-10 flex flex-col items-center gap-4 mb-14 max-w-md mx-auto">
+        <label className="mono text-[11px] tracking-[0.06em] uppercase text-muted">What would you charge per month?</label>
         <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-bold mentors-muted">$</span>
+          <span className="mono text-[26px] text-muted">$</span>
           <input
             type="number"
             value={price}
             onChange={(e) => setPrice(Math.max(0, parseInt(e.target.value) || 0))}
-            className="text-6xl font-bold bg-transparent border-b-3 border-[#B8916A] focus:border-[#B8916A] outline-none w-44 text-center transition"
-            style={{ color: "#1A1A1A" }}
+            className="mono text-[44px] bg-transparent border-b border-border-light focus:border-accent outline-none w-44 text-center text-foreground transition"
           />
-          <span className="text-xl mentors-muted">/mo</span>
+          <span className="mono text-[13px] text-muted">/mo</span>
         </div>
-        <p className="text-xs mentors-muted mt-1" style={{ opacity: 0.5 }}>You keep 75%.</p>
+        <p className="mono text-[11px] tracking-[0.06em] uppercase text-faint mt-1">You keep 75%.</p>
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-8 text-center items-end">
+      <div className="grid sm:grid-cols-3 gap-[30px] text-center items-end">
         {scenarios.map(({ count, label }, i) => {
           const monthly = Math.round(price * mentorCut * count);
           const isLast = i === 2;
@@ -48,21 +46,17 @@ function RevenueCalculator() {
             <div
               key={count}
               className={`mentors-card-elevated text-center transition-all ${
-                isLast
-                  ? "p-10 border-2 shadow-[0_8px_30px_rgba(184,145,106,0.15)]"
-                  : isMiddle
-                  ? "p-9"
-                  : "p-8 opacity-80"
+                isLast ? "p-9" : isMiddle ? "p-8" : "p-7 opacity-80"
               }`}
-              style={isLast ? { borderColor: "rgba(184, 145, 106, 0.3)" } : undefined}
+              style={isLast ? { borderColor: "rgba(202, 237, 87, 0.35)" } : undefined}
             >
-              <p className="text-xs font-semibold mentors-muted uppercase tracking-widest mb-3" style={{ opacity: 0.5 }}>{label}</p>
-              <p className="text-2xl font-bold mentors-accent mb-1">{count}</p>
-              <p className="text-sm mentors-muted mb-5">subscribers</p>
-              <p className={`font-bold mb-1 ${isLast ? "text-6xl" : isMiddle ? "text-5xl" : "text-4xl"}`} style={{ color: "#1A1A1A" }}>
+              <p className="mono text-[11px] tracking-[0.06em] uppercase text-faint mb-3">{label}</p>
+              <p className="mono text-[20px] text-accent mb-1">{count}</p>
+              <p className="mono text-[11px] tracking-[0.06em] uppercase text-faint mb-5">subscribers</p>
+              <p className={`leading-[0.92] tracking-[-0.015em] text-foreground mb-1 ${isLast ? "text-[56px]" : isMiddle ? "text-[46px]" : "text-[38px]"}`}>
                 ${monthly.toLocaleString()}
               </p>
-              <p className="text-sm mentors-muted mt-2">/month to you</p>
+              <p className="mono text-[11px] tracking-[0.06em] uppercase text-faint mt-2">/month to you</p>
             </div>
           );
         })}
@@ -73,43 +67,66 @@ function RevenueCalculator() {
 
 export default function ForMentorsPage() {
   return (
-    <div className="mentors-light pt-16">
-      {/* 1. Hero */}
-      <section className="mentors-hero px-6 py-32 md:py-44 max-w-4xl mx-auto text-center">
-        <p className="mentors-accent font-mono text-sm tracking-widest uppercase mb-6">The Opportunity</p>
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-10">
-          A generation that won&apos;t book a call{" "}
-          <span className="mentors-accent">still needs your expertise.</span>
-        </h1>
+    <div className="mentors-light pt-16 md:pt-[72px]">
+      {/* ═══════════════════════════════════════════
+          1. HERO
+          ═══════════════════════════════════════════ */}
+      <section className="mentors-hero px-6 pt-20 md:pt-28 pb-16 md:pb-24">
+        <div className="max-w-[1008px] mx-auto">
+          <p className="mono text-[13px] tracking-[0.06em] uppercase text-accent mb-5">The Opportunity</p>
+          <h1 className="text-[48px] md:text-[68px] lg:text-[80px] leading-[0.92] tracking-[-0.015em] max-w-[900px]">
+            A generation that won&apos;t book a call{" "}
+            <span className="mentors-accent">still needs your expertise.</span>
+          </h1>
+        </div>
       </section>
 
-      {/* 2. The Data — Gen Z stats */}
-      <section className="mentors-cream-section px-6 py-20">
-        <div className="max-w-3xl mx-auto space-y-8">
-          <p className="mentors-accent font-mono text-sm tracking-widest uppercase text-center">The Data</p>
-          <div className="space-y-4 text-base md:text-lg leading-relaxed text-center">
-            <p><strong style={{ color: "#1A1A1A" }}>9 out of 10</strong> <span className="mentors-muted">Gen Zers would rather text than pick up the phone.</span> <span className="text-sm" style={{ opacity: 0.4, color: "#737373" }}>(CommBank, 2023)</span></p>
-            <p><strong style={{ color: "#1A1A1A" }}>70%</strong> <span className="mentors-muted">of 18-34 year olds prefer text over calls. 23% never answer their phone at all.</span> <span className="text-sm" style={{ opacity: 0.4, color: "#737373" }}>(BBC/Uswitch, 2024)</span></p>
+      {/* ═══════════════════════════════════════════
+          2. THE DATA — Gen Z stats
+          ═══════════════════════════════════════════ */}
+      <section className="mentors-cream-section px-6 py-20 md:py-24">
+        <div className="max-w-[1008px] mx-auto">
+          <p className="mono text-[13px] tracking-[0.06em] uppercase text-accent mb-10">The Data</p>
+
+          <div className="grid md:grid-cols-2 gap-[30px]">
+            <div>
+              <p className="text-[52px] md:text-[64px] leading-[0.92] tracking-[-0.015em] text-accent">9 out of 10</p>
+              <p className="mt-4 text-[17px] leading-[1.5] text-muted max-w-[380px]">
+                Gen Zers would rather text than pick up the phone.
+              </p>
+              <p className="mono text-[11px] tracking-[0.06em] uppercase text-faint mt-4">(CommBank, 2023)</p>
+            </div>
+            <div>
+              <p className="text-[52px] md:text-[64px] leading-[0.92] tracking-[-0.015em] text-accent">70%</p>
+              <p className="mt-4 text-[17px] leading-[1.5] text-muted max-w-[380px]">
+                of 18-34 year olds prefer text over calls. 23% never answer their phone at all.
+              </p>
+              <p className="mono text-[11px] tracking-[0.06em] uppercase text-faint mt-4">(BBC/Uswitch, 2024)</p>
+            </div>
           </div>
-          <p className="text-lg md:text-xl text-center mentors-muted pt-4">
-            This is the generation starting companies right now. They need mentorship. They <span className="mentors-accent">won&apos;t book a Calendly link</span> to get it.
+
+          <p className="mt-14 text-[24px] md:text-[30px] leading-[1.25] tracking-[-0.01em] max-w-[760px] text-foreground">
+            This is the generation starting companies right now. They need mentorship. They{" "}
+            <span className="mentors-accent">won&apos;t book a Calendly link</span> to get it.
           </p>
         </div>
       </section>
 
-      {/* 3. How it works — elevated cards on white */}
-      <section className="px-6 py-24">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-16 text-center" style={{ color: "#1A1A1A" }}>Here&apos;s what we do together.</h2>
-          <div className="grid md:grid-cols-3 gap-8">
+      {/* ═══════════════════════════════════════════
+          3. HOW IT WORKS
+          ═══════════════════════════════════════════ */}
+      <section className="px-6 py-20 md:py-24">
+        <div className="max-w-[1008px] mx-auto">
+          <h2 className="text-[44px] md:text-[56px] leading-[0.92] tracking-[-0.015em] mb-14 max-w-[720px]">
+            Here&apos;s what we do together.
+          </h2>
+          <div className="grid md:grid-cols-3 gap-x-16 gap-y-12">
             {steps.map((s) => (
-              <div key={s.num} className="mentors-card-elevated p-10">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: "rgba(184, 145, 106, 0.12)" }}>
-                  <s.icon size={22} className="mentors-icon" stroke={1.5} />
-                </div>
-                <span className="mentors-accent font-mono text-xs font-bold">{s.num}</span>
-                <h3 className="text-xl font-bold mt-2 mb-3" style={{ color: "#1A1A1A" }}>{s.title}</h3>
-                <p className="mentors-muted leading-relaxed text-[15px]">{s.desc}</p>
+              <div key={s.num}>
+                <s.icon size={24} className="mentors-icon mb-5" stroke={1.5} />
+                <p className="mono text-[22px] text-accent mb-3">{s.num}</p>
+                <h3 className="text-[28px] mb-3">{s.title}</h3>
+                <p className="text-[16px] leading-[1.45] text-muted max-w-[380px]">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -117,44 +134,53 @@ export default function ForMentorsPage() {
       </section>
 
       {/* IP protection inline */}
-      <section className="px-6 py-8">
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-lg mentors-muted">Your frameworks stay yours. We license, never own. You can pull your agent anytime. <strong style={{ color: "#1A1A1A" }}>Delaware LLC. Formal contract.</strong></p>
+      <section className="px-6 pb-16 md:pb-20">
+        <div className="max-w-[1008px] mx-auto">
+          <p className="text-[17px] leading-[1.6] text-muted max-w-[720px]">
+            Your frameworks stay yours. We license, never own. You can pull your agent anytime.{" "}
+            <strong className="text-foreground">Delaware LLC. Formal contract.</strong>
+          </p>
         </div>
       </section>
 
-      {/* 4. Colin testimonial — dark section */}
-      <section className="mentors-dark-section px-6 py-24 md:py-32">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-10">
-            <span className="mentors-accent text-5xl font-serif leading-none">&ldquo;</span>
+      {/* ═══════════════════════════════════════════
+          4. COLIN TESTIMONIAL
+          ═══════════════════════════════════════════ */}
+      <section className="mentors-dark-section sparkle-field px-6 py-24 md:py-32">
+        <div className="max-w-[820px] mx-auto">
+          <div className="text-center mb-8">
+            <span className="mentors-accent text-[64px] leading-none">&ldquo;</span>
           </div>
-          <p className="text-xl md:text-2xl leading-relaxed text-center mb-4" style={{ color: "rgba(255,255,255,0.9)" }}>
+          <p className="text-[24px] md:text-[32px] leading-[1.25] tracking-[-0.01em] text-center text-foreground mb-4">
             It forced me to articulate things I&apos;d been doing on autopilot for decades, and{" "}
-            <strong style={{ color: "#FFFFFF" }}>the output captured my thinking better than I anticipated</strong>.
+            <span className="mentors-accent">the output captured my thinking better than I anticipated</span>.
           </p>
-          <p className="text-xl md:text-2xl leading-relaxed text-center mb-10" style={{ color: "rgba(255,255,255,0.9)" }}>
+          <p className="text-[24px] md:text-[32px] leading-[1.25] tracking-[-0.01em] text-center text-foreground mb-12">
             I&apos;m happy to put my name on it.
           </p>
           <div className="flex items-center justify-center gap-3">
-            <Image src="/mentors/colin-chapman.png" alt="Colin Chapman" width={48} height={48} className="rounded-[12px] object-cover" />
+            <Image src="/mentors/colin-chapman.png" alt="Colin Chapman" width={48} height={48} className="w-12 h-12 rounded-full object-cover" />
             <div>
-              <p className="text-sm font-semibold" style={{ color: "#FFFFFF" }}>Colin Chapman</p>
-              <p className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>GTM &amp; Outbound Sales · 26 years · First ForgeHouse Mentor</p>
+              <p className="mono text-[12px] tracking-[0.04em] text-foreground">Colin Chapman</p>
+              <p className="mono text-[11px] tracking-[0.04em] text-faint mt-1">GTM &amp; Outbound Sales · 26 years · First ForgeHouse Mentor</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. Your part / Our part — asymmetric */}
-      <section className="px-6 py-24">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center" style={{ color: "#1A1A1A" }}>Collaborative Partnership</h2>
-          <div className="grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(184, 145, 106, 0.12)" }}>
-            {/* Your part — cream */}
-            <div className="p-10" style={{ background: "#F8F5F0" }}>
-              <h3 className="text-xl font-bold mb-8" style={{ color: "#1A1A1A" }}>You</h3>
-              <ul className="space-y-6">
+      {/* ═══════════════════════════════════════════
+          5. YOUR PART / OUR PART
+          ═══════════════════════════════════════════ */}
+      <section className="px-6 py-20 md:py-24">
+        <div className="max-w-[1008px] mx-auto">
+          <h2 className="text-[44px] md:text-[56px] leading-[0.92] tracking-[-0.015em] mb-12">
+            Collaborative Partnership
+          </h2>
+          <div className="grid md:grid-cols-2 gap-0 rounded-lg overflow-hidden border border-border">
+            {/* Your part — paper */}
+            <div className="bg-paper text-[#1B1B18] p-9 md:p-10">
+              <h3 className="text-[28px] mb-8 text-[#1B1B18]">You</h3>
+              <ul className="space-y-5">
                 {[
                   { icon: IconMicrophone, text: "A few conversations" },
                   { icon: IconEyeCheck, text: "Review until it feels right" },
@@ -162,16 +188,20 @@ export default function ForMentorsPage() {
                   { icon: IconCash, text: "Collect checks", accent: true },
                 ].map((item) => (
                   <li key={item.text} className="flex items-start gap-4">
-                    <item.icon size={18} className="mentors-check mt-0.5" stroke={1.5} />
-                    <span className={`leading-relaxed text-[15px] ${item.accent ? "mentors-accent font-semibold" : "mentors-body"}`}>{item.text}</span>
+                    <item.icon size={18} className="shrink-0 mt-1 text-[#1B1B18]" stroke={1.5} />
+                    {item.accent ? (
+                      <span className="text-[16px] leading-[1.45] bg-accent text-[#1B1B18] px-1.5">{item.text}</span>
+                    ) : (
+                      <span className="text-[16px] leading-[1.45] text-[#38352F]">{item.text}</span>
+                    )}
                   </li>
                 ))}
               </ul>
             </div>
-            {/* Our part — dark navy */}
-            <div className="p-10" style={{ background: "#1A2332" }}>
-              <h3 className="text-xl font-bold mb-8" style={{ color: "#FFFFFF" }}>We</h3>
-              <ul className="space-y-6">
+            {/* Our part — surface */}
+            <div className="bg-surface p-9 md:p-10 border-t border-border md:border-t-0 md:border-l">
+              <h3 className="text-[28px] mb-8 text-paper">We</h3>
+              <ul className="space-y-5">
                 {[
                   { icon: IconCpu, text: "Build the agent" },
                   { icon: IconCode, text: "Handle all tech" },
@@ -179,8 +209,8 @@ export default function ForMentorsPage() {
                   { icon: IconReceipt, text: "Manage billing & admin" },
                 ].map((item) => (
                   <li key={item.text} className="flex items-start gap-4">
-                    <item.icon size={18} className="mentors-check mt-0.5" stroke={1.5} />
-                    <span className="leading-relaxed text-[15px]" style={{ color: "rgba(255,255,255,0.7)" }}>{item.text}</span>
+                    <item.icon size={18} className="mentors-check mt-1" stroke={1.5} />
+                    <span className="text-[16px] leading-[1.45] text-muted">{item.text}</span>
                   </li>
                 ))}
               </ul>
@@ -189,48 +219,67 @@ export default function ForMentorsPage() {
         </div>
       </section>
 
-      {/* 6. The math — interactive calculator on cream */}
-      <section className="mentors-cream-section px-6 py-24">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center" style={{ color: "#1A1A1A" }}>The math</h2>
-          <p className="mentors-muted text-lg mb-12 text-center">You set your own monthly subscription fee. Founders pay to access your expertise. You keep 75%.</p>
+      {/* ═══════════════════════════════════════════
+          6. THE MATH — interactive calculator
+          ═══════════════════════════════════════════ */}
+      <section className="mentors-cream-section px-6 py-20 md:py-24">
+        <div className="max-w-[1008px] mx-auto">
+          <h2 className="text-[44px] md:text-[56px] leading-[0.92] tracking-[-0.015em] mb-5">The math</h2>
+          <p className="text-[17px] leading-[1.5] text-muted max-w-[560px] mb-14">
+            You set your own monthly subscription fee. Founders pay to access your expertise. You keep 75%.
+          </p>
           <RevenueCalculator />
         </div>
       </section>
 
       {/* 75% / 100% callouts */}
-      <section className="px-6 py-12">
-        <div className="max-w-3xl mx-auto text-center space-y-3">
-          <p className="text-lg mentors-muted"><span className="mentors-accent font-bold">75% revenue</span> is yours. You set the price. We handle billing, tech, and support.</p>
-          <p className="text-lg mentors-muted"><span className="mentors-accent font-bold">100% IP</span> stays yours. Full ownership. Pull your agent anytime. No lock-in.</p>
+      <section className="px-6 py-16 md:py-20">
+        <div className="max-w-[1008px] mx-auto grid md:grid-cols-2 gap-[30px]">
+          <p className="text-[17px] leading-[1.6] text-muted">
+            <span className="mentors-accent">75% revenue</span> is yours. You set the price. We handle billing, tech, and support.
+          </p>
+          <p className="text-[17px] leading-[1.6] text-muted">
+            <span className="mentors-accent">100% IP</span> stays yours. Full ownership. Pull your agent anytime. No lock-in.
+          </p>
         </div>
       </section>
 
-      {/* 7. Customer proof — dark section */}
-      <section className="mentors-dark-section px-6 py-20">
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-xl md:text-2xl font-semibold leading-relaxed mb-4" style={{ color: "#FFFFFF" }}>
+      {/* ═══════════════════════════════════════════
+          7. CUSTOMER PROOF
+          ═══════════════════════════════════════════ */}
+      <section className="mentors-dark-section px-6 py-20 md:py-24">
+        <div className="max-w-[820px] mx-auto text-center">
+          <p className="text-[24px] md:text-[30px] leading-[1.3] tracking-[-0.01em] text-foreground mb-5">
             &ldquo;I prefer the agent. It&apos;s a shortcut to the knowledge I need, available when I need it.&rdquo;
           </p>
-          <p className="text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
+          <p className="mono text-[12px] tracking-[0.04em] text-faint">
             When offered direct access to the human mentor behind the agent, he declined.
           </p>
         </div>
       </section>
 
-      {/* 8. CTA — contained dark card */}
-      <section className="px-6 py-24 pb-32">
-        <div className="max-w-2xl mx-auto">
-          <div className="mentors-cta-card px-10 py-16 md:px-16 md:py-20 text-center">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4" style={{ color: "#FFFFFF" }}>Ready to start?</h2>
-            <p className="text-lg mb-4 leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+      {/* ═══════════════════════════════════════════
+          8. CTA — lime band
+          ═══════════════════════════════════════════ */}
+      <section className="px-6 py-20 md:py-24 pb-28 md:pb-32">
+        <div className="max-w-[1008px] mx-auto">
+          <div className="mentors-cta-card px-8 md:px-12 py-14 md:py-16 text-center">
+            <h2 className="text-[40px] md:text-[52px] leading-[0.92] tracking-[-0.015em] mb-5 text-[#1B1B18]">
+              Ready to start?
+            </h2>
+            <p className="text-[17px] leading-[1.5] mentors-muted max-w-[540px] mx-auto mb-4">
               Book a quick call. We&apos;ll map your expertise, set your boundaries, and get your agent live within the week.
             </p>
-            <p className="text-sm mb-10" style={{ color: "rgba(255,255,255,0.35)" }}>
+            <p className="mono text-[11px] tracking-[0.06em] uppercase mentors-faint mb-10">
               Your frameworks, your rules. Walk away anytime.
             </p>
-            <a href="https://calendly.com/leon-apexalpha/27min" target="_blank" rel="noopener noreferrer" className="mentors-cta px-10 py-4 rounded-xl font-semibold transition inline-flex items-center gap-2 text-lg">
-              Book a Call <IconArrowRight size={20} />
+            <a
+              href="https://calendly.com/leon-apexalpha/27min"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mentors-cta mono inline-flex items-center gap-3 px-8 py-3.5 text-[12px] tracking-[0.08em] transition"
+            >
+              Book a Call <IconArrowRight size={16} stroke={1.5} />
             </a>
           </div>
         </div>

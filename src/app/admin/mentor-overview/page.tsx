@@ -44,15 +44,15 @@ function StatCard({
   trend?: { value: string; positive: boolean };
 }) {
   return (
-    <div className="rounded-xl border border-[#E5E2DC] bg-white p-5">
+    <div className="rounded-lg border border-border bg-surface p-5">
       <div className="flex items-start justify-between">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F5F3F0] text-[#737373]">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-surface-light text-muted">
           {icon}
         </div>
         {trend && (
           <span
-            className={`flex items-center gap-0.5 text-xs font-medium ${
-              trend.positive ? "text-green-600" : "text-red-500"
+            className={`mono flex items-center gap-0.5 text-[11px] tracking-[0.04em] ${
+              trend.positive ? "text-accent" : "text-[#F2777A]"
             }`}
           >
             {trend.positive ? (
@@ -64,9 +64,17 @@ function StatCard({
           </span>
         )}
       </div>
-      <p className="mt-3 text-2xl font-bold text-[#1A1A1A]">{value}</p>
-      <p className="mt-1 text-sm text-[#999]">{label}</p>
-      {subValue && <p className="mt-0.5 text-xs text-[#B8B8B8]">{subValue}</p>}
+      <p className="mono mt-4 text-[26px] leading-none text-foreground">
+        {value}
+      </p>
+      <p className="mono mt-2 text-[11px] uppercase tracking-[0.08em] text-faint">
+        {label}
+      </p>
+      {subValue && (
+        <p className="mono mt-1 text-[10px] tracking-[0.04em] text-faint">
+          {subValue}
+        </p>
+      )}
     </div>
   );
 }
@@ -96,30 +104,47 @@ function MentorsTable({
 }) {
   if (mentors.length === 0) {
     return (
-      <div className="rounded-xl border border-[#E5E2DC] bg-white p-12 text-center">
-        <p className="text-[#999]">No conversations yet.</p>
+      <div className="rounded-lg border border-border bg-surface p-12 text-center">
+        <p className="text-muted">No conversations yet.</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-[#E5E2DC] bg-white overflow-x-auto">
+    <div className="fh-scroll overflow-x-auto rounded-lg border border-border bg-surface">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-[#E5E2DC]">
-            <th className="px-6 py-3 text-left font-semibold text-[#737373]">Mentor</th>
-            <th className="px-6 py-3 text-right font-semibold text-[#737373]">Conversations</th>
-            <th className="px-6 py-3 text-right font-semibold text-[#737373]">Messages</th>
-            <th className="px-6 py-3 text-right font-semibold text-[#737373]">Last Active</th>
+          <tr className="border-b border-border bg-surface-light">
+            <th className="mono px-6 py-3 text-left text-[11px] font-normal uppercase tracking-[0.08em] text-faint">
+              Mentor
+            </th>
+            <th className="mono px-6 py-3 text-right text-[11px] font-normal uppercase tracking-[0.08em] text-faint">
+              Conversations
+            </th>
+            <th className="mono px-6 py-3 text-right text-[11px] font-normal uppercase tracking-[0.08em] text-faint">
+              Messages
+            </th>
+            <th className="mono px-6 py-3 text-right text-[11px] font-normal uppercase tracking-[0.08em] text-faint">
+              Last Active
+            </th>
           </tr>
         </thead>
         <tbody>
           {mentors.map((m) => (
-            <tr key={m.slug} className="border-b border-[#F5F3F0] hover:bg-[#FAFAF8]">
-              <td className="px-6 py-4 font-medium text-[#1A1A1A]">{m.name || m.slug}</td>
-              <td className="px-6 py-4 text-right text-[#1A1A1A]">{m.conversationCount}</td>
-              <td className="px-6 py-4 text-right text-[#1A1A1A]">{m.messageCount}</td>
-              <td className="px-6 py-4 text-right text-[#999]">
+            <tr
+              key={m.slug}
+              className="border-b border-border transition last:border-b-0 hover:bg-surface-light"
+            >
+              <td className="px-6 py-4 text-[16px] text-foreground">
+                {m.name || m.slug}
+              </td>
+              <td className="mono px-6 py-4 text-right text-[13px] text-foreground">
+                {m.conversationCount}
+              </td>
+              <td className="mono px-6 py-4 text-right text-[13px] text-foreground">
+                {m.messageCount}
+              </td>
+              <td className="mono px-6 py-4 text-right text-[12px] text-faint">
                 {formatRelativeTime(m.lastConversationAt)}
               </td>
             </tr>
@@ -155,16 +180,18 @@ export default function MentorOverviewPage() {
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-amber" />
+      <div className="flex h-full items-center justify-center bg-background">
+        <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-accent" />
       </div>
     );
   }
 
   if (!stats) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <p className="text-[#999]">Failed to load mentor overview.</p>
+      <div className="flex h-full items-center justify-center bg-background">
+        <p className="mono text-[12px] tracking-[0.04em] text-muted">
+          Failed to load mentor overview.
+        </p>
       </div>
     );
   }
@@ -175,12 +202,12 @@ export default function MentorOverviewPage() {
   const pageLabel = isAdmin ? "All Mentors" : "My Mentors";
 
   return (
-    <div className="p-8">
+    <div className="min-h-full bg-background p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[#1A1A1A]">
+        <h1 className="text-[32px] leading-none text-foreground">
           {isAdmin ? "Admin Dashboard" : "Mentor Overview"}
         </h1>
-        <p className="mt-1 text-sm text-[#999]">
+        <p className="mono mt-3 text-[12px] tracking-[0.04em] text-muted">
           {isAdmin
             ? "Overview of all mentor usage on the platform"
             : `Overview for ${stats.mentors.map((m) => m.name || m.slug).join(", ") || "your mentors"}`}
@@ -216,8 +243,10 @@ export default function MentorOverviewPage() {
         />
       </div>
 
-      <div className="mt-8">
-        <h2 className="mb-4 text-lg font-bold text-[#1A1A1A]">{pageLabel}</h2>
+      <div className="mt-10">
+        <h2 className="mb-4 text-[24px] leading-none text-foreground">
+          {pageLabel}
+        </h2>
         <MentorsTable mentors={stats.mentors} isAdmin={isAdmin} />
       </div>
     </div>

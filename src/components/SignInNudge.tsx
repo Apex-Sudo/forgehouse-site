@@ -8,19 +8,19 @@ export default function SignInNudge() {
   if (dismissed) return null;
 
   return (
-    <div className="bg-white/[0.03] border border-[#B8916A]/20 rounded-lg px-4 py-3 mx-6 mt-2 flex items-center justify-between text-xs animate-in fade-in slide-in-from-top-2 duration-300">
-      <span className="text-muted">
+    <div className="bg-surface border border-accent/25 rounded-md px-4 py-3 mx-6 mt-2 flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-300">
+      <span className="mono text-[11px] tracking-[0.02em] text-muted">
         💡 Sign in to save this conversation and pick up where you left off.{" "}
         <Link
           href="/sign-in"
-          className="text-[#B8916A] hover:text-[#60A5FA] transition underline underline-offset-2"
+          className="text-accent hover:text-foreground transition underline underline-offset-2"
         >
           Sign in
         </Link>
       </span>
       <button
         onClick={() => setDismissed(true)}
-        className="text-muted hover:text-foreground transition ml-3 text-base leading-none cursor-pointer"
+        className="text-muted hover:text-accent transition ml-3 text-base leading-none cursor-pointer"
         aria-label="Dismiss"
       >
         ×

@@ -1,233 +1,224 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════
+   FORGE HOUSE v2 — design tokens
+   Source of truth: Figma "Forge House Website"
+   Variable collection → Background 1/2/3 + Accent
+   ═══════════════════════════════════════════════ */
+
 @theme inline {
-  --color-background: #FFFFFF;
-  --color-foreground: #1A1A1A;
-  --color-amber: #B8916A;
-  --color-amber-dark: #A07D5A;
-  --color-surface: #F5F3F0;
-  --color-surface-light: #F0EDE8;
-  --color-muted: #737373;
-  --color-border: #E8E5E0;
-  --color-border-light: #DDD9D3;
-  --color-glass: rgba(184, 145, 106, 0.05);
-  --color-glass-border: rgba(184, 145, 106, 0.12);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Core surfaces */
+  --color-background: #181815;      /* page canvas */
+  --color-surface: #212121;         /* Background 3 — panels, chat, inputs */
+  --color-surface-light: #262622;   /* hover / raised panel */
+  --color-paper: #EBECEC;           /* Background 1 — light cards */
+  --color-tan: #CABAA1;             /* Background 2 — secondary buttons */
+
+  /* Accent */
+  --color-accent: #CAED57;          /* Accent — lime */
+  --color-accent-dim: #A8C63F;
+
+  /* `amber` is the legacy accent name used across the app.
+     Aliased to the new accent so existing utilities stay correct. */
+  --color-amber: #CAED57;
+  --color-amber-dark: #A8C63F;
+
+  /* Text — contrast checked against #181815:
+     foreground 14.9:1 · muted 6.2:1 · faint 4.6:1 */
+  --color-foreground: #EBECEC;
+  --color-muted: #9A9A91;
+  --color-faint: #86867E;
+
+  /* Lines */
+  --color-border: rgba(235, 236, 236, 0.12);
+  --color-border-light: rgba(235, 236, 236, 0.2);
+  --color-glass: rgba(202, 237, 87, 0.04);
+  --color-glass-border: rgba(202, 237, 87, 0.14);
+
+  /* Type */
+  --font-serif: var(--font-cormorant);
+  --font-sans: var(--font-cormorant);
+  --font-mono: var(--font-source-code-pro);
 }
 
-body {
-  background: var(--color-background);
-  color: var(--color-foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-}
+/* ── Base ──────────────────────────────────────
+   Layered so Tailwind utilities (leading-*, tracking-*,
+   font-*) still win on individual elements.
+   ─────────────────────────────────────────────── */
+@layer base {
+  html {
+    background: #181815;
+  }
 
-@media (min-width: 1024px) {
   body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-cormorant), Georgia, serif;
     font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  @media (min-width: 1024px) {
+    body {
+      font-size: 18px;
+    }
+  }
+
+  /* Display headings — Cormorant, tight leading, per Figma (91–98% line-height) */
+  h1, h2, h3, h4 {
+    font-family: var(--font-cormorant), Georgia, serif;
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: 0;
+  }
+
+  input, textarea, select {
+    color: inherit;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--color-faint);
+  }
+
+  /* Chrome renders a fixed dark glyph here — invisible on a dark field */
+  input[type="search"]::-webkit-search-cancel-button {
+    filter: invert(1);
+    opacity: 0.45;
+    cursor: pointer;
   }
 }
 
-/* Glass card */
-.glass-card {
-  background: var(--color-glass);
-  border: 1px solid var(--color-glass-border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 16px;
-}
-
-/* Subtle gradient backgrounds */
-.gradient-hero {
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(184, 145, 106, 0.08) 0%, transparent 70%);
-}
-
-.gradient-bronze {
-  background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(184, 145, 106, 0.06) 0%, transparent 70%);
-}
-
-/* Section container module */
-.section-module {
-  background: var(--color-glass);
-  border: 1px solid var(--color-glass-border);
-  border-radius: 20px;
-  padding: 3rem;
-}
-
-@media (min-width: 768px) {
-  .section-module {
-    padding: 4rem;
-  }
-}
-
-/* Mobile responsiveness */
-@media (max-width: 480px) {
-  .section-module {
-    padding: 1.5rem;
+/* ── Components ────────────────────────────────
+   Also layered, so per-element utility overrides win.
+   ─────────────────────────────────────────────── */
+@layer components {
+  /* Source Code Pro label — nav, eyebrows, stats, buttons */
+  .mono {
+    font-family: var(--font-source-code-pro), ui-monospace, monospace;
   }
 
-  h1 {
-    word-break: break-word;
+  .mono-label {
+    font-family: var(--font-source-code-pro), ui-monospace, monospace;
+    font-size: 12px;
+    line-height: 1.85;
+    letter-spacing: 0.02em;
   }
-}
 
-/* Ensure chat pages don't overflow on mobile */
-@media (max-width: 640px) {
+  /* Notched top-left corner — used on every card CTA in the design */
+  .clip-corner {
+    clip-path: polygon(16px 0, 100% 0, 100% 100%, 0 100%, 0 16px);
+  }
+
+  .clip-corner-sm {
+    clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
+  }
+
+  /* Faint 4-point sparkle field — brand block + FAQ section */
+  .sparkle-field {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='66' height='66' viewBox='0 0 66 66'%3E%3Cpath d='M33 25c.6 4.6 2.8 6.8 7.4 7.4-4.6.6-6.8 2.8-7.4 7.4-.6-4.6-2.8-6.8-7.4-7.4 4.6-.6 6.8-2.8 7.4-7.4z' fill='%23EBECEC' fill-opacity='0.07'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* Legacy containers used by older pages — now dark */
   .glass-card {
-    border-radius: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+  }
+
+  .section-module {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    padding: 3rem;
+  }
+
+  @media (min-width: 768px) {
+    .section-module {
+      padding: 4rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .section-module {
+      padding: 1.5rem;
+    }
+
+    h1 {
+      word-break: break-word;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .glass-card {
+      border-radius: 12px;
+    }
+  }
+
+  .gradient-hero {
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(202, 237, 87, 0.06) 0%, transparent 70%);
+  }
+
+  .gradient-bronze {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(202, 237, 87, 0.05) 0%, transparent 70%);
+  }
+
+  /* Long-form prose (thinking/*, security, privacy) */
+  .prose-fh p {
+    color: rgba(235, 236, 236, 0.68);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose-fh h2 {
+    color: var(--color-foreground);
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose-fh blockquote {
+    border-left: 3px solid var(--color-accent);
+    padding: 0.25rem 0 0.25rem 1.25rem;
+    margin: 1.5rem 0;
+  }
+
+  .prose-fh blockquote p {
+    color: var(--color-muted);
+    font-style: italic;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .prose-fh blockquote cite {
+    color: var(--color-faint);
+    font-size: 0.75rem;
+    font-style: normal;
+  }
+
+  /* Scrollbars inside dark panels */
+  .fh-scroll::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .fh-scroll::-webkit-scrollbar-thumb {
+    background: rgba(235, 236, 236, 0.14);
+    border-radius: 3px;
+  }
+
+  .fh-scroll::-webkit-scrollbar-track {
+    background: transparent;
   }
 }
 
-/* Blog prose styling */
-.prose-fh p {
-  color: rgba(26, 26, 26, 0.65);
-  font-size: 1rem;
-  line-height: 1.75;
-  margin-bottom: 1.25rem;
-}
+/* ═══════════════════════════════════════════════
+   Motion
+   ═══════════════════════════════════════════════ */
 
-.prose-fh h2 {
-  color: #1A1A1A;
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.prose-fh blockquote {
-  border-left: 3px solid #B8916A;
-  padding: 0.25rem 0 0.25rem 1.25rem;
-  margin: 1.5rem 0;
-}
-
-.prose-fh blockquote p {
-  color: #737373;
-  font-style: italic;
-  font-size: 0.9375rem;
-  margin-bottom: 0.25rem;
-}
-
-.prose-fh blockquote cite {
-  color: #999;
-  font-size: 0.75rem;
-  font-style: normal;
-}
-
-/* Hero grid scroll animation */
-@keyframes grid-scroll {
-  0% {
-    background-position: 0 0, 0 0;
-  }
-  100% {
-    background-position: 0 -48px, 0 -48px;
-  }
-}
-
-.animate-grid-scroll {
-  animation: grid-scroll 4s linear infinite;
-}
-
-/* How It Works — animated mockups */
-
-/* Step 1: Typing cursor effect */
-.hiw-typing {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  border-right: 2px solid #B8916A;
-  animation: hiw-type 2.5s steps(38) 0.5s forwards, hiw-blink 0.6s step-end infinite;
-  width: 0;
-}
-
-@keyframes hiw-type {
-  to { width: 100%; }
-}
-
-@keyframes hiw-blink {
-  50% { border-color: transparent; }
-}
-
-/* Step 1: Send button pulse */
-.hiw-send-pulse {
-  animation: hiw-pulse 2s ease-in-out infinite 3s;
-}
-
-@keyframes hiw-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); box-shadow: 0 0 12px rgba(184,145,106,0.4); }
-}
-
-/* Step 2: Fade in messages */
-.hiw-fade-in-1 {
-  animation: hiw-fade-up 0.5s ease-out 0.3s both;
-}
-
-.hiw-fade-in-2 {
-  animation: hiw-fade-up 0.5s ease-out 0.8s both;
-}
-
-@keyframes hiw-fade-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Step 2: Reply text reveal */
-.hiw-reply-reveal {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  animation: hiw-reveal 1.5s ease-out 1.2s both;
-}
-
-@keyframes hiw-reveal {
-  from { max-height: 0; opacity: 0; }
-  to { max-height: 200px; opacity: 1; }
-}
-
-/* Step 3: Slide in saved items */
-.hiw-slide-in-1 {
-  animation: hiw-slide-in 0.4s ease-out 0.2s both;
-}
-
-.hiw-slide-in-2 {
-  animation: hiw-slide-in 0.4s ease-out 0.5s both;
-}
-
-.hiw-slide-in-3 {
-  animation: hiw-slide-in 0.4s ease-out 0.8s both;
-}
-
-@keyframes hiw-slide-in {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-/* Step 3: Additional fade-in */
-.hiw-fade-in-3 {
-  animation: hiw-fade-up 0.5s ease-out 1.6s both;
-}
-
-/* Step 3: Shorter typing for user reply */
-.hiw-typing-short {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  border-right: 2px solid #999;
-  animation: hiw-type-short 1.5s steps(28) 2s forwards, hiw-blink-grey 0.6s step-end infinite 2s;
-  width: 0;
-}
-
-@keyframes hiw-type-short {
-  to { width: 100%; }
-}
-
-@keyframes hiw-blink-grey {
-  50% { border-color: transparent; }
-}
-
-/* Each new chunk of streamed text fades in */
 @keyframes streamFade {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -235,4 +226,23 @@ body {
 
 .stream-fade {
   animation: streamFade 250ms ease-out both;
+}
+
+@keyframes fh-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fh-fade-up {
+  animation: fh-fade-up 0.5s ease-out both;
+}
+
+/* Typing indicator dots */
+@keyframes fh-dot {
+  0%, 60%, 100% { opacity: 0.25; }
+  30% { opacity: 1; }
+}
+
+.fh-dot {
+  animation: fh-dot 1.4s ease-in-out infinite;
 }

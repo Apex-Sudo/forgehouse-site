@@ -13,8 +13,13 @@ export default function SecurityPage() {
   const content = fs.readFileSync(filePath, "utf8");
 
   return (
-    <main className="max-w-3xl mx-auto px-6 py-16">
-      <SecurityMarkdown content={content} />
+    <main className="pt-16 md:pt-[72px]">
+      <section className="px-6 pt-16 md:pt-24 pb-24">
+        <div className="max-w-[720px] mx-auto">
+          <p className="mono text-[13px] text-accent mb-5">Trust &amp; Security</p>
+          <SecurityMarkdown content={content} />
+        </div>
+      </section>
     </main>
   );
 }

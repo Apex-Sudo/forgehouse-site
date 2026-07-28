@@ -19,8 +19,8 @@ export default function MemoryBanner() {
   if (!session || subscribed === null) return null;
   if (subscribed) {
     return (
-      <div className="bg-white/[0.02] border border-white/[0.06] rounded-lg px-4 py-2.5 mx-6 mt-2 flex items-center justify-between text-xs">
-        <span className="text-muted">
+      <div className="bg-surface border border-border rounded-md px-4 py-2.5 flex items-center justify-between">
+        <span className="mono text-[11px] tracking-[0.02em] text-muted">
           ✓ Your conversations are saved permanently.
         </span>
       </div>
@@ -28,10 +28,10 @@ export default function MemoryBanner() {
   }
 
   return (
-    <div className="bg-white/[0.02] border border-white/[0.06] rounded-lg px-4 py-2.5 mx-6 mt-2 flex items-center justify-between text-xs">
-      <span className="text-muted">
+    <div className="bg-surface border border-border rounded-md px-4 py-2.5 flex items-center justify-between">
+      <span className="mono text-[11px] tracking-[0.02em] text-muted">
         Your conversation history is saved for 7 days.{" "}
-        <Link href="/pricing" className="text-amber hover:text-amber-dark transition underline underline-offset-2">
+        <Link href="/pricing" className="text-accent hover:text-foreground transition underline underline-offset-2">
           Subscribe to keep it forever.
         </Link>
       </span>

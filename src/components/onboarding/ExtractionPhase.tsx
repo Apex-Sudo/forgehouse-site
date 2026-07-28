@@ -338,21 +338,22 @@ export default function ExtractionPhase({
 
   if (showCompletion) {
     return (
-      <div className="flex flex-col flex-1 min-h-0 bg-[#FAFAF8]">
+      <div className="flex flex-col flex-1 min-h-0 overflow-hidden rounded-lg border border-border bg-surface">
         {/* Completion Screen */}
-        <div className="flex-1 min-h-0 overflow-y-auto px-6 py-8">
+        <div className="fh-scroll flex-1 min-h-0 overflow-y-auto px-6 py-8">
           <div className="max-w-3xl mx-auto space-y-6">
             <div className="text-center">
-              <h2 className="text-xl font-bold text-[#1A1A1A] mb-2">Ready for calibration</h2>
-              <p className="text-[#737373] max-w-md mx-auto mb-4">
+              <p className="mono text-[11px] uppercase tracking-[0.08em] text-accent mb-3">Contribution</p>
+              <h2 className="text-[32px] leading-none text-foreground mb-3">Ready for calibration</h2>
+              <p className="text-muted max-w-md mx-auto mb-4">
                 {completionSubtext}
               </p>
-              <p className="text-[#737373] max-w-md mx-auto mb-8 text-sm">
+              <p className="mono text-[12px] leading-relaxed text-faint max-w-md mx-auto mb-8">
                 Next you&apos;ll refine how your agent communicates in calibration.
               </p>
-              <div className="bg-amber/10 rounded-xl p-6 mb-8 text-left">
-                <h3 className="font-bold text-[#1A1A1A] mb-2">What happens next:</h3>
-                <ul className="list-disc pl-5 space-y-2 text-[#737373]">
+              <div className="rounded-lg border border-border bg-background p-6 mb-8 text-left">
+                <h3 className="mono text-[11px] uppercase tracking-[0.06em] text-accent mb-3">What happens next:</h3>
+                <ul className="list-disc pl-5 space-y-2 text-foreground/85">
                   <li>Your mentor agent will be trained with this knowledge</li>
                   <li>You will now refine your agent further through additional conversations</li>
                 </ul>
@@ -360,7 +361,7 @@ export default function ExtractionPhase({
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <button
                   onClick={onAdvance}
-                  className="bg-amber text-white px-6 py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition"
+                  className="mono bg-accent text-[#1B1B18] px-4 py-2 rounded-lg text-[12px] tracking-[0.02em] hover:bg-accent-dim transition"
                 >
                   {llmMarkedComplete
                     ? "Continue when ready →"
@@ -380,7 +381,7 @@ export default function ExtractionPhase({
                     });
                     onContributionRestart?.();
                   }}
-                  className="border border-[#E5E2DC] text-[#1A1A1A] px-6 py-3 rounded-xl text-sm font-semibold hover:bg-[#F5F5F5] transition"
+                  className="mono border border-border text-foreground px-4 py-2 rounded-lg text-[12px] tracking-[0.02em] hover:bg-surface-light transition"
                 >
                   Restart contribution
                 </button>
@@ -397,32 +398,32 @@ export default function ExtractionPhase({
   const progressDenominator = EXTRACTION_EXCHANGE_ESCAPE_HATCH;
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 w-full bg-[#FAFAF8]">
+    <div className="flex flex-col flex-1 min-h-0 w-full overflow-hidden rounded-lg border border-border bg-surface">
       <div
         ref={messagesScrollRef}
-        className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-y-contain px-6 py-4 [overflow-anchor:none]"
+        className="fh-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-y-contain px-6 py-4 [overflow-anchor:none]"
       >
         <div className="mx-auto max-w-3xl space-y-6">
           {messages.length === 0 && (
             <div className="text-center">
               {/* Time estimate */}
-              <div className="rounded-xl bg-amber/5 p-4 mb-6 max-w-md mx-auto border border-amber/15">
+              <div className="rounded-lg bg-accent/5 p-4 mb-6 max-w-md mx-auto border border-accent/20">
                 <div className="flex items-start gap-3">
-                  <IconClock size={22} stroke={1.75} className="mt-0.5 shrink-0 text-amber" />
-                  <p className="text-[#737373] text-sm text-left">
-                    <span className="font-semibold text-[#1A1A1A]">Time estimate:</span> 1-2 hours to complete thoroughly. Your progress is automatically saved.
+                  <IconClock size={22} stroke={1.75} className="mt-0.5 shrink-0 text-accent" />
+                  <p className="text-muted text-sm text-left">
+                    <span className="mono text-[11px] uppercase tracking-[0.06em] text-foreground">Time estimate:</span> 1-2 hours to complete thoroughly. Your progress is automatically saved.
                   </p>
                 </div>
               </div>
-              
+
               {/* CV Upload */}
               <div className="mb-8 max-w-md mx-auto">
-                <div className="border-2 border-dashed border-[#E5E2DC] rounded-xl p-6">
-                  <h3 className="font-bold text-[#1A1A1A] mb-2">Speed up with your CV/Resume</h3>
-                  <p className="text-[#737373] text-sm mb-4">
+                <div className="rounded-lg border-2 border-dashed border-border bg-background p-6 transition hover:border-accent/40 hover:bg-surface-light">
+                  <h3 className="text-[19px] leading-tight text-foreground mb-2">Speed up with your CV/Resume</h3>
+                  <p className="text-muted text-sm mb-4">
                     Upload your CV to skip surface-level questions and dive straight into your expertise.
                   </p>
-                  
+
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -431,29 +432,25 @@ export default function ExtractionPhase({
                     className="hidden"
                     disabled={isUploading}
                   />
-                  
+
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploading}
-                    className={`w-full py-2 rounded-lg text-sm font-medium ${
-                      isUploading 
-                        ? "bg-gray-200 text-gray-500 cursor-not-allowed" 
-                        : "bg-[#F5F5F5] text-[#1A1A1A] hover:bg-[#E5E2DC]"
-                    }`}
+                    className="mono w-full py-2 rounded-lg border border-border text-foreground text-[12px] tracking-[0.02em] transition hover:bg-surface-light disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {isUploading ? "Uploading..." : "Upload CV/Resume"}
                   </button>
-                  
+
                   {uploadedCV && (
-                    <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-amber">
-                      <IconCheck size={16} stroke={2} aria-hidden />
+                    <div className="mono mt-3 flex items-center justify-center gap-1.5 text-[11px] text-accent">
+                      <IconCheck size={14} stroke={2} aria-hidden />
                       <span>Uploaded: {uploadedCV.filename}</span>
                     </div>
                   )}
                 </div>
               </div>
-              
-              <p className="text-[#737373] max-w-md mx-auto mb-8">
+
+              <p className="text-muted max-w-md mx-auto mb-8">
                 This conversation will map how you think, diagnose problems, and help people.
                 No prep needed. Just talk naturally.
               </p>
@@ -461,7 +458,7 @@ export default function ExtractionPhase({
                 onClick={() =>
                   sendMessage("Let's get started.")
                 }
-                className="bg-amber text-white px-6 py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition"
+                className="mono bg-accent text-[#1B1B18] px-4 py-2 rounded-lg text-[12px] tracking-[0.02em] hover:bg-accent-dim transition"
               >
                 Start contribution →
               </button>
@@ -476,22 +473,22 @@ export default function ExtractionPhase({
 
       {showComposer && (
         <div
-          className="shrink-0 border-t border-[#E5E2DC] bg-white py-3 shadow-[0_-6px_24px_rgba(0,0,0,0.06)]"
+          className="shrink-0 border-t border-border bg-surface py-3"
           style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
         >
           <div className="mx-auto max-w-3xl space-y-3 px-6">
             <div>
-              <div className="mb-1 flex justify-between text-xs text-[#999]">
+              <div className="mono mb-1 flex justify-between text-[11px] uppercase tracking-[0.06em] text-faint">
                 <span>Progress</span>
                 <span>{Math.min(100, Math.round((exchangeCount / progressDenominator) * 100))}%</span>
               </div>
-              <div className="h-2 w-full rounded-full bg-[#F5F5F5]">
+              <div className="h-2 w-full rounded-full bg-white/10">
                 <div
-                  className="h-2 rounded-full bg-amber transition-all duration-300"
+                  className="h-2 rounded-full bg-accent transition-all duration-300"
                   style={{ width: `${Math.min(100, (exchangeCount / progressDenominator) * 100)}%` }}
                 />
               </div>
-              <div className="mt-1 text-xs text-[#999]">
+              <div className="mono mt-1 text-[11px] tracking-[0.02em] text-faint">
                 {exchangeCount} of ~{progressDenominator} exchanges (you can finish earlier if the guide says you&apos;re ready)
               </div>
             </div>
@@ -503,7 +500,7 @@ export default function ExtractionPhase({
                 onKeyDown={handleKeyDown}
                 placeholder="Share your thinking..."
                 rows={2}
-                className="flex-1 resize-none rounded-xl border border-[#E5E2DC] bg-white px-4 py-3 text-[15px] text-[#1A1A1A] placeholder:text-[#C5C0B8] focus:border-amber/50 focus:outline-none"
+                className="flex-1 resize-none rounded-lg border border-border bg-background px-4 py-3 text-[15px] text-foreground placeholder:text-faint transition focus:border-accent/60 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
                 disabled={streaming}
               />
               <div className="flex gap-2 self-end">
@@ -512,10 +509,10 @@ export default function ExtractionPhase({
                     type="button"
                     onClick={toggleListening}
                     disabled={streaming}
-                    className={`self-end rounded-xl px-4 py-3 text-sm font-semibold transition ${
+                    className={`mono self-end rounded-lg px-3 py-2.5 transition ${
                       isListening
-                        ? "bg-red-500 text-white hover:bg-red-600 animate-pulse"
-                        : "bg-[#F5F5F5] text-[#1A1A1A] hover:bg-[#E5E2DC]"
+                        ? "border border-[#F2777A]/25 bg-[#F2777A]/12 text-[#F2777A] hover:bg-[#F2777A]/20 animate-pulse"
+                        : "border border-border text-foreground hover:bg-surface-light"
                     } disabled:opacity-40 disabled:cursor-not-allowed`}
                     title={isListening ? "Stop listening" : "Start voice dictation"}
                   >
@@ -525,7 +522,7 @@ export default function ExtractionPhase({
                   <button
                     type="button"
                     disabled
-                    className="self-end rounded-xl bg-gray-200 px-4 py-3 text-sm font-semibold text-gray-400 cursor-not-allowed"
+                    className="mono self-end rounded-lg border border-border px-3 py-2.5 text-faint opacity-40 cursor-not-allowed"
                     title="Voice dictation not supported in this browser. Try Chrome, Safari, or Edge."
                   >
                     <IconMicrophone size={20} />
@@ -535,7 +532,7 @@ export default function ExtractionPhase({
                   type="button"
                   onClick={() => sendMessage(input)}
                   disabled={!input.trim() || streaming}
-                  className="self-end rounded-xl bg-amber px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-40"
+                  className="mono self-end rounded-lg bg-accent px-4 py-2.5 text-[12px] tracking-[0.02em] text-[#1B1B18] transition hover:bg-accent-dim disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {streaming ? "..." : "Send"}
                 </button>

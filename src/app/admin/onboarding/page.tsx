@@ -22,20 +22,32 @@ import MentorOnboardingDetailModal from "@/components/admin/MentorOnboardingDeta
 const PAGE_SIZE = 10;
 
 const PHASE_LABELS: Record<string, { label: string; color: string }> = {
-  extraction: { label: "Extraction", color: "bg-blue-100 text-blue-700" },
-  calibration: { label: "Calibration", color: "bg-amber/10 text-amber" },
-  ingestion: { label: "Ingestion", color: "bg-purple-100 text-purple-700" },
-  complete: { label: "Complete", color: "bg-green-100 text-green-700" },
+  extraction: {
+    label: "Extraction",
+    color: "border-border bg-white/8 text-muted",
+  },
+  calibration: {
+    label: "Calibration",
+    color: "border-tan/25 bg-tan/15 text-tan",
+  },
+  ingestion: {
+    label: "Ingestion",
+    color: "border-[#E3B341]/25 bg-[#E3B341]/12 text-[#E3B341]",
+  },
+  complete: {
+    label: "Complete",
+    color: "border-accent/25 bg-accent/15 text-accent",
+  },
 };
 
 function PhaseBadge({ phase }: { phase: string }) {
   const cfg = PHASE_LABELS[phase] ?? {
     label: phase,
-    color: "bg-gray-100 text-gray-600",
+    color: "border-border bg-white/8 text-muted",
   };
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${cfg.color}`}
+      className={`mono inline-flex items-center rounded border px-2 py-0.5 text-[10px] uppercase tracking-[0.08em] ${cfg.color}`}
     >
       {cfg.label}
     </span>
@@ -51,14 +63,14 @@ function ReadinessBar({
 }) {
   const pct = Math.round((completedSteps.length / totalSteps) * 100);
   return (
-    <div className="flex items-center gap-2">
-      <div className="h-2 w-24 overflow-hidden rounded-full bg-[#F5F5F5]">
+    <div className="flex items-center gap-2.5">
+      <div className="h-1.5 w-24 overflow-hidden rounded-full bg-white/10">
         <div
-          className="h-2 rounded-full bg-amber transition-all duration-300"
+          className="h-1.5 rounded-full bg-accent transition-all duration-300"
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className="text-xs text-[#999]">
+      <span className="mono text-[11px] text-muted">
         {completedSteps.length}/{totalSteps}
       </span>
     </div>
@@ -117,10 +129,10 @@ function NewOnboardingModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="w-full max-w-lg rounded-xl border border-[#E5E2DC] bg-white p-6 shadow-xl">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-[#1A1A1A]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+      <div className="fh-scroll max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border border-border bg-surface p-6 shadow-2xl">
+        <div className="mb-5 flex items-center justify-between">
+          <h2 className="text-[24px] leading-none text-foreground">
             {generatedLink ? "Onboarding Link Created" : "New Mentor Onboarding"}
           </h2>
           <button
@@ -128,32 +140,34 @@ function NewOnboardingModal({
               reset();
               onClose();
             }}
-            className="rounded-lg p-1 text-[#999] hover:bg-[#F5F3F0] hover:text-[#1A1A1A]"
+            className="rounded p-1 text-muted transition hover:bg-surface-light hover:text-foreground"
           >
             <IconX size={20} stroke={1.5} />
           </button>
         </div>
 
         {error && (
-          <div className="mb-4 flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-700">
-            <IconAlertCircle size={16} stroke={1.5} />
+          <div className="mono mb-4 flex items-center gap-2 rounded-lg border border-[#F2777A]/25 bg-[#F2777A]/12 p-3 text-[12px] text-[#F2777A]">
+            <IconAlertCircle size={16} stroke={1.5} className="shrink-0" />
             {error}
           </div>
         )}
 
         {generatedLink ? (
           <div className="space-y-4">
-            <div className="flex items-center gap-2 rounded-lg bg-green-50 p-3 text-sm text-green-700">
-              <IconCircleCheck size={16} stroke={1.5} />
+            <div className="mono flex items-center gap-2 rounded-lg border border-accent/25 bg-accent/15 p-3 text-[12px] leading-[1.5] text-accent">
+              <IconCircleCheck size={16} stroke={1.5} className="shrink-0" />
               Link generated and invitation email sent to {email}
             </div>
-            <div className="rounded-lg border border-[#E5E2DC] bg-[#FAFAF8] p-3">
-              <p className="break-all text-sm text-[#737373]">{generatedLink}</p>
+            <div className="rounded-lg border border-border bg-background p-3">
+              <p className="mono break-all text-[12px] leading-[1.6] text-muted">
+                {generatedLink}
+              </p>
             </div>
             <div className="flex gap-3">
               <button
                 onClick={() => navigator.clipboard.writeText(generatedLink)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-amber px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition"
+                className="mono flex flex-1 items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-[12px] tracking-[0.02em] text-[#1B1B18] transition hover:bg-accent-dim"
               >
                 <IconCopy size={16} stroke={1.5} />
                 Copy Link
@@ -163,7 +177,7 @@ function NewOnboardingModal({
                   reset();
                   onClose();
                 }}
-                className="flex-1 rounded-lg border border-[#E5E2DC] px-4 py-2.5 text-sm font-semibold text-[#1A1A1A] hover:bg-[#F5F3F0] transition"
+                className="mono flex-1 rounded-lg border border-border px-4 py-2.5 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light"
               >
                 Done
               </button>
@@ -172,7 +186,7 @@ function NewOnboardingModal({
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-[#1A1A1A]">
+              <label className="mono mb-2 block text-[11px] uppercase tracking-[0.06em] text-faint">
                 Mentor Name
               </label>
               <input
@@ -181,11 +195,11 @@ function NewOnboardingModal({
                 onChange={(e) => setMentorName(e.target.value)}
                 required
                 placeholder="e.g. Ayush Sharma"
-                className="w-full rounded-lg border border-[#E5E2DC] px-3 py-2.5 text-sm focus:border-amber/50 focus:outline-none focus:ring-2 focus:ring-amber/20"
+                className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[15px] text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-[#1A1A1A]">
+              <label className="mono mb-2 block text-[11px] uppercase tracking-[0.06em] text-faint">
                 Mentor Email
               </label>
               <input
@@ -194,13 +208,13 @@ function NewOnboardingModal({
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="ayush@example.com"
-                className="w-full rounded-lg border border-[#E5E2DC] px-3 py-2.5 text-sm focus:border-amber/50 focus:outline-none focus:ring-2 focus:ring-amber/20"
+                className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[15px] text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-amber px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50"
+              className="mono w-full rounded-lg bg-accent px-4 py-2.5 text-[12px] tracking-[0.02em] text-[#1B1B18] transition hover:bg-accent-dim disabled:cursor-not-allowed disabled:opacity-40"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -373,19 +387,19 @@ function AdminOnboardingPageContent() {
   if (loading && onboardings.length === 0) {
     return (
       <div className="flex h-full items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-amber" />
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent" />
       </div>
     );
   }
 
   return (
     <div className="p-6 sm:p-8">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#1A1A1A]">
+          <h1 className="text-[34px] leading-none text-foreground">
             Mentor Onboarding
           </h1>
-          <p className="mt-1 text-sm text-[#999]">
+          <p className="mono mt-2.5 text-[11px] uppercase tracking-[0.08em] text-faint">
             {filteredSorted.length} of {onboardings.length} session
             {onboardings.length !== 1 ? "s" : ""}
             {filteredSorted.length !== onboardings.length ? " (filtered)" : ""}
@@ -393,9 +407,9 @@ function AdminOnboardingPageContent() {
         </div>
         <button
           onClick={() => setNewModalOpen(true)}
-          className="flex shrink-0 items-center justify-center gap-2 rounded-lg bg-amber px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+          className="mono flex shrink-0 items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-[12px] tracking-[0.02em] text-[#1B1B18] transition hover:bg-accent-dim"
         >
-          <IconPlus size={18} stroke={1.5} />
+          <IconPlus size={16} stroke={1.5} />
           New Onboarding
         </button>
       </div>
@@ -403,70 +417,82 @@ function AdminOnboardingPageContent() {
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
         <div className="relative min-w-[200px] flex-1 lg:max-w-md">
           <IconSearch
-            size={18}
+            size={16}
             stroke={1.5}
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#B8B3AB]"
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
           />
           <input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search name, email, slug…"
-            className="w-full rounded-lg border border-[#E5E2DC] bg-white py-2.5 pl-10 pr-3 text-sm focus:border-amber/50 focus:outline-none focus:ring-2 focus:ring-amber/20"
+            className="mono w-full rounded-lg border border-border bg-surface py-2.5 pl-9 pr-3 text-[12px] text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
           />
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <select
             value={phaseFilter}
             onChange={(e) => setPhaseFilter(e.target.value)}
-            className="rounded-lg border border-[#E5E2DC] bg-white px-3 py-2.5 text-sm focus:border-amber/50 focus:outline-none focus:ring-2 focus:ring-amber/20"
+            className="mono rounded-lg border border-border bg-surface px-3 py-2.5 text-[12px] text-foreground transition focus:border-accent/60 focus:outline-none"
           >
-            <option value="all">All phases</option>
-            <option value="extraction">Extraction</option>
-            <option value="calibration">Calibration</option>
-            <option value="ingestion">Ingestion</option>
-            <option value="complete">Complete</option>
+            <option value="all" className="bg-surface text-foreground">All phases</option>
+            <option value="extraction" className="bg-surface text-foreground">Extraction</option>
+            <option value="calibration" className="bg-surface text-foreground">Calibration</option>
+            <option value="ingestion" className="bg-surface text-foreground">Ingestion</option>
+            <option value="complete" className="bg-surface text-foreground">Complete</option>
           </select>
           <div className="relative flex items-center gap-1.5">
-            <IconArrowsSort size={18} stroke={1.5} className="text-[#B8B3AB]" />
+            <IconArrowsSort size={16} stroke={1.5} className="text-faint" />
             <select
               value={sortKey}
               onChange={(e) => setSortKey(e.target.value as SortKey)}
-              className="rounded-lg border border-[#E5E2DC] bg-white px-3 py-2.5 text-sm focus:border-amber/50 focus:outline-none focus:ring-2 focus:ring-amber/20"
+              className="mono rounded-lg border border-border bg-surface px-3 py-2.5 text-[12px] text-foreground transition focus:border-accent/60 focus:outline-none"
             >
-              <option value="created_desc">Newest first</option>
-              <option value="created_asc">Oldest first</option>
-              <option value="name_asc">Name A–Z</option>
-              <option value="name_desc">Name Z–A</option>
-              <option value="readiness_desc">Readiness high → low</option>
-              <option value="readiness_asc">Readiness low → high</option>
+              <option value="created_desc" className="bg-surface text-foreground">Newest first</option>
+              <option value="created_asc" className="bg-surface text-foreground">Oldest first</option>
+              <option value="name_asc" className="bg-surface text-foreground">Name A–Z</option>
+              <option value="name_desc" className="bg-surface text-foreground">Name Z–A</option>
+              <option value="readiness_desc" className="bg-surface text-foreground">Readiness high → low</option>
+              <option value="readiness_asc" className="bg-surface text-foreground">Readiness low → high</option>
             </select>
           </div>
         </div>
       </div>
 
       {onboardings.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[#E5E2DC] bg-white p-12 text-center">
-          <IconClock size={40} stroke={1} className="mx-auto mb-3 text-[#D5D0C8]" />
-          <p className="text-[#999]">No onboardings yet. Create one to get started.</p>
+        <div className="rounded-lg border border-dashed border-border bg-surface p-12 text-center">
+          <IconClock size={40} stroke={1} className="mx-auto mb-4 text-faint" />
+          <p className="text-muted">No onboardings yet. Create one to get started.</p>
         </div>
       ) : filteredSorted.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[#E5E2DC] bg-white p-12 text-center">
-          <p className="text-[#999]">No sessions match your filters.</p>
+        <div className="rounded-lg border border-dashed border-border bg-surface p-12 text-center">
+          <p className="text-muted">No sessions match your filters.</p>
         </div>
       ) : (
         <>
-          <div className="rounded-xl border border-[#E5E2DC] bg-white">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[640px] text-left text-sm">
+          <div className="overflow-hidden rounded-lg border border-border bg-surface">
+            <div className="fh-scroll overflow-x-auto">
+              <table className="w-full min-w-[640px] text-left">
                 <thead>
-                  <tr className="border-b border-[#E5E2DC] bg-[#FAFAF8]">
-                    <th className="px-4 py-3 font-medium text-[#737373]">Mentor</th>
-                    <th className="px-4 py-3 font-medium text-[#737373]">Phase</th>
-                    <th className="px-4 py-3 font-medium text-[#737373]">Readiness</th>
-                    <th className="px-4 py-3 font-medium text-[#737373]">Messages</th>
-                    <th className="px-4 py-3 font-medium text-[#737373]">Created</th>
-                    <th className="px-4 py-3 font-medium text-[#737373]">Expires</th>
+                  <tr className="border-b border-border bg-surface-light">
+                    <th className="mono px-4 py-3 text-[11px] font-normal uppercase tracking-[0.08em] text-faint">
+                      Mentor
+                    </th>
+                    <th className="mono px-4 py-3 text-[11px] font-normal uppercase tracking-[0.08em] text-faint">
+                      Phase
+                    </th>
+                    <th className="mono px-4 py-3 text-[11px] font-normal uppercase tracking-[0.08em] text-faint">
+                      Readiness
+                    </th>
+                    <th className="mono px-4 py-3 text-[11px] font-normal uppercase tracking-[0.08em] text-faint">
+                      Messages
+                    </th>
+                    <th className="mono px-4 py-3 text-[11px] font-normal uppercase tracking-[0.08em] text-faint">
+                      Created
+                    </th>
+                    <th className="mono px-4 py-3 text-[11px] font-normal uppercase tracking-[0.08em] text-faint">
+                      Expires
+                    </th>
                     <th className="w-12 px-2 py-3" aria-hidden />
                   </tr>
                 </thead>
@@ -475,12 +501,14 @@ function AdminOnboardingPageContent() {
                     <tr
                       key={ob.id}
                       onClick={() => openDetail(ob)}
-                      className="cursor-pointer border-b border-[#F5F3F0] transition hover:bg-[#FAFAF8] last:border-b-0"
+                      className="cursor-pointer border-b border-border transition hover:bg-surface-light last:border-b-0"
                     >
                       <td className="px-4 py-3">
                         <div>
-                          <p className="font-medium text-[#1A1A1A]">{ob.mentorName}</p>
-                          <p className="text-xs text-[#999]">{ob.email}</p>
+                          <p className="text-[15px] leading-tight text-foreground">
+                            {ob.mentorName}
+                          </p>
+                          <p className="mono mt-1 text-[11px] text-faint">{ob.email}</p>
                         </div>
                       </td>
                       <td className="px-4 py-3">
@@ -492,19 +520,19 @@ function AdminOnboardingPageContent() {
                           totalSteps={ob.totalSteps}
                         />
                       </td>
-                      <td className="px-4 py-3 text-[#737373]">
+                      <td className="mono px-4 py-3 text-[12px] text-muted">
                         <span title="Extraction">{ob.extractionMessageCount}</span>
                         {" / "}
                         <span title="Calibration">{ob.calibrationMessageCount}</span>
                       </td>
-                      <td className="px-4 py-3 text-[#999]">
+                      <td className="mono px-4 py-3 text-[12px] text-faint">
                         {new Date(ob.createdAt).toLocaleDateString("en-GB", {
                           day: "numeric",
                           month: "short",
                           year: "numeric",
                         })}
                       </td>
-                      <td className="px-4 py-3 text-[#999]">
+                      <td className="mono px-4 py-3 text-[12px] text-faint">
                         {new Date(ob.expiresAt).toLocaleDateString("en-GB", {
                           day: "numeric",
                           month: "short",
@@ -529,7 +557,7 @@ function AdminOnboardingPageContent() {
           </div>
 
           <div className="mt-4 flex flex-col items-center justify-between gap-3 sm:flex-row">
-            <p className="text-xs text-[#999]">
+            <p className="mono text-[11px] tracking-[0.04em] text-faint">
               Page {pageSafe} of {totalPages} · Showing{" "}
               {(pageSafe - 1) * PAGE_SIZE + 1}–
               {Math.min(pageSafe * PAGE_SIZE, filteredSorted.length)} of{" "}
@@ -540,7 +568,7 @@ function AdminOnboardingPageContent() {
                 type="button"
                 disabled={pageSafe <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="inline-flex items-center gap-1 rounded-lg border border-[#E5E2DC] px-3 py-2 text-sm font-medium text-[#1A1A1A] hover:bg-[#F5F3F0] disabled:opacity-40"
+                className="mono inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <IconChevronLeft size={16} stroke={1.5} />
                 Prev
@@ -549,7 +577,7 @@ function AdminOnboardingPageContent() {
                 type="button"
                 disabled={pageSafe >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className="inline-flex items-center gap-1 rounded-lg border border-[#E5E2DC] px-3 py-2 text-sm font-medium text-[#1A1A1A] hover:bg-[#F5F3F0] disabled:opacity-40"
+                className="mono inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next
                 <IconChevronRight size={16} stroke={1.5} />
@@ -580,7 +608,7 @@ export default function AdminOnboardingPage() {
     <Suspense
       fallback={
         <div className="flex h-full min-h-[40vh] items-center justify-center">
-          <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-amber" />
+          <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-accent" />
         </div>
       }
     >

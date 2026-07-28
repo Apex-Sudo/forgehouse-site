@@ -23,10 +23,10 @@ type LandingListRow = {
 function PublishedBadge({ published }: { published: boolean }) {
   return (
     <span
-      className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+      className={`mono inline-flex rounded border px-2 py-0.5 text-[10px] uppercase tracking-[0.08em] ${
         published
-          ? "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200/80"
-          : "bg-[#F5F3F0] text-[#6b6560] ring-1 ring-[#E5E2DC]"
+          ? "border-accent/25 bg-accent/15 text-accent"
+          : "border-border bg-white/8 text-muted"
       }`}
     >
       {published ? "Published" : "Draft"}
@@ -132,20 +132,20 @@ function AdminLandingPagesContent() {
 
   if (loading && rows.length === 0) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-amber" />
+      <div className="flex h-full items-center justify-center bg-background">
+        <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-accent" />
       </div>
     );
   }
 
   return (
-    <div className="p-6 sm:p-8">
+    <div className="min-h-full bg-background p-6 sm:p-8">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#1A1A1A]">
+          <h1 className="text-[32px] leading-none text-foreground">
             Mentor landing pages
           </h1>
-          <p className="mt-1 text-sm text-[#999]">
+          <p className="mono mt-2 text-[11px] uppercase tracking-[0.08em] text-faint">
             {filtered.length} of {rows.length} page{rows.length !== 1 ? "s" : ""}
             {filtered.length !== rows.length ? " (filtered)" : ""}
           </p>
@@ -153,9 +153,9 @@ function AdminLandingPagesContent() {
         <button
           type="button"
           onClick={openCreate}
-          className="flex shrink-0 items-center justify-center gap-2 rounded-lg bg-amber px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+          className="mono flex shrink-0 items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-[12px] tracking-[0.02em] text-[#1B1B18] transition hover:bg-accent-dim"
         >
-          <IconPlus size={18} stroke={1.5} />
+          <IconPlus size={16} stroke={1.75} />
           New landing page
         </button>
       </div>
@@ -165,14 +165,14 @@ function AdminLandingPagesContent() {
           <IconSearch
             size={18}
             stroke={1.5}
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#B8B3AB]"
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
           />
           <input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search slug…"
-            className="w-full rounded-lg border border-[#E5E2DC] bg-white py-2.5 pl-10 pr-3 text-sm focus:border-amber/50 focus:outline-none focus:ring-2 focus:ring-amber/20"
+            className="mono w-full rounded-lg border border-border bg-surface py-2.5 pl-10 pr-3 text-[13px] text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
           />
         </div>
         <select
@@ -180,39 +180,45 @@ function AdminLandingPagesContent() {
           onChange={(e) =>
             setPublishedFilter(e.target.value as "all" | "yes" | "no")
           }
-          className="rounded-lg border border-[#E5E2DC] bg-white px-3 py-2.5 text-sm focus:border-amber/50 focus:outline-none focus:ring-2 focus:ring-amber/20"
+          className="mono rounded-lg border border-border bg-surface px-3 py-2.5 text-[13px] text-foreground transition focus:border-accent/60 focus:outline-none"
         >
-          <option value="all">All statuses</option>
-          <option value="yes">Published only</option>
-          <option value="no">Drafts only</option>
+          <option value="all" className="bg-surface text-foreground">
+            All statuses
+          </option>
+          <option value="yes" className="bg-surface text-foreground">
+            Published only
+          </option>
+          <option value="no" className="bg-surface text-foreground">
+            Drafts only
+          </option>
         </select>
       </div>
 
       {rows.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[#E5E2DC] bg-white p-12 text-center">
-          <p className="text-[#999]">
+        <div className="rounded-lg border border-dashed border-border bg-surface p-12 text-center">
+          <p className="text-muted">
             No landing pages yet. Create one or run the migration seed for
             Colin.
           </p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[#E5E2DC] bg-white p-12 text-center">
-          <p className="text-[#999]">No pages match your filters.</p>
+        <div className="rounded-lg border border-dashed border-border bg-surface p-12 text-center">
+          <p className="text-muted">No pages match your filters.</p>
         </div>
       ) : (
         <>
-          <div className="rounded-xl border border-[#E5E2DC] bg-white">
-            <div className="overflow-x-auto">
+          <div className="rounded-lg border border-border bg-surface">
+            <div className="fh-scroll overflow-x-auto">
               <table className="w-full min-w-[520px] text-left text-sm">
                 <thead>
-                  <tr className="border-b border-[#E5E2DC] bg-[#FAFAF8]">
-                    <th className="px-4 py-3 font-medium text-[#737373]">
+                  <tr className="border-b border-border bg-surface-light">
+                    <th className="mono px-4 py-3 text-[11px] font-normal uppercase tracking-[0.08em] text-faint">
                       Slug
                     </th>
-                    <th className="px-4 py-3 font-medium text-[#737373]">
+                    <th className="mono px-4 py-3 text-[11px] font-normal uppercase tracking-[0.08em] text-faint">
                       Status
                     </th>
-                    <th className="px-4 py-3 font-medium text-[#737373]">
+                    <th className="mono px-4 py-3 text-[11px] font-normal uppercase tracking-[0.08em] text-faint">
                       Updated
                     </th>
                     <th className="w-12 px-2 py-3" aria-hidden />
@@ -223,15 +229,15 @@ function AdminLandingPagesContent() {
                     <tr
                       key={r.id}
                       onClick={() => openEdit(r.slug)}
-                      className="cursor-pointer border-b border-[#F5F3F0] transition hover:bg-[#FAFAF8] last:border-b-0"
+                      className="cursor-pointer border-b border-border transition last:border-b-0 hover:bg-surface-light"
                     >
-                      <td className="px-4 py-3 font-mono text-sm font-medium text-[#1A1A1A]">
+                      <td className="mono px-4 py-3 text-[13px] text-foreground">
                         {r.slug}
                       </td>
                       <td className="px-4 py-3">
                         <PublishedBadge published={r.published} />
                       </td>
-                      <td className="px-4 py-3 text-[#999]">
+                      <td className="mono px-4 py-3 text-[12px] text-faint">
                         {new Date(r.updated_at).toLocaleString("en-GB", {
                           day: "numeric",
                           month: "short",
@@ -258,7 +264,7 @@ function AdminLandingPagesContent() {
           </div>
 
           <div className="mt-4 flex flex-col items-center justify-between gap-3 sm:flex-row">
-            <p className="text-xs text-[#999]">
+            <p className="mono text-[11px] tracking-[0.04em] text-faint">
               Page {pageSafe} of {totalPages} · Showing{" "}
               {(pageSafe - 1) * PAGE_SIZE + 1}–
               {Math.min(pageSafe * PAGE_SIZE, filtered.length)} of{" "}
@@ -269,7 +275,7 @@ function AdminLandingPagesContent() {
                 type="button"
                 disabled={pageSafe <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="inline-flex items-center gap-1 rounded-lg border border-[#E5E2DC] px-3 py-2 text-sm font-medium text-[#1A1A1A] hover:bg-[#F5F3F0] disabled:opacity-40"
+                className="mono inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <IconChevronLeft size={16} stroke={1.5} />
                 Prev
@@ -278,7 +284,7 @@ function AdminLandingPagesContent() {
                 type="button"
                 disabled={pageSafe >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className="inline-flex items-center gap-1 rounded-lg border border-[#E5E2DC] px-3 py-2 text-sm font-medium text-[#1A1A1A] hover:bg-[#F5F3F0] disabled:opacity-40"
+                className="mono inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next
                 <IconChevronRight size={16} stroke={1.5} />
@@ -306,8 +312,8 @@ export default function AdminLandingPagesPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex h-full min-h-[40vh] items-center justify-center">
-          <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-amber" />
+        <div className="flex h-full min-h-[40vh] items-center justify-center bg-background">
+          <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-accent" />
         </div>
       }
     >

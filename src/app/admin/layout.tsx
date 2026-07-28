@@ -24,7 +24,7 @@ export default async function AdminLayout({
   const userIsMentor = isMentor(session);
 
   return (
-    <div className="flex min-h-0 flex-1 overflow-hidden bg-[#FAFAF8]">
+    <div className="flex min-h-0 flex-1 overflow-hidden bg-background">
       <AdminSidebar
         userName={session.user.name ?? session.user.email ?? "Admin"}
         userEmail={session.user.email ?? ""}
@@ -32,7 +32,7 @@ export default async function AdminLayout({
         isAdmin={userIsAdmin}
         isMentor={userIsMentor}
       />
-      <main className="flex-1 overflow-y-auto">{children}</main>
+      <main className="fh-scroll flex-1 overflow-y-auto">{children}</main>
     </div>
   );
 }

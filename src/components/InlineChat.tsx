@@ -48,30 +48,28 @@ export default function InlineChat() {
 
   return (
     <div
-      className="max-w-[840px] mx-auto min-h-[540px] flex flex-col overflow-hidden rounded-[20px]"
+      className="max-w-[840px] mx-auto min-h-[540px] flex flex-col overflow-hidden rounded-lg bg-surface"
       style={{
-        background: "#FAFAF8",
-        border: "1px solid rgba(184, 145, 106, 0.25)",
-        boxShadow: "0 8px 40px rgba(0,0,0,0.12), 0 0 1px rgba(0,0,0,0.08)",
+        border: "1px solid rgba(202, 237, 87, 0.35)",
       }}
     >
       {/* Header */}
-      <div className="flex items-center gap-3.5 px-8 py-6" style={{ borderBottom: "1px solid #E5E2DC" }}>
+      <div className="flex items-center gap-3.5 px-8 py-6 border-b border-border">
         <Link href="/mentors/colin-chapman" className="shrink-0">
           <Image
             src="/mentors/colin-chapman.png"
             alt="Colin Chapman"
             width={44}
             height={44}
-            className="rounded-xl object-cover hover:opacity-80 transition"
+            className="rounded-full object-cover hover:opacity-80 transition"
           />
         </Link>
         <div>
-          <Link href="/mentors/colin-chapman" className="hover:text-amber transition">
-            <p className="text-[16px] font-semibold text-[#1A1A1A]">Colin Chapman</p>
+          <Link href="/mentors/colin-chapman" className="hover:text-accent transition">
+            <p className="text-[28px] leading-none uppercase text-foreground">Colin Chapman</p>
           </Link>
-          <p className="text-[11px] text-[#888] uppercase tracking-wider">
-            GTM & Outbound Sales · 26 years
+          <p className="mono text-[10px] text-muted uppercase tracking-[0.1em] mt-1.5">
+            GTM &amp; Outbound Sales · 26 years
           </p>
         </div>
       </div>
@@ -80,14 +78,14 @@ export default function InlineChat() {
         {/* Colin intro + starters */}
         <div className="p-8 pb-4 space-y-4">
           <div className="max-w-[85%]">
-            <div className="rounded-[14px] rounded-bl-sm px-5 py-3.5 text-[15px] text-[#1A1A1A]/80 leading-relaxed" style={{ background: "#F0EDE8" }}>
+            <div className="rounded-lg rounded-bl-sm px-5 py-3.5 text-[15px] leading-relaxed bg-accent text-[#1B1B18]">
               {displayedText}
               {displayedText.length < COLIN_MESSAGE.length && (
-                <span className="inline-block w-[2px] h-[1em] bg-[#1A1A1A]/60 ml-0.5 align-middle animate-pulse" />
+                <span className="inline-block w-[2px] h-[1em] bg-[#1B1B18]/60 ml-0.5 align-middle animate-pulse" />
               )}
             </div>
             {displayedText.length >= COLIN_MESSAGE.length && (
-              <p className="text-[11px] text-[#999] mt-1.5 ml-1">Just now</p>
+              <p className="mono text-[10px] tracking-[0.06em] uppercase text-faint mt-1.5 ml-1">Just now</p>
             )}
           </div>
           <div
@@ -101,8 +99,7 @@ export default function InlineChat() {
               <button
                 key={s}
                 onClick={() => go(s)}
-                className="text-[13px] text-[#555] border border-[#DDD] px-5 py-3 rounded-[10px] hover:border-amber hover:text-amber transition cursor-pointer"
-                style={{ background: "white" }}
+                className="text-[15px] text-left text-muted bg-background border border-border px-5 py-3 rounded-md hover:border-accent/60 hover:text-accent transition cursor-pointer"
               >
                 {s}
               </button>
@@ -111,17 +108,16 @@ export default function InlineChat() {
         </div>
 
         {/* Input */}
-        <div className="mt-auto px-8 pb-6 pt-4" style={{ borderTop: "1px solid #E5E2DC" }}>
+        <div className="mt-auto px-8 pb-6 pt-4 border-t border-border">
           <div className="flex gap-2.5">
             <div
-              className="flex-1 relative border border-[#DDD] rounded-[10px] px-[18px] py-3 cursor-text focus-within:border-amber transition"
-              style={{ background: "white" }}
+              className="flex-1 relative bg-background border border-border rounded-md px-[18px] py-3 cursor-text focus-within:border-accent/60 transition"
               onClick={() => document.getElementById("inline-chat-input")?.focus()}
             >
               {!input && (
                 <span className="absolute inset-0 flex items-center px-[18px] pointer-events-none">
-                  <span className="text-[15px] text-[#999]">Or type your own question</span>
-                  <span className="inline-block w-[2px] h-[18px] bg-amber ml-0.5 animate-[blink_1s_step-end_infinite]" />
+                  <span className="text-[15px] text-faint">Or type your own question</span>
+                  <span className="inline-block w-[2px] h-[18px] bg-accent ml-0.5 animate-[blink_1s_step-end_infinite]" />
                 </span>
               )}
               <textarea
@@ -130,14 +126,14 @@ export default function InlineChat() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 rows={1}
-                className="w-full bg-transparent text-[15px] text-[#1A1A1A] focus:outline-none resize-none caret-amber placeholder:text-transparent"
+                className="w-full bg-transparent text-[15px] text-foreground focus:outline-none resize-none caret-accent placeholder:text-transparent"
                 placeholder="Or type your own question"
               />
             </div>
             <button
               onClick={() => go(input)}
               disabled={!input.trim()}
-              className="bg-amber text-white w-11 h-11 font-bold text-lg rounded-[10px] hover:opacity-90 transition disabled:opacity-50 cursor-pointer"
+              className="mono bg-transparent text-accent border border-accent/70 w-11 h-11 text-lg rounded-md hover:bg-accent hover:text-[#1B1B18] transition disabled:opacity-40 cursor-pointer"
             >
               →
             </button>

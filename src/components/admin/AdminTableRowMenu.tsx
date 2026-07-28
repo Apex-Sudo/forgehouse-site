@@ -85,7 +85,7 @@ export function AdminTableRowMenu({
             <div
               ref={menuRef}
               role="menu"
-              className="fixed z-[90] w-44 rounded-lg border border-[#E5E2DC] bg-white py-1 shadow-lg"
+              className="fixed z-[90] w-44 rounded-lg border border-border bg-surface-light py-1 shadow-2xl"
               style={{ top: 0, left: 0 }}
             >
               {onEdit ? (
@@ -97,12 +97,13 @@ export function AdminTableRowMenu({
                     setOpen(false);
                     onEdit();
                   }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-[#1A1A1A] hover:bg-[#F5F3F0]"
+                  className="mono flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] text-muted transition hover:bg-white/5 hover:text-foreground"
                 >
                   <IconPencil size={16} stroke={1.5} />
                   Edit
                 </button>
               ) : null}
+              {onEdit ? <div className="my-1 border-t border-border" /> : null}
               <button
                 type="button"
                 role="menuitem"
@@ -112,7 +113,7 @@ export function AdminTableRowMenu({
                   onDelete();
                 }}
                 disabled={deleting}
-                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+                className="mono flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] text-[#F2777A] transition hover:bg-[#F2777A]/10 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {deleting ? (
                   <IconLoader2 size={16} className="animate-spin" />
@@ -136,7 +137,7 @@ export function AdminTableRowMenu({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="rounded p-1.5 text-[#999] hover:bg-[#F5F3F0] hover:text-[#1A1A1A]"
+        className="rounded p-1.5 text-faint transition hover:bg-surface-light hover:text-foreground"
         aria-label="Row actions"
         aria-expanded={open}
         aria-haspopup="menu"

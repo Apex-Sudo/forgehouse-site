@@ -34,12 +34,12 @@ export default function Page() {
 
       <OutboundPlannerTool />
 
-      <section className="max-w-2xl mx-auto px-6 pb-20 space-y-12">
+      <section className="max-w-[720px] mx-auto px-6 pb-20 space-y-12">
         <div>
-          <h2 className="text-lg font-semibold text-foreground mb-4">
+          <h2 className="text-[30px] leading-[1.05] text-foreground mb-4">
             Why outbound needs a weekly plan
           </h2>
-          <div className="text-muted text-sm leading-relaxed space-y-3">
+          <div className="text-[16px] leading-[1.65] text-muted space-y-3">
             <p>
               Most founders approach outbound reactively. They send a burst of emails when pipeline feels empty, then stop when they get busy with delivery. This creates feast-or-famine cycles that never produce consistent pipeline.
             </p>
@@ -53,10 +53,10 @@ export default function Page() {
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold text-foreground mb-4">
+          <h2 className="text-[30px] leading-[1.05] text-foreground mb-4">
             What you get
           </h2>
-          <div className="text-muted text-sm leading-relaxed space-y-3">
+          <div className="text-[16px] leading-[1.65] text-muted space-y-3">
             <p>
               Five day-by-day action plans with 2-4 specific tasks each. Monday focuses on research and list building. Tuesday through Thursday is heavy outreach and follow-up. Friday is review and planning for next week. Every task is specific enough to execute without thinking.
             </p>
@@ -70,47 +70,47 @@ export default function Page() {
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold text-foreground mb-6">
+          <h2 className="text-[30px] leading-[1.05] text-foreground mb-6">
             Frequently asked questions
           </h2>
           <div className="space-y-6">
             <div>
-              <h3 className="text-sm font-medium text-foreground mb-1">How many outreach messages should I send per day?</h3>
-              <p className="text-muted text-sm leading-relaxed">
+              <h3 className="text-[20px] text-foreground mb-1.5">How many outreach messages should I send per day?</h3>
+              <p className="text-[16px] leading-[1.6] text-muted">
                 For a solo founder, 15-25 new outreach messages per day is sustainable. The planner calibrates this based on your pipeline state. If you have active deals that need follow-up, new outreach volume drops to make room.
               </p>
             </div>
             <div>
-              <h3 className="text-sm font-medium text-foreground mb-1">What if I&apos;m starting from zero pipeline?</h3>
-              <p className="text-muted text-sm leading-relaxed">
+              <h3 className="text-[20px] text-foreground mb-1.5">What if I&apos;m starting from zero pipeline?</h3>
+              <p className="text-[16px] leading-[1.6] text-muted">
                 The planner adapts. With an empty pipeline, the plan emphasizes research, list building, and high-volume initial outreach. You need conversations before you need follow-up sequences.
               </p>
             </div>
             <div>
-              <h3 className="text-sm font-medium text-foreground mb-1">Should I use email or LinkedIn for outreach?</h3>
-              <p className="text-muted text-sm leading-relaxed">
+              <h3 className="text-[20px] text-foreground mb-1.5">Should I use email or LinkedIn for outreach?</h3>
+              <p className="text-[16px] leading-[1.6] text-muted">
                 Both. The planner includes LinkedIn engagement as part of the daily targets. The most effective outbound combines email sequences with LinkedIn touchpoints. The channel depends on where your buyers spend their time.
               </p>
             </div>
             <div>
-              <h3 className="text-sm font-medium text-foreground mb-1">Is my data stored?</h3>
-              <p className="text-muted text-sm leading-relaxed">
+              <h3 className="text-[20px] text-foreground mb-1.5">Is my data stored?</h3>
+              <p className="text-[16px] leading-[1.6] text-muted">
                 No. Your inputs are processed in real time and never saved. The plan exists only in your browser.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-border-light pt-8">
-          <p className="text-xs text-muted/50 uppercase tracking-wider mb-4">More free tools</p>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/tools/icp-diagnostic" className="text-sm text-muted hover:text-amber transition">
+        <div className="border-t border-border pt-8">
+          <p className="mono text-[11px] tracking-[0.06em] uppercase text-faint mb-4">More free tools</p>
+          <div className="flex flex-wrap gap-5">
+            <Link href="/tools/icp-diagnostic" className="mono text-[12px] text-muted hover:text-accent transition">
               ICP Diagnostic →
             </Link>
-            <Link href="/tools/cold-email-teardown" className="text-sm text-muted hover:text-amber transition">
+            <Link href="/tools/cold-email-teardown" className="mono text-[12px] text-muted hover:text-accent transition">
               Cold Email Teardown →
             </Link>
-            <Link href="/tools/pipeline-diagnosis" className="text-sm text-muted hover:text-amber transition">
+            <Link href="/tools/pipeline-diagnosis" className="mono text-[12px] text-muted hover:text-accent transition">
               Pipeline Diagnosis →
             </Link>
           </div>

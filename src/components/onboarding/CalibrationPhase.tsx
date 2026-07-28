@@ -141,14 +141,14 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
   const phases = corrections < 5 ? "Voice" : corrections < 15 ? "Frameworks" : corrections < 20 ? "Edge Cases" : "Final";
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 w-full bg-[#FAFAF8]">
+    <div className="flex flex-col flex-1 min-h-0 w-full overflow-hidden rounded-lg border border-border bg-surface">
       {/* Header */}
-      <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-[#E5E2DC] bg-white">
+      <div className="shrink-0 flex items-center justify-between gap-4 px-6 py-4 border-b border-border bg-surface">
         <div className="flex items-center gap-3">
-          <IconTarget size={28} stroke={1.5} className="text-amber shrink-0" aria-hidden />
+          <IconTarget size={28} stroke={1.5} className="text-tan shrink-0" aria-hidden />
           <div>
-            <h1 className="font-bold text-sm">Calibration Session</h1>
-            <p className="text-xs text-[#999]">{session.mentorName} · Phase: {phases}</p>
+            <h1 className="text-[20px] leading-none text-foreground">Calibration Session</h1>
+            <p className="mono text-[11px] tracking-[0.04em] text-faint mt-1.5">{session.mentorName} · Phase: {phases}</p>
           </div>
         </div>
         {messages.length > 0 && (
@@ -166,13 +166,13 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
                   });
                 }
               }}
-              className="text-xs text-[#999] hover:text-red-500 border border-[#E5E2DC] px-3 py-1.5 rounded-lg hover:border-red-400/30 transition"
+              className="mono text-[11px] uppercase tracking-[0.08em] text-muted border border-border px-3 py-1.5 rounded-lg transition hover:text-[#F2777A] hover:border-[#F2777A]/25 hover:bg-[#F2777A]/10"
             >
               Reset
             </button>
             <button
               onClick={exportCorrections}
-              className="text-xs text-[#999] hover:text-[#1A1A1A] border border-[#E5E2DC] px-3 py-1.5 rounded-lg hover:border-[#B8916A]/30 transition"
+              className="mono text-[11px] uppercase tracking-[0.08em] text-muted border border-border px-3 py-1.5 rounded-lg transition hover:text-foreground hover:bg-surface-light"
             >
               Export
             </button>
@@ -182,11 +182,11 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
 
       <div
         ref={messagesScrollRef}
-        className="min-h-0 flex-1 space-y-5 overflow-x-hidden overflow-y-auto overscroll-y-contain px-6 py-4 [overflow-anchor:none]"
+        className="fh-scroll min-h-0 flex-1 space-y-5 overflow-x-hidden overflow-y-auto overscroll-y-contain px-6 py-4 [overflow-anchor:none]"
       >
         {!started && (
           <div className="flex justify-start">
-            <div className="max-w-[80%] bg-[#F5F3F0] border border-[#E5E2DC] px-5 py-3.5 text-sm leading-relaxed text-[#1A1A1A] rounded-2xl rounded-bl-md shadow-sm">
+            <div className="max-w-[80%] bg-surface-light border border-border px-5 py-3.5 text-sm leading-relaxed text-foreground rounded-lg rounded-bl-sm">
               Welcome back! Your agent is built and ready for you to put it through its paces. I&apos;m going to show you how it handles different situations, and you tell me where it nails it and where it&apos;s off. Think of it like training a new team member who&apos;s read all your playbooks but hasn&apos;t sat in the room with you yet. Let&apos;s start with something simple.
             </div>
           </div>
@@ -198,29 +198,29 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
             className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
           >
             {m.role === "user" ? (
-              <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap bg-[#B8916A] text-white rounded-2xl rounded-br-md shadow-sm">
+              <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap bg-accent text-[#1B1B18] rounded-lg rounded-br-sm">
                 {m.content}
               </div>
             ) : (
-              <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed bg-[#F5F3F0] border border-[#E5E2DC] text-[#1A1A1A] rounded-2xl rounded-bl-md shadow-sm">
+              <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed bg-surface-light border border-border text-foreground rounded-lg rounded-bl-sm">
                 <ReactMarkdown
                   components={{
                     p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
-                    strong: ({ children }) => <strong className="font-semibold text-[#1A1A1A]">{children}</strong>,
-                    em: ({ children }) => <em className="italic text-[#555]">{children}</em>,
+                    strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
+                    em: ({ children }) => <em className="italic text-muted">{children}</em>,
                     ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
                     ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
                     li: ({ children }) => (
                       <li className="flex items-start gap-2">
-                        <span className="text-[#B8916A] mt-0.5 shrink-0">▸</span>
+                        <span className="text-accent mt-0.5 shrink-0">▸</span>
                         <span>{children}</span>
                       </li>
                     ),
-                    h1: ({ children }) => <h3 className="font-bold text-[#1A1A1A] mb-2 text-base">{children}</h3>,
-                    h2: ({ children }) => <h3 className="font-bold text-[#1A1A1A] mb-2 text-base">{children}</h3>,
-                    h3: ({ children }) => <h3 className="font-semibold text-[#1A1A1A] mb-1.5 text-sm">{children}</h3>,
+                    h1: ({ children }) => <h3 className="text-foreground mb-2 text-[19px]">{children}</h3>,
+                    h2: ({ children }) => <h3 className="text-foreground mb-2 text-[19px]">{children}</h3>,
+                    h3: ({ children }) => <h3 className="text-foreground mb-1.5 text-[17px]">{children}</h3>,
                     blockquote: ({ children }) => (
-                      <blockquote className="border-l-2 border-[#B8916A]/40 pl-3 my-2 text-[#737373] italic">{children}</blockquote>
+                      <blockquote className="border-l-2 border-accent/40 pl-3 my-2 text-muted italic">{children}</blockquote>
                     ),
                   }}
                 >
@@ -235,8 +235,8 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
           messages.length > 0 &&
           messages[messages.length - 1].content === "" && (
             <div className="flex justify-start">
-              <div className="bg-[#F5F3F0] border border-[#E5E2DC] px-5 py-3.5 text-sm rounded-2xl rounded-bl-md shadow-sm">
-                <span className="animate-pulse text-[#999]">●●●</span>
+              <div className="bg-surface-light border border-border px-5 py-3.5 text-sm rounded-lg rounded-bl-sm">
+                <span className="animate-pulse text-accent">●●●</span>
               </div>
             </div>
           )}
@@ -244,7 +244,7 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
       </div>
 
       <div
-        className="shrink-0 border-t border-[#E5E2DC] bg-white py-3 shadow-[0_-6px_24px_rgba(0,0,0,0.06)]"
+        className="shrink-0 border-t border-border bg-surface py-3"
         style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
       >
         <div className="mx-auto max-w-4xl space-y-3 px-6">
@@ -254,12 +254,12 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
                 <div
                   key={p}
                   className={`h-1.5 w-12 rounded-full transition-all duration-500 ${
-                    phases === p ? "bg-[#B8916A]" : corrections > ["Voice", "Frameworks", "Final"].indexOf(p) ? "bg-[#B8916A]/40" : "bg-[#E5E2DC]"
+                    phases === p ? "bg-accent" : corrections > ["Voice", "Frameworks", "Final"].indexOf(p) ? "bg-accent/40" : "bg-white/10"
                   }`}
                 />
               ))}
             </div>
-            <span className="text-xs text-[#999]">{phases} phase</span>
+            <span className="mono text-[11px] uppercase tracking-[0.06em] text-faint">{phases} phase</span>
           </div>
 
           <div className="flex gap-3">
@@ -273,30 +273,30 @@ export default function CalibrationPhase({ session, onUpdate, onAdvance }: Calib
               onKeyDown={handleKeyDown}
               placeholder="Tell me what's right and what's off..."
               rows={1}
-              className="max-h-[200px] flex-1 resize-none overflow-y-auto rounded-xl border border-[#E5E2DC] bg-white px-4 py-3 text-sm text-[#1A1A1A] transition placeholder:text-[#C5C0B8] focus:border-[#B8916A]/50 focus:outline-none focus:ring-1 focus:ring-[#B8916A]/20"
+              className="fh-scroll max-h-[200px] flex-1 resize-none overflow-y-auto rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
             />
             <button
               type="button"
               onClick={() => send()}
               disabled={streaming}
-              className="rounded-xl bg-[#B8916A] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#A07B56] disabled:opacity-50"
+              className="mono self-end rounded-lg bg-accent px-4 py-2.5 text-[12px] tracking-[0.02em] text-[#1B1B18] transition hover:bg-accent-dim disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Send
             </button>
           </div>
 
-          <div className="flex justify-between gap-3 border-t border-[#E5E2DC]/80 pt-1">
+          <div className="flex justify-between gap-3 border-t border-border pt-2">
             <button
               type="button"
               onClick={() => onUpdate({ currentPhase: "extraction" })}
-              className="rounded-lg border border-[#E5E2DC] px-4 py-2 text-sm text-[#999] transition hover:text-[#1A1A1A]"
+              className="mono rounded-lg border border-border px-4 py-2 text-[12px] tracking-[0.02em] text-muted transition hover:text-foreground hover:bg-surface-light"
             >
               ← Back to Contribution
             </button>
             <button
               type="button"
               onClick={onAdvance}
-              className="rounded-lg bg-amber px-6 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+              className="mono rounded-lg bg-accent px-4 py-2 text-[12px] tracking-[0.02em] text-[#1B1B18] transition hover:bg-accent-dim"
             >
               Finish and Submit →
             </button>

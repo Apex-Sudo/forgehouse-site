@@ -1,166 +1,182 @@
-/* Light theme scoped to /for-mentors — leonfreier.com palette */
+/* ═══════════════════════════════════════════════════════════
+   /for-mentors — Forge House v2 (dark)
+
+   Repointed at the global tokens declared in globals.css.
+   Every class name from the old light palette is preserved so
+   for-mentors/page.tsx keeps working; only the values changed.
+
+   Note: this stylesheet is unlayered, so its declarations beat
+   Tailwind utilities. The old blanket element resets
+   (`.mentors-light h1, … span, li { color: inherit }`) were
+   therefore removed — they would silently override text-colour
+   utilities used on the page. Colour now comes from normal
+   inheritance off `.mentors-light` plus explicit classes.
+   ═══════════════════════════════════════════════════════════ */
 
 .mentors-light {
-  background: #FFFFFF;
-  color: #1A1A1A;
+  background: var(--color-background);
+  color: var(--color-foreground);
   min-height: 100vh;
 }
 
+/* ── Type ───────────────────────────────────────────────── */
+
+.mentors-light h1,
+.mentors-light h2,
+.mentors-light h3,
+.mentors-light h4 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+/* Small mono kicker above a section heading */
+.mentors-eyebrow {
+  font-family: var(--font-source-code-pro), ui-monospace, monospace;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--color-accent);
+}
+
+/* Mono micro-label — stat captions, card meta, sources */
+.mentors-label {
+  font-family: var(--font-source-code-pro), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* ── Colour helpers ─────────────────────────────────────── */
+
 .mentors-fg {
-  color: #1A1A1A;
+  color: var(--color-foreground);
 }
 
 .mentors-muted {
-  color: #737373;
+  color: var(--color-muted);
+}
+
+.mentors-faint {
+  color: var(--color-faint);
 }
 
 .mentors-accent {
-  color: #B8916A;
+  color: var(--color-accent);
 }
 
 .mentors-body {
-  color: rgba(26, 26, 26, 0.65);
+  color: rgba(235, 236, 236, 0.72);
 }
 
+.mentors-icon {
+  color: var(--color-accent);
+}
+
+.mentors-check {
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+/* ── Surfaces ───────────────────────────────────────────── */
+
 .mentors-hero {
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(184, 145, 106, 0.08) 0%, transparent 70%);
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(202, 237, 87, 0.07) 0%, transparent 70%);
 }
 
 .mentors-card {
-  background: rgba(184, 145, 106, 0.05);
-  border: 1px solid rgba(184, 145, 106, 0.12);
-  border-radius: 16px;
-  transition: border-color 0.2s ease;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .mentors-card:hover {
-  border-color: rgba(184, 145, 106, 0.22);
+  border-color: var(--color-border-light);
+  background: var(--color-surface-light);
 }
 
+/* Inset card — sits *inside* `.mentors-cream-section`, so it goes a
+   step darker than the band it lives on rather than lighter. */
 .mentors-card-elevated {
-  background: #FFFFFF;
-  border: 1px solid rgba(184, 145, 106, 0.12);
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
 }
 
 .mentors-card-elevated:hover {
-  border-color: rgba(184, 145, 106, 0.22);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border-color: rgba(202, 237, 87, 0.35);
 }
 
 .mentors-module {
-  background: rgba(184, 145, 106, 0.04);
-  border: 1px solid rgba(184, 145, 106, 0.10);
-  border-radius: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
 }
 
-/* Dark sections */
+/* ── Full-width bands ───────────────────────────────────── */
+
+/* Raised band, one step off the page canvas. */
+.mentors-cream-section {
+  background-color: var(--color-surface);
+}
+
+/* Quiet band that sits back on the canvas — pairs with
+   `.sparkle-field` in the markup, so only the colour is set
+   here (a `background` shorthand would wipe the star pattern). */
 .mentors-dark-section {
-  background: #1A2332;
-  color: #FFFFFF;
-}
-
-.mentors-dark-section h2,
-.mentors-dark-section h3,
-.mentors-dark-section p,
-.mentors-dark-section span,
-.mentors-dark-section li {
-  color: inherit;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .mentors-dark-section .mentors-muted {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-muted);
 }
 
 .mentors-dark-section .mentors-accent {
-  color: #B8916A;
+  color: var(--color-accent);
+}
+
+.mentors-dark-section .mentors-icon {
+  color: var(--color-accent);
 }
 
 .mentors-dark-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  background: var(--color-surface-light);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
   transition: border-color 0.2s ease;
 }
 
 .mentors-dark-card:hover {
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: var(--color-border-light);
 }
 
-/* Cream section */
-.mentors-cream-section {
-  background: #F8F5F0;
+/* ── Closing CTA — lime band, dark ink ──────────────────── */
+
+.mentors-cta-card {
+  background: var(--color-accent);
+  color: #1B1B18;
+  border-radius: 8px;
+}
+
+/* Reads as dark ink at ~65% over lime — still well past AA. */
+.mentors-cta-card .mentors-muted {
+  color: rgba(27, 27, 24, 0.72);
+}
+
+.mentors-cta-card .mentors-faint {
+  color: rgba(27, 27, 24, 0.68);
 }
 
 .mentors-cta {
-  background: #B8916A;
-  color: #FFFFFF;
+  background: #1B1B18;
+  color: var(--color-paper);
 }
 
 .mentors-cta:hover {
-  background: #A07D5A;
-}
-
-.mentors-icon {
-  color: #B8916A;
-}
-
-.mentors-dark-section .mentors-icon {
-  color: #B8916A;
-}
-
-/* Contained CTA card */
-.mentors-cta-card {
-  background: #1A2332;
-  border-radius: 24px;
-  color: #FFFFFF;
-}
-
-.mentors-cta-card h2,
-.mentors-cta-card p {
-  color: inherit;
-}
-
-.mentors-cta-card .mentors-muted {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-/* Override any dark theme leaking from parent layout */
-.mentors-light h1,
-.mentors-light h2,
-.mentors-light h3,
-.mentors-light p,
-.mentors-light span,
-.mentors-light li {
-  color: inherit;
-}
-
-.mentors-light h1,
-.mentors-light h2,
-.mentors-light h3 {
-  color: #1A1A1A;
-}
-
-.mentors-light .mentors-muted {
-  color: #737373;
-}
-
-.mentors-light .mentors-accent {
-  color: #B8916A;
-}
-
-.mentors-light .mentors-body {
-  color: rgba(26, 26, 26, 0.65);
-}
-
-.mentors-light .mentors-fg {
-  color: #1A1A1A;
-}
-
-/* Checkmark accent */
-.mentors-check {
-  color: #B8916A;
-  flex-shrink: 0;
+  background: #2A2A26;
 }

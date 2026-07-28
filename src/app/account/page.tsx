@@ -73,18 +73,19 @@ export default function AccountPage() {
   if (status === "loading" || status === "unauthenticated" || loading) {
     return (
       <div className="flex items-center justify-center h-full pt-20">
-        <span className="animate-pulse text-muted text-sm">Loading...</span>
+        <span className="mono animate-pulse text-muted text-[12px] tracking-[0.04em]">Loading...</span>
       </div>
     );
   }
 
   return (
-    <div className="pt-4 h-full overflow-y-auto">
-      <div className="max-w-xl mx-auto px-4 py-8">
-        <h1 className="text-xl font-bold mb-8">Account</h1>
+    <div className="pt-4 h-full overflow-y-auto bg-background">
+      <div className="max-w-[1008px] mx-auto px-6 py-10">
+        <p className="mono text-[13px] text-accent mb-4">Settings</p>
+        <h1 className="text-[44px] md:text-[56px] leading-[0.92] tracking-[-0.02em] mb-10">Account</h1>
 
         {/* Profile */}
-        <div className="glass-card px-6 py-5 mb-4">
+        <div className="bg-surface border border-border rounded-lg px-6 py-5 mb-[30px]">
           <div className="flex items-center gap-4">
             {session?.user?.image ? (
               <Image
@@ -95,27 +96,27 @@ export default function AccountPage() {
                 className="rounded-full"
               />
             ) : (
-              <div className="w-12 h-12 rounded-full bg-white/[0.1] flex items-center justify-center text-lg font-semibold">
+              <div className="w-12 h-12 rounded-full bg-surface-light border border-border flex items-center justify-center mono text-[16px] text-foreground">
                 {session?.user?.name?.[0] ?? "?"}
               </div>
             )}
             <div>
-              <p className="font-medium">{session?.user?.name}</p>
-              <p className="text-sm text-muted">{session?.user?.email}</p>
+              <p className="text-[22px] leading-none text-foreground">{session?.user?.name}</p>
+              <p className="mono text-[12px] text-muted mt-2">{session?.user?.email}</p>
             </div>
           </div>
         </div>
 
         {/* Subscription */}
-        <div className="glass-card px-6 py-5 mb-4">
-          <h2 className="text-sm font-semibold mb-3">Subscription</h2>
+        <div className="bg-surface border border-border rounded-lg px-6 py-5 mb-[30px]">
+          <h2 className="text-[26px] text-foreground mb-4">Subscription</h2>
           {isSubscribed ? (
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-2 h-2 rounded-full bg-green-500" />
-                <p className="text-sm text-foreground">Active subscription</p>
+              <div className="inline-flex items-center gap-2 rounded border border-accent/25 bg-accent/15 px-2.5 py-1 mb-4">
+                <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+                <p className="mono text-[10px] uppercase tracking-[0.08em] text-accent">Active subscription</p>
               </div>
-              <p className="text-xs text-muted mb-4">
+              <p className="mono text-[12px] text-muted mb-5">
                 Subscribed mentors: Colin Chapman
               </p>
               <button
@@ -126,23 +127,23 @@ export default function AccountPage() {
                     if (data.url) window.location.href = data.url;
                   } catch { /* silent */ }
                 }}
-                className="bg-white/[0.06] border border-white/[0.08] text-sm px-4 py-2 rounded-lg text-foreground hover:bg-white/[0.1] transition cursor-pointer"
+                className="mono border border-border text-foreground text-[12px] tracking-[0.02em] px-4 py-2 rounded-lg hover:bg-surface-light transition cursor-pointer"
               >
                 Manage billing
               </button>
             </div>
           ) : (
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-2 h-2 rounded-full bg-muted" />
-                <p className="text-sm text-muted">Free tier</p>
+              <div className="inline-flex items-center gap-2 rounded border border-border bg-white/8 px-2.5 py-1 mb-4">
+                <div className="w-1.5 h-1.5 rounded-full bg-faint" />
+                <p className="mono text-[10px] uppercase tracking-[0.08em] text-muted">Free tier</p>
               </div>
-              <p className="text-xs text-muted mb-4">
+              <p className="text-[16px] leading-[1.45] text-muted mb-6 max-w-[560px]">
                 Upgrade to get unlimited conversations, saved insights, and full access to all mentors.
               </p>
               <Link
                 href="/pricing"
-                className="inline-block bg-amber text-white text-sm px-5 py-2 rounded-lg font-semibold hover:bg-amber-dark transition"
+                className="mono inline-block bg-accent text-[#1B1B18] text-[12px] tracking-[0.02em] px-4 py-2 rounded-lg hover:bg-accent-dim transition"
               >
                 View pricing
               </Link>
@@ -152,29 +153,29 @@ export default function AccountPage() {
 
         {/* API Access */}
         {isSubscribed && (
-          <div className="glass-card px-6 py-5 mb-4">
-            <h2 className="text-sm font-semibold mb-3">API Access</h2>
-            <p className="text-xs text-muted mb-4">
+          <div className="bg-surface border border-border rounded-lg px-6 py-5 mb-[30px]">
+            <h2 className="text-[26px] text-foreground mb-3">API Access</h2>
+            <p className="text-[16px] leading-[1.45] text-muted mb-6 max-w-[640px]">
               Connect your AI agent (OpenClaw, Claude Code, Cursor) directly to ForgeHouse mentors via API or MCP.
             </p>
 
             {apiKeyLoading ? (
-              <span className="animate-pulse text-muted text-xs">Loading...</span>
+              <span className="mono animate-pulse text-muted text-[12px]">Loading...</span>
             ) : apiKey ? (
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <code className="bg-white/[0.06] border border-white/[0.08] rounded px-3 py-2 text-xs font-mono flex-1 overflow-hidden text-ellipsis">
+                  <code className="mono bg-background border border-border rounded-lg px-3 py-2 text-[12px] text-foreground flex-1 overflow-hidden text-ellipsis">
                     {apiKeyRevealed ? apiKey : maskKey(apiKey)}
                   </code>
                   <button
                     onClick={() => setApiKeyRevealed(!apiKeyRevealed)}
-                    className="bg-white/[0.06] border border-white/[0.08] text-xs px-3 py-2 rounded hover:bg-white/[0.1] transition cursor-pointer"
+                    className="mono border border-border text-foreground text-[11px] tracking-[0.02em] px-3 py-2 rounded-lg hover:bg-surface-light transition cursor-pointer"
                   >
                     {apiKeyRevealed ? "Hide" : "Reveal"}
                   </button>
                   <button
                     onClick={copyApiKey}
-                    className="bg-white/[0.06] border border-white/[0.08] text-xs px-3 py-2 rounded hover:bg-white/[0.1] transition cursor-pointer"
+                    className="mono border border-border text-foreground text-[11px] tracking-[0.02em] px-3 py-2 rounded-lg hover:bg-surface-light transition cursor-pointer"
                   >
                     {apiKeyCopied ? "Copied!" : "Copy"}
                   </button>
@@ -182,18 +183,18 @@ export default function AccountPage() {
                 <button
                   onClick={generateApiKey}
                   disabled={generatingKey}
-                  className="text-xs text-muted hover:text-foreground transition cursor-pointer"
+                  className="mono text-[11px] text-muted hover:text-foreground transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {generatingKey ? "Generating..." : "Regenerate key"} (revokes current)
                 </button>
 
                 {/* Quick start */}
-                <div className="mt-4 pt-4 border-t border-white/[0.06]">
-                  <p className="text-xs font-semibold mb-2">Quick start</p>
+                <div className="mt-6 pt-5 border-t border-border">
+                  <p className="mono text-[11px] uppercase tracking-[0.06em] text-faint mb-3">Quick start</p>
 
-                  <div className="mb-3">
-                    <p className="text-xs text-muted mb-1">cURL:</p>
-                    <pre className="bg-white/[0.04] border border-white/[0.06] rounded p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all">
+                  <div className="mb-4">
+                    <p className="mono text-[11px] uppercase tracking-[0.06em] text-faint mb-2">cURL:</p>
+                    <pre className="mono bg-background border border-border rounded-lg p-3 text-[11px] leading-[1.7] text-muted overflow-x-auto whitespace-pre-wrap break-all">
 {`curl -X POST https://forgehouse.io/api/v1/chat \\
   -H "Authorization: Bearer ${apiKeyRevealed ? apiKey : "fh_..."}" \\
   -H "Content-Type: application/json" \\
@@ -202,8 +203,8 @@ export default function AccountPage() {
                   </div>
 
                   <div>
-                    <p className="text-xs text-muted mb-1">MCP (OpenClaw / Claude Code / Cursor):</p>
-                    <pre className="bg-white/[0.04] border border-white/[0.06] rounded p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all">
+                    <p className="mono text-[11px] uppercase tracking-[0.06em] text-faint mb-2">MCP (OpenClaw / Claude Code / Cursor):</p>
+                    <pre className="mono bg-background border border-border rounded-lg p-3 text-[11px] leading-[1.7] text-muted overflow-x-auto whitespace-pre-wrap break-all">
 {`{
   "mcpServers": {
     "forgehouse": {
@@ -223,7 +224,7 @@ export default function AccountPage() {
               <button
                 onClick={generateApiKey}
                 disabled={generatingKey}
-                className="bg-white/[0.06] border border-white/[0.08] text-sm px-4 py-2 rounded-lg text-foreground hover:bg-white/[0.1] transition cursor-pointer"
+                className="mono bg-accent text-[#1B1B18] text-[12px] tracking-[0.02em] px-4 py-2 rounded-lg hover:bg-accent-dim transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {generatingKey ? "Generating..." : "Generate API key"}
               </button>
@@ -234,7 +235,7 @@ export default function AccountPage() {
         {/* Sign out */}
         <button
           onClick={() => signOut({ callbackUrl: "/" })}
-          className="text-sm text-muted hover:text-foreground transition cursor-pointer"
+          className="mono text-[12px] tracking-[0.02em] text-muted hover:text-foreground transition cursor-pointer"
         >
           Sign out
         </button>
