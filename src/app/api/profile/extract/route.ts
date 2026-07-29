@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       .join("\n");
 
     const response = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-5",
       max_tokens: 1024,
       system: `Extract structured business profile data from this onboarding conversation. Return ONLY valid JSON with these exact keys: company_description, target_audience, company_stage, team_size, revenue_range, biggest_challenge, sales_process. Each value should be a concise string (1-3 sentences max). If a field wasn't discussed, use null.`,
       messages: [{ role: "user", content: conversationText }],

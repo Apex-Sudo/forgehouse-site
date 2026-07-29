@@ -126,11 +126,12 @@ async function chunkWithLLM(extractionText: string): Promise<KnowledgeChunk[]> {
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-5",
       max_tokens: 16384,
+      // No assistant prefill — current models reject it. CHUNKING_PROMPT already
+      // asks for a bare JSON array, and the slice below tolerates stray fencing.
       messages: [
         { role: "user", content: `${CHUNKING_PROMPT}\n\n---\n\n${extractionText}` },
-        { role: "assistant", content: "[" },
       ],
     }),
   });
@@ -142,8 +143,9 @@ async function chunkWithLLM(extractionText: string): Promise<KnowledgeChunk[]> {
 
   const data = await response.json();
   const raw: string = data.content[0].text;
-  const withPrefix = "[" + raw;
-  const cleaned = withPrefix.replace(/^```json?\s*/m, "").replace(/```\s*$/m, "").trim();
+  const start = raw.indexOf("[");
+  const end = raw.lastIndexOf("]");
+  const cleaned = start !== -1 && end > start ? raw.slice(start, end + 1) : raw.trim();
 
   try {
     return JSON.parse(cleaned);

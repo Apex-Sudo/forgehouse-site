@@ -57,7 +57,7 @@ export async function GET(req: Request) {
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
     const response = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-5",
       max_tokens: 300,
       system: `Generate 3 conversation starter questions for a user talking to ${hint}. Each starter should be specific to the user's business and current challenges. Make them actionable and varied. Do NOT repeat topics from their recent conversations. Output ONLY a JSON array of 3 strings, nothing else.`,
       messages: [

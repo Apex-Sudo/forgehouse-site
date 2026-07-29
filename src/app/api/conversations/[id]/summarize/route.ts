@@ -67,7 +67,7 @@ export async function POST(
       .join("\n\n");
 
     const result = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-5",
       max_tokens: 300,
       system: "You summarize sales coaching conversations. Output exactly 3 bullet points, no intro text. Use plain dashes (-) not em dashes. Keep each bullet to one sentence.",
       messages: [

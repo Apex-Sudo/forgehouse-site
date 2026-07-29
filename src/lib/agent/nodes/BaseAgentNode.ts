@@ -18,7 +18,7 @@ type StreamableModel = Runnable<BaseMessage[], AIMessageChunk>;
 
 const REFUSAL = "I can't help with that, but I'm happy to assist with your question.";
 
-const PRIMARY_MODEL = "claude-sonnet-4-20250514";
+const PRIMARY_MODEL = "claude-sonnet-5";
 const FALLBACK_MODEL = "claude-sonnet-4-5-20250929";
 
 const DEFAULT_MAX_ITERATIONS = 5;
@@ -29,6 +29,21 @@ const RETRY_DELAY_MS = 2_000;
 function isOverloadedError(err: unknown): boolean {
   const msg = err instanceof Error ? err.message : String(err);
   return msg.includes("overloaded") || msg.includes("529") || msg.includes("Overloaded");
+}
+
+/**
+ * A retired or misspelled model ID returns 404 `not_found_error`. That is not an
+ * overload, so it used to bypass the fallback and surface straight to the user —
+ * which is how the Sonnet 4 retirement took the agent down. Treat it as a reason
+ * to fall back, and log loudly so a genuine config error stays diagnosable.
+ */
+function isModelUnavailableError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return msg.includes("not_found_error") || msg.includes("404");
+}
+
+function shouldFallBack(err: unknown): boolean {
+  return isOverloadedError(err) || isModelUnavailableError(err);
 }
 
 export interface StreamWriter {
@@ -149,8 +164,11 @@ export abstract class BaseAgentNode<TParams extends AgentRunParams = AgentRunPar
         const msg = err instanceof Error ? err.message : String(err);
         this.logError(`Invoke failed (attempt ${attempt}):`, msg);
 
-        if (isOverloadedError(err) && fallbackModel && activeModel !== fallbackModel) {
-          this.log(`Primary model overloaded, switching to fallback (${FALLBACK_MODEL})`);
+        if (shouldFallBack(err) && fallbackModel && activeModel !== fallbackModel) {
+          const reason = isModelUnavailableError(err)
+            ? `unavailable — "${PRIMARY_MODEL}" is retired or misconfigured`
+            : "overloaded";
+          this.logError(`Primary model ${reason}; switching to fallback (${FALLBACK_MODEL})`);
           this.emitStatus("Switching to backup model...");
           activeModel = fallbackModel;
         }
@@ -224,8 +242,11 @@ export abstract class BaseAgentNode<TParams extends AgentRunParams = AgentRunPar
         const msg = err instanceof Error ? err.message : String(err);
         this.logError(`Stream failed (attempt ${attempt}):`, msg);
 
-        if (isOverloadedError(err) && fallbackModel && activeModel !== fallbackModel) {
-          this.log(`Primary model overloaded, switching to fallback (${FALLBACK_MODEL})`);
+        if (shouldFallBack(err) && fallbackModel && activeModel !== fallbackModel) {
+          const reason = isModelUnavailableError(err)
+            ? `unavailable — "${PRIMARY_MODEL}" is retired or misconfigured`
+            : "overloaded";
+          this.logError(`Primary model ${reason}; switching to fallback (${FALLBACK_MODEL})`);
           this.emitStatus("Switching to backup model...");
           activeModel = fallbackModel;
         }

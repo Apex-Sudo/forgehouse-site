@@ -246,7 +246,7 @@ async function chunkFresh(
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-5",
       max_tokens: 16384,
       messages: [
         { role: "user", content: `${FRESH_CHUNKING_PROMPT}\n\n---\n\n${input}` },
@@ -304,7 +304,7 @@ async function chunkIncremental(
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-5",
       max_tokens: 16384,
       messages: [
         { role: "user", content: `${INCREMENTAL_CHUNKING_PROMPT}\n\n---\n\n${input}` },

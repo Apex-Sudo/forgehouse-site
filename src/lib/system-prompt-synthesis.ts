@@ -162,14 +162,41 @@ export async function synthesizeMentorProfile(
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-5",
       max_tokens: 16384,
+      // Structured outputs replace the old `{`-prefill: assistant prefills are
+      // rejected on current models, and the schema guarantees valid JSON, so
+      // there is no markdown fence to strip.
+      output_config: {
+        format: {
+          type: "json_schema",
+          schema: {
+            type: "object",
+            properties: {
+              system_prompt: { type: "string" },
+              tagline: { type: "string" },
+              bio: { type: "string" },
+              welcome_message: { type: "string" },
+              default_starters: { type: "array", items: { type: "string" } },
+              starters_hint: { type: "string" },
+            },
+            required: [
+              "system_prompt",
+              "tagline",
+              "bio",
+              "welcome_message",
+              "default_starters",
+              "starters_hint",
+            ],
+            additionalProperties: false,
+          },
+        },
+      },
       messages: [
         {
           role: "user",
           content: `${SYNTHESIS_META_PROMPT}\n\n---\n\nMentor name: ${mentorName}\n\n${extractionText}`,
         },
-        { role: "assistant", content: "{" },
       ],
     }),
   });
@@ -181,12 +208,10 @@ export async function synthesizeMentorProfile(
 
   const data = await response.json();
   const raw: string = data.content[0].text;
-  const withPrefix = "{" + raw;
-  const cleaned = withPrefix.replace(/^```json?\s*/m, "").replace(/```\s*$/m, "").trim();
 
   let parsed: SynthesizedProfile;
   try {
-    parsed = JSON.parse(cleaned) as SynthesizedProfile;
+    parsed = JSON.parse(raw) as SynthesizedProfile;
   } catch {
     console.error("[synthesizeMentorProfile] Failed to parse JSON. Raw response:", raw.slice(0, 500));
     throw new Error(`Synthesis LLM returned invalid JSON. Start of response: "${raw.slice(0, 100)}"`);

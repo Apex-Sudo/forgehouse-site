@@ -108,7 +108,7 @@ export async function POST(req: Request) {
 
   try {
     const response = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-5",
       max_tokens: 4096,
       system: mentorLandingAiSystemPrompt(),
       messages: [{ role: "user", content: userParts.join("\n") }],

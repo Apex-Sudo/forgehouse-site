@@ -105,7 +105,7 @@ Use the user's first name naturally in conversation. Don't overdo it.`;
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
     const stream = await client.messages.stream({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-5",
       max_tokens: 1024,
       system: enrichedSystemPrompt,
       messages,

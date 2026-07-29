@@ -58,7 +58,7 @@ export async function POST(req: Request) {
 
     const client = new Anthropic();
     const message = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-5",
       max_tokens: 2000,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: `Here is the cold email to tear down:\n\n${email}` }],
