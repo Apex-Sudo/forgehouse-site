@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { synthesizeMentorProfile, type SynthesizedProfile } from "@/lib/system-prompt-synthesis";
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!.trim();
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY!.trim();
-const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY!.trim();
-const VOYAGE_KEY = process.env.VOYAGE_API_KEY!.trim();
+function requiredEnv(name: string): string {
+  const value = process.env[name]?.trim();
+  if (!value) {
+    throw new Error(`${name} is not configured`);
+  }
+  return value;
+}
 
 interface KnowledgeChunk {
   chunk_type: "career" | "methodology" | "story" | "belief";
@@ -47,11 +50,14 @@ async function supabaseRequest(
   body?: unknown,
   extraHeaders?: Record<string, string>
 ) {
-  const res = await fetch(`${SUPABASE_URL}${path}`, {
+  const supabaseUrl = requiredEnv("NEXT_PUBLIC_SUPABASE_URL");
+  const supabaseKey = requiredEnv("SUPABASE_SERVICE_KEY");
+
+  const res = await fetch(`${supabaseUrl}${path}`, {
     method,
     headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
       "Content-Type": "application/json",
       Prefer: "return=minimal",
       ...extraHeaders,
@@ -122,7 +128,7 @@ async function chunkWithLLM(extractionText: string): Promise<KnowledgeChunk[]> {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_KEY,
+      "x-api-key": requiredEnv("ANTHROPIC_API_KEY"),
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
@@ -158,6 +164,7 @@ async function chunkWithLLM(extractionText: string): Promise<KnowledgeChunk[]> {
 async function embedTexts(texts: string[]): Promise<number[][]> {
   const BATCH_SIZE = 20;
   const allEmbeddings: number[][] = [];
+  const voyageKey = requiredEnv("VOYAGE_API_KEY");
 
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
     const batch = texts.slice(i, i + BATCH_SIZE);
@@ -166,7 +173,7 @@ async function embedTexts(texts: string[]): Promise<number[][]> {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${VOYAGE_KEY}`,
+        Authorization: `Bearer ${voyageKey}`,
       },
       body: JSON.stringify({
         model: "voyage-4-lite",
@@ -269,7 +276,7 @@ export async function POST(req: Request) {
     console.log(`[ingest] Starting parallel: chunking + system prompt synthesis for ${slug}...`);
     const [chunks, profile] = await Promise.all([
       chunkWithLLM(extractionText),
-      synthesizeMentorProfile(fullTranscript, mentorName, ANTHROPIC_KEY),
+      synthesizeMentorProfile(fullTranscript, mentorName, requiredEnv("ANTHROPIC_API_KEY")),
     ]);
     console.log(`[ingest] Got ${chunks.length} chunks + synthesized profile`);
 
