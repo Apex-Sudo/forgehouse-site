@@ -124,8 +124,16 @@ export default function MentorMarketingClient({
 
   /* The landing row derives `tagline` from `heroQuote`, so the specialty line
      comes from the shared expert profile to avoid printing the quote twice. */
-  const specialty = getExpertProfile(mentor.slug, mentor.tagline).specialty;
+  const expertProfile = getExpertProfile(mentor.slug, mentor.tagline);
+  const specialty = expertProfile.specialty;
   const showHeroQuote = Boolean(heroQuote) && heroQuote !== specialty;
+
+  /* Uppercase mono credential lines, per the "Know your expert" design. Falls
+     back to the landing row's highlight labels for experts with no profile entry. */
+  const credentials =
+    expertProfile.highlights.length > 0
+      ? expertProfile.highlights
+      : highlights.map((h) => h.label).filter((l) => l.trim().length > 0);
 
   /* Shared subscribe / try-free action row. */
   const actions = (
@@ -142,22 +150,15 @@ export default function MentorMarketingClient({
           Subscribed
         </button>
       ) : (
-        <>
-          <Link
-            href={`/chat/${mentor.slug}`}
-            className="mono inline-flex items-center gap-3 border border-border-light text-foreground px-6 py-3 rounded-md text-[12px] tracking-[0.02em] hover:border-accent hover:text-accent transition"
-          >
-            Try Free
-            <span aria-hidden="true">›</span>
-          </Link>
-          <button
-            onClick={handlePayNow}
-            className="mono inline-flex items-center gap-3 bg-accent text-[#1B1B18] px-6 py-3 rounded-md text-[12px] tracking-[0.02em] hover:bg-accent-dim transition cursor-pointer"
-          >
-            Pay {priceLabel}
-            <span aria-hidden="true">›</span>
-          </button>
-        </>
+        /* "Chat with <name>" is the primary CTA in the hero, so this row only
+           carries the commercial action. */
+        <button
+          onClick={handlePayNow}
+          className="mono inline-flex items-center gap-3 border border-border-light text-foreground px-6 py-3 rounded-md text-[12px] tracking-[0.02em] hover:border-accent hover:text-accent transition cursor-pointer"
+        >
+          Subscribe {priceLabel}/mo
+          <span aria-hidden="true">›</span>
+        </button>
       )}
     </>
   );
@@ -167,54 +168,65 @@ export default function MentorMarketingClient({
       {/* ═══════════════════════════════════════════
           HERO
           ═══════════════════════════════════════════ */}
-      <section className="gradient-hero px-6 pt-16 md:pt-24 pb-16 md:pb-20">
+      <section className="px-6 pt-12 md:pt-16 pb-16 md:pb-20">
         <div className="max-w-[1008px] mx-auto">
-          <div className="grid md:grid-cols-[300px_1fr] gap-10 md:gap-[30px] items-start">
+          <p className="mono text-[13px] text-accent mb-8">Know your expert</p>
+
+          <div className="grid md:grid-cols-[374px_1fr] gap-8 md:gap-[35px] items-start">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={avatarSrc}
               alt={mentor.name}
-              className="w-full max-w-[300px] aspect-[4/5] object-cover object-top bg-surface"
+              className="w-full md:w-[374px] aspect-[374/552] object-cover object-top bg-surface rounded-[4px]"
               onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_AVATAR; }}
             />
+
             <div>
-              <p className="mono text-[13px] text-accent mb-4">ForgeHouse Expert</p>
-              <h1 className="text-[44px] md:text-[64px] uppercase leading-[0.92] tracking-[-0.01em] text-paper">
+              <h1 className="text-[38px] md:text-[46px] uppercase leading-[1] tracking-[0.01em] text-paper">
                 {mentor.name}
               </h1>
               {specialty && (
-                <p className="text-[21px] md:text-[24px] italic text-accent mt-2">
+                <p className="text-[21px] md:text-[24px] italic text-accent mt-1">
                   {specialty}
                 </p>
               )}
-              {heroDescription && (
-                <p className="mt-6 text-[17px] leading-[1.55] text-muted max-w-[560px]">
-                  {heroDescription}
-                </p>
+
+              {credentials.length > 0 && (
+                <ul className="mt-6 space-y-0.5">
+                  {credentials.map((c) => (
+                    <li
+                      key={c}
+                      className="mono text-[11px] tracking-[0.04em] uppercase text-muted"
+                    >
+                      {c}
+                    </li>
+                  ))}
+                </ul>
               )}
 
-              {highlights.length > 0 && (
-                <div className="flex flex-wrap gap-2.5 mt-7">
-                  {highlights.map((h) => (
-                    <span
-                      key={h.label}
-                      className="mono text-[11px] tracking-[0.04em] uppercase text-muted border border-border rounded-md px-3 py-1.5"
-                    >
-                      {h.label}
-                    </span>
-                  ))}
+              {heroDescription && (
+                <div className="mt-7 max-w-[630px] rounded-[4px] border border-accent/25 px-6 py-5">
+                  <p className="text-[16px] leading-[1.5] text-foreground/80 whitespace-pre-line">
+                    {heroDescription}
+                  </p>
                 </div>
               )}
 
               {showHeroQuote && (
-                <div className="border-l-2 border-accent pl-6 mt-8">
+                <div className="border-l-2 border-accent pl-6 mt-7 max-w-[630px]">
                   <p className="text-[19px] italic leading-[1.4] text-foreground">
                     &ldquo;{heroQuote}&rdquo;
                   </p>
                 </div>
               )}
 
-              <div className="flex flex-wrap items-center gap-3 mt-9">
+              <div className="mt-7 max-w-[320px]">
+                <ClipButton href={`/chat/${mentor.slug}`} variant="paper">
+                  Chat with {firstName}
+                </ClipButton>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3 mt-5">
                 {actions}
                 {externalLink && (
                   <a
