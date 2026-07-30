@@ -1,8 +1,10 @@
-import Sparkle from "./Sparkle";
+import StarH from "./StarH";
 
 /**
  * Stacked "Forge / House" wordmark.
- * The second line is indented and led by the sparkle, matching the Figma lockup.
+ *
+ * The sparkle sits *inside* the H of "House", in place of the crossbar — it is
+ * part of the letterform, not a bullet to the left of the word.
  */
 export default function Wordmark({
   size = 22,
@@ -21,11 +23,8 @@ export default function Wordmark({
     >
       <span className="block">Forge</span>
       <span className="block" style={{ paddingLeft: size * 0.18 }}>
-        <Sparkle
-          size={size * 0.44}
-          className={`inline-block align-baseline ${sparkleClassName}`}
-        />
-        <span style={{ marginLeft: size * 0.02 }}>House</span>
+        <StarH size={size} sparkleClassName={sparkleClassName} />
+        ouse
       </span>
     </span>
   );

@@ -5,9 +5,11 @@
 export default function Sparkle({
   className = "",
   size = 16,
+  style,
 }: {
   className?: string;
   size?: number | string;
+  style?: React.CSSProperties;
 }) {
   return (
     <svg
@@ -17,6 +19,7 @@ export default function Sparkle({
       fill="none"
       aria-hidden="true"
       className={className}
+      style={style}
     >
       <path
         d="M12 0c.9 8.1 3.9 11.1 12 12-8.1.9-11.1 3.9-12 12-.9-8.1-3.9-11.1-12-12C8.1 11.1 11.1 8.1 12 0Z"

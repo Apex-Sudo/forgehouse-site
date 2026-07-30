@@ -1,6 +1,9 @@
-import Sparkle from "./Sparkle";
+import StarH from "./StarH";
 
-/** "F ✦ H" monogram used in the footer. */
+/**
+ * Footer monogram: the H with the sparkle inside it, on its own.
+ * Per the Figma footer this is a single letterform, not an "F + H" pairing.
+ */
 export default function Monogram({
   size = 30,
   className = "",
@@ -14,8 +17,7 @@ export default function Monogram({
       style={{ fontSize: size }}
       aria-label="Forge House"
     >
-      F
-      <Sparkle size={size * 0.4} className="text-accent mx-[0.04em]" />H
+      <StarH size={size} />
     </span>
   );
 }
