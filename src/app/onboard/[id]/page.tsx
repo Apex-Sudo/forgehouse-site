@@ -7,6 +7,7 @@ import ExtractionPhase from "@/components/onboarding/ExtractionPhase";
 import CalibrationPhase from "@/components/onboarding/CalibrationPhase";
 import IngestionPhase from "@/components/onboarding/IngestionPhase";
 import ProgressBar from "@/components/onboarding/ProgressBar";
+import ProgramDashboard from "@/components/onboarding/ProgramDashboard";
 import { formatExpiryOrdinal } from "@/lib/format-expiry";
 import type { OnboardingSession } from "@/types/onboarding";
 
@@ -168,6 +169,37 @@ export default function OnboardingPage() {
           <p className="mono text-[12px] tracking-[0.04em] text-muted">
             The onboarding session could not be found.
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Sessions created before Extraction 2.0 keep the legacy three-phase flow;
+  // anything invited since runs the module program.
+  if ((session.programVersion ?? 1) >= 2) {
+    return (
+      <div className="flex flex-col h-dvh pt-16 overflow-hidden bg-background">
+        <div className="shrink-0 border-b border-border bg-surface px-6 py-4">
+          <div className="max-w-[900px] mx-auto flex items-start justify-between gap-4">
+            <div>
+              <p className="mono text-[11px] uppercase tracking-[0.08em] text-accent mb-2">
+                Onboarding
+              </p>
+              <h1 className="text-[26px] leading-none text-foreground">
+                {titleCase(session.mentorName)
+                  ? `Welcome, ${titleCase(session.mentorName)}!`
+                  : "Welcome!"}
+              </h1>
+            </div>
+            <div className="text-right shrink-0">
+              <p className="mono text-[11px] tracking-[0.04em] text-faint">
+                Expires: {formatExpiryOrdinal(session.expiresAt)}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex-1 min-h-0">
+          <ProgramDashboard onboardingId={id} />
         </div>
       </div>
     );

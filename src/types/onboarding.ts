@@ -13,4 +13,8 @@ export interface OnboardingSession {
   expiresAt: string;
   agentApproved?: boolean;
   agentApprovedAt?: string;
+  /** 1 = legacy three-phase flow, 2 = the module program. */
+  programVersion?: number;
+  /** Aggregate coverage across modules (v2 only). */
+  coverage?: Record<string, number>;
 }

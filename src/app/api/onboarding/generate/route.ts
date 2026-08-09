@@ -57,7 +57,10 @@ export async function POST(req: Request) {
           current_phase: "extraction",
           extraction_data: {},
           calibration_data: {},
-          ingestion_data: {}
+          ingestion_data: {},
+          // New invites run the v2 module program. Sessions created before this
+          // keep program_version 1 and the legacy three-phase flow.
+          program_version: 2
         }
       ])
       .select()

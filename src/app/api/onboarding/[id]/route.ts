@@ -51,7 +51,9 @@ export async function GET(
       ingestionData: data.ingestion_data,
       createdAt: data.created_at,
       updatedAt: data.updated_at,
-      expiresAt: data.expires_at
+      expiresAt: data.expires_at,
+      programVersion: data.program_version ?? 1,
+      coverage: data.coverage ?? {}
     });
   } catch (error) {
     console.error("Error fetching onboarding session:", error);
@@ -116,7 +118,9 @@ export async function PUT(
       ingestionData: data.ingestion_data,
       createdAt: data.created_at,
       updatedAt: data.updated_at,
-      expiresAt: data.expires_at
+      expiresAt: data.expires_at,
+      programVersion: data.program_version ?? 1,
+      coverage: data.coverage ?? {}
     });
   } catch (error) {
     console.error("Error updating onboarding session:", error);
