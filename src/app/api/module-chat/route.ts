@@ -137,13 +137,23 @@ export async function POST(req: Request) {
       // the work — the escape hatch stops a cautious model trapping them.
       const shouldComplete = meta.complete || userTurns >= def.escapeHatch;
 
+      // The footer reports the golden set cumulatively, so merge by scenario —
+      // appending would duplicate earlier scenarios on every turn. A repeated
+      // scenario keeps the newest answer, which reflects any correction.
+      let goldenSet: { scenario: string; mentorAnswer: string }[] | undefined;
+      if (meta.golden) {
+        const merged = new Map(
+          module.goldenSet.map((g) => [g.scenario.trim(), g] as const)
+        );
+        for (const g of meta.golden) merged.set(g.scenario.trim(), g);
+        goldenSet = [...merged.values()];
+      }
+
       await updateModule(onboardingId, moduleType, {
         messages: next,
         coverage: Object.keys(meta.coverage).length > 0 ? meta.coverage : undefined,
         status: shouldComplete ? "complete" : "in_progress",
-        goldenSet: meta.golden
-          ? [...module.goldenSet, ...meta.golden]
-          : undefined,
+        goldenSet,
       });
       await reconcileProgram(onboardingId);
     };

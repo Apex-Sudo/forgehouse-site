@@ -28,9 +28,12 @@ export async function guardSession(id: string): Promise<GuardResult> {
     return { ok: false, error: "Invalid session ID format", status: 400 };
   }
 
+  // select("*") rather than naming columns: program_version only exists once
+  // migration 013 is applied, and an unknown column makes PostgREST error —
+  // which would masquerade as "session not found" for every session.
   const { data, error } = await supabase
     .from("onboarding_sessions")
-    .select("id, mentor_name, email, expires_at, program_version, current_phase")
+    .select("*")
     .eq("id", id)
     .maybeSingle();
 

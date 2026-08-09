@@ -47,26 +47,38 @@ export async function POST(req: Request) {
     // Generate slug from mentor name
     const slug = generateSlug(mentorName);
 
-    // Create a new onboarding session
-    const { data, error } = await supabase
+    // Create a new onboarding session. New invites run the v2 module program;
+    // sessions created earlier keep program_version 1 and the legacy flow.
+    const baseRow = {
+      mentor_name: mentorName,
+      email: email,
+      current_phase: "extraction",
+      extraction_data: {},
+      calibration_data: {},
+      ingestion_data: {}
+    };
+
+    let { data, error } = await supabase
       .from("onboarding_sessions")
-      .insert([
-        {
-          mentor_name: mentorName,
-          email: email,
-          current_phase: "extraction",
-          extraction_data: {},
-          calibration_data: {},
-          ingestion_data: {},
-          // New invites run the v2 module program. Sessions created before this
-          // keep program_version 1 and the legacy three-phase flow.
-          program_version: 2
-        }
-      ])
+      .insert([{ ...baseRow, program_version: 2 }])
       .select()
       .single();
 
-    if (error) {
+    // If migration 013 hasn't been applied yet the column doesn't exist.
+    // Fall back to a v1 session rather than breaking invites, but say so
+    // loudly — this invite gets the legacy interview.
+    if (error && /program_version/i.test(error.message ?? "")) {
+      console.error(
+        "onboarding_sessions.program_version missing — apply migration 013. Falling back to a v1 session for this invite."
+      );
+      ({ data, error } = await supabase
+        .from("onboarding_sessions")
+        .insert([baseRow])
+        .select()
+        .single());
+    }
+
+    if (error || !data) {
       console.error("Error creating onboarding session:", error);
       return NextResponse.json(
         { error: "Failed to create onboarding session" },

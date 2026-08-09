@@ -93,14 +93,23 @@ CREATE INDEX IF NOT EXISTS idx_mentor_corpus_onboarding
 -- heuristic (an if/then rule with its exception), boundary (explicitly not
 -- their area). Dropping the old CHECK is conditional so this is safe to re-run.
 
+-- Drop whatever CHECK constraint(s) currently guard chunk_type. The v1 check
+-- was inline and therefore auto-named, so we look it up rather than assume
+-- the name.
 DO $$
+DECLARE
+  c record;
 BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_constraint
-    WHERE conname = 'mentor_knowledge_chunk_type_check'
-  ) THEN
-    ALTER TABLE mentor_knowledge DROP CONSTRAINT mentor_knowledge_chunk_type_check;
-  END IF;
+  FOR c IN
+    SELECT con.conname
+    FROM pg_constraint con
+    JOIN pg_class rel ON rel.oid = con.conrelid
+    WHERE rel.relname = 'mentor_knowledge'
+      AND con.contype = 'c'
+      AND pg_get_constraintdef(con.oid) ILIKE '%chunk_type%'
+  LOOP
+    EXECUTE format('ALTER TABLE mentor_knowledge DROP CONSTRAINT %I', c.conname);
+  END LOOP;
 END $$;
 
 ALTER TABLE mentor_knowledge
