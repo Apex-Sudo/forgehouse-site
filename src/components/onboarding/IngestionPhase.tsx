@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { IconConfetti, IconRocket } from "@tabler/icons-react";
+import ClipButton from "@/components/ui/ClipButton";
 import type { OnboardingSession } from "@/types/onboarding";
 
 interface IngestionPhaseProps {
@@ -105,11 +106,12 @@ export default function IngestionPhase({ session, onUpdate }: IngestionPhaseProp
                 Your mentor agent has been created and trained with your expertise.
               </p>
               {session.ingestionData?.chunksCreated && (
-                <p className="mono text-[11px] tracking-[0.02em] text-faint mb-6">
+                <p className="mono text-[11px] uppercase tracking-[0.06em] text-faint mb-6">
                   {session.ingestionData.chunksCreated} knowledge chunks created and embedded.
                 </p>
               )}
-              <button
+              <ClipButton
+                variant="accent"
                 onClick={() => {
                   const slug = session.mentorName
                     .toLowerCase()
@@ -118,10 +120,9 @@ export default function IngestionPhase({ session, onUpdate }: IngestionPhaseProp
                     .substring(0, 50);
                   window.location.href = `/chat/${slug}`;
                 }}
-                className="mono w-full bg-accent text-[#1B1B18] px-4 py-2.5 rounded-lg text-[12px] tracking-[0.02em] hover:bg-accent-dim transition"
               >
-                Chat with your mentor agent →
-              </button>
+                Chat with your mentor agent
+              </ClipButton>
             </div>
           </div>
         </div>
@@ -134,45 +135,44 @@ export default function IngestionPhase({ session, onUpdate }: IngestionPhaseProp
       <div className="flex-1 min-h-0 flex items-center justify-center p-8">
         <div className="max-w-2xl w-full bg-background rounded-lg border border-border p-8">
           <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-[#E3B341]/12 border border-[#E3B341]/25 flex items-center justify-center mx-auto mb-6 text-[#E3B341]">
+            <div className="w-16 h-16 rounded-full bg-accent/15 border border-accent/25 flex items-center justify-center mx-auto mb-6 text-accent">
               <IconRocket size={32} stroke={1.5} aria-hidden />
             </div>
 
             {status === "idle" && (
               <>
-                <p className="mono text-[11px] uppercase tracking-[0.08em] text-[#E3B341] mb-3">Launch</p>
+                <p className="mono text-[11px] uppercase tracking-[0.08em] text-accent mb-3">Launch</p>
                 <h2 className="text-[32px] leading-none text-foreground mb-3">
                   Ready to go live
                 </h2>
                 <p className="text-muted mb-8">
                   We&apos;ll chunk, embed, and store your expertise so your mentor agent can use it in conversations.
                 </p>
-                <button
-                  onClick={runIngestion}
-                  className="mono px-4 py-2.5 rounded-lg text-[12px] tracking-[0.02em] transition bg-accent text-[#1B1B18] hover:bg-accent-dim"
-                >
-                  Start launch
-                </button>
+                <div className="mx-auto w-full max-w-[280px]">
+                  <ClipButton variant="accent" onClick={runIngestion}>
+                    Start launch
+                  </ClipButton>
+                </div>
               </>
             )}
 
             {status === "processing" && (
               <>
-                <p className="mono text-[11px] uppercase tracking-[0.08em] text-[#E3B341] mb-3">Launch</p>
+                <p className="mono text-[11px] uppercase tracking-[0.08em] text-accent mb-3">Launch</p>
                 <h2 className="text-[32px] leading-none text-foreground mb-3">
                   Preparing your launch...
                 </h2>
                 <p className="text-muted mb-6">{statusMessage}</p>
                 <div className="mb-6">
-                  <div className="w-full bg-white/10 rounded-full h-3 mb-3">
+                  <div className="w-full bg-border rounded-full h-3 mb-3">
                     <div
                       className="bg-accent h-3 rounded-full transition-all duration-500"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
-                  <p className="mono text-[11px] tracking-[0.02em] text-faint">{progress}% complete</p>
+                  <p className="mono text-[11px] uppercase tracking-[0.06em] text-faint">{progress}% complete</p>
                 </div>
-                <button disabled className="mono px-4 py-2.5 rounded-lg text-[12px] tracking-[0.02em] border border-border text-faint opacity-40 cursor-not-allowed">
+                <button disabled className="mono px-7 py-3 rounded-md text-[12px] uppercase tracking-[0.08em] border border-border text-faint opacity-40 cursor-not-allowed">
                   Processing...
                 </button>
               </>
@@ -182,13 +182,12 @@ export default function IngestionPhase({ session, onUpdate }: IngestionPhaseProp
               <>
                 <p className="mono text-[11px] uppercase tracking-[0.08em] text-[#F2777A] mb-3">Launch</p>
                 <h2 className="text-[32px] leading-none text-[#F2777A] mb-3">Launch failed</h2>
-                <p className="mono text-[12px] leading-relaxed rounded-lg border border-[#F2777A]/25 bg-[#F2777A]/12 text-[#F2777A] px-4 py-3 mb-6">{errorMessage}</p>
-                <button
-                  onClick={runIngestion}
-                  className="mono px-4 py-2.5 rounded-lg text-[12px] tracking-[0.02em] transition bg-accent text-[#1B1B18] hover:bg-accent-dim"
-                >
-                  Retry
-                </button>
+                <p className="mono text-[12px] leading-relaxed rounded-md border border-[#F2777A]/25 bg-[#F2777A]/12 text-[#F2777A] px-4 py-3 mb-6">{errorMessage}</p>
+                <div className="mx-auto w-full max-w-[280px]">
+                  <ClipButton variant="accent" onClick={runIngestion}>
+                    Retry
+                  </ClipButton>
+                </div>
               </>
             )}
           </div>
@@ -200,7 +199,7 @@ export default function IngestionPhase({ session, onUpdate }: IngestionPhaseProp
           <button
             onClick={() => onUpdate({ currentPhase: "calibration" })}
             disabled={status === "processing"}
-            className="mono text-[12px] tracking-[0.02em] text-muted border border-border px-4 py-2 rounded-lg transition hover:text-foreground hover:bg-surface-light disabled:opacity-40 disabled:cursor-not-allowed"
+            className="mono cursor-pointer text-[11px] uppercase tracking-[0.08em] text-muted border border-border px-4 py-2.5 rounded-md transition hover:text-foreground hover:bg-surface-light disabled:opacity-40 disabled:cursor-not-allowed"
           >
             ← Back to Calibration
           </button>

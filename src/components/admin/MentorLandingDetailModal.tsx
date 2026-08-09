@@ -31,6 +31,7 @@ import {
 } from "@tabler/icons-react";
 import MentorMarketingClient from "@/app/mentors/[slug]/MentorMarketingClient";
 import type { MentorRow } from "@/app/mentors/[slug]/MentorMarketingClient";
+import ClipButton from "@/components/ui/ClipButton";
 import {
   emptyMentorLandingContent,
   MENTOR_LANDING_COMPANY_LOGO_HEIGHTS,
@@ -113,7 +114,7 @@ function AccordionSection({
 }) {
   return (
     <details
-      className="group overflow-hidden rounded-lg border border-border bg-surface"
+      className="group overflow-hidden rounded-md border border-border bg-surface"
       onToggle={(e) => {
         if (e.currentTarget.open && onExpand) {
           onExpand();
@@ -147,7 +148,7 @@ function AccordionSection({
 }
 
 const inputClass =
-  "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-faint transition focus:border-accent/60 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40";
+  "w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-faint transition focus:border-accent/60 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40";
 
 const labelClass =
   "mono mb-1 block text-[11px] uppercase tracking-[0.06em] text-faint";
@@ -159,12 +160,12 @@ const removeTextButtonClass =
   "mono text-[11px] uppercase tracking-[0.06em] text-[#F2777A] transition hover:underline";
 
 const iconRemoveButtonClass =
-  "shrink-0 rounded-lg border border-border px-2 text-faint transition hover:border-[#F2777A]/25 hover:bg-[#F2777A]/10 hover:text-[#F2777A]";
+  "shrink-0 rounded-md border border-border px-2 text-faint transition hover:border-[#F2777A]/25 hover:bg-[#F2777A]/10 hover:text-[#F2777A]";
 
-const nestedCardClass = "rounded-lg border border-border bg-surface-light p-3";
+const nestedCardClass = "rounded-md border border-border bg-surface-light p-3";
 
 const errorBoxClass =
-  "rounded-lg border border-[#F2777A]/25 bg-[#F2777A]/12 px-3 py-2 text-sm text-[#F2777A]";
+  "rounded-md border border-[#F2777A]/25 bg-[#F2777A]/12 px-3 py-2 text-sm text-[#F2777A]";
 
 const PREVIEW_FALLBACK_AVATAR = "/mentors/default-avatar.svg";
 
@@ -503,7 +504,7 @@ export default function MentorLandingDetailModal({
           <header className="shrink-0 border-b border-border bg-surface px-6 py-4">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-[22px] leading-tight text-foreground">
+                <h2 className="text-[24px] leading-tight text-foreground">
                   {mode === "create"
                     ? "New mentor landing page"
                     : "Edit mentor landing page"}
@@ -517,7 +518,7 @@ export default function MentorLandingDetailModal({
                   ref={actionsMenuRef}
                   className="group relative"
                 >
-                  <summary className="mono flex cursor-pointer list-none items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-[12px] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light [&::-webkit-details-marker]:hidden">
+                  <summary className="mono flex cursor-pointer list-none items-center gap-1.5 rounded-md border border-border px-3 py-2 text-[12px] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light [&::-webkit-details-marker]:hidden">
                     Actions
                     <IconChevronDown
                       size={14}
@@ -527,7 +528,7 @@ export default function MentorLandingDetailModal({
                     />
                   </summary>
                   <div
-                    className="absolute right-0 z-[70] mt-1 min-w-[12.5rem] rounded-lg border border-border bg-surface py-1 shadow-2xl"
+                    className="absolute right-0 z-[70] mt-1 min-w-[12.5rem] rounded-md border border-border bg-surface py-1 shadow-2xl"
                     role="menu"
                   >
                     {resolvedSlug ? (
@@ -600,7 +601,7 @@ export default function MentorLandingDetailModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex h-10 w-10 items-center justify-center rounded-lg text-muted transition hover:bg-surface-light hover:text-foreground"
+                  className="flex h-10 w-10 items-center justify-center rounded-md text-muted transition hover:bg-surface-light hover:text-foreground"
                   aria-label="Close"
                 >
                   <IconX size={22} stroke={1.5} />
@@ -615,7 +616,7 @@ export default function MentorLandingDetailModal({
             )}
             {saveError && (
               <div
-                className="fh-scroll mb-3 max-h-40 overflow-y-auto whitespace-pre-wrap rounded-lg border border-[#F2777A]/25 bg-[#F2777A]/12 px-3 py-2 mono text-xs text-[#F2777A]"
+                className="fh-scroll mb-3 max-h-40 overflow-y-auto whitespace-pre-wrap rounded-md border border-[#F2777A]/25 bg-[#F2777A]/12 px-3 py-2 mono text-xs text-[#F2777A]"
               >
                 {saveError}
               </div>
@@ -1030,7 +1031,7 @@ export default function MentorLandingDetailModal({
                               companies: list.length ? list : undefined,
                             }));
                           }}
-                          className="mono inline-flex shrink-0 items-center gap-1 rounded-lg border border-[#F2777A]/25 px-3 py-2 text-[11px] uppercase tracking-[0.06em] text-[#F2777A] transition hover:bg-[#F2777A]/10"
+                          className="mono inline-flex shrink-0 items-center gap-1 rounded-md border border-[#F2777A]/25 px-3 py-2 text-[11px] uppercase tracking-[0.06em] text-[#F2777A] transition hover:bg-[#F2777A]/10"
                         >
                           <IconTrash size={14} />
                           Remove
@@ -1369,7 +1370,7 @@ export default function MentorLandingDetailModal({
                 </AccordionSection>
               </div>
                 ) : (
-                  <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-4">
+                  <div className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4">
                     <p className="text-xs leading-relaxed text-muted">
                       Edit the full landing content object. Apply runs schema
                       validation and replaces the form fields.
@@ -1381,14 +1382,14 @@ export default function MentorLandingDetailModal({
                       className={`${inputClass} fh-scroll min-h-[min(55vh,22rem)] flex-1 resize-y mono text-xs leading-relaxed`}
                     />
                     {rawJsonError ? (
-                      <p className="fh-scroll max-h-40 overflow-y-auto whitespace-pre-wrap rounded-lg border border-[#F2777A]/25 bg-[#F2777A]/12 px-3 py-2 mono text-xs text-[#F2777A]">
+                      <p className="fh-scroll max-h-40 overflow-y-auto whitespace-pre-wrap rounded-md border border-[#F2777A]/25 bg-[#F2777A]/12 px-3 py-2 mono text-xs text-[#F2777A]">
                         {rawJsonError}
                       </p>
                     ) : null}
                     <button
                       type="button"
                       onClick={handleApplyRawJson}
-                      className="mono inline-flex w-fit items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-[12px] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light"
+                      className="mono inline-flex w-fit items-center gap-2 rounded-md border border-border px-4 py-2.5 text-[12px] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light"
                     >
                       <IconCode size={18} stroke={1.5} aria-hidden />
                       Apply JSON to form
@@ -1407,7 +1408,7 @@ export default function MentorLandingDetailModal({
                     type="button"
                     onClick={handleDelete}
                     disabled={deleting || saving}
-                    className="mono inline-flex items-center gap-2 rounded-lg border border-[#F2777A]/25 px-4 py-2.5 text-[12px] uppercase tracking-[0.06em] text-[#F2777A] transition hover:bg-[#F2777A]/10 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="mono inline-flex items-center gap-2 rounded-md border border-[#F2777A]/25 px-4 py-3.5 text-[11px] leading-[1.4] uppercase tracking-[0.06em] text-[#F2777A] transition hover:bg-[#F2777A]/10 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     {deleting ? (
                       <IconLoader2 size={16} className="animate-spin" />
@@ -1422,25 +1423,28 @@ export default function MentorLandingDetailModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="mono rounded-lg border border-border px-4 py-2.5 text-[12px] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light"
+                  className="mono rounded-md border border-border px-4 py-3.5 text-[11px] leading-[1.4] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light"
                 >
                   Cancel
                 </button>
-                <button
-                  type="button"
-                  onClick={handleSave}
-                  disabled={saving || loading || deleting || aiLoading}
-                  className="mono rounded-lg bg-accent px-4 py-2.5 text-[12px] uppercase tracking-[0.06em] text-[#1B1B18] transition hover:bg-accent-dim disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  {saving ? (
-                    <span className="flex items-center gap-2">
-                      <IconLoader2 size={16} className="animate-spin" />
-                      Saving…
-                    </span>
+                <div className="w-[150px]">
+                  {saving || loading || deleting || aiLoading ? (
+                    <div className="clip-corner mono flex w-full items-center gap-2 bg-white/8 px-5 py-3.5 text-[11px] leading-[1.4] tracking-[0.01em] text-faint">
+                      {saving ? (
+                        <>
+                          <IconLoader2 size={16} className="animate-spin" />
+                          Saving…
+                        </>
+                      ) : (
+                        "Save"
+                      )}
+                    </div>
                   ) : (
-                    "Save"
+                    <ClipButton variant="paper" onClick={handleSave}>
+                      Save
+                    </ClipButton>
                   )}
-                </button>
+                </div>
               </div>
             </div>
           </footer>
@@ -1495,7 +1499,7 @@ export default function MentorLandingDetailModal({
                 {aiNotes.trim().length} / 20+ characters
               </p>
               {aiDraftModalError ? (
-                <p className="fh-scroll mt-2 max-h-32 overflow-y-auto whitespace-pre-wrap rounded-lg border border-[#F2777A]/25 bg-[#F2777A]/12 px-3 py-2 mono text-xs text-[#F2777A]">
+                <p className="fh-scroll mt-2 max-h-32 overflow-y-auto whitespace-pre-wrap rounded-md border border-[#F2777A]/25 bg-[#F2777A]/12 px-3 py-2 mono text-xs text-[#F2777A]">
                   {aiDraftModalError}
                 </p>
               ) : null}
@@ -1508,26 +1512,30 @@ export default function MentorLandingDetailModal({
                   setAiPromptModalOpen(false);
                   setAiDraftModalError(null);
                 }}
-                className="mono rounded-lg border border-border px-4 py-2.5 text-[12px] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
+                className="mono rounded-md border border-border px-4 py-3.5 text-[11px] leading-[1.4] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Cancel
               </button>
-              <button
-                type="button"
-                disabled={aiLoading}
-                onClick={async () => {
-                  const ok = await handleAiDraft();
-                  if (ok) setAiPromptModalOpen(false);
-                }}
-                className="mono inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-[12px] uppercase tracking-[0.06em] text-[#1B1B18] transition hover:bg-accent-dim disabled:cursor-not-allowed disabled:opacity-40"
-              >
+              <div className="w-[190px]">
                 {aiLoading ? (
-                  <IconLoader2 size={18} className="animate-spin" />
+                  <div className="clip-corner mono flex w-full items-center gap-2 bg-white/8 px-5 py-3.5 text-[11px] leading-[1.4] tracking-[0.01em] text-faint">
+                    <IconLoader2 size={16} className="animate-spin" />
+                    Generate draft
+                  </div>
                 ) : (
-                  <IconSparkles size={18} stroke={1.5} />
+                  <ClipButton
+                    variant="paper"
+                    onClick={() => {
+                      void (async () => {
+                        const ok = await handleAiDraft();
+                        if (ok) setAiPromptModalOpen(false);
+                      })();
+                    }}
+                  >
+                    Generate draft
+                  </ClipButton>
                 )}
-                Generate draft
-              </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1542,7 +1550,7 @@ export default function MentorLandingDetailModal({
             <button
               type="button"
               onClick={() => setPreviewOpen(false)}
-              className="mono rounded-lg border border-border px-3 py-1.5 text-[11px] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light"
+              className="mono rounded-md border border-border px-3 py-1.5 text-[11px] uppercase tracking-[0.06em] text-foreground transition hover:bg-surface-light"
             >
               Close preview
             </button>

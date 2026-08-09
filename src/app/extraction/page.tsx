@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { IconCheck, IconCircleCheck, IconClock, IconTool } from "@tabler/icons-react";
 import ChatMessage from "@/components/ChatMessage";
+import ClipButton from "@/components/ui/ClipButton";
 import {
   EXTRACTION_EXCHANGE_ESCAPE_HATCH,
   parseExtractionAssistantPayload,
@@ -233,7 +234,7 @@ export default function ExtractionPage() {
         <div className="shrink-0 border-b border-border bg-surface px-6 py-4">
           <div className="max-w-3xl mx-auto flex items-center justify-between">
             <div>
-              <p className="mono text-[12px] tracking-[0.06em] text-accent mb-2">Extraction</p>
+              <p className="mono text-[11px] uppercase tracking-[0.08em] text-accent mb-2">Extraction</p>
               <h1 className="text-[26px] leading-none text-foreground">Mentor Extraction Complete</h1>
               <p className="mono text-[11px] tracking-[0.04em] text-faint mt-2">
                 {session?.user?.name ? `Session with ${session.user.name}` : "Building your mentor agent"}
@@ -253,27 +254,35 @@ export default function ExtractionPage() {
               <p className="text-muted max-w-md mx-auto mb-8">
                 {completionSubtext}
               </p>
-              <div className="bg-surface border border-border rounded-lg p-6 mb-8 text-left">
-                <ul className="list-disc pl-5 space-y-2 text-foreground/85">
-                  <li>Your mentor agent will be trained with this knowledge</li>
-                  <li>You'll receive an email notification when your agent is ready</li>
-                  <li>You can refine your agent further through additional conversations</li>
+              <div className="bg-surface border border-border rounded-md p-6 mb-8 text-left">
+                <ul className="space-y-2 text-foreground/85">
+                  <li className="flex items-start gap-2">
+                    <span className="mt-0.5 shrink-0 text-accent">▸</span>
+                    <span>Your mentor agent will be trained with this knowledge</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-0.5 shrink-0 text-accent">▸</span>
+                    <span>You&apos;ll receive an email notification when your agent is ready</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-0.5 shrink-0 text-accent">▸</span>
+                    <span>You can refine your agent further through additional conversations</span>
+                  </li>
                 </ul>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <button
-                  onClick={() => router.push("/mentors")}
-                  className="mono bg-accent text-[#1B1B18] px-4 py-2 rounded-lg text-[12px] tracking-[0.02em] hover:bg-accent-dim transition"
-                >
-                  {llmMarkedComplete ? "Continue when ready" : "I have said enough — done"}
-                </button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                <div className="w-full sm:w-[280px]">
+                  <ClipButton variant="accent" onClick={() => router.push("/mentors")}>
+                    {llmMarkedComplete ? "Continue when ready" : "I have said enough — done"}
+                  </ClipButton>
+                </div>
                 <button
                   onClick={() => {
                     setMessages([]);
                     setLlmMarkedComplete(false);
                     localStorage.removeItem("fh-extraction-session");
                   }}
-                  className="mono border border-border text-foreground px-4 py-2 rounded-lg text-[12px] tracking-[0.02em] hover:bg-surface-light transition"
+                  className="mono cursor-pointer border border-border text-muted px-6 py-3 rounded-md text-[11px] uppercase tracking-[0.08em] hover:text-foreground hover:bg-surface-light transition"
                 >
                   Restart Extraction
                 </button>
@@ -291,7 +300,7 @@ export default function ExtractionPage() {
       <div className="shrink-0 border-b border-border bg-surface px-6 py-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
           <div>
-            <p className="mono text-[12px] tracking-[0.06em] text-accent mb-2">Extraction</p>
+            <p className="mono text-[11px] uppercase tracking-[0.08em] text-accent mb-2">Extraction</p>
             <h1 className="text-[26px] leading-none text-foreground">Mentor Extraction</h1>
             <p className="mono text-[11px] tracking-[0.04em] text-faint mt-2">
               {session?.user?.name ? `Session with ${session.user.name}` : "Building your mentor agent"}
@@ -299,7 +308,7 @@ export default function ExtractionPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="mono text-[10px] uppercase tracking-[0.08em] px-2 py-0.5 rounded bg-white/8 text-muted border border-border">
+            <span className="mono text-[10px] uppercase tracking-[0.08em] px-2.5 py-1 rounded-md bg-surface-light text-muted border border-border">
               {exchangeCount < 10
                 ? "Phase 1: Foundation"
                 : exchangeCount < 20
@@ -325,10 +334,10 @@ export default function ExtractionPage() {
               <h2 className="text-[32px] leading-none text-foreground mb-6">Ready to extract your expertise</h2>
 
               {/* Time estimate */}
-              <div className="bg-accent/5 border border-accent/20 rounded-lg p-4 mb-6 max-w-md mx-auto">
+              <div className="bg-accent/5 border border-accent/20 rounded-md p-4 mb-6 max-w-md mx-auto">
                 <div className="flex items-start gap-3">
                   <IconClock size={20} stroke={1.75} className="mt-0.5 shrink-0 text-accent" aria-hidden />
-                  <p className="text-muted text-sm text-left">
+                  <p className="text-muted text-[15px] leading-relaxed text-left">
                     <span className="mono text-[11px] uppercase tracking-[0.06em] text-foreground">Time estimate:</span> 1-2 hours to complete thoroughly.
                     You can pause and return anytime - your progress is automatically saved.
                   </p>
@@ -337,9 +346,9 @@ export default function ExtractionPage() {
 
               {/* CV Upload */}
               <div className="mb-8 max-w-md mx-auto">
-                <div className="border-2 border-dashed border-border bg-surface rounded-lg p-6 transition hover:border-accent/40 hover:bg-surface-light">
+                <div className="border border-dashed border-border bg-surface rounded-md p-6 transition hover:border-accent/40 hover:bg-surface-light">
                   <h3 className="text-[19px] leading-tight text-foreground mb-2">Speed up with your CV/Resume</h3>
-                  <p className="text-muted text-sm mb-4">
+                  <p className="text-muted text-[15px] leading-relaxed mb-4">
                     Upload your CV to skip surface-level questions and dive straight into your expertise.
                   </p>
 
@@ -355,7 +364,7 @@ export default function ExtractionPage() {
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploading}
-                    className="mono w-full py-2 rounded-lg border border-border text-foreground text-[12px] tracking-[0.02em] transition hover:bg-surface-light disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="mono w-full cursor-pointer py-2.5 rounded-md border border-border text-muted text-[11px] uppercase tracking-[0.08em] transition hover:text-foreground hover:bg-surface-light disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {isUploading ? "Uploading..." : "Upload CV/Resume"}
                   </button>
@@ -373,14 +382,14 @@ export default function ExtractionPage() {
                 This conversation will map how you think, diagnose problems, and help people.
                 No prep needed. Just talk naturally.
               </p>
-              <button
-                onClick={() =>
-                  sendMessage("Let's get started.")
-                }
-                className="mono bg-accent text-[#1B1B18] px-4 py-2 rounded-lg text-[12px] tracking-[0.02em] hover:bg-accent-dim transition"
-              >
-                Start Extraction →
-              </button>
+              <div className="mx-auto w-full max-w-[280px]">
+                <ClipButton
+                  variant="accent"
+                  onClick={() => sendMessage("Let's get started.")}
+                >
+                  Start Extraction
+                </ClipButton>
+              </div>
             </div>
           )}
 
@@ -399,7 +408,7 @@ export default function ExtractionPage() {
               <span>Progress</span>
               <span>{Math.min(100, Math.round((exchangeCount / EXTRACTION_EXCHANGE_ESCAPE_HATCH) * 100))}%</span>
             </div>
-            <div className="w-full bg-white/10 rounded-full h-2">
+            <div className="w-full bg-border rounded-full h-2">
               <div
                 className="bg-accent h-2 rounded-full transition-all duration-300"
                 style={{ width: `${Math.min(100, (exchangeCount / EXTRACTION_EXCHANGE_ESCAPE_HATCH) * 100)}%` }}
@@ -422,13 +431,13 @@ export default function ExtractionPage() {
               onKeyDown={handleKeyDown}
               placeholder="Share your thinking..."
               rows={2}
-              className="flex-1 resize-none rounded-lg border border-border bg-background px-4 py-3 text-[15px] text-foreground placeholder:text-faint transition focus:outline-none focus:border-accent/60 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex-1 resize-none rounded-md border border-border bg-background px-5 py-3.5 text-[15px] text-foreground placeholder:text-faint transition focus:outline-none focus:border-accent/50 disabled:opacity-40 disabled:cursor-not-allowed"
               disabled={streaming}
             />
             <button
               onClick={() => sendMessage(input)}
               disabled={!input.trim() || streaming}
-              className="mono self-end bg-accent text-[#1B1B18] px-4 py-2 rounded-lg text-[12px] tracking-[0.02em] hover:bg-accent-dim transition disabled:opacity-40 disabled:cursor-not-allowed"
+              className="mono shrink-0 self-end bg-transparent text-accent border border-accent/70 px-7 py-3 rounded-md text-[12px] tracking-[0.08em] uppercase hover:bg-accent hover:text-[#1B1B18] transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               {streaming ? "..." : "Send"}
             </button>

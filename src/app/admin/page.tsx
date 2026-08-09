@@ -46,17 +46,17 @@ function StatCard({
   trend?: { value: string; positive: boolean };
 }) {
   return (
-    <div className="rounded-lg border border-border bg-surface p-5">
+    <div className="rounded-md border border-border bg-surface p-5">
       <div className="flex items-start justify-between">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-light text-muted">
+        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-surface-light text-muted">
           {icon}
         </div>
         {trend && (
           <span
-            className={`mono flex items-center gap-0.5 rounded border px-2 py-0.5 text-[10px] tracking-[0.06em] ${
+            className={`mono flex items-center gap-0.5 rounded-sm px-2 py-0.5 text-[10px] tracking-[0.06em] ${
               trend.positive
-                ? "border-accent/25 bg-accent/15 text-accent"
-                : "border-[#F2777A]/25 bg-[#F2777A]/12 text-[#F2777A]"
+                ? "bg-accent/15 text-accent"
+                : "bg-[#F2777A]/15 text-[#F2777A]"
             }`}
           >
             {trend.positive ? (
@@ -174,7 +174,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-[34px] leading-none text-foreground">Dashboard</h1>
+        <h1 className="text-[32px] leading-none text-foreground">Dashboard</h1>
         <p className="mono mt-2.5 text-[12px] text-muted">
           Overview of ForgeHouse platform metrics
         </p>
@@ -211,8 +211,8 @@ export default function AdminDashboardPage() {
         />
       </div>
 
-      <div className="mt-8 rounded-lg border border-border bg-surface p-6">
-        <h2 className="mb-2 text-[22px] leading-none text-foreground">
+      <div className="mt-8 rounded-md border border-border bg-surface p-6">
+        <h2 className="mb-2 text-[24px] leading-none text-foreground">
           Onboarding Pipeline
         </h2>
         <p className="mono mb-6 text-[11px] uppercase tracking-[0.08em] text-faint">
@@ -222,7 +222,7 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-lg border border-border bg-surface p-6">
+        <div className="rounded-md border border-border bg-surface p-6">
           <h3 className="mb-4 text-[20px] leading-none text-foreground">Signups</h3>
           <div>
             <MetricRow label="Last 7 days" value={metrics.users.last7d} />
@@ -231,7 +231,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-border bg-surface p-6">
+        <div className="rounded-md border border-border bg-surface p-6">
           <h3 className="mb-4 text-[20px] leading-none text-foreground">
             Conversations
           </h3>

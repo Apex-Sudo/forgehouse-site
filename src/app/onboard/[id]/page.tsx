@@ -10,6 +10,16 @@ import ProgressBar from "@/components/onboarding/ProgressBar";
 import { formatExpiryOrdinal } from "@/lib/format-expiry";
 import type { OnboardingSession } from "@/types/onboarding";
 
+/** "colin chapman" → "Colin Chapman". Tolerates a missing or partial name. */
+function titleCase(name: string | undefined | null): string {
+  return (name ?? "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w[0].toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
 export default function OnboardingPage() {
   const params = useParams();
   const router = useRouter();
@@ -141,7 +151,7 @@ export default function OnboardingPage() {
           <p className="text-muted text-[15px] leading-relaxed mb-7">{error}</p>
           <button
             onClick={() => router.push("/")}
-            className="mono bg-accent text-[#1B1B18] hover:bg-accent-dim px-4 py-2 rounded-lg text-[12px] tracking-[0.02em] transition"
+            className="mono cursor-pointer bg-transparent text-accent border border-accent/70 px-6 py-2.5 rounded-md text-[12px] tracking-[0.08em] uppercase hover:bg-accent hover:text-[#1B1B18] transition"
           >
             Back to Home
           </button>
@@ -168,8 +178,12 @@ export default function OnboardingPage() {
       <div className="shrink-0 border-b border-border bg-surface px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-start justify-between gap-4">
           <div>
-            <p className="mono text-[12px] tracking-[0.06em] text-accent mb-2">Onboarding</p>
-            <h1 className="text-[26px] leading-none text-foreground">Welcome, {session.mentorName.split(' ')[0]?.[0]?.toUpperCase() + session.mentorName.split(' ')[0]?.slice(1) + ' ' + session.mentorName.split(' ')[1]?.[0]?.toUpperCase() + session.mentorName.split(' ')[1]?.slice(1) + '!'}</h1>
+            <p className="mono text-[11px] uppercase tracking-[0.08em] text-accent mb-2">Onboarding</p>
+            <h1 className="text-[26px] leading-none text-foreground">
+              {titleCase(session.mentorName)
+                ? `Welcome, ${titleCase(session.mentorName)}!`
+                : "Welcome!"}
+            </h1>
             <h3 className="mono text-[12px] tracking-[0.02em] text-muted mt-2">Let&apos;s get your expertise live.</h3>
           </div>
           <div className="text-right shrink-0">

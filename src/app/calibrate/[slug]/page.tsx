@@ -167,12 +167,12 @@ function CalibrationPage() {
           {/* Header */}
           <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-border">
             <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface-light border border-border text-accent">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-surface-light border border-border text-accent">
                 <IconTarget size={18} stroke={1.5} aria-hidden />
               </span>
               <div>
                 <h1 className="text-[20px] leading-none text-foreground">Calibration Session</h1>
-                <p className="mono text-[11px] tracking-[0.04em] text-faint mt-1.5">{slug} &middot; Phase: {phases}</p>
+                <p className="mono text-[11px] uppercase tracking-[0.06em] text-faint mt-1.5">{slug} &middot; Phase: {phases}</p>
               </div>
             </div>
             {messages.length > 0 && (
@@ -185,13 +185,13 @@ function CalibrationPage() {
                       setStarted(false);
                     }
                   }}
-                  className="mono text-[11px] tracking-[0.06em] uppercase text-muted border border-border px-3 py-1.5 rounded-lg hover:text-[#F2777A] hover:border-[#F2777A]/25 hover:bg-[#F2777A]/10 transition"
+                  className="mono cursor-pointer text-[11px] tracking-[0.08em] uppercase text-muted border border-border px-3 py-1.5 rounded-md hover:text-[#F2777A] hover:border-[#F2777A]/25 hover:bg-[#F2777A]/10 transition"
                 >
                   Reset
                 </button>
                 <button
                   onClick={exportCorrections}
-                  className="mono text-[11px] tracking-[0.06em] uppercase text-muted border border-border px-3 py-1.5 rounded-lg hover:text-foreground hover:bg-surface-light transition"
+                  className="mono cursor-pointer text-[11px] tracking-[0.08em] uppercase text-muted border border-border px-3 py-1.5 rounded-md hover:text-foreground hover:bg-surface-light transition"
                 >
                   Export
                 </button>
@@ -203,7 +203,7 @@ function CalibrationPage() {
           <div className="fh-scroll flex-1 overflow-y-auto px-6 py-6 space-y-5">
             {!started && (
               <div className="flex justify-start">
-                <div className="max-w-[80%] bg-surface-light border border-border px-5 py-3.5 text-sm leading-relaxed text-foreground rounded-lg rounded-bl-sm">
+                <div className="max-w-[75%] px-5 py-3.5 text-[15px] leading-relaxed bg-accent text-[#1B1B18] rounded-lg rounded-bl-sm">
                   Welcome back! Your agent is built and ready for you to put it through its paces. I&apos;m going to show you how it handles different situations, and you tell me where it nails it and where it&apos;s off. Think of it like training a new team member who&apos;s read all your playbooks but hasn&apos;t sat in the room with you yet. Let&apos;s start with something simple.
                 </div>
               </div>
@@ -215,29 +215,32 @@ function CalibrationPage() {
                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 {m.role === "user" ? (
-                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap bg-accent text-[#1B1B18] rounded-lg rounded-br-sm">
+                  <div className="max-w-[75%] px-5 py-3 text-[15px] leading-relaxed whitespace-pre-wrap text-right border border-border text-foreground rounded-lg rounded-br-sm">
                     {m.content}
                   </div>
                 ) : (
-                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed bg-surface-light border border-border text-foreground rounded-lg rounded-bl-sm">
+                  <div className="max-w-[75%] px-5 py-3.5 text-[15px] leading-relaxed bg-accent text-[#1B1B18] rounded-lg rounded-bl-sm empty:hidden">
                     <ReactMarkdown
                       components={{
                         p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
-                        strong: ({ children }) => <strong className="font-medium text-foreground">{children}</strong>,
-                        em: ({ children }) => <em className="italic text-muted">{children}</em>,
+                        strong: ({ children }) => <strong className="text-[#1B1B18]">{children}</strong>,
+                        em: ({ children }) => <em className="italic text-[#1B1B18]/80">{children}</em>,
                         ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
                         ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
                         li: ({ children }) => (
                           <li className="flex items-start gap-2">
-                            <span className="text-accent mt-0.5 shrink-0">▸</span>
+                            <span className="text-[#1B1B18]/55 mt-0.5 shrink-0">▸</span>
                             <span>{children}</span>
                           </li>
                         ),
-                        h1: ({ children }) => <h3 className="text-foreground mb-2 text-lg">{children}</h3>,
-                        h2: ({ children }) => <h3 className="text-foreground mb-2 text-lg">{children}</h3>,
-                        h3: ({ children }) => <h3 className="text-foreground mb-1.5 text-base">{children}</h3>,
+                        code: ({ children }) => (
+                          <code className="bg-[#1B1B18]/10 text-[#1B1B18] px-1.5 py-0.5 rounded text-[13px] mono">{children}</code>
+                        ),
+                        h1: ({ children }) => <h3 className="text-[#1B1B18] mb-2 text-[19px]">{children}</h3>,
+                        h2: ({ children }) => <h3 className="text-[#1B1B18] mb-2 text-[19px]">{children}</h3>,
+                        h3: ({ children }) => <h3 className="text-[#1B1B18] mb-1.5 text-[17px]">{children}</h3>,
                         blockquote: ({ children }) => (
-                          <blockquote className="border-l-2 border-accent/40 pl-3 my-2 text-muted italic">{children}</blockquote>
+                          <blockquote className="border-l-2 border-[#1B1B18]/30 pl-3 my-2 text-[#1B1B18]/70 italic">{children}</blockquote>
                         ),
                       }}
                     >
@@ -251,10 +254,12 @@ function CalibrationPage() {
             {streaming &&
               messages.length > 0 &&
               messages[messages.length - 1].content === "" && (
-                <div className="flex justify-start">
-                  <div className="bg-surface-light border border-border px-5 py-3.5 text-sm rounded-lg rounded-bl-sm">
-                    <span className="animate-pulse text-faint">●●●</span>
-                  </div>
+                <div className="flex justify-start items-center gap-3">
+                  <span className="flex gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent fh-dot" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent fh-dot [animation-delay:200ms]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent fh-dot [animation-delay:400ms]" />
+                  </span>
                 </div>
               )}
 
@@ -269,12 +274,12 @@ function CalibrationPage() {
                   <div
                     key={p}
                     className={`h-1.5 w-12 rounded-full transition-all duration-500 ${
-                      phases === p ? "bg-accent" : corrections > ["Voice", "Frameworks", "Edge Cases", "Final"].indexOf(p) * 5 ? "bg-accent/40" : "bg-white/10"
+                      phases === p ? "bg-accent" : corrections > ["Voice", "Frameworks", "Edge Cases", "Final"].indexOf(p) * 5 ? "bg-accent/40" : "bg-border"
                     }`}
                   />
                 ))}
               </div>
-              <span className="mono text-[11px] tracking-[0.06em] text-faint">{phases} phase</span>
+              <span className="mono text-[11px] uppercase tracking-[0.06em] text-faint">{phases} phase</span>
             </div>
           </div>
 
@@ -291,13 +296,13 @@ function CalibrationPage() {
                 onKeyDown={handleKeyDown}
                 placeholder="Tell me what's right and what's off..."
                 rows={1}
-                className="fh-scroll flex-1 rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-faint focus:border-accent/60 focus:outline-none transition resize-none overflow-y-auto"
+                className="fh-scroll flex-1 rounded-md border border-border bg-background px-5 py-3.5 text-[15px] text-foreground placeholder:text-faint focus:border-accent/50 focus:outline-none transition resize-none overflow-y-auto"
                 style={{ maxHeight: 200 }}
               />
               <button
                 onClick={() => send()}
                 disabled={streaming}
-                className="mono bg-accent text-[#1B1B18] px-6 py-3 rounded-lg text-[12px] tracking-[0.02em] hover:bg-accent-dim transition disabled:opacity-40 disabled:cursor-not-allowed"
+                className="mono shrink-0 bg-transparent text-accent border border-accent/70 px-7 rounded-md text-[12px] tracking-[0.08em] uppercase hover:bg-accent hover:text-[#1B1B18] transition disabled:opacity-40 cursor-pointer"
               >
                 Send
               </button>

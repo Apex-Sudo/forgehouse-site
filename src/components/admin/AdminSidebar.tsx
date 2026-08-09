@@ -71,8 +71,8 @@ export default function AdminSidebar({
     <aside className="flex w-60 shrink-0 flex-col border-r border-border bg-surface">
       <div className="border-b border-border px-5 py-5">
         <Link href="/admin" className="flex items-start justify-between gap-2">
-          <Wordmark size={20} className="text-foreground" />
-          <span className="mono rounded bg-accent/15 px-1.5 py-0.5 text-[10px] uppercase tracking-[0.08em] text-accent">
+          <Wordmark size={19} className="text-foreground" />
+          <span className="mono rounded-sm bg-accent/15 px-1.5 py-0.5 text-[10px] uppercase tracking-[0.08em] text-accent">
             Admin
           </span>
         </Link>
@@ -89,7 +89,7 @@ export default function AdminSidebar({
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`mono flex items-center gap-3 rounded-lg px-3 py-2.5 text-[12px] tracking-[0.02em] transition ${
+                  className={`mono flex items-center gap-3 rounded-md px-3 py-2.5 text-[12px] tracking-[0.02em] transition ${
                     active
                       ? "bg-accent/15 text-accent"
                       : "text-muted hover:bg-surface-light hover:text-foreground"

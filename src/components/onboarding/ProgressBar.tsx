@@ -78,7 +78,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
               <span
                 key={id}
                 className={`h-1.5 w-1.5 rounded-full ${
-                  st === "completed" ? "bg-accent" : st === "active" ? "bg-accent ring-2 ring-accent/30" : "bg-white/15"
+                  st === "completed" ? "bg-accent" : st === "active" ? "bg-accent ring-2 ring-accent/30" : "bg-border-light"
                 }`}
               />
             );
@@ -88,7 +88,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           <button
             type="button"
             onClick={onExpand}
-            className="mono flex shrink-0 items-center gap-1 rounded-lg border border-border px-2.5 py-1.5 text-[11px] uppercase tracking-[0.06em] text-muted transition hover:border-accent/40 hover:text-foreground"
+            className="mono flex shrink-0 cursor-pointer items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-[11px] uppercase tracking-[0.06em] text-muted transition hover:border-accent/40 hover:text-foreground"
           >
             Show steps
             <IconChevronDown size={16} stroke={1.75} />
@@ -105,7 +105,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           <button
             type="button"
             onClick={onCollapse}
-            className="mono flex items-center gap-1 text-[11px] uppercase tracking-[0.06em] text-muted transition hover:text-foreground"
+            className="mono flex cursor-pointer items-center gap-1 text-[11px] uppercase tracking-[0.06em] text-muted transition hover:text-foreground"
           >
             Hide steps
             <IconChevronUp size={16} stroke={1.75} />
@@ -133,7 +133,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
                   status === "active"
                     ? "border border-accent bg-accent text-[#1B1B18]"
                     : ""
-                } ${status === "pending" ? "border border-border bg-white/8 text-muted" : ""}`}
+                } ${status === "pending" ? "border border-border bg-surface-light text-muted" : ""}`}
               >
                 {status === "completed" ? (
                   <IconCheck size={20} stroke={2.25} className="text-accent" />
@@ -160,7 +160,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       </div>
 
       <div className="relative pt-4">
-        <div className="absolute top-0 left-0 h-1 w-full rounded-full bg-white/10" />
+        <div className="absolute top-0 left-0 h-1 w-full rounded-full bg-border" />
         <div
           className="absolute top-0 left-0 h-1 rounded-full bg-accent transition-all duration-500"
           style={{

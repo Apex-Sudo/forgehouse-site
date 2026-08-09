@@ -3,19 +3,18 @@
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
-  IconPlus,
   IconCircleCheck,
   IconClock,
   IconLoader2,
   IconAlertCircle,
   IconX,
-  IconCopy,
   IconChevronLeft,
   IconChevronRight,
   IconSearch,
   IconArrowsSort,
 } from "@tabler/icons-react";
 import type { EnrichedOnboarding, ReadinessStep } from "@/app/api/admin/onboardings/route";
+import ClipButton from "@/components/ui/ClipButton";
 import { AdminTableRowMenu } from "@/components/admin/AdminTableRowMenu";
 import MentorOnboardingDetailModal from "@/components/admin/MentorOnboardingDetailModal";
 
@@ -24,30 +23,30 @@ const PAGE_SIZE = 10;
 const PHASE_LABELS: Record<string, { label: string; color: string }> = {
   extraction: {
     label: "Extraction",
-    color: "border-border bg-white/8 text-muted",
+    color: "bg-white/8 text-muted",
   },
   calibration: {
     label: "Calibration",
-    color: "border-tan/25 bg-tan/15 text-tan",
+    color: "bg-white/16 text-foreground",
   },
   ingestion: {
     label: "Ingestion",
-    color: "border-[#E3B341]/25 bg-[#E3B341]/12 text-[#E3B341]",
+    color: "bg-[#E3B341]/15 text-[#E3B341]",
   },
   complete: {
     label: "Complete",
-    color: "border-accent/25 bg-accent/15 text-accent",
+    color: "bg-accent/15 text-accent",
   },
 };
 
 function PhaseBadge({ phase }: { phase: string }) {
   const cfg = PHASE_LABELS[phase] ?? {
     label: phase,
-    color: "border-border bg-white/8 text-muted",
+    color: "bg-white/8 text-muted",
   };
   return (
     <span
-      className={`mono inline-flex items-center rounded border px-2 py-0.5 text-[10px] uppercase tracking-[0.08em] ${cfg.color}`}
+      className={`mono inline-flex items-center rounded-sm px-2 py-0.5 text-[10px] uppercase tracking-[0.08em] ${cfg.color}`}
     >
       {cfg.label}
     </span>
@@ -140,14 +139,14 @@ function NewOnboardingModal({
               reset();
               onClose();
             }}
-            className="rounded p-1 text-muted transition hover:bg-surface-light hover:text-foreground"
+            className="rounded-sm p-1 text-muted transition hover:bg-surface-light hover:text-foreground"
           >
             <IconX size={20} stroke={1.5} />
           </button>
         </div>
 
         {error && (
-          <div className="mono mb-4 flex items-center gap-2 rounded-lg border border-[#F2777A]/25 bg-[#F2777A]/12 p-3 text-[12px] text-[#F2777A]">
+          <div className="mono mb-4 flex items-center gap-2 rounded-md border border-[#F2777A]/25 bg-[#F2777A]/12 p-3 text-[12px] text-[#F2777A]">
             <IconAlertCircle size={16} stroke={1.5} className="shrink-0" />
             {error}
           </div>
@@ -155,32 +154,37 @@ function NewOnboardingModal({
 
         {generatedLink ? (
           <div className="space-y-4">
-            <div className="mono flex items-center gap-2 rounded-lg border border-accent/25 bg-accent/15 p-3 text-[12px] leading-[1.5] text-accent">
+            <div className="mono flex items-center gap-2 rounded-md bg-accent/15 p-3 text-[12px] leading-[1.5] text-accent">
               <IconCircleCheck size={16} stroke={1.5} className="shrink-0" />
               Link generated and invitation email sent to {email}
             </div>
-            <div className="rounded-lg border border-border bg-background p-3">
+            <div className="rounded-md border border-border bg-background p-3">
               <p className="mono break-all text-[12px] leading-[1.6] text-muted">
                 {generatedLink}
               </p>
             </div>
             <div className="flex gap-3">
-              <button
-                onClick={() => navigator.clipboard.writeText(generatedLink)}
-                className="mono flex flex-1 items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-[12px] tracking-[0.02em] text-[#1B1B18] transition hover:bg-accent-dim"
-              >
-                <IconCopy size={16} stroke={1.5} />
-                Copy Link
-              </button>
-              <button
-                onClick={() => {
-                  reset();
-                  onClose();
-                }}
-                className="mono flex-1 rounded-lg border border-border px-4 py-2.5 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light"
-              >
-                Done
-              </button>
+              <div className="flex-1">
+                <ClipButton
+                  variant="paper"
+                  showChevron={false}
+                  onClick={() => navigator.clipboard.writeText(generatedLink)}
+                >
+                  Copy Link
+                </ClipButton>
+              </div>
+              <div className="flex-1">
+                <ClipButton
+                  variant="tan"
+                  showChevron={false}
+                  onClick={() => {
+                    reset();
+                    onClose();
+                  }}
+                >
+                  Done
+                </ClipButton>
+              </div>
             </div>
           </div>
         ) : (
@@ -195,7 +199,7 @@ function NewOnboardingModal({
                 onChange={(e) => setMentorName(e.target.value)}
                 required
                 placeholder="e.g. Ayush Sharma"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[15px] text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
+                className="w-full rounded-md border border-border bg-background px-3 py-2.5 text-[15px] text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
               />
             </div>
             <div>
@@ -208,23 +212,19 @@ function NewOnboardingModal({
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="ayush@example.com"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[15px] text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
+                className="w-full rounded-md border border-border bg-background px-3 py-2.5 text-[15px] text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
               />
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="mono w-full rounded-lg bg-accent px-4 py-2.5 text-[12px] tracking-[0.02em] text-[#1B1B18] transition hover:bg-accent-dim disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <IconLoader2 size={16} stroke={1.5} className="animate-spin" />
-                  Generating...
-                </span>
-              ) : (
-                "Generate Onboarding Link & Send Email"
-              )}
-            </button>
+            {loading ? (
+              <div className="clip-corner mono flex w-full items-center gap-2 bg-white/8 px-5 py-3.5 text-[11px] leading-[1.4] tracking-[0.01em] text-faint">
+                <IconLoader2 size={16} stroke={1.5} className="animate-spin" />
+                Generating...
+              </div>
+            ) : (
+              <ClipButton type="submit" variant="paper">
+                Generate Onboarding Link &amp; Send Email
+              </ClipButton>
+            )}
           </form>
         )}
       </div>
@@ -396,7 +396,7 @@ function AdminOnboardingPageContent() {
     <div className="p-6 sm:p-8">
       <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-[34px] leading-none text-foreground">
+          <h1 className="text-[32px] leading-none text-foreground">
             Mentor Onboarding
           </h1>
           <p className="mono mt-2.5 text-[11px] uppercase tracking-[0.08em] text-faint">
@@ -405,13 +405,11 @@ function AdminOnboardingPageContent() {
             {filteredSorted.length !== onboardings.length ? " (filtered)" : ""}
           </p>
         </div>
-        <button
-          onClick={() => setNewModalOpen(true)}
-          className="mono flex shrink-0 items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-[12px] tracking-[0.02em] text-[#1B1B18] transition hover:bg-accent-dim"
-        >
-          <IconPlus size={16} stroke={1.5} />
-          New Onboarding
-        </button>
+        <div className="w-full shrink-0 sm:w-[220px]">
+          <ClipButton variant="paper" onClick={() => setNewModalOpen(true)}>
+            New Onboarding
+          </ClipButton>
+        </div>
       </div>
 
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
@@ -426,14 +424,14 @@ function AdminOnboardingPageContent() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search name, email, slug…"
-            className="mono w-full rounded-lg border border-border bg-surface py-2.5 pl-9 pr-3 text-[12px] text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
+            className="mono w-full rounded-md border border-border bg-surface py-2.5 pl-9 pr-3 text-[12px] text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
           />
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <select
             value={phaseFilter}
             onChange={(e) => setPhaseFilter(e.target.value)}
-            className="mono rounded-lg border border-border bg-surface px-3 py-2.5 text-[12px] text-foreground transition focus:border-accent/60 focus:outline-none"
+            className="mono rounded-md border border-border bg-surface px-3 py-2.5 text-[12px] text-foreground transition focus:border-accent/60 focus:outline-none"
           >
             <option value="all" className="bg-surface text-foreground">All phases</option>
             <option value="extraction" className="bg-surface text-foreground">Extraction</option>
@@ -446,7 +444,7 @@ function AdminOnboardingPageContent() {
             <select
               value={sortKey}
               onChange={(e) => setSortKey(e.target.value as SortKey)}
-              className="mono rounded-lg border border-border bg-surface px-3 py-2.5 text-[12px] text-foreground transition focus:border-accent/60 focus:outline-none"
+              className="mono rounded-md border border-border bg-surface px-3 py-2.5 text-[12px] text-foreground transition focus:border-accent/60 focus:outline-none"
             >
               <option value="created_desc" className="bg-surface text-foreground">Newest first</option>
               <option value="created_asc" className="bg-surface text-foreground">Oldest first</option>
@@ -460,17 +458,17 @@ function AdminOnboardingPageContent() {
       </div>
 
       {onboardings.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-surface p-12 text-center">
+        <div className="rounded-md border border-dashed border-border bg-surface p-12 text-center">
           <IconClock size={40} stroke={1} className="mx-auto mb-4 text-faint" />
           <p className="text-muted">No onboardings yet. Create one to get started.</p>
         </div>
       ) : filteredSorted.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-surface p-12 text-center">
+        <div className="rounded-md border border-dashed border-border bg-surface p-12 text-center">
           <p className="text-muted">No sessions match your filters.</p>
         </div>
       ) : (
         <>
-          <div className="overflow-hidden rounded-lg border border-border bg-surface">
+          <div className="overflow-hidden rounded-md border border-border bg-surface">
             <div className="fh-scroll overflow-x-auto">
               <table className="w-full min-w-[640px] text-left">
                 <thead>
@@ -568,7 +566,7 @@ function AdminOnboardingPageContent() {
                 type="button"
                 disabled={pageSafe <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="mono inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
+                className="mono inline-flex items-center gap-1 rounded-md border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <IconChevronLeft size={16} stroke={1.5} />
                 Prev
@@ -577,7 +575,7 @@ function AdminOnboardingPageContent() {
                 type="button"
                 disabled={pageSafe >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className="mono inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
+                className="mono inline-flex items-center gap-1 rounded-md border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next
                 <IconChevronRight size={16} stroke={1.5} />

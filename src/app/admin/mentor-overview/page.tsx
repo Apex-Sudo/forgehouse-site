@@ -44,9 +44,9 @@ function StatCard({
   trend?: { value: string; positive: boolean };
 }) {
   return (
-    <div className="rounded-lg border border-border bg-surface p-5">
+    <div className="rounded-md border border-border bg-surface p-5">
       <div className="flex items-start justify-between">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-surface-light text-muted">
+        <div className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface-light text-muted">
           {icon}
         </div>
         {trend && (
@@ -104,14 +104,14 @@ function MentorsTable({
 }) {
   if (mentors.length === 0) {
     return (
-      <div className="rounded-lg border border-border bg-surface p-12 text-center">
+      <div className="rounded-md border border-border bg-surface p-12 text-center">
         <p className="text-muted">No conversations yet.</p>
       </div>
     );
   }
 
   return (
-    <div className="fh-scroll overflow-x-auto rounded-lg border border-border bg-surface">
+    <div className="fh-scroll overflow-x-auto rounded-md border border-border bg-surface">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-border bg-surface-light">

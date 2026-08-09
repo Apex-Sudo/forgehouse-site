@@ -2,12 +2,11 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import {
-  IconPlus,
-  IconLoader2,
   IconSearch,
   IconChevronLeft,
   IconChevronRight,
 } from "@tabler/icons-react";
+import ClipButton from "@/components/ui/ClipButton";
 import { AdminTableRowMenu } from "@/components/admin/AdminTableRowMenu";
 import MentorLandingDetailModal from "@/components/admin/MentorLandingDetailModal";
 
@@ -23,10 +22,8 @@ type LandingListRow = {
 function PublishedBadge({ published }: { published: boolean }) {
   return (
     <span
-      className={`mono inline-flex rounded border px-2 py-0.5 text-[10px] uppercase tracking-[0.08em] ${
-        published
-          ? "border-accent/25 bg-accent/15 text-accent"
-          : "border-border bg-white/8 text-muted"
+      className={`mono inline-flex rounded-sm px-2 py-0.5 text-[10px] uppercase tracking-[0.08em] ${
+        published ? "bg-accent/15 text-accent" : "bg-white/8 text-muted"
       }`}
     >
       {published ? "Published" : "Draft"}
@@ -150,14 +147,11 @@ function AdminLandingPagesContent() {
             {filtered.length !== rows.length ? " (filtered)" : ""}
           </p>
         </div>
-        <button
-          type="button"
-          onClick={openCreate}
-          className="mono flex shrink-0 items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-[12px] tracking-[0.02em] text-[#1B1B18] transition hover:bg-accent-dim"
-        >
-          <IconPlus size={16} stroke={1.75} />
-          New landing page
-        </button>
+        <div className="w-full shrink-0 sm:w-[220px]">
+          <ClipButton variant="paper" onClick={openCreate}>
+            New landing page
+          </ClipButton>
+        </div>
       </div>
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -172,7 +166,7 @@ function AdminLandingPagesContent() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search slug…"
-            className="mono w-full rounded-lg border border-border bg-surface py-2.5 pl-10 pr-3 text-[13px] text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
+            className="mono w-full rounded-md border border-border bg-surface py-2.5 pl-10 pr-3 text-[13px] text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
           />
         </div>
         <select
@@ -180,7 +174,7 @@ function AdminLandingPagesContent() {
           onChange={(e) =>
             setPublishedFilter(e.target.value as "all" | "yes" | "no")
           }
-          className="mono rounded-lg border border-border bg-surface px-3 py-2.5 text-[13px] text-foreground transition focus:border-accent/60 focus:outline-none"
+          className="mono rounded-md border border-border bg-surface px-3 py-2.5 text-[13px] text-foreground transition focus:border-accent/60 focus:outline-none"
         >
           <option value="all" className="bg-surface text-foreground">
             All statuses
@@ -195,19 +189,19 @@ function AdminLandingPagesContent() {
       </div>
 
       {rows.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-surface p-12 text-center">
+        <div className="rounded-md border border-dashed border-border bg-surface p-12 text-center">
           <p className="text-muted">
             No landing pages yet. Create one or run the migration seed for
             Colin.
           </p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-surface p-12 text-center">
+        <div className="rounded-md border border-dashed border-border bg-surface p-12 text-center">
           <p className="text-muted">No pages match your filters.</p>
         </div>
       ) : (
         <>
-          <div className="rounded-lg border border-border bg-surface">
+          <div className="rounded-md border border-border bg-surface">
             <div className="fh-scroll overflow-x-auto">
               <table className="w-full min-w-[520px] text-left text-sm">
                 <thead>
@@ -275,7 +269,7 @@ function AdminLandingPagesContent() {
                 type="button"
                 disabled={pageSafe <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="mono inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
+                className="mono inline-flex items-center gap-1 rounded-md border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <IconChevronLeft size={16} stroke={1.5} />
                 Prev
@@ -284,7 +278,7 @@ function AdminLandingPagesContent() {
                 type="button"
                 disabled={pageSafe >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className="mono inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
+                className="mono inline-flex items-center gap-1 rounded-md border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next
                 <IconChevronRight size={16} stroke={1.5} />

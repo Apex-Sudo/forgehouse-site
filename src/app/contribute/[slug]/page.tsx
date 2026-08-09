@@ -195,12 +195,12 @@ function ExtractionPage() {
           {/* Header */}
           <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-border">
             <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface-light border border-border text-accent">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-surface-light border border-border text-accent">
                 <IconTool size={18} stroke={1.5} aria-hidden />
               </span>
               <div>
                 <h1 className="text-[20px] leading-none text-foreground">Mentor Session</h1>
-                <p className="mono text-[11px] tracking-[0.04em] text-faint mt-1.5">{slug} &middot; {messageCount} exchanges</p>
+                <p className="mono text-[11px] uppercase tracking-[0.06em] text-faint mt-1.5">{slug} &middot; {messageCount} exchanges</p>
               </div>
             </div>
             {messages.length > 0 && (
@@ -213,13 +213,13 @@ function ExtractionPage() {
                       setStarted(false);
                     }
                   }}
-                  className="mono text-[11px] tracking-[0.06em] uppercase text-muted border border-border px-3 py-1.5 rounded-lg hover:text-[#F2777A] hover:border-[#F2777A]/25 hover:bg-[#F2777A]/10 transition"
+                  className="mono cursor-pointer text-[11px] tracking-[0.08em] uppercase text-muted border border-border px-3 py-1.5 rounded-md hover:text-[#F2777A] hover:border-[#F2777A]/25 hover:bg-[#F2777A]/10 transition"
                 >
                   Reset
                 </button>
                 <button
                   onClick={exportConversation}
-                  className="mono text-[11px] tracking-[0.06em] uppercase text-muted border border-border px-3 py-1.5 rounded-lg hover:text-foreground hover:bg-surface-light transition"
+                  className="mono cursor-pointer text-[11px] tracking-[0.08em] uppercase text-muted border border-border px-3 py-1.5 rounded-md hover:text-foreground hover:bg-surface-light transition"
                 >
                   Export
                 </button>
@@ -232,7 +232,7 @@ function ExtractionPage() {
             {/* Auto-greeting if fresh session */}
             {!started && (
               <div className="flex justify-start">
-                <div className="max-w-[80%] bg-surface-light border border-border px-5 py-3.5 text-sm leading-relaxed text-foreground rounded-lg rounded-bl-sm">
+                <div className="max-w-[75%] px-5 py-3.5 text-[15px] leading-relaxed bg-accent text-[#1B1B18] rounded-lg rounded-bl-sm">
                   Hey! Thanks for being here. What you know took years to build, and most of it lives in your head where only a few people at a time can access it. We&apos;re going to change that. Over our conversations, I&apos;ll learn how you think, how you diagnose problems, and what makes your approach yours. No prep needed, no right answers. Just talk to me the way you&apos;d talk to someone you&apos;re helping. Before we start: if you have any documents that capture your background, frameworks, or past work (a CV, a portfolio doc, case studies, anything), upload them using the paperclip icon below. It saves us time and lets me ask better questions from the start. If not, no worries. Just tell me what you do and who you help, and we&apos;ll go from there.
                 </div>
               </div>
@@ -244,29 +244,32 @@ function ExtractionPage() {
                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 {m.role === "user" ? (
-                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap bg-accent text-[#1B1B18] rounded-lg rounded-br-sm">
+                  <div className="max-w-[75%] px-5 py-3 text-[15px] leading-relaxed whitespace-pre-wrap text-right border border-border text-foreground rounded-lg rounded-br-sm">
                     {m.content}
                   </div>
                 ) : (
-                  <div className="max-w-[80%] px-5 py-3.5 text-sm leading-relaxed bg-surface-light border border-border text-foreground rounded-lg rounded-bl-sm">
+                  <div className="max-w-[75%] px-5 py-3.5 text-[15px] leading-relaxed bg-accent text-[#1B1B18] rounded-lg rounded-bl-sm empty:hidden">
                     <ReactMarkdown
                       components={{
                         p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
-                        strong: ({ children }) => <strong className="font-medium text-foreground">{children}</strong>,
-                        em: ({ children }) => <em className="italic text-muted">{children}</em>,
+                        strong: ({ children }) => <strong className="text-[#1B1B18]">{children}</strong>,
+                        em: ({ children }) => <em className="italic text-[#1B1B18]/80">{children}</em>,
                         ul: ({ children }) => <ul className="mb-3 last:mb-0 space-y-1.5 list-none">{children}</ul>,
                         ol: ({ children }) => <ol className="mb-3 last:mb-0 space-y-1.5 list-decimal list-inside">{children}</ol>,
                         li: ({ children }) => (
                           <li className="flex items-start gap-2">
-                            <span className="text-accent mt-0.5 shrink-0">▸</span>
+                            <span className="text-[#1B1B18]/55 mt-0.5 shrink-0">▸</span>
                             <span>{children}</span>
                           </li>
                         ),
-                        h1: ({ children }) => <h3 className="text-foreground mb-2 text-lg">{children}</h3>,
-                        h2: ({ children }) => <h3 className="text-foreground mb-2 text-lg">{children}</h3>,
-                        h3: ({ children }) => <h3 className="text-foreground mb-1.5 text-base">{children}</h3>,
+                        code: ({ children }) => (
+                          <code className="bg-[#1B1B18]/10 text-[#1B1B18] px-1.5 py-0.5 rounded text-[13px] mono">{children}</code>
+                        ),
+                        h1: ({ children }) => <h3 className="text-[#1B1B18] mb-2 text-[19px]">{children}</h3>,
+                        h2: ({ children }) => <h3 className="text-[#1B1B18] mb-2 text-[19px]">{children}</h3>,
+                        h3: ({ children }) => <h3 className="text-[#1B1B18] mb-1.5 text-[17px]">{children}</h3>,
                         blockquote: ({ children }) => (
-                          <blockquote className="border-l-2 border-accent/40 pl-3 my-2 text-muted italic">{children}</blockquote>
+                          <blockquote className="border-l-2 border-[#1B1B18]/30 pl-3 my-2 text-[#1B1B18]/70 italic">{children}</blockquote>
                         ),
                       }}
                     >
@@ -280,10 +283,12 @@ function ExtractionPage() {
             {streaming &&
               messages.length > 0 &&
               messages[messages.length - 1].content === "" && (
-                <div className="flex justify-start">
-                  <div className="bg-surface-light border border-border px-5 py-3.5 text-sm rounded-lg rounded-bl-sm">
-                    <span className="animate-pulse text-faint">●●●</span>
-                  </div>
+                <div className="flex justify-start items-center gap-3">
+                  <span className="flex gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent fh-dot" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent fh-dot [animation-delay:200ms]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent fh-dot [animation-delay:400ms]" />
+                  </span>
                 </div>
               )}
 
@@ -293,13 +298,13 @@ function ExtractionPage() {
           {/* Progress bar */}
           <div className="px-6 py-3 border-t border-border">
             <div className="flex items-center gap-3">
-              <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
+              <div className="flex-1 h-1 bg-border rounded-full overflow-hidden">
                 <div
                   className="h-full bg-accent rounded-full transition-all duration-500"
                   style={{ width: `${Math.min((messageCount / 40) * 100, 100)}%` }}
                 />
               </div>
-              <span className="mono text-[11px] tracking-[0.06em] text-faint shrink-0">{messageCount} of ~40 exchanges</span>
+              <span className="mono text-[11px] uppercase tracking-[0.06em] text-faint shrink-0">{messageCount} of ~40 exchanges</span>
             </div>
           </div>
 
@@ -317,7 +322,7 @@ function ExtractionPage() {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={streaming || uploading}
                 title="Upload a file (.txt, .pdf, .docx, .md)"
-                className="text-muted hover:text-foreground border border-border px-3 py-3 rounded-lg hover:bg-surface-light transition disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+                className="cursor-pointer text-muted hover:text-foreground border border-border px-3 py-3.5 rounded-md hover:bg-surface-light transition disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
               >
                 {uploading ? (
                   <span className="mono animate-pulse text-[12px]">...</span>
@@ -335,13 +340,13 @@ function ExtractionPage() {
                 onKeyDown={handleKeyDown}
                 placeholder={started ? "Continue where you left off..." : "Start by telling me about yourself..."}
                 rows={1}
-                className="fh-scroll flex-1 rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-faint focus:border-accent/60 focus:outline-none transition resize-none overflow-y-auto"
+                className="fh-scroll flex-1 rounded-md border border-border bg-background px-5 py-3.5 text-[15px] text-foreground placeholder:text-faint focus:border-accent/50 focus:outline-none transition resize-none overflow-y-auto"
                 style={{ maxHeight: 200 }}
               />
               <button
                 onClick={() => send()}
                 disabled={streaming}
-                className="mono bg-accent text-[#1B1B18] px-6 py-3 rounded-lg text-[12px] tracking-[0.02em] hover:bg-accent-dim transition disabled:opacity-40 disabled:cursor-not-allowed"
+                className="mono shrink-0 bg-transparent text-accent border border-accent/70 px-7 py-3.5 rounded-md text-[12px] tracking-[0.08em] uppercase hover:bg-accent hover:text-[#1B1B18] transition disabled:opacity-40 cursor-pointer"
               >
                 Send
               </button>

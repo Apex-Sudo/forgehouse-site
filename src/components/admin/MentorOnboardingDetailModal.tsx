@@ -22,6 +22,7 @@ import {
   IconCurrencyDollar,
 } from "@tabler/icons-react";
 import type { EnrichedOnboarding, ReadinessStep } from "@/app/api/admin/onboardings/route";
+import ClipButton from "@/components/ui/ClipButton";
 
 const CHECKLIST_META: {
   key: ReadinessStep;
@@ -48,20 +49,15 @@ function formatShortDate(iso: string) {
 
 function PhasePill({ phase }: { phase: string }) {
   const styles: Record<string, string> = {
-    extraction:
-      "border-border bg-white/8 text-muted",
-    calibration:
-      "border-tan/25 bg-tan/15 text-tan",
-    ingestion:
-      "border-[#E3B341]/25 bg-[#E3B341]/12 text-[#E3B341]",
-    complete:
-      "border-accent/25 bg-accent/15 text-accent",
+    extraction: "bg-white/8 text-muted",
+    calibration: "bg-white/16 text-foreground",
+    ingestion: "bg-[#E3B341]/15 text-[#E3B341]",
+    complete: "bg-accent/15 text-accent",
   };
-  const cls =
-    styles[phase] ?? "border-border bg-white/8 text-muted";
+  const cls = styles[phase] ?? "bg-white/8 text-muted";
   return (
     <span
-      className={`mono inline-flex items-center rounded border px-2 py-0.5 text-[10px] uppercase tracking-[0.08em] tabular-nums ${cls}`}
+      className={`mono inline-flex items-center rounded-sm px-2 py-0.5 text-[10px] uppercase tracking-[0.08em] tabular-nums ${cls}`}
     >
       {phase}
     </span>
@@ -81,10 +77,10 @@ function SummaryTile({
 }) {
   return (
     <div
-      className={`rounded-lg border border-border bg-background p-4 ${className}`}
+      className={`rounded-md border border-border bg-background p-4 ${className}`}
     >
       <div className="flex gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface-light text-muted">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-surface-light text-muted">
           {icon}
         </div>
         <div className="min-w-0 flex-1">
@@ -210,15 +206,15 @@ function ProfileInlineFields({
   const draftCheck = profileFieldsMeetChecklist(bio, avatarUrl, priceUsd);
 
   return (
-    <div className="mt-3 space-y-3 rounded-lg border border-border bg-surface p-3">
+    <div className="mt-3 space-y-3 rounded-md border border-border bg-surface p-3">
       {checklistFromServer ? (
-        <div className="mono flex items-center gap-2 rounded-lg border border-accent/25 bg-accent/15 px-3 py-2 text-[12px] text-accent">
+        <div className="mono flex items-center gap-2 rounded-md bg-accent/15 px-3 py-2 text-[12px] text-accent">
           <IconCircleCheck size={18} stroke={2} className="shrink-0 text-accent" />
           Checklist step complete — bio, image, and price are set
         </div>
       ) : null}
       {saveBanner === "pending_checklist" || (saveBanner === "success" && !checklistFromServer) ? (
-        <div className="rounded-lg border border-[#E3B341]/25 bg-[#E3B341]/12 px-3 py-2 text-xs text-foreground/85">
+        <div className="rounded-md border border-[#E3B341]/25 bg-[#E3B341]/12 px-3 py-2 text-xs text-muted">
           <p className="mono text-[11px] uppercase tracking-[0.06em] text-[#E3B341]">Saved to database</p>
           <p className="mt-1">
             This step turns green when all of the following are true:
@@ -250,7 +246,7 @@ function ProfileInlineFields({
           onChange={(e) => setBio(e.target.value)}
           rows={4}
           placeholder="Short mentor bio for their public profile…"
-          className="fh-scroll w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
+          className="fh-scroll w-full resize-y rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
         />
       </div>
       <div>
@@ -267,7 +263,7 @@ function ProfileInlineFields({
           value={avatarUrl}
           onChange={(e) => setAvatarUrl(e.target.value)}
           placeholder="https://… or /mentors/your-slug.png"
-          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
+          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
         />
         <p className="mt-1 text-[11px] leading-snug text-faint">
           Use a full https image URL (LinkedIn, CDN, etc.) or a site path starting with / (e.g. /mentors/kyle-parratt.png).
@@ -288,27 +284,24 @@ function ProfileInlineFields({
           value={priceUsd}
           onChange={(e) => setPriceUsd(e.target.value)}
           placeholder="299"
-          className="mono w-full max-w-[200px] rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
+          className="mono w-full max-w-[200px] rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground transition placeholder:text-faint focus:border-accent/60 focus:outline-none"
         />
         <p className="mt-1 text-[11px] text-faint">
           Whole dollars; stored as cents for billing. Stripe product mapping is separate.
         </p>
       </div>
-      <button
-        type="button"
-        onClick={() => void save()}
-        disabled={saving}
-        className="mono rounded-lg bg-accent px-4 py-2 text-[12px] tracking-[0.02em] text-[#1B1B18] transition hover:bg-accent-dim disabled:cursor-not-allowed disabled:opacity-40"
-      >
+      <div className="w-full max-w-[200px]">
         {saving ? (
-          <span className="inline-flex items-center gap-1.5">
+          <div className="clip-corner mono flex w-full items-center gap-2 bg-white/8 px-5 py-3.5 text-[11px] leading-[1.4] tracking-[0.01em] text-faint">
             <IconLoader2 size={14} className="animate-spin" />
             Saving…
-          </span>
+          </div>
         ) : (
-          "Save profile"
+          <ClipButton variant="paper" onClick={() => void save()}>
+            Save profile
+          </ClipButton>
         )}
-      </button>
+      </div>
     </div>
   );
 }
@@ -357,7 +350,7 @@ function AgentApprovalInline({
 
   if (record.agentApproved) {
     return (
-      <div className="mono mt-3 rounded-lg border border-accent/25 bg-accent/15 px-3 py-2.5 text-[12px] text-accent">
+      <div className="mono mt-3 rounded-md bg-accent/15 px-3 py-2.5 text-[12px] text-accent">
         <span className="uppercase tracking-[0.08em]">Approved</span>
         {record.agentApprovedAt ? (
           <span className="text-accent/70">
@@ -381,21 +374,24 @@ function AgentApprovalInline({
           Complete profile & pricing above (bio, https image URL, monthly USD price) first.
         </p>
       )}
-      <button
-        type="button"
-        onClick={() => void enable()}
-        disabled={!canEnable || loading}
-        className="mono rounded-lg border border-accent/30 bg-accent/10 px-4 py-2 text-[12px] tracking-[0.02em] text-accent transition hover:bg-accent/20 disabled:pointer-events-none disabled:opacity-40"
-      >
-        {loading ? (
-          <span className="inline-flex items-center gap-1.5">
-            <IconLoader2 size={14} className="animate-spin" />
-            Enabling…
-          </span>
+      <div className="w-full max-w-[200px]">
+        {!canEnable || loading ? (
+          <div className="clip-corner mono flex w-full items-center gap-2 bg-white/8 px-5 py-3.5 text-[11px] leading-[1.4] tracking-[0.01em] text-faint">
+            {loading ? (
+              <>
+                <IconLoader2 size={14} className="animate-spin" />
+                Enabling…
+              </>
+            ) : (
+              "Enable"
+            )}
+          </div>
         ) : (
-          "Enable"
+          <ClipButton variant="paper" onClick={() => void enable()}>
+            Enable
+          </ClipButton>
         )}
-      </button>
+      </div>
     </div>
   );
 }
@@ -480,7 +476,7 @@ export default function MentorOnboardingDetailModal({
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
       {toast && (
-        <div className="mono fixed right-6 top-24 z-[70] max-w-sm rounded-lg border border-border border-l-4 border-l-accent bg-surface-light pl-3 pr-4 py-3 text-[12px] leading-snug text-foreground shadow-2xl">
+        <div className="mono fixed right-6 top-24 z-[70] max-w-sm rounded-md border border-border border-l-4 border-l-accent bg-surface-light pl-3 pr-4 py-3 text-[12px] leading-snug text-foreground shadow-2xl">
           {toast}
         </div>
       )}
@@ -496,18 +492,18 @@ export default function MentorOnboardingDetailModal({
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2.5">
-                <h2 className="truncate text-2xl tracking-tight text-foreground">
+                <h2 className="truncate text-[24px] leading-none text-foreground">
                   {record.mentorName}
                 </h2>
                 <PhasePill phase={record.currentPhase} />
               </div>
               <p className="mono mt-1 truncate text-[12px] text-muted">{record.email}</p>
               <div className="mt-3 flex flex-wrap gap-2">
-                <span className="mono inline-flex items-center gap-1.5 rounded border border-border bg-background px-2.5 py-1.5 text-[11px] tracking-[0.04em] text-muted">
+                <span className="mono inline-flex items-center gap-1.5 rounded-sm border border-border bg-background px-2.5 py-1.5 text-[11px] tracking-[0.04em] text-muted">
                   <IconCalendar size={15} stroke={1.5} className="text-faint" />
                   Created {formatShortDate(record.createdAt)}
                 </span>
-                <span className="mono inline-flex items-center gap-1.5 rounded border border-border bg-background px-2.5 py-1.5 text-[11px] tracking-[0.04em] text-muted">
+                <span className="mono inline-flex items-center gap-1.5 rounded-sm border border-border bg-background px-2.5 py-1.5 text-[11px] tracking-[0.04em] text-muted">
                   <IconCalendarPlus size={15} stroke={1.5} className="text-faint" />
                   Expires {formatShortDate(record.expiresAt)}
                 </span>
@@ -518,7 +514,7 @@ export default function MentorOnboardingDetailModal({
                 <button
                   type="button"
                   onClick={() => setActionsOpen((o) => !o)}
-                  className="mono inline-flex h-10 items-center gap-1.5 rounded-lg border border-border px-3.5 text-[12px] tracking-[0.02em] text-foreground transition hover:border-border-light hover:bg-surface-light"
+                  className="mono inline-flex h-10 items-center gap-1.5 rounded-md border border-border px-3.5 text-[12px] tracking-[0.02em] text-foreground transition hover:border-border-light hover:bg-surface-light"
                 >
                   Actions
                   <IconChevronDown
@@ -528,7 +524,7 @@ export default function MentorOnboardingDetailModal({
                   />
                 </button>
                 {actionsOpen && (
-                  <div className="absolute right-0 z-10 mt-1 w-56 overflow-hidden rounded-lg border border-border bg-surface-light py-1 shadow-2xl">
+                  <div className="absolute right-0 z-10 mt-1 w-56 overflow-hidden rounded-md border border-border bg-surface-light py-1 shadow-2xl">
                     <button
                       type="button"
                       onClick={handleCopyLink}
@@ -668,7 +664,7 @@ export default function MentorOnboardingDetailModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-10 w-10 items-center justify-center rounded-lg text-faint transition hover:bg-surface-light hover:text-foreground"
+                className="flex h-10 w-10 items-center justify-center rounded-md text-faint transition hover:bg-surface-light hover:text-foreground"
                 aria-label="Close"
               >
                 <IconX size={22} stroke={1.5} />
@@ -676,7 +672,7 @@ export default function MentorOnboardingDetailModal({
             </div>
           </div>
 
-          <div className="mt-5 rounded-lg bg-background p-3.5 ring-1 ring-inset ring-border">
+          <div className="mt-5 rounded-md bg-background p-3.5 ring-1 ring-inset ring-border">
             <div className="mono mb-2 flex items-center justify-between text-[11px] uppercase tracking-[0.08em] text-faint">
               <span>Launch readiness</span>
               <span className="tabular-nums text-foreground">
@@ -685,7 +681,7 @@ export default function MentorOnboardingDetailModal({
             </div>
             <div className="h-2.5 overflow-hidden rounded-full bg-white/10">
               <div
-                className="h-2.5 rounded-full bg-gradient-to-r from-accent to-accent-dim transition-all duration-500"
+                className="h-2.5 rounded-full bg-accent transition-all duration-500"
                 style={{ width: `${readinessPct}%` }}
               />
             </div>
@@ -696,7 +692,7 @@ export default function MentorOnboardingDetailModal({
           <h3 className="mono mb-3 text-[11px] uppercase tracking-[0.08em] text-faint">
             Launch checklist
           </h3>
-          <ol className="space-y-0 overflow-hidden rounded-lg border border-border bg-background">
+          <ol className="space-y-0 overflow-hidden rounded-md border border-border bg-background">
             {CHECKLIST_META.map((item, index) => {
               const done = isDone(item.key);
               const Icon = item.Icon;
@@ -780,10 +776,10 @@ export default function MentorOnboardingDetailModal({
                       {record.slug}
                     </span>
                     <span
-                      className={`mono rounded px-2 py-0.5 text-[10px] uppercase tracking-[0.08em] ${
+                      className={`mono rounded-sm px-2 py-0.5 text-[10px] uppercase tracking-[0.08em] ${
                         record.mentorActive
-                          ? "bg-accent/15 text-accent ring-1 ring-accent/25"
-                          : "bg-white/8 text-muted ring-1 ring-border"
+                          ? "bg-accent/15 text-accent"
+                          : "bg-white/8 text-muted"
                       }`}
                     >
                       {record.mentorActive ? "Active" : "Inactive"}
@@ -800,7 +796,7 @@ export default function MentorOnboardingDetailModal({
               >
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
                   <p
-                    className="mono min-w-0 flex-1 truncate rounded-lg bg-surface px-3 py-2 text-[11px] leading-relaxed text-muted ring-1 ring-border"
+                    className="mono min-w-0 flex-1 truncate rounded-md bg-surface px-3 py-2 text-[11px] leading-relaxed text-muted ring-1 ring-border"
                     title={onboardingLink}
                   >
                     {onboardingLink}
@@ -811,7 +807,7 @@ export default function MentorOnboardingDetailModal({
                       navigator.clipboard.writeText(onboardingLink);
                       showToast("Link copied to clipboard", 3200);
                     }}
-                    className="mono inline-flex shrink-0 items-center justify-center gap-1.5 self-start rounded-lg border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light sm:self-center"
+                    className="mono inline-flex shrink-0 items-center justify-center gap-1.5 self-start rounded-md border border-border px-3 py-2 text-[12px] tracking-[0.02em] text-foreground transition hover:bg-surface-light sm:self-center"
                   >
                     <IconCopy size={14} stroke={1.5} />
                     Copy

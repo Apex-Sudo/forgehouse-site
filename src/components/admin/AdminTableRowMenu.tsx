@@ -85,7 +85,7 @@ export function AdminTableRowMenu({
             <div
               ref={menuRef}
               role="menu"
-              className="fixed z-[90] w-44 rounded-lg border border-border bg-surface-light py-1 shadow-2xl"
+              className="fixed z-[90] w-44 rounded-md border border-border bg-surface-light py-1 shadow-2xl"
               style={{ top: 0, left: 0 }}
             >
               {onEdit ? (
@@ -137,7 +137,7 @@ export function AdminTableRowMenu({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="rounded p-1.5 text-faint transition hover:bg-surface-light hover:text-foreground"
+        className="rounded-sm p-1.5 text-faint transition hover:bg-surface-light hover:text-foreground"
         aria-label="Row actions"
         aria-expanded={open}
         aria-haspopup="menu"
