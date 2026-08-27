@@ -32,8 +32,8 @@ const NAV_ITEMS: NavItem[] = [
     visible_to: ["admin"],
   },
   {
-    label: "Landing Pages",
-    href: "/admin/landing-pages",
+    label: "Mentor Profiles",
+    href: "/admin/profiles",
     icon: <IconLayout size={20} stroke={1.5} />,
     visible_to: ["admin"],
   },

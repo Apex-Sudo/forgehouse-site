@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { requireAdmin } from "@/lib/admin-auth";
 import { mentorLandingContentSchema } from "@/types/mentor-landing";
+import { syncAvatarFromProfileImage } from "@/lib/mentor-avatar-sync";
 
 const SLUG_RE = /^[a-z0-9-]+$/;
 
@@ -147,6 +148,8 @@ export async function PATCH(
   if (!data) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+
+  await syncAvatarFromProfileImage(data.slug, updates.content);
 
   return NextResponse.json({ landing: data });
 }

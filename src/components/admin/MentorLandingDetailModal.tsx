@@ -425,7 +425,7 @@ export default function MentorLandingDetailModal({
       } else {
         const rowSlug = originalSlug ?? slug;
         if (!rowSlug) {
-          setSaveError("Missing landing page slug.");
+          setSaveError("Missing profile slug.");
           setSaving(false);
           return;
         }
@@ -470,7 +470,7 @@ export default function MentorLandingDetailModal({
     if (!targetSlug || mode !== "edit") return;
     if (
       !window.confirm(
-        "Delete this landing page permanently? Public /mentors/… will lose rich content for this slug."
+        "Delete this profile permanently? Public /mentors/… will lose rich content for this slug."
       )
     ) {
       return;
@@ -506,11 +506,11 @@ export default function MentorLandingDetailModal({
               <div>
                 <h2 className="text-[24px] leading-tight text-foreground">
                   {mode === "create"
-                    ? "New mentor landing page"
-                    : "Edit mentor landing page"}
+                    ? "New mentor profile"
+                    : "Edit mentor profile"}
                 </h2>
                 <p className="mono mt-1.5 text-[11px] tracking-[0.02em] text-muted">
-                  Manage the content for a mentor landing page.
+                  Manage the content for a mentor profile.
                 </p>
               </div>
               <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">

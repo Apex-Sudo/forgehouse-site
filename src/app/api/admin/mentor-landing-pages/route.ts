@@ -6,6 +6,7 @@ import {
   mentorLandingContentSchema,
   mentorLandingSlugSchema,
 } from "@/types/mentor-landing";
+import { syncAvatarFromProfileImage } from "@/lib/mentor-avatar-sync";
 
 export async function GET() {
   await requireAdminRoute();
@@ -103,6 +104,8 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+
+  await syncAvatarFromProfileImage(data.slug, data.content);
 
   return NextResponse.json({ landing: data });
 }
