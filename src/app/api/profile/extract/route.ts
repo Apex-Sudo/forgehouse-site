@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { textFromContent } from "@/lib/anthropic-content";
 import { auth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
       messages: [{ role: "user", content: conversationText }],
     });
 
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
+    const text = textFromContent(response.content);
     // Extract JSON from response (handle markdown code blocks)
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {

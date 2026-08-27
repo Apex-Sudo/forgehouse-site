@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { textFromContent } from "@/lib/anthropic-content";
 import { auth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
@@ -81,7 +82,7 @@ Generate 3 fresh, specific conversation starters.`,
     });
 
     const text =
-      response.content[0].type === "text" ? response.content[0].text : "";
+      textFromContent(response.content);
 
     try {
       const starters = JSON.parse(text);

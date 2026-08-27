@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { synthesizeMentorProfile, type SynthesizedProfile } from "@/lib/system-prompt-synthesis";
+import { requireTextFromContent } from "@/lib/anthropic-content";
 
 function requiredEnv(name: string): string {
   const value = process.env[name]?.trim();
@@ -148,7 +149,7 @@ async function chunkWithLLM(extractionText: string): Promise<KnowledgeChunk[]> {
   }
 
   const data = await response.json();
-  const raw: string = data.content[0].text;
+  const raw = requireTextFromContent(data.content, "[chunkWithLLM]");
   const start = raw.indexOf("[");
   const end = raw.lastIndexOf("]");
   const cleaned = start !== -1 && end > start ? raw.slice(start, end + 1) : raw.trim();

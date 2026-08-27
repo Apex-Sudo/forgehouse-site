@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { textFromContent } from "@/lib/anthropic-content";
 import { toolLimiter } from "@/lib/rate-limit";
 
 const SYSTEM_PROMPT = `You are a sales pipeline diagnostic engine built on Colin Chapman's deal analysis methodology. You analyze lost deals to find the pattern that's costing the most revenue, then prescribe the single highest-leverage fix.
@@ -77,10 +78,13 @@ Deal 3: ${deals.deal3}`;
       messages: [{ role: "user", content: userMessage }],
     });
 
-    const content = message.content[0];
-    if (content.type !== "text") {
+    // Select by type, not position: adaptive thinking puts a thinking block
+    // at index 0 on current models.
+    const text = textFromContent(message.content);
+    if (!text) {
       return Response.json({ error: "Unexpected response" }, { status: 500 });
     }
+    const content = { type: "text" as const, text };
 
     try {
       const parsed = JSON.parse(content.text);

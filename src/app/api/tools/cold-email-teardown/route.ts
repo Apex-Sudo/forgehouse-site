@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { textFromContent } from "@/lib/anthropic-content";
 import { toolLimiter } from "@/lib/rate-limit";
 
 const SYSTEM_PROMPT = `You are a cold email diagnostic engine built on Colin Chapman's Problem-Impact-Proof framework. You analyze cold emails line by line, identify what's weak, and produce a rewrite.
@@ -64,10 +65,13 @@ export async function POST(req: Request) {
       messages: [{ role: "user", content: `Here is the cold email to tear down:\n\n${email}` }],
     });
 
-    const content = message.content[0];
-    if (content.type !== "text") {
+    // Select by type, not position: adaptive thinking puts a thinking block
+    // at index 0 on current models.
+    const text = textFromContent(message.content);
+    if (!text) {
       return Response.json({ error: "Unexpected response" }, { status: 500 });
     }
+    const content = { type: "text" as const, text };
 
     try {
       const parsed = JSON.parse(content.text);

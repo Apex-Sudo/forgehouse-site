@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { textFromContent } from "@/lib/anthropic-content";
 import { toolLimiter } from "@/lib/rate-limit";
 
 const SYSTEM_PROMPT = `You are an outbound sales planning engine built on Colin Chapman's weekly execution methodology. You create concrete, day-by-day outbound plans that a solo founder or small sales team can execute immediately.
@@ -86,10 +87,13 @@ Current pipeline state: ${pipelineState}`;
       messages: [{ role: "user", content: userMessage }],
     });
 
-    const content = message.content[0];
-    if (content.type !== "text") {
+    // Select by type, not position: adaptive thinking puts a thinking block
+    // at index 0 on current models.
+    const text = textFromContent(message.content);
+    if (!text) {
       return Response.json({ error: "Unexpected response" }, { status: 500 });
     }
+    const content = { type: "text" as const, text };
 
     try {
       const parsed = JSON.parse(content.text);

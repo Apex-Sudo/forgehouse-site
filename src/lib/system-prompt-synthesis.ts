@@ -1,3 +1,5 @@
+import { requireTextFromContent } from "@/lib/anthropic-content";
+
 const ANTHROPIC_ENDPOINT = "https://api.anthropic.com/v1/messages";
 
 const SYNTHESIS_META_PROMPT = `You are a system prompt engineer. You receive raw transcript data from an expert onboarding session (extraction interview + calibration feedback) and must produce a rich, production-ready mentor system prompt.
@@ -207,7 +209,7 @@ export async function synthesizeMentorProfile(
   }
 
   const data = await response.json();
-  const raw: string = data.content[0].text;
+  const raw = requireTextFromContent(data.content, "[synthesizeMentorProfile]");
 
   let parsed: SynthesizedProfile;
   try {

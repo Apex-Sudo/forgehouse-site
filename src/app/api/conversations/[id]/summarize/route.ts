@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { textFromContent } from "@/lib/anthropic-content";
 import { auth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
@@ -79,7 +80,7 @@ export async function POST(
     });
 
     const summary =
-      result.content[0].type === "text" ? result.content[0].text : "";
+      textFromContent(result.content);
 
     // Store summary
     await supabase.from(table).update({ summary }).eq("id", id);

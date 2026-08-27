@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { textFromContent } from "@/lib/anthropic-content";
 import { toolLimiter } from "@/lib/rate-limit";
 
 const SYSTEM_PROMPT = `You are an ICP (Ideal Customer Profile) diagnostic engine built on the Jobs-to-be-Done framework. You analyze a founder's product and customer data to produce a precise, actionable ICP definition.
@@ -92,10 +93,13 @@ Why prospects would switch: ${answers.q5}`;
       messages: [{ role: "user", content: userMessage }],
     });
 
-    const content = message.content[0];
-    if (content.type !== "text") {
+    // Select by type, not position: adaptive thinking puts a thinking block
+    // at index 0 on current models.
+    const text = textFromContent(message.content);
+    if (!text) {
       return Response.json({ error: "Unexpected response" }, { status: 500 });
     }
+    const content = { type: "text" as const, text };
 
     try {
       const parsed = JSON.parse(content.text);
