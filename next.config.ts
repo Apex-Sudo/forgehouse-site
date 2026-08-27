@@ -51,6 +51,13 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
       },
+      {
+        // Headshots pasted into a mentor's profile in the admin. Without the
+        // host listed here next/image returns 400, so the photo renders on the
+        // profile page (plain <img>) but not on the homepage or /mentors grid.
+        protocol: "https",
+        hostname: "i.postimg.cc",
+      },
     ],
   },
 };

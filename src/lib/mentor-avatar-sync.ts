@@ -15,12 +15,49 @@ import { supabase } from "@/lib/supabase";
  * profile but no trained agent yet. That is not an error; there is simply
  * nothing to keep in sync.
  */
+/**
+ * Hosts next/image is allowed to optimise, mirroring `images.remotePatterns`
+ * in next.config.ts. Keep the two in step.
+ *
+ * This matters because the two surfaces render differently: the profile page
+ * uses a plain <img> and will display any URL, while the homepage advisory
+ * board and /mentors grid go through next/image, which returns 400 for a host
+ * that isn't listed here. Syncing an unlisted host would therefore leave the
+ * profile page looking correct and every other surface broken — the exact
+ * split this sync exists to prevent.
+ */
+const RENDERABLE_HOSTS = [
+  /\.licdn\.com$/,
+  /^lh3\.googleusercontent\.com$/,
+  /^i\.postimg\.cc$/,
+];
+
+function isRenderableByNextImage(url: string): boolean {
+  if (url.startsWith("/")) return true; // served from public/
+  try {
+    const { hostname, protocol } = new URL(url);
+    if (protocol !== "https:") return false;
+    return RENDERABLE_HOSTS.some((re) => re.test(hostname));
+  } catch {
+    return false;
+  }
+}
+
 export async function syncAvatarFromProfileImage(
   slug: string,
   content: unknown,
 ): Promise<void> {
   const image = (content as { profileImageUrl?: string } | undefined)?.profileImageUrl?.trim();
   if (!image) return;
+
+  if (!isRenderableByNextImage(image)) {
+    console.warn(
+      `mentors avatar_url sync skipped for "${slug}": ${image} is not a local path ` +
+        `and its host is not in next.config images.remotePatterns, so next/image ` +
+        `would 400 on it. Self-host the file under public/mentors/ or add the host.`,
+    );
+    return;
+  }
 
   const { error } = await supabase
     .from("mentors")
