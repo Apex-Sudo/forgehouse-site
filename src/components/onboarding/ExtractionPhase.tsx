@@ -42,6 +42,9 @@ export default function ExtractionPhase({
   );
   const messagesScrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  /** True when this page load found an interview already in progress. */
+  const returnedMidSessionRef = useRef((session.extractionData?.messages?.length ?? 0) > 0);
+  const resumeAttemptedRef = useRef(false);
   const recognitionRef = useRef<any>(null);
   const isListeningRef = useRef(false);
   const [isListening, setIsListening] = useState(false);
@@ -180,6 +183,83 @@ export default function ExtractionPhase({
     return () => clearTimeout(timer);
   }, [messages, uploadedCV, llmMarkedComplete, onUpdate]);
 
+  /**
+   * Ask the guide for its next turn given `history` (which must end with a
+   * user message) and stream the reply into the transcript. Shared by send,
+   * CV upload, and the resume-on-load path below.
+   */
+  const streamGuideReply = async (history: Message[], cvOverride?: string) => {
+    setStreaming(true);
+    try {
+      const res = await fetch("/api/extraction-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: history,
+          cvContent: cvOverride ?? uploadedCV?.content,
+          onboardingSessionId: session.id,
+        }),
+      });
+
+      if (!res.ok || !res.body) {
+        const err = await res.json().catch(() => ({ error: "Unknown error" }));
+        setMessages([...history, { role: "assistant", content: `Error: ${err.error || "Something went wrong."}` }]);
+        return;
+      }
+
+      setMessages([...history, { role: "assistant", content: "" }]);
+
+      const assistantContent = await readNdjsonStream(res.body, (accumulated) => {
+        const visible = stripExtractionMetaForDisplay(accumulated);
+        setMessages([...history, { role: "assistant", content: visible }]);
+      });
+      const parsed = parseExtractionAssistantPayload(assistantContent);
+      setMessages([...history, { role: "assistant", content: parsed.display }]);
+      if (parsed.complete) {
+        setLlmMarkedComplete(true);
+      }
+    } catch {
+      setMessages([...history, { role: "assistant", content: "Error: Connection failed. Please try again." }]);
+    } finally {
+      setStreaming(false);
+    }
+  };
+
+  /**
+   * Resume-on-load. A stored transcript can end on a user message — or on a
+   * persisted "Error: …" assistant bubble — when a guide turn failed (e.g. the
+   * rate-limiter outage) and was cleaned up afterwards. Returning mentors then
+   * landed in a chat with no question to answer and no cue at all, which reads
+   * as "stuck". Heal the tail and have the guide re-ask its next question.
+   */
+  useEffect(() => {
+    if (resumeAttemptedRef.current) return;
+    resumeAttemptedRef.current = true;
+    if (llmMarkedComplete) return;
+
+    const trimmed = [...messages];
+    while (
+      trimmed.length > 0 &&
+      trimmed[trimmed.length - 1].role === "assistant" &&
+      /^Error:/.test(trimmed[trimmed.length - 1].content.trim())
+    ) {
+      trimmed.pop();
+    }
+
+    const answered = trimmed.filter((m) => m.role === "user").length;
+    if (answered >= EXTRACTION_EXCHANGE_ESCAPE_HATCH) return;
+
+    if (trimmed.length === 0 || trimmed[trimmed.length - 1].role !== "user") {
+      if (trimmed.length !== messages.length) setMessages(trimmed);
+      return;
+    }
+
+    setMessages(trimmed);
+    void streamGuideReply(trimmed);
+    // Run once on mount against the stored transcript.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -223,43 +303,10 @@ export default function ExtractionPhase({
         onContributionCommenced?.();
       }
       setMessages(updated);
-      setStreaming(true);
 
-      // Process the CV with the extraction chat API
-      try {
-        const res = await fetch("/api/extraction-chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            messages: updated,
-            cvContent: data.content,
-            onboardingSessionId: session.id,
-          }),
-        });
-
-        if (!res.ok || !res.body) {
-          const err = await res.json().catch(() => ({ error: "Unknown error" }));
-          setMessages([...updated, { role: "assistant", content: `Error: ${err.error || "Something went wrong."}` }]);
-          setStreaming(false);
-          return;
-        }
-
-        setMessages([...updated, { role: "assistant", content: "" }]);
-
-        const assistantContent = await readNdjsonStream(res.body, (accumulated) => {
-          const visible = stripExtractionMetaForDisplay(accumulated);
-          setMessages([...updated, { role: "assistant", content: visible }]);
-        });
-        const parsed = parseExtractionAssistantPayload(assistantContent);
-        setMessages([...updated, { role: "assistant", content: parsed.display }]);
-        if (parsed.complete) {
-          setLlmMarkedComplete(true);
-        }
-      } catch {
-        setMessages([...updated, { role: "assistant", content: "Error: Connection failed. Please try again." }]);
-      } finally {
-        setStreaming(false);
-      }
+      // Process the CV with the extraction chat API. Pass the content directly:
+      // the uploadedCV state set above may not be committed yet.
+      await streamGuideReply(updated, data.content);
     } catch (error) {
       console.error("Upload error:", error);
       alert("Failed to upload CV");
@@ -281,42 +328,7 @@ export default function ExtractionPhase({
     }
     setMessages(updated);
     setInput("");
-    setStreaming(true);
-
-    try {
-      const res = await fetch("/api/extraction-chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: updated,
-          cvContent: uploadedCV?.content,
-          onboardingSessionId: session.id,
-        }),
-      });
-
-      if (!res.ok || !res.body) {
-        const err = await res.json().catch(() => ({ error: "Unknown error" }));
-        setMessages([...updated, { role: "assistant", content: `Error: ${err.error || "Something went wrong."}` }]);
-        setStreaming(false);
-        return;
-      }
-
-      setMessages([...updated, { role: "assistant", content: "" }]);
-
-      const assistantContent = await readNdjsonStream(res.body, (accumulated) => {
-        const visible = stripExtractionMetaForDisplay(accumulated);
-        setMessages([...updated, { role: "assistant", content: visible }]);
-      });
-      const parsed = parseExtractionAssistantPayload(assistantContent);
-      setMessages([...updated, { role: "assistant", content: parsed.display }]);
-      if (parsed.complete) {
-        setLlmMarkedComplete(true);
-      }
-    } catch {
-      setMessages([...updated, { role: "assistant", content: "Error: Connection failed. Please try again." }]);
-    } finally {
-      setStreaming(false);
-    }
+    await streamGuideReply(updated);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -410,6 +422,22 @@ export default function ExtractionPhase({
         className="fh-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-y-contain px-6 py-4 [overflow-anchor:none]"
       >
         <div className="mx-auto max-w-3xl space-y-6">
+          {returnedMidSessionRef.current && messages.length > 0 && (
+            <div className="rounded-md border border-accent/20 bg-accent/5 p-4">
+              <p className="mono text-[11px] uppercase tracking-[0.08em] text-accent mb-1.5">
+                Welcome back — contribution in progress
+              </p>
+              <p className="text-muted text-[14px] leading-relaxed">
+                You&apos;re {exchangeCount} answer{exchangeCount === 1 ? "" : "s"} in. Pick up with the
+                guide&apos;s latest question at the bottom — answer in the box and it will keep
+                guiding you through the rest.
+              </p>
+              <p className="mono mt-2 text-[11px] tracking-[0.02em] text-faint">
+                Your profile is not live yet. It is built from this interview once complete, then
+                reviewed with you before anything is published.
+              </p>
+            </div>
+          )}
           {messages.length === 0 && (
             <div className="text-center">
               {/* Time estimate */}
@@ -495,7 +523,10 @@ export default function ExtractionPhase({
                 />
               </div>
               <div className="mono mt-1 text-[11px] tracking-[0.02em] text-faint">
-                {exchangeCount} of ~{progressDenominator} exchanges (you can finish earlier if the guide says you&apos;re ready)
+                {exchangeCount} of ~{progressDenominator} answers (you can finish earlier if the guide says you&apos;re ready)
+              </div>
+              <div className="mono mt-0.5 text-[11px] tracking-[0.02em] text-faint">
+                Profile status: not live yet — built from this interview after completion and review.
               </div>
             </div>
 
