@@ -255,6 +255,24 @@ export async function POST(req: Request) {
       );
     }
 
+    // This endpoint is reachable without auth and writes mentor system prompts
+    // and knowledge by slug — before this check, anyone could rebuild a live
+    // mentor's agent by POSTing a made-up sessionId with attacker-chosen
+    // "extraction" content. Require the session to actually exist; the real
+    // client (IngestionPhase) always has one.
+    const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (typeof sessionId !== "string" || !uuidRe.test(sessionId)) {
+      return NextResponse.json({ error: "Invalid sessionId" }, { status: 400 });
+    }
+    const sessionRes = await supabaseRequest(
+      "GET",
+      `/rest/v1/onboarding_sessions?id=eq.${encodeURIComponent(sessionId)}&select=id`
+    );
+    const sessionRows = (await sessionRes.json()) as unknown[];
+    if (!Array.isArray(sessionRows) || sessionRows.length === 0) {
+      return NextResponse.json({ error: "Unknown onboarding session" }, { status: 404 });
+    }
+
     const slug = mentorName
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")

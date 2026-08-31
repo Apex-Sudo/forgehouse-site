@@ -41,17 +41,22 @@ export async function POST(req: Request) {
 
     const { data: mentorRow } = await supabase
       .from("mentors")
-      .select("system_prompt, is_free")
+      .select("system_prompt, is_free, is_active")
       .eq("slug", mentor)
-      .eq("is_active", true)
       .single();
-    if (!mentorRow) {
+
+    const session = await auth();
+    const user = session?.user as { id?: string; email?: string; role?: string } | undefined;
+
+    // Unapproved agents stay invisible to the public, but admins may talk to
+    // them — the approval step is review theatre if you cannot interrogate the
+    // agent you are approving.
+    const isAdminPreview = Boolean(mentorRow && !mentorRow.is_active && user?.role === "admin");
+
+    if (!mentorRow || (!mentorRow.is_active && !isAdminPreview)) {
       return Response.json({ error: "Unknown mentor" }, { status: 404 });
     }
     const systemPrompt = mentorRow.system_prompt;
-
-    const session = await auth();
-    const user = session?.user as { id?: string; email?: string } | undefined;
 
     const effectiveEmail = user?.email || undefined;
     const userId = user?.id || "";
