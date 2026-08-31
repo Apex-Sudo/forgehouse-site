@@ -519,9 +519,21 @@ function AdminOnboardingPageContent() {
                         />
                       </td>
                       <td className="mono px-4 py-3 text-[12px] text-muted">
-                        <span title="Extraction">{ob.extractionMessageCount}</span>
-                        {" / "}
-                        <span title="Calibration">{ob.calibrationMessageCount}</span>
+                        {ob.programVersion >= 2 ? (
+                          <>
+                            <span title="Messages across module sessions">{ob.extractionMessageCount}</span>
+                            {" · "}
+                            <span title="Module sessions done">
+                              {ob.modulesDone}/{ob.modulesTotal}
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <span title="Extraction">{ob.extractionMessageCount}</span>
+                            {" / "}
+                            <span title="Calibration">{ob.calibrationMessageCount}</span>
+                          </>
+                        )}
                       </td>
                       <td className="mono px-4 py-3 text-[12px] text-faint">
                         {new Date(ob.createdAt).toLocaleDateString("en-GB", {

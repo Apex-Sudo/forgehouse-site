@@ -759,11 +759,23 @@ export default function MentorOnboardingDetailModal({
                 label="Messages"
               >
                 <span className="mono text-[12px] tabular-nums text-foreground">
-                  <span className="text-faint">Extraction</span>{" "}
-                  {record.extractionMessageCount}
-                  <span className="mx-1.5 text-faint">·</span>
-                  <span className="text-faint">Calibration</span>{" "}
-                  {record.calibrationMessageCount}
+                  {record.programVersion >= 2 ? (
+                    <>
+                      <span className="text-faint">Modules</span>{" "}
+                      {record.modulesDone}/{record.modulesTotal}
+                      <span className="mx-1.5 text-faint">·</span>
+                      <span className="text-faint">Messages</span>{" "}
+                      {record.extractionMessageCount}
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-faint">Extraction</span>{" "}
+                      {record.extractionMessageCount}
+                      <span className="mx-1.5 text-faint">·</span>
+                      <span className="text-faint">Calibration</span>{" "}
+                      {record.calibrationMessageCount}
+                    </>
+                  )}
                 </span>
               </SummaryTile>
               <SummaryTile
@@ -855,7 +867,9 @@ function ChecklistDetail({
     case "extraction_complete":
       return (
         <p className="mono mt-1 text-[11px] tracking-[0.02em] text-muted">
-          {record.extractionMessageCount} messages
+          {record.programVersion >= 2
+            ? `${record.modulesDone}/${record.modulesTotal} module sessions · ${record.extractionMessageCount} messages`
+            : `${record.extractionMessageCount} messages`}
         </p>
       );
     case "calibration_complete":

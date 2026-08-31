@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { MODULE_TYPES } from "@/lib/extraction/modules";
 import { supabase } from "@/lib/supabase";
 import { requireAdminRoute } from "@/lib/admin-route-guard";
 
@@ -69,6 +70,11 @@ export interface EnrichedOnboarding {
   extractionMessageCount: number;
   calibrationMessageCount: number;
   ingestionChunks: number | null;
+  /** 1 = legacy three-phase flow, 2 = module program (Extraction 2.0). */
+  programVersion: number;
+  /** Module-program progress; zero for v1 sessions. */
+  modulesDone: number;
+  modulesTotal: number;
   mentorFound: boolean;
   mentorActive: boolean;
   mentorBio: string | null;
@@ -105,6 +111,26 @@ export async function GET() {
   if (mentorsRes.data) {
     for (const m of mentorsRes.data as MentorRow[]) {
       mentorsBySlug.set(m.slug, m);
+    }
+  }
+
+  // v2 sessions keep their conversation in extraction_modules, not
+  // extraction_data.messages — without this aggregation every module-program
+  // mentor shows "0 messages" here no matter how far along they are.
+  const moduleAgg = new Map<string, { done: number; messages: number }>();
+  const v2Ids = (sessionsRes.data ?? [])
+    .filter((s) => (s.program_version ?? 1) >= 2)
+    .map((s) => s.id as string);
+  if (v2Ids.length > 0) {
+    const { data: moduleRows } = await supabase
+      .from("extraction_modules")
+      .select("onboarding_id, status, messages")
+      .in("onboarding_id", v2Ids);
+    for (const m of moduleRows ?? []) {
+      const agg = moduleAgg.get(m.onboarding_id) ?? { done: 0, messages: 0 };
+      if (m.status === "complete") agg.done += 1;
+      agg.messages += Array.isArray(m.messages) ? m.messages.length : 0;
+      moduleAgg.set(m.onboarding_id, agg);
     }
   }
 
@@ -152,6 +178,9 @@ export async function GET() {
       completedSteps.push("launch_ready");
     }
 
+    const programVersion = (s.program_version as number | null) ?? 1;
+    const agg = moduleAgg.get(s.id);
+
     return {
       id: s.id,
       mentorName: s.mentor_name,
@@ -163,7 +192,11 @@ export async function GET() {
       createdAt: s.created_at,
       updatedAt: s.updated_at,
       expiresAt: s.expires_at,
-      extractionMessageCount: extractionMsgs.length,
+      programVersion,
+      modulesDone: agg?.done ?? 0,
+      modulesTotal: MODULE_TYPES.length,
+      extractionMessageCount:
+        programVersion >= 2 ? (agg?.messages ?? 0) : extractionMsgs.length,
       calibrationMessageCount: calibrationMsgs.length,
       ingestionChunks,
       mentorFound: Boolean(mentor),
