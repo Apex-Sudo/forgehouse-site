@@ -50,11 +50,14 @@ export async function GET() {
       .from("messages")
       .select("id", { count: "exact", head: true })
       .gte("created_at", sevenDaysAgo),
-    supabase.from("mentors").select("id", { count: "exact", head: true }),
+    // mentors is keyed on slug — it has no id column, so select("id") errors
+    // and the count silently falls back to zero. The dashboard read
+    // "0 / 0 active mentors" with five mentors live.
+    supabase.from("mentors").select("slug", { count: "exact", head: true }),
     supabase
       .from("mentors")
-      .select("id", { count: "exact", head: true })
-      .eq("active", true),
+      .select("slug", { count: "exact", head: true })
+      .eq("is_active", true),
     supabase
       .from("onboarding_sessions")
       .select("current_phase"),
